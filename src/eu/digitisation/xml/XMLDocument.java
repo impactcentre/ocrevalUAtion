@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Rafael C. Carrasco
+ * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es)
  * This code can be distributed or modified
  * under the terms of the GNU General Public License V3.
  */
@@ -10,8 +10,6 @@ import org.w3c.dom.Element;
 
 /**
  * A parser for XML documents
- *
- * @author Rafael C. Carrasco
  * @version 2012.06.20
  */
 public class XMLDocument {

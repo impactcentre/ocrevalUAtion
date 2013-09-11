@@ -1,9 +1,8 @@
 /**
- * Copyright (C) 2013 Rafael C. Carrasco
+ * Copyright (C) 2013 Rafael C. Carrasco (carrasco@ua.es)
  * This code can be distributed or
  * modified under the terms of the GNU General Public License V3. 
  */
-
 package eu.digitisation.text;
 
 import java.io.*;

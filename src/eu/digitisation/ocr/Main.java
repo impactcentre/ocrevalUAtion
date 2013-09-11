@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author rafa
  */
 public class Main {
 
@@ -20,7 +19,7 @@ public class Main {
      */
     public static void main(String[] args) {
         if (args.length != 5) {
-            System.err.println("Usage: ocrevaluationUA filename1 encoding1 filename2 encoding2 output");
+            System.err.println("Usage: ocrevalUAtion filename1 encoding1 filename2 encoding2 output");
         } else {
             String encoding = System.getProperty("file.encoding");
             String inputText1 = args[0];

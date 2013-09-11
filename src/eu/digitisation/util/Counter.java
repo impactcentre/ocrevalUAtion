@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 Rafael C. Carrasco
+ * Copyright (C) 2010 Rafael C. Carrasco (carrasco@ua.es)
  * This code can be distributed or modified
  * under the terms of the GNU General Public License V3.
  */
@@ -7,7 +7,6 @@ package eu.digitisation.util;
 
 /**
  * Counts number of objects of each type
- * @author Rafael C. Carrasco
  * @version 2012.06.07
  */
 public class Counter<Type> extends java.util.TreeMap<Type, Integer> { 

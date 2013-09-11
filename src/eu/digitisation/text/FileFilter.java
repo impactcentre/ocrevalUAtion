@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Rafael C. Carrasco 
+ * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es) 
  * This code can be distributed or
  * modified under the terms of the GNU General Public License V3.
  */
@@ -15,8 +15,8 @@ import java.nio.channels.FileChannel;
 /**
  * Transform the content of a file according to a mapping between (source,
  * target) character sequences.
- * This can be useful, for example, to repace unicode characters which are not supported 
- * the browser with printable ones.
+ * This can be useful, for example, to repace unicode characters 
+ * which are not supported by the browser with printable ones.
  * @version 2012.06.20 
  */
 public class FileFilter extends HashMap<String, String> {

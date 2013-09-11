@@ -1,10 +1,9 @@
 /**
- * Copyright (C) 2012 Rafael C. Carrasco 
+ * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es) 
  * This code can be distributed or
  * modified under the terms of the GNU General Public License V3.
  */
 package eu.digitisation.ocr;
-
 
 import eu.digitisation.util.Counter;
 import java.io.*;

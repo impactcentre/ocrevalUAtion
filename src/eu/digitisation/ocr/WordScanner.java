@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Rafael C. Carrasco
+ * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es)
  * This code can be distributed or modified
  * under the terms of the GNU General Public License V3.
  */
@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A simple fast text scanner that reads words from a file.
+ * A simple and fast text scanner that reads words from a file.
  * @version 2012.06.20
  */
 public class WordScanner {
