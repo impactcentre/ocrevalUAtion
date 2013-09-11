@@ -1,6 +1,7 @@
 /**
- * Copyright (C) 2012 Rafael C. Carrasco This code can be distributed or
- * modified under the terms of the GNU General Public License V2.
+ * Copyright (C) 2012 Rafael C. Carrasco 
+ * This code can be distributed or
+ * modified under the terms of the GNU General Public License V3.
  */
 package eu.digitisation.xml;
 
@@ -20,7 +21,6 @@ import java.util.HashMap;
  */
 public class PAGE {
     // Selected text-region types (space separated tags)
-
     final static String TextRegionTypes =
             "TOC-entry heading drop-capital paragraph";
     final static String lsep = System.getProperty("line.separator");
