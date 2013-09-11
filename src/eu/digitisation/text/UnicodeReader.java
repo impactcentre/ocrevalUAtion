@@ -1,7 +1,7 @@
 /**
- * Copyright (C) 2013 Rafael C. Carrasco This code can be distributed or
- * modified under the terms of the GNU General Public License V2. package
- * eu.digitisation.text;
+ * Copyright (C) 2013 Rafael C. Carrasco
+ * This code can be distributed or
+ * modified under the terms of the GNU General Public License V3. 
  */
 
 package eu.digitisation.text;
@@ -10,7 +10,7 @@ import java.io.*;
 
 /**
  * Transformations between  unicode strings and codepoints 
- * @author R.C.C.
+ * @version 2012.06.20
  */
 class UnicodeReader {
     /**

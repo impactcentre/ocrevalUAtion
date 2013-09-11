@@ -1,6 +1,7 @@
 /**
- * Copyright (C) 2012 Rafael C. Carrasco This code can be distributed or
- * modified under the terms of the GNU General Public License V2.
+ * Copyright (C) 2012 Rafael C. Carrasco 
+ * This code can be distributed or
+ * modified under the terms of the GNU General Public License V3.
  */
 package eu.digitisation.ocr;
 
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * Compute Character error rate
  *
- * @author R.C.C
+ * @version 2012.06.20
  */
 public class Measure {
 

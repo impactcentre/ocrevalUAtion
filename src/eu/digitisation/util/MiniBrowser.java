@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2012 Rafael C. Carrasco
  * This code can be distributed or modified
- * under the terms of the GNU General Public License V2.
+ * under the terms of the GNU General Public License V3.
  */
 package eu.digitisation.util;
 
@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * A simple web browser. 
+ * A simple web browser for checking how resutls wil be displayed.
  * @version 2012.06.07
  */
 public class MiniBrowser extends JFrame

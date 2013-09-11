@@ -1,9 +1,12 @@
+/**
+ * Copyright (C) 2012 Rafael C. Carrasco 
+ * This code can be distributed or
+ * modified under the terms of the GNU General Public License V3.
+ */
 package eu.digitisation.ocr;
 
 /**
  * Provides basic implementations of some popular edit distance methods.
- *
- * @author R.C.C.
  * @version 2011.03.10
  */
 public class StringEditDistance {

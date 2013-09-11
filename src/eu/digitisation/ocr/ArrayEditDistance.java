@@ -1,12 +1,16 @@
+/**
+ * Copyright (C) 2012 Rafael C. Carrasco 
+ * This code can be distributed or
+ * modified under the terms of the GNU General Public License V3.
+ */
 package eu.digitisation.ocr;
+
 /**
  * Provides a basic implementations of some popular edit distance methods 
  * generalized to arrays
  *
- * @author R.C.C. 
  * @version 2011.03.10
  */
-
 public class ArrayEditDistance <Type> {
         /**
          * @return 3-wise minimum.

@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2010 Rafael C. Carrasco
  * This code can be distributed or modified
- * under the terms of the GNU General Public License V2.
+ * under the terms of the GNU General Public License V3.
  */
 package eu.digitisation.util;
 
@@ -32,6 +32,14 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
      */
     public void inc (Type object) {
 	add(object, 1);
+    }
+    
+    /**
+     * Subtract one to the count for an object 
+     * @param object the object whose count will be decremented
+     */
+    public void dec (Type object) {
+	add(object, -1);
     }
 
     /**

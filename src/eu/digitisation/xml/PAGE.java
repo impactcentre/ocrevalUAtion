@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 /**
  * Transform PAGE-XML to a flat and sorted XML document
- *
+ * @version 2012.06.20
  * @remark Since the DTD can be absent, the id attribute is not recognized as a
  * DOM attribute of type id and therefore, the full list of text regions must be
  * traversed to look for a particular id.

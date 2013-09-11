@@ -1,6 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (C) 2012 Rafael C. Carrasco 
+ * This code can be distributed or
+ * modified under the terms of the GNU General Public License V3.
  */
 package eu.digitisation.ocr;
 
@@ -17,6 +18,7 @@ import java.util.HashMap;
  * have different codes.
  * Consistency (between runs and files) is only guaranteed 
  * if the same FileEncoder is used.
+ * @version 2012.06.20
  */
 public class FileEncoder {
 
