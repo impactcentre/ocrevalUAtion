@@ -3,16 +3,16 @@ ocrevalUAtion
 
 OCR evaluation
 
-This set of classes provides basic suport to perform the comparison of
+This set of classes provides basic support to perform the comparison of
 two text files: a reference file (a ground-truth document, usually in
 PAGE XML format) and a the output from an OCR engine (a text file).
 
-The classes defined are lsited below:
+The classes defined are listed below:
 
 xml.XMLDocument
 
 This auxiliary class supports the opening and writing of XML files as
-well as a numbeer of basic additions of content to the XML file.
+well as a number of basic additions of content to the XML file.
 
 xml.XML2Text
 
@@ -60,7 +60,7 @@ character not supported by the browser).
 
 text.UnicodeReader: 
 
-Auxiliary class that reads and interpretes unicode files, for example,
+Auxiliary class that reads and interprets unicode files, for example,
 to check if non-printable content is correct.
 
 util.Counter
