@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 IMPACT Centre of Competence
+ * Copyright (C) 2013 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,7 +19,6 @@ package eu.digitisation.xml;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;

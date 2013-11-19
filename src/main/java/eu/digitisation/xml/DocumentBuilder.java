@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
