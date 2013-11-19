@@ -1,23 +1,35 @@
-/**
- * Copyright (C) 2013 Rafael C. Carrasco (carrasco@ua.es)
- * This code can be distributed or
- * modified under the terms of the GNU General Public License V3. 
+/*
+ * Copyright (C) 2013 Universidad de Alicante
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package eu.digitisation.text;
 
 import java.io.*;
 
 /**
- * Transformations between  unicode strings and codepoints 
+ * Transformations between Unicode strings and codepoints 
  * @version 2012.06.20
  */
 class UnicodeReader {
     /**
-     * Transform a sequence of unicode values (contiguous blocks of four
+     * Transform a sequence of Unicode values (contiguous blocks of four
      * hexadecimal digits) into the string they represent. For example,
      * "00410042" represents "AB"
      *
-     * @param s the sequence of one or more unicode values
+     * @param s the sequence of one or more Unicode values
      * @return the string represented by s
      */
     protected static String codepointsToString(String s) {
@@ -31,7 +43,7 @@ class UnicodeReader {
     }
 
     /**
-     * Build a string from the codepoints (unicode values) defining its content
+     * Build a string from the codepoints (Unicode values) defining its content
      *
      * @param codes
      * @return
@@ -45,10 +57,10 @@ class UnicodeReader {
     }
 
     /**
-     * Convert a string into a sequence of unicode values
+     * Convert a string into a sequence of Unicode values
      *
      * @param s a Java String
-     * @return The array of unicode values of the characters in s
+     * @return The array of Unicode values of the characters in s
      */
     public static int[] toCodepoints(String s) {
         int[] codes = new int[s.length()];
@@ -73,10 +85,10 @@ class UnicodeReader {
     }
 
     /**
-     * Convert a string into a sequence of unicode hexadecimal values
+     * Convert a string into a sequence of Unicode hexadecimal values
      *
      * @param s a Java String
-     * @return The array of unicode values (hexadecimal representation) of the
+     * @return The array of Unicode values (hexadecimal representation) of the
      * characters in s
      */
     public static String[] toHexCodepoints(String s) {
@@ -84,7 +96,7 @@ class UnicodeReader {
     }
 
     /**
-     * Read a text file and print the content as codepoints (unicode values) in
+     * Read a text file and print the content as codepoints (Unicode values) in
      * it
      *
      * @param file the input file
@@ -100,6 +112,12 @@ class UnicodeReader {
         }
     }
 
+    
+    /**
+     * Sample main
+     * @param args
+     * @throws Exception 
+     */
     public static void main(String[] args) throws Exception {
         if (args[0].equals("-s")) {
             UnicodeReader.toCodepoints(args[1]);

@@ -1,7 +1,19 @@
-/**
- * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es)
- * This code can be distributed or modified
- * under the terms of the GNU General Public License V3.
+/*
+ * Copyright (C) 2013 Universidad de Alicante
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package eu.digitisation.xml;
 
@@ -9,34 +21,30 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A parser for XML documents
+ * Extended XML documents
+ *
  * @version 2012.06.20
  */
 public class XMLDocument {
 
     Document doc;
-    static javax.xml.parsers.DocumentBuilder docBuilder;
-    static javax.xml.transform.Transformer transformer;
-    static javax.xml.transform.stream.StreamResult result;
 
-    static {
-        try {
-            docBuilder = javax.xml.parsers.DocumentBuilderFactory
-                    .newInstance().newDocumentBuilder();
-            transformer = javax.xml.transform.TransformerFactory
-                    .newInstance().newTransformer();
-        } catch (Exception ex) {
-            System.err.
-                    println("Could not create document builder/transformer");
-        }
+    /**
+     * Create XMLDocuemnt from org.w3c.dom.Document
+     *
+     * @param doc the source document
+     */
+    public XMLDocument(Document doc) {
+        this.doc = doc;
     }
 
     /**
      * Create XML document from file
+     * @param file th input file
      */
     public XMLDocument(java.io.File file) {
         try {
-            doc = docBuilder.parse(file);
+            doc = DocumentBuilder.parse(file);
         } catch (Exception e) {
             System.err.println("Could not read " + file);
         }
@@ -44,10 +52,11 @@ public class XMLDocument {
 
     /**
      * Create XML document from input stream
+     * @param is the input stream
      */
     public XMLDocument(java.io.InputStream is) {
         try {
-            doc = docBuilder.parse(is);
+            doc = DocumentBuilder.parse(is);
         } catch (Exception e) {
             System.err.println("Could not read " + is);
         }
@@ -55,41 +64,30 @@ public class XMLDocument {
 
     /**
      * Create a new document with the specified root label
+     * @param root the document type (tag of root element)
      */
     public XMLDocument(String root) {
-        doc = docBuilder.newDocument();
+        doc = DocumentBuilder.newDocument();
         doc.appendChild(doc.createElement(root));
     }
 
     /**
      * Create a string representation of the XML document
+     * @return string representation of the XML document
      */
     @Override
     public String toString() {
-        try {
-            javax.xml.transform.dom.DOMSource source =
-                    new javax.xml.transform.dom.DOMSource(doc);
-            result = new javax.xml.transform.stream.StreamResult(new java.io.StringWriter());
-            transformer.transform(source, result);
-            return result.getWriter().toString();
-        } catch (Exception e) {
-            System.err.println("XMLDocument could not write " + doc);
-        }
-        return null;
+        DocumentWriter writer = new DocumentWriter(doc);
+        return writer.toString();
     }
 
     /**
      * Write the XML document to a file
+     * @param file the input file
      */
     public void write(java.io.File file) {
-        try {
-            javax.xml.transform.dom.DOMSource source =
-                    new javax.xml.transform.dom.DOMSource(doc);
-            result = new javax.xml.transform.stream.StreamResult(file);
-            transformer.transform(source, result);
-        } catch (Exception e) {
-            System.err.println("XMLDocument could not write " + doc);
-        }
+        DocumentWriter writer = new DocumentWriter(doc);
+        writer.write(file);
     }
 
     /**
@@ -97,6 +95,7 @@ public class XMLDocument {
      * tag.
      *
      * @param tag the element tag
+     * @return the created element
      */
     public Element addElement(String tag) {
         Element element = doc.createElement(tag);
@@ -110,6 +109,7 @@ public class XMLDocument {
      *
      * @param tag the element tag
      * @param content the textual content
+     * @return the create element
      */
     public Element addTextElement(String tag, String content) {
         Element element = doc.createElement(tag);
@@ -135,7 +135,7 @@ public class XMLDocument {
     }
 
     /**
-     * @return the XMLDocument as a org.w3c.dom.Document
+     * @return the XMLDocument as an org.w3c.dom.Document
      */
     public Document getDocument() {
         return doc;

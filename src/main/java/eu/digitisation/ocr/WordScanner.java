@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 /**
  * A simple and fast text scanner that reads words from a file.
+ *
  * @version 2012.06.20
  */
 public class WordScanner {
@@ -35,12 +36,13 @@ public class WordScanner {
     BufferedReader reader;
 
     static {
-        StringBuilder regexp = new StringBuilder();
-        regexp.append("(");
-        regexp.append("(\\p{L}+([-\\x26'+/@_~·.]\\p{L}+)*)");
-        regexp.append("([\\p{Nd}\\p{Nl}\\p{No}]+([-',./][\\p{Nd}\\p{Nl}\\p{No}]+)*[%]?)");
-        regexp.append(")");
-        pattern = Pattern.compile(regexp.toString());
+        StringBuilder builder = new StringBuilder();
+        builder.append("(");
+        builder.append("(\\p{L}+([-\\x26'+/@_~·.]\\p{L}+)*)");
+        builder.append("|");
+        builder.append("([\\p{Nd}\\p{Nl}\\p{No}]+([-',./][\\p{Nd}\\p{Nl}\\p{No}]+)*[%]?)");
+        builder.append(")");
+        pattern = Pattern.compile(builder.toString());
         defaultEncoding = System.getProperty("file.encoding");
     }
 
@@ -105,8 +107,9 @@ public class WordScanner {
 
     /**
      * Open a string for scanning
+     *
      * @param s the input string to be tokenized
-     * @throws IOException 
+     * @throws IOException
      */
     public WordScanner(String s)
             throws IOException {

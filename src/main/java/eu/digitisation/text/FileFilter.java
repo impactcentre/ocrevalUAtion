@@ -1,7 +1,19 @@
-/**
- * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es) 
- * This code can be distributed or
- * modified under the terms of the GNU General Public License V3.
+/*
+ * Copyright (C) 2013 Universidad de Alicante
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package eu.digitisation.text;
 
@@ -11,13 +23,16 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.nio.channels.FileChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Transform the content of a file according to a mapping between (source,
- * target) character sequences.
- * This can be useful, for example, to repace unicode characters 
- * which are not supported by the browser with printable ones.
- * @version 2012.06.20 
+ * target) character sequences. This can be useful, for example, to replace
+ * unicode characters which are not supported by the browser with printable
+ * ones.
+ *
+ * @version 2012.06.20
  */
 public class FileFilter extends HashMap<String, String> {
 
@@ -28,9 +43,9 @@ public class FileFilter extends HashMap<String, String> {
         try {
             FileInputStream input = new FileInputStream(file);
             FileChannel channel = input.getChannel();
-            java.nio.ByteBuffer buffer =
-                    channel.map(FileChannel.MapMode.READ_ONLY, 0,
-                    (int) channel.size());
+            java.nio.ByteBuffer buffer
+                    = channel.map(FileChannel.MapMode.READ_ONLY, 0,
+                            (int) channel.size());
             return java.nio.charset.Charset.forName("utf-8").newDecoder()
                     .decode(buffer);
         } catch (IOException ex) {
@@ -63,48 +78,50 @@ public class FileFilter extends HashMap<String, String> {
      * @param outfile the file where the output must be written
      */
     public void translate(File infile, File outfile) {
-        String input = toCharSequence(infile).toString();
-        String output = translate(input);
+        FileWriter writer = null;
         try {
-            FileWriter writer = new FileWriter(outfile);
+            String input = toCharSequence(infile).toString();
+            String output = translate(input);
+            writer = new FileWriter(outfile);
             writer.write(output);
             writer.flush();
             writer.close();
         } catch (IOException ex) {
-            System.err.println("Error writing " + outfile);
-            System.err.println(ex);
+            Logger.getLogger(FileFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
-     * Translate (in place) 
-     * all characters according to the transformation map
+     * Translate (in place) all characters according to the transformation map
      *
      * @param file the input file
-    
+     *
      */
     public void translate(File file) {
-        String input = toCharSequence(file).toString();
-        String output = translate(input);
-        
+        FileWriter writer = null;
         try {
-            FileWriter writer = new FileWriter(file);
+            String input = toCharSequence(file).toString();
+            String output = translate(input);
+            writer = new FileWriter(file);
             writer.write(output);
             writer.flush();
             writer.close();
         } catch (IOException ex) {
-            System.err.println("Error writing " + file.getName());
+            Logger.getLogger(FileFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     /**
      * Load the transformation map from a file (one transformation per line).
-     * The file contains unicode values
+     * The file contains Unicode values
+     *
+     * @param file the file to be transformed
      */
     public FileFilter(File file) {
+        BufferedReader reader;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-
+            reader = new BufferedReader(new FileReader(file));
             while (reader.ready()) {
                 String line = reader.readLine();
                 String[] tokens = line.split("\\p{Space}");
@@ -118,15 +135,15 @@ public class FileFilter extends HashMap<String, String> {
                             + " at file " + file);
                 }
             }
-        } catch (Exception ex) {
-            System.err.println(ex);
+        } catch (IOException ex) {
+            Logger.getLogger(FileFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
      * TO BE REMOVED Escape special characters in XML
      *
-     * @input s a string
+     * @param s a string 
      * @return the string with characters <, >, &, " escaped
      */
     public static String encode(String s) {
@@ -164,9 +181,9 @@ public class FileFilter extends HashMap<String, String> {
                     counter.inc(c);
                 }
             }
-        } catch (Exception ex) {
-            System.err.println(ex);
-        }
+        } catch (IOException ex) {
+            Logger.getLogger(FileFilter.class.getName()).log(Level.SEVERE, null, ex);
+        } 
         return counter;
     }
 
@@ -194,8 +211,8 @@ public class FileFilter extends HashMap<String, String> {
     private static String[] toArray(File file) {
         ArrayList<String> list = new ArrayList<String>();
         try {
-            BufferedReader reader =
-                    new BufferedReader(new FileReader(file));
+            BufferedReader reader
+                    = new BufferedReader(new FileReader(file));
             while (reader.ready()) {
                 list.add(reader.readLine());
             }
@@ -206,7 +223,7 @@ public class FileFilter extends HashMap<String, String> {
     }
 
     /**
-     * Search for a unicode sequence
+     * Search for a Unicode sequence and highlight them in browser
      */
     public static void find(File[] files, String codepoints) {
         String pattern = UnicodeReader.codepointsToString(codepoints);
@@ -242,6 +259,10 @@ public class FileFilter extends HashMap<String, String> {
         }
     }
 
+    /**
+     * The main function
+     * @param args see usage
+     */
     public static void main(String[] args) {
         if (args.length == 0) {
             System.err.println("Usage:\n"
