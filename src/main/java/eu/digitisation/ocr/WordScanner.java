@@ -1,7 +1,19 @@
-/**
- * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es)
- * This code can be distributed or modified
- * under the terms of the GNU General Public License V3.
+/*
+ * Copyright (C) 2013 Universidad de Alicante
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package eu.digitisation.ocr;
 
@@ -23,10 +35,12 @@ public class WordScanner {
     BufferedReader reader;
 
     static {
-        String reg1 = "(\\p{L}+([-\\x26'+/@_~·.]\\p{L}+)*)";
-        String reg2 = "([\\p{Nd}\\p{Nl}\\p{No}]+([-',./][\\p{Nd}\\p{Nl}\\p{No}]+)*[%]?)";
-        String regexp = "(" + reg1 + "|" + reg2 + ")";
-        pattern = Pattern.compile(regexp);
+        StringBuilder regexp = new StringBuilder();
+        regexp.append("(");
+        regexp.append("(\\p{L}+([-\\x26'+/@_~·.]\\p{L}+)*)");
+        regexp.append("([\\p{Nd}\\p{Nl}\\p{No}]+([-',./][\\p{Nd}\\p{Nl}\\p{No}]+)*[%]?)");
+        regexp.append(")");
+        pattern = Pattern.compile(regexp.toString());
         defaultEncoding = System.getProperty("file.encoding");
     }
 
@@ -109,7 +123,7 @@ public class WordScanner {
     /**
      *
      * @param file the input file to be processed
-     * @return
+     * @return a StringBilider with the file content
      */
     public static StringBuilder scanToBuffer(File file)
             throws IOException {

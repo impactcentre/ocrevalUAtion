@@ -1,9 +1,5 @@
 package eu.digitisation.ocr;
 
-import eu.digitisation.xml.PAGE;
-import eu.digitisation.text.FileFilter;
-import eu.digitisation.util.MiniBrowser;
-import eu.digitisation.xml.XML2text;
 import java.io.*;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -35,8 +31,8 @@ public class Main {
             File GTfile = new File(inputText1);
             File OCRfile = new File(inputText2);
             File outfile = new File(output);
-            double cer = Measure.cer(inputText1, encoding1, inputText2, encoding2);
-            double wer = Measure.wer(inputText1, encoding1, inputText2, encoding2);
+            double cer = ErrorMeasure.cer(inputText1, encoding1, inputText2, encoding2);
+            double wer = ErrorMeasure.wer(inputText1, encoding1, inputText2, encoding2);
             
 //            map.translate(GTfile);            
             
@@ -49,7 +45,7 @@ public class Main {
                 writer.println("");
                 // Statistics per character
                 TreeMap<Character, Double> stats =
-                        Measure.stats(OCRfile, encoding1, GTfile, encoding2);
+                        ErrorMeasure.stats(OCRfile, encoding1, GTfile, encoding2);
                 for (Character c : stats.keySet()) {
                     writer.println(c + ": " + 100 * stats.get(c));
                 }

@@ -70,8 +70,8 @@ public class MainTest {
             // Compute and print error rates
             File OCRfile = new File(outputOCR);
             File outfile = new File(output);
-            double cer = Measure.cer(GTfile, encoding, OCRfile, encoding);
-            double wer = Measure.wer(GTfile, encoding, OCRfile, encoding);
+            double cer = ErrorMeasure.cer(GTfile, encoding, OCRfile, encoding);
+            double wer = ErrorMeasure.wer(GTfile, encoding, OCRfile, encoding);
             System.out.println("Accuracy per char=" + (1 - cer) * 100);
             System.out.println("Accuracy per word=" + (1 - wer) * 100);
             try {
@@ -80,7 +80,7 @@ public class MainTest {
                 writer.println("WER=" + wer * 100);
                 // Statistics per character
                 TreeMap<Character, Double> stats =
-                        Measure.stats(GTfile, encoding, OCRfile, encoding);
+                        ErrorMeasure.stats(GTfile, encoding, OCRfile, encoding);
                 for (Character c : stats.keySet()) {
                     writer.println(c + ": " + 100 * stats.get(c));
                 }

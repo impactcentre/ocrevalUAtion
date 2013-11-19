@@ -1,12 +1,29 @@
-/**
- * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es) 
- * This code can be distributed or
- * modified under the terms of the GNU General Public License V3.
+/*
+ * Copyright (C) 2013 Universidad de Alicante
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package eu.digitisation.ocr;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * Provides basic implementations of some popular edit distance methods.
+ * Provides basic implementations of some popular edit distance methods
+ * operating on strings
+ *
  * @version 2011.03.10
  */
 public class StringEditDistance {
@@ -40,7 +57,8 @@ public class StringEditDistance {
                 if (first.charAt(i - 1) == second.charAt(j - 1)) {
                     A[i % 2][j] = A[(i - 1) % 2][j - 1];
                 } else {
-                    A[i % 2][j] = Math.min(A[(i - 1) % 2][j] + 1, A[i % 2][j - 1] + 1);
+                    A[i % 2][j] = Math.min(A[(i - 1) % 2][j] + 1, 
+                            A[i % 2][j - 1] + 1);
                 }
             }
         }
@@ -72,7 +90,8 @@ public class StringEditDistance {
                 if (first.charAt(i - 1) == second.charAt(j - 1)) {
                     A[i % 2][j] = A[(i - 1) % 2][j - 1];
                 } else {
-                    A[i % 2][j] = min(A[(i - 1) % 2][j] + 1, A[i % 2][j - 1] + 1,
+                    A[i % 2][j] = min(A[(i - 1) % 2][j] + 1, 
+                            A[i % 2][j - 1] + 1,
                             A[(i - 1) % 2][j - 1] + 1);
                 }
             }
@@ -124,13 +143,15 @@ public class StringEditDistance {
             } else if (A[i][j] == A[i][j - 1] + 1) {
                 --j;
             } else if (A[i][j] == A[i - 1][j - 1] + 1) {
-                --i; 
+                --i;
                 --j;
-            } else { // Must raise exception
-                System.err.println("Wrong code at StringEditDistance.alignments");
+            } else { // remove after debugging
+                Logger.getLogger(ErrorMeasure.class.getName())
+                        .log(Level.SEVERE, null, 
+                        "Wrong code at StringEditDistance.alignments");
             }
         }
-        
+
         return alignments;
     }
 }

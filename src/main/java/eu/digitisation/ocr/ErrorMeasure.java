@@ -1,7 +1,19 @@
-/**
- * Copyright (C) 2012 Rafael C. Carrasco (carrasco@ua.es) 
- * This code can be distributed or
- * modified under the terms of the GNU General Public License V3.
+/*
+ * Copyright (C) 2013 Universidad de Alicante
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package eu.digitisation.ocr;
 
@@ -13,11 +25,11 @@ import java.util.logging.Logger;
 
 
 /**
- * Compute Character error rate
+ * Compute character error rate
  *
  * @version 2012.06.20
  */
-public class Measure {
+public class ErrorMeasure {
 
     /**
      * Collapse whitespace
@@ -36,8 +48,7 @@ public class Measure {
             String line = reader.readLine();
             size += line.length();
             if (size > 10000) {
-                System.err.println("Online test limited to 10000 characters");
-                System.exit(-1);
+                throw new RuntimeException("Online test limited to 10000 characters");
             }
             builder.append(' ').append(line.replaceAll("\\p{Space}+", " "));
         }
@@ -78,7 +89,7 @@ public class Measure {
             return StringEditDistance.levenshteinDistance(b1.toString(), b2.toString())
                     / (double) l1;
         } catch (IOException ex) {
-            Logger.getLogger(Measure.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
         }
     }
@@ -140,7 +151,7 @@ public class Measure {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(Measure.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (Character c: total.keySet()) {
             double rate = wrong.value(c) / (double) total.value(c);
