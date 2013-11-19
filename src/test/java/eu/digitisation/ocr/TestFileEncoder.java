@@ -2,7 +2,6 @@ package eu.digitisation.ocr;
 
 
 import junit.framework.TestCase;
-import org.junit.Test;
 
 
 /**
