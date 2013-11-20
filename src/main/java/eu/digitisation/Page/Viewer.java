@@ -29,10 +29,29 @@ import eu.digitisation.Image.GroundTruth;
  */
 public class Viewer {
 
+    /**
+     * Split a file name in basename and extension
+     *
+     * @param filename
+     * @return basename (before last dot) and extension (after last dot)
+     */
+    private static String[] getFilenameTokens(String filename) {
+        String[] tokens = new String[2];
+        int pos = filename.lastIndexOf('.');
+        tokens[0] = filename.substring(0, pos);
+        tokens[1] = filename.substring(pos + 1);
+        return tokens;
+    }
+
     public static void main(String[] args) throws IOException {
-        File xmlfile = new File("00445310.xml");
-        File ifile = new File("00445310.jpg");
-        File ofile = new File("00445310_page.jpg");
+        if (args.length != 1) {
+            System.err.println("usage: Viewer image_file");
+            System.exit(0);
+        }
+        String[] tokens = getFilenameTokens(args[0]);
+        File ifile =  new File(args[0]);
+        File xmlfile =  new File(tokens[0] + ".xml");
+        File ofile = new File(tokens[0] + "_page." + tokens[1]);
         Bimage page = null;
         Bimage scaled;
         GroundTruth gt = null;

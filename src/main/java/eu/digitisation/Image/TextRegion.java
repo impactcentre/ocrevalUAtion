@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 R.C.C:
+ * Copyright (C) 2013 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,21 +15,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package eu.digitisation.Image;
 
 import java.awt.Polygon;
 
 /**
  * A TextRegion in a PAGE-XML document
+ *
  * @author R.C.C.
  */
 public class TextRegion extends Polygon {
+
     String id;
-    String type;    
+    String type;
 
     /**
      * Constructor
+     *
      * @param id
      * @param type
      * @param poly
@@ -38,5 +40,4 @@ public class TextRegion extends Polygon {
         super(poly.xpoints, poly.ypoints, poly.npoints);
         this.type = type;
     }
-    
 }

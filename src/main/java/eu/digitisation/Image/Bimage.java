@@ -81,10 +81,9 @@ public class Bimage extends BufferedImage {
                 (int) (scale * img.getHeight()),
                 img.getType());
         int hints = java.awt.Image.SCALE_SMOOTH; //scaling algorithm
-        Image scaled
-                = img.getScaledInstance(this.getWidth(),
-                        this.getHeight(),
-                        hints);
+        Image scaled = img.getScaledInstance(this.getWidth(),
+                this.getHeight(),
+                hints);
         Graphics2D g = createGraphics();
         g.drawImage(scaled, 0, 0, null);
         g.dispose();
@@ -100,10 +99,9 @@ public class Bimage extends BufferedImage {
         super(Math.max(first.getWidth(), second.getWidth()),
                 Math.max(first.getHeight(), second.getHeight()),
                 first.getType());
-        BufferedImage combined
-                = new BufferedImage(this.getWidth(),
-                        this.getHeight(),
-                        this.getType());
+        BufferedImage combined = new BufferedImage(this.getWidth(),
+                this.getHeight(),
+                this.getType());
         Graphics2D g = combined.createGraphics();
         g.drawImage(first, 0, 0, null);
         g.drawImage(second, 0, 0, null);
@@ -116,8 +114,7 @@ public class Bimage extends BufferedImage {
      * @return this image as gray-scale image
      */
     public Bimage toGrayScale() {
-        ColorSpace space
-                = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+        ColorSpace space = ColorSpace.getInstance(ColorSpace.CS_GRAY);
         ColorConvertOp operation = new ColorConvertOp(space, null);
         return new Bimage(operation.filter(this, null));
     }
@@ -134,8 +131,7 @@ public class Bimage extends BufferedImage {
          ColorConvertOp operation = new ColorConvertOp(space, null);
          return new Bimage(operation.filter(this, null));
          */
-        Bimage bim
-                = new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Bimage bim = new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = bim.createGraphics();
         g.drawImage(this, 0, 0, null);
         g.dispose();
@@ -166,7 +162,7 @@ public class Bimage extends BufferedImage {
         g.drawPolygon(p);
         g.dispose();
     }
-    
+
     public void add(TextRegion region, Color color, int stroke) {
         Graphics2D g = createGraphics();
         g.setColor(color);
