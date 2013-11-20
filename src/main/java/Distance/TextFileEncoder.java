@@ -17,7 +17,7 @@
  */
 package Distance;
 
-import eu.digiitsation.text.WordScanner;
+import eu.digitisation.text.WordScanner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
