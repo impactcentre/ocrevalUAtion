@@ -41,7 +41,7 @@ public class ErrorMeasure {
      * @return String as StringBuilder
      * @throws IOException
      */
-    public static StringBuilder trim(File file, String encoding)
+    protected static StringBuilder trim(File file, String encoding)
             throws IOException {
         StringBuilder builder = new StringBuilder();
         FileInputStream fis = new FileInputStream(file);
@@ -93,20 +93,20 @@ public class ErrorMeasure {
             StringBuilder b2 = trim(file2, encoding2);
             int l1 = b1.length();
             int l2 = b2.length();
-            
+
             double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
 
             if (delta > 20) {
                 System.err.println("Warning: files differ a "
                         + delta + " % in character length");
             }
-            
+
             return StringEditDistance.levenshtein(b1.toString(), b2.toString())
                     / (double) l1;
             /*
-            int indel = StringEditDistance.indel(b1.toString(), b2.toString());
-            return (l1 - l2 + indel) / l1;
-            */
+             int indel = StringEditDistance.indel(b1.toString(), b2.toString());
+             return (l1 - l2 + indel) / l1;
+             */
         } catch (IOException ex) {
             Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
@@ -120,7 +120,7 @@ public class ErrorMeasure {
      * @param encoding1 first file encoding
      * @param fileName2 file containing the fuzzy text
      * @param encoding2 second file encoding
-     * @return word error rate with respect to first file
+     * @return word error rate with respect to first file (recall)
      */
     public static double wer(String fileName1, String encoding1,
             String fileName2, String encoding2) {
@@ -141,7 +141,7 @@ public class ErrorMeasure {
         TextFileEncoder encoder = new TextFileEncoder(false); // case folding
         Integer[] a1 = encoder.encode(file1, encoding1);
         Integer[] a2 = encoder.encode(file2, encoding2);
-       
+
         int l1 = a1.length;
         int l2 = a2.length;
         double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
@@ -151,13 +151,22 @@ public class ErrorMeasure {
                     + delta + " % in word length");
         }
         /*
-        return ArrayEditDistance.levenshtein(a1, a2)
-                / (double) l1;
-                */
+         return ArrayEditDistance.levenshtein(a1, a2)
+         / (double) l1;
+         */
         int indel = ArrayEditDistance.indel(a1, a2);
-        return (l1 - l2 + indel) / (double)(2 * l1);
+        return (l1 - l2 + indel) / (double) (2 * l1);
     }
 
+    /**
+     * Computes separate statistics for every character error rate
+     *
+     * @param file1
+     * @param encoding1
+     * @param file2
+     * @param encoding2
+     * @return
+     */
     public static TreeMap<Character, Double> stats(File file1, String encoding1,
             File file2, String encoding2) {
         TreeMap<Character, Double> map = new TreeMap<Character, Double>();
@@ -189,16 +198,46 @@ public class ErrorMeasure {
         return map;
     }
 
-    public static void main(String[] args) {
-        String fileName1 = "text1.txt";
-        String encoding1 = "utf8";
-        String fileName2 = "text2.txt";
-        String encoding2 = "utf8";
-        if (args.length > 1) {
-            fileName1 = args[0];
-            fileName2 = args[1];
+    /**
+     * Computes separate statistics of errors for every character
+     *
+     * @param file1 the reference file
+     * @param encoding1 the encoding of reference file
+     * @param file2 the sample file
+     * @param encoding2 the encoding of the sample file
+     * @return a map with the number of insertions, substitutions and deletions
+     * for every character
+     */
+    public static Counter<Character>[] errors(File file1, String encoding1,
+            File file2, String encoding2) {
+        Counter<Character> dummy = new Counter<>();
+        Counter<Character>[] map;
+        map = (Counter<Character>[]) java.lang.reflect.Array.newInstance(dummy.getClass(), 4);
+        try {
+            String s1 = trim(file1, encoding1).toString();
+            String s2 = trim(file2, encoding2).toString();
+            int[] alignments = StringEditDistance.align(s1, s2);
+            int m = 0; // target character
+            for (int n = 0; n < alignments.length; ++n) {
+                char c1 = s1.charAt(n);
+                map[0].inc(c1);  // total
+                if (alignments[n] < 0) {
+                    map[3].inc(c1);  // must be deleted
+                } else {
+                    char c2 = s2.charAt(alignments[n]);
+                    if (c1 != c2) {
+                        map[2].inc(c1); // replaced
+                    }
+                    // spurious charcters
+                    while (m < alignments[n]) {
+                        map[1].inc(s2.charAt(m));
+                        ++m;
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
         }
-        double result = ErrorMeasure.wer(fileName1, encoding1, fileName2, encoding2);
-        System.out.println(result);
+        return map;
     }
 }
