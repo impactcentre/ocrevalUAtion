@@ -17,9 +17,9 @@
  */
 package eu.digitisation.ocr;
 
-import Distance.TextFileEncoder;
-import Distance.StringEditDistance;
-import Distance.ArrayEditDistance;
+import eu.ditisation.distance.TextFileEncoder;
+import eu.ditisation.distance.StringEditDistance;
+import eu.ditisation.distance.ArrayEditDistance;
 import eu.digitisation.util.Counter;
 import java.io.*;
 import java.util.TreeMap;

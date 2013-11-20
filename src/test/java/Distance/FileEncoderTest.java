@@ -17,7 +17,7 @@
  */
 package Distance;
 
-import Distance.TextFileEncoder;
+import eu.ditisation.distance.TextFileEncoder;
 import java.io.File;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;

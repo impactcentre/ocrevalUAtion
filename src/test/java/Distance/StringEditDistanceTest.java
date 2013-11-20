@@ -17,7 +17,7 @@
  */
 package Distance;
 
-import Distance.StringEditDistance;
+import eu.ditisation.distance.StringEditDistance;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
 import org.junit.AfterClass;
