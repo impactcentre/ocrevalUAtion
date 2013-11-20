@@ -266,8 +266,8 @@ public class FileFilter extends HashMap<String, String> {
     public static void main(String[] args) {
         if (args.length == 0) {
             System.err.println("Usage:\n"
-                    + "\tFileFilter -s unicode_pattern file 1 file 2 .... [search]"
-                    + "\n\tFileFilter -f file 1 file2 .....   [display statistics]"
+                    + "\tFileFilter -s unicode_pattern file1 file2 .... [search]"
+                    + "\n\tFileFilter -f file1 file2 .....   [display statistics]"
                     + "\n\tFileFilter -r replacements input_file output_file");
         } else if (args[0].equals("-s")) {
             String codepoints = args[1];

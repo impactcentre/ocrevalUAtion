@@ -26,6 +26,14 @@
         <jdk.version>1.7</jdk.version>
     </properties>
     <build>
+        <!--resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+             <resource>
+                <directory>src/test/resources</directory>
+            </resource>
+        </resources-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

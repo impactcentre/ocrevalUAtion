@@ -21,7 +21,15 @@ import eu.ditisation.distance.TextFileEncoder;
 import eu.ditisation.distance.StringEditDistance;
 import eu.ditisation.distance.ArrayEditDistance;
 import eu.digitisation.util.Counter;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +40,19 @@ import java.util.logging.Logger;
  * @version 2012.06.20
  */
 public class ErrorMeasure {
+
+    static int maxlen;
+
+    static {
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileReader("/ErrorMeasure.properties"));
+            maxlen = Integer.parseInt(prop.getProperty("maxlen"));
+        } catch (IOException ex) {
+            Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 
     /**
      * Collapse whitespace: contiguous spaces are considered a single one
@@ -55,8 +76,9 @@ public class ErrorMeasure {
                 builder.append(' ');
             }
             size += line.length();
-            if (size > 10000) {  // must be a property
-                throw new RuntimeException("Online test limited to 10000 characters");
+            if (size > maxlen) {
+                throw new RuntimeException("On-line test limited to "
+                        + maxlen + " characters");
             }
             builder.append(line.replaceAll("\\p{Space}+", " ").trim());
         }
@@ -88,6 +110,7 @@ public class ErrorMeasure {
      */
     public static double cer(File file1, String encoding1,
             File file2, String encoding2) {
+
         try {
             StringBuilder b1 = trim(file1, encoding1);
             StringBuilder b2 = trim(file2, encoding2);
@@ -100,6 +123,7 @@ public class ErrorMeasure {
                 System.err.println("Warning: files differ a "
                         + delta + " % in character length");
             }
+
 
             return StringEditDistance.levenshtein(b1.toString(), b2.toString())
                     / (double) l1;
