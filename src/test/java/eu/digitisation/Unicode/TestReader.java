@@ -1,4 +1,4 @@
-package Unicode;
+package eu.digitisation.Unicode;
 
 import eu.digitisation.Unicode.Reader;
 import junit.framework.TestCase;

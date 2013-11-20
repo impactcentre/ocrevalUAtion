@@ -15,9 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package Distance;
+package eu.digitisation.distance;
 
-import eu.ditisation.distance.StringEditDistance;
+import eu.digitisation.distance.StringEditDistance;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -17,18 +17,16 @@
  */
 package eu.digitisation.ocr;
 
-import eu.ditisation.distance.TextFileEncoder;
-import eu.ditisation.distance.StringEditDistance;
-import eu.ditisation.distance.ArrayEditDistance;
+import eu.digitisation.distance.TextFileEncoder;
+import eu.digitisation.distance.StringEditDistance;
+import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.util.Counter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -46,7 +44,7 @@ public class ErrorMeasure {
     static {
         Properties prop = new Properties();
         try {
-            prop.load(new FileReader("/ErrorMeasure.properties"));
+            prop.load(new FileReader("src/main/resources/ErrorMeasure.properties"));
             maxlen = Integer.parseInt(prop.getProperty("maxlen"));
         } catch (IOException ex) {
             Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
