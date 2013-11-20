@@ -74,7 +74,7 @@ public class Viewer {
         page.add(gt.getTextRegions(), Color.RED, 4);
         page.add(gt.getLines(), Color.GREEN, 2);
         page.add(gt.getWords(), Color.BLUE, 1);
-        scaled = new Bimage(page, 0.25);
+        scaled = new Bimage(page, 1.0);
         //Display.draw(scaled);
         scaled.write(ofile, "jpg");
         System.err.println("output=" + ofile);

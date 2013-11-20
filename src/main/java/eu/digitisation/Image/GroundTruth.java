@@ -25,6 +25,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.DOMException;
 import eu.digitisation.xml.DocumentBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Stores the ground truth content of a PAGE-XML file
@@ -36,22 +38,7 @@ public class GroundTruth {
     TextRegion[] regions;
     TextRegion[] lines;
     TextRegion[] words;
-/*
-    private TextRegion[] getSubregions(Element e, String type) {
 
-        NodeList rnodes = e.getElementsByTagName(type);
-        int length = rnodes.getLength();
-        TextRegion[] subregions = new TextRegion[length];
-         for (int n = 0; n < length; ++n) {
-            Element e = (Element) rnodes.item(n);
-            String id = getAttribute(e, "id");
-            //String type = getAttribute(e, "type");
-            Polygon p = getCoords((Element) rnodes.item(n));
-            regions[n] = new TextRegion(id, type, p);
-        }
-        return subregions;
-    }
-*/
     /**
      * Construct GT from file
      *
@@ -119,6 +106,25 @@ public class GroundTruth {
     }
 
     /**
+     *
+     * @param e The parent element
+     * @param name The child element name
+     * @return list of children of e with the given tag
+     */
+    private static List<Element> getChildElementsByTagName(Element e, String name) {
+        ArrayList<Element> list = new ArrayList<>();
+        NodeList cnodes = e.getChildNodes();
+
+        for (int n = 0; n < cnodes.getLength(); ++n) {
+            Node node = cnodes.item(n);
+            if (node instanceof Element && node.getNodeName().equals(name)) {
+                list.add((Element) node);
+            }
+        }
+        return list;
+    }
+
+    /**
      * Return the polygon delimiting a text region
      *
      * @param e the TextRegion element
@@ -126,12 +132,14 @@ public class GroundTruth {
      */
     private static Polygon getCoords(Element e) {
         Polygon region = new Polygon();
-        NodeList cnodes = e.getElementsByTagName("Coords");
-        if (cnodes.getLength() == 1) {
-            Node cnode = cnodes.item(0);
-            NodeList pnodes = cnode.getChildNodes(); // points
-            int length = pnodes.getLength();
-            for (int n = 0; n < length; ++n) {
+        List<Element> elements = getChildElementsByTagName(e, "Coords");
+        if (elements.size() > 1) {
+            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
+                    "Multiple Coords in TextRegion");
+        } else {
+            Element element = elements.get(0);
+            NodeList pnodes = element.getChildNodes(); // points
+            for (int n = 0; n < pnodes.getLength(); ++n) {
                 Node pnode = pnodes.item(n);
                 if (pnode.getNodeName().equals("Point")) {
                     int x = Integer.parseInt(getAttribute(pnode, "x"));
@@ -139,12 +147,8 @@ public class GroundTruth {
                     region.addPoint(x, y);
                 }
             }
-        } else {
-            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                    "Multiple Coords in TextRegion");
-        }
+        } 
         return region;
-
     }
 
     /**
