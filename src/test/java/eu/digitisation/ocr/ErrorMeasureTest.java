@@ -17,7 +17,6 @@
  */
 package eu.digitisation.ocr;
 
-import static eu.digitisation.ocr.ErrorMeasure.trim;
 import java.io.File;
 import java.io.IOException;
 import org.junit.After;
