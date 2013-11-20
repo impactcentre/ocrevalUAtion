@@ -74,5 +74,21 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.geotoolkit</groupId>
+			<artifactId>geotk-coverageio</artifactId>
+			<version>3.17</version>
+		</dependency>
+	</dependencies>
+	<repositories>
+		<repository>
+			<releases />
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>geotoolkit</id>
+			<name>maven.geotoolkit.org Repository</name>
+			<url>http://maven.geotoolkit.org/</url>
+		</repository>
+	</repositories>
 </project>
