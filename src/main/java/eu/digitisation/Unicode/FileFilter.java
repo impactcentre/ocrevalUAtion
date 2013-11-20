@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.text;
+package eu.digitisation.Unicode;
 
 import eu.digitisation.util.MiniBrowser;
 import eu.digitisation.util.Counter;
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 /**
  * Transform the content of a file according to a mapping between (source,
  * target) character sequences. This can be useful, for example, to replace
- * unicode characters which are not supported by the browser with printable
+ * Unicode characters which are not supported by the browser with printable
  * ones.
  *
  * @version 2012.06.20
@@ -126,8 +126,8 @@ public class FileFilter extends HashMap<String, String> {
                 String line = reader.readLine();
                 String[] tokens = line.split("\\p{Space}");
                 if (tokens.length == 2) {
-                    String left = UnicodeReader.codepointsToString(tokens[0]);
-                    String right = UnicodeReader.codepointsToString(tokens[1]);
+                    String left = Reader.codepointsToString(tokens[0]);
+                    String right = Reader.codepointsToString(tokens[1]);
                     //		    System.out.println(left+"->"+right);
                     put(left, right);
                 } else {
@@ -226,7 +226,7 @@ public class FileFilter extends HashMap<String, String> {
      * Search for a Unicode sequence and highlight them in browser
      */
     public static void find(File[] files, String codepoints) {
-        String pattern = UnicodeReader.codepointsToString(codepoints);
+        String pattern = Reader.codepointsToString(codepoints);
         MiniBrowser browser = new MiniBrowser();
         String outputDir = "output";
         try {

@@ -17,6 +17,9 @@
  */
 package eu.digitisation.ocr;
 
+import Distance.TextFileEncoder;
+import Distance.StringEditDistance;
+import Distance.ArrayEditDistance;
 import eu.digitisation.util.Counter;
 import java.io.*;
 import java.util.TreeMap;
@@ -90,15 +93,20 @@ public class ErrorMeasure {
             StringBuilder b2 = trim(file2, encoding2);
             int l1 = b1.length();
             int l2 = b2.length();
-            System.err.println(l1 + ":" + l2);
+            
             double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
 
             if (delta > 20) {
                 System.err.println("Warning: files differ a "
                         + delta + " % in character length");
             }
-            return StringEditDistance.levenshteinDistance(b1.toString(), b2.toString())
+            
+            return StringEditDistance.levenshtein(b1.toString(), b2.toString())
                     / (double) l1;
+            /*
+            int indel = StringEditDistance.indel(b1.toString(), b2.toString());
+            return (l1 - l2 + indel) / l1;
+            */
         } catch (IOException ex) {
             Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
             return -1;
@@ -130,10 +138,10 @@ public class ErrorMeasure {
      */
     public static double wer(File file1, String encoding1,
             File file2, String encoding2) {
-        FileEncoder encoder = new FileEncoder();
+        TextFileEncoder encoder = new TextFileEncoder(false); // case folding
         Integer[] a1 = encoder.encode(file1, encoding1);
         Integer[] a2 = encoder.encode(file2, encoding2);
-        System.out.println(java.util.Arrays.toString(a2));
+       
         int l1 = a1.length;
         int l2 = a2.length;
         double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
@@ -142,8 +150,12 @@ public class ErrorMeasure {
             System.err.println("Warning: files differ a "
                     + delta + " % in word length");
         }
-        return ArrayEditDistance.levenshteinDistance(a1, a2)
+        /*
+        return ArrayEditDistance.levenshtein(a1, a2)
                 / (double) l1;
+                */
+        int indel = ArrayEditDistance.indel(a1, a2);
+        return (l1 - l2 + indel) / (double)(2 * l1);
     }
 
     public static TreeMap<Character, Double> stats(File file1, String encoding1,

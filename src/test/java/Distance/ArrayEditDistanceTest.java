@@ -16,11 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package eu.digitisation.ocr;
+package Distance;
 
-import java.io.File;
-import java.io.IOException;
-import static junit.framework.TestCase.assertEquals;
+import Distance.ArrayEditDistance;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,9 +30,9 @@ import static org.junit.Assert.*;
  *
  * @author rafa
  */
-public class WordScannerTest {
+public class ArrayEditDistanceTest {
     
-    public WordScannerTest() {
+    public ArrayEditDistanceTest() {
     }
     
     @BeforeClass
@@ -54,22 +52,29 @@ public class WordScannerTest {
     }
 
     /**
-     * Test of main method, of class WordScanner.
+     * Test of indel method, of class ArrayEditDistance.
      */
     @Test
-    public void testnextWord() throws IOException {
-        System.out.println("main");
-         String input = "hola&amigo2\n3.14 mi casa, todos los días\n"
-                 + "mesa-camilla java4you i.b.m. i+d Dª María 3+100%";
-        WordScanner scanner = new WordScanner(input);
-        String word;
-        int num = 0;
-        while ((word = scanner.nextWord()) != null) {
-            ++num;
-            System.out.println(word);
-        }
-        assertEquals(18, num);
- 
+    public void testIndelDistance() {
+        System.out.println("indelDistance");
+        Object[] first = {'p','a','t','a','t','a'};
+        Object[] second = {'a','p','t','a'};
+        int expResult = 4;
+        int result = ArrayEditDistance.indel(first, second);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of levenshtein method, of class ArrayEditDistance.
+     */
+    @Test
+    public void testLevenshteinDistance() {
+        System.out.println("levenshteinDistance");
+        Object[] first = {'p','a','t','a','t','a'};
+        Object[] second = {'a','p','t','a'};
+        int expResult = 3;
+        int result = ArrayEditDistance.levenshtein(first, second);
+        assertEquals(expResult, result);
     }
     
 }

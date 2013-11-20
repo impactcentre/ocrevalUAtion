@@ -15,8 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.ocr;
+package Distance;
 
+import Distance.TextFileEncoder;
 import java.io.File;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
@@ -52,13 +53,13 @@ public class FileEncoderTest {
     }
 
     /**
-     * Test of getCode method, of class FileEncoder.
+     * Test of getCode method, of class TextFileEncoder.
      */
     @Test
     public void testGetCode() {
         System.out.println("getCode");
         String word = "uno";
-        FileEncoder instance = new FileEncoder();
+        TextFileEncoder instance = new TextFileEncoder(true);
         Integer expResult = 0;
         Integer result = instance.getCode(word);
         assertEquals(expResult, result);
@@ -73,27 +74,27 @@ public class FileEncoderTest {
      System.out.println("encode");
      File file = null;
      String encoding = "hola migo hola";
-     FileEncoder instance = new FileEncoder();
+     TextFileEncoder instance = new TextFileEncoder();
      Integer[] expResult = {1, 2, 1};
      Integer[] result = instance.encode(file, encoding);
      assertArrayEquals(expResult, result);
      }
      */
     /**
-     * Test of encode method, of class FileEncoder.
+     * Test of encode method, of class TextFileEncoder.
      */
     @Test
     public void testEncode_String() {
         System.out.println("encode");
-        String s = "one two one";
-        FileEncoder instance = new FileEncoder();
+        String s = "One two one";
+        TextFileEncoder instance = new TextFileEncoder(false);
         Integer[] expResult = {0, 1, 0};
         Integer[] result = instance.encode(s);
         assertArrayEquals(expResult, result);
         // Another test
         String input = "hola&amigo2\n3.14 mi casa, todos los días\n"
                 + "mesa-camilla java4you i.b.m. i+d Dª María 3+100%";
-        FileEncoder encoder = new FileEncoder();
+        TextFileEncoder encoder = new TextFileEncoder(true);
         int size = encoder.encode(input).length;
 
         assertEquals(18, size);

@@ -15,8 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.ocr;
+package Distance;
 
+import eu.digitisation.ocr.ErrorMeasure;
+import eu.digitisation.util.ArrayMath;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +42,7 @@ public class StringEditDistance {
      * @param second the second string.
      * @return the indel distance between first and second.
      */
-    public static int indelDistance(String first, String second) {
+    public static int indel(String first, String second) {
         int i, j;
         int[][] A = new int[2][second.length() + 1];
 
@@ -57,7 +59,7 @@ public class StringEditDistance {
                 if (first.charAt(i - 1) == second.charAt(j - 1)) {
                     A[i % 2][j] = A[(i - 1) % 2][j - 1];
                 } else {
-                    A[i % 2][j] = Math.min(A[(i - 1) % 2][j] + 1, 
+                    A[i % 2][j] = Math.min(A[(i - 1) % 2][j] + 1,
                             A[i % 2][j - 1] + 1);
                 }
             }
@@ -70,7 +72,7 @@ public class StringEditDistance {
      * @param second the second string.
      * @return the Levenshtein distance between first and second.
      */
-    public static int levenshteinDistance(String first, String second) {
+    public static int levenshtein(String first, String second) {
         int i, j;
         int[][] A;
 
@@ -90,9 +92,57 @@ public class StringEditDistance {
                 if (first.charAt(i - 1) == second.charAt(j - 1)) {
                     A[i % 2][j] = A[(i - 1) % 2][j - 1];
                 } else {
-                    A[i % 2][j] = min(A[(i - 1) % 2][j] + 1, 
+                    A[i % 2][j] = min(A[(i - 1) % 2][j] + 1,
                             A[i % 2][j - 1] + 1,
                             A[(i - 1) % 2][j - 1] + 1);
+                }
+            }
+        }
+        return A[first.length() % 2][second.length()];
+    }
+
+    /**
+     * @param first the first string.
+     * @param second the second string.
+     * @return the minimal number of basic edit operations (insertions,
+     * deletions, substitutions) required to transform first into second.
+     */
+    public static int[] operations(String first, String second) {
+        int i, j;
+        int[][][] A;
+
+        // intialize
+        A = new int[2][second.length() + 1][3];
+
+        // Compute non-null elements in first row
+        for (j = 1; j <= second.length(); ++j) {
+            A[0][j][0] = A[0][j - 1][0] + 1;
+        }
+
+        // Compute other rows
+        for (i = 1; i <= first.length(); ++i) {
+            A[i % 2][0][2] = A[(i - 1) % 2][0][2] + 1;
+            for (j = 1; j <= second.length(); ++j) {
+                if (first.charAt(i - 1) == second.charAt(j - 1)) {
+                    A[i % 2][j] = 
+                            java.util.Arrays.copyOf(A[(i - 1) % 2][j - 1], 3);
+                } else {
+                    int ins = ArrayMath.sum(A[i % 2][j - 1]);
+                    int del = ArrayMath.sum(A[(i - 1) % 2][j]);
+                    int sub = ArrayMath.sum(A[(i - 1) % 2][j - 1]);
+                    if (ins < Math.min(del, sub)) {
+                        A[i % 2][j][0] = A[i % 2][j - 1][0] + 1;
+                        A[i % 2][j][1] = A[i % 2][j - 1][1];
+                        A[i % 2][j][2] = A[i % 2][j - 1][2];
+                    } else if (del < sub) {
+                        A[i % 2][j][0] = A[(i - 1) % 2][j][0];
+                        A[i % 2][j][1] = A[(i - 1) % 2][j][1];
+                        A[i % 2][j][2] = A[(i - 1) % 2][j][2] + 1;
+                    } else {
+                        A[i % 2][j][0] = A[(i - 1) % 2][j - 1][0];
+                        A[i % 2][j][1] = A[(i - 1) % 2][j - 1][1] + 1;
+                        A[i % 2][j][2] = A[(i - 1) % 2][j - 1][2];
+                    }
                 }
             }
         }
@@ -147,8 +197,8 @@ public class StringEditDistance {
                 --j;
             } else { // remove after debugging
                 Logger.getLogger(ErrorMeasure.class.getName())
-                        .log(Level.SEVERE, null, 
-                        "Wrong code at StringEditDistance.alignments");
+                        .log(Level.SEVERE, null,
+                                "Wrong code at StringEditDistance.alignments");
             }
         }
 

@@ -15,8 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.ocr;
+package Distance;
 
+import Distance.StringEditDistance;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -51,7 +52,7 @@ public class StringEditDistanceTest {
     }
 
     /**
-     * Test of indelDistance method, of class StringEditDistance.
+     * Test of indel method, of class StringEditDistance.
      */
     @Test
     public void testIndelDistance() {
@@ -59,13 +60,13 @@ public class StringEditDistanceTest {
         String first = "patata";
         String second = "apta";
         int expResult = 4;
-        int result = StringEditDistance.indelDistance(first, second);
+        int result = StringEditDistance.indel(first, second);
         assertEquals(expResult, result);
 
     }
 
     /**
-     * Test of levenshteinDistance method, of class StringEditDistance.
+     * Test of levenshtein method, of class StringEditDistance.
      */
     @Test
     public void testLevenshteinDistance() {
@@ -73,12 +74,12 @@ public class StringEditDistanceTest {
         String first = "patata";
         String second = "apta";
         int expResult = 3;
-        int result = StringEditDistance.levenshteinDistance(first, second);
+        int result = StringEditDistance.levenshtein(first, second);
         assertEquals(expResult, result);
         // A second test
         first = "holanda";
         second = "wordland";
-        int dist = StringEditDistance.levenshteinDistance(first, second);
+        int dist = StringEditDistance.levenshtein(first, second);
         assertEquals(4, dist);
     }
 
@@ -103,8 +104,16 @@ public class StringEditDistanceTest {
             }
         }
         assertEquals(first.length() + second.length(),
-                2 * s + StringEditDistance.indelDistance(first, second));
+                2 * s + StringEditDistance.indel(first, second));
 
     }
-
+  @Test
+    public void testOperations() {
+         System.out.println("operations");
+        String first = "patata";
+        String second = "apta";
+        int[] expResult = {0, 1, 2};
+        int[] result = StringEditDistance.operations(first, second);
+        assertArrayEquals(expResult, result);
+    }
 }

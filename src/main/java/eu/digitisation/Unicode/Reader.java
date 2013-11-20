@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.text;
+package eu.digitisation.Unicode;
 
 import java.io.*;
 
@@ -23,7 +23,7 @@ import java.io.*;
  * Transformations between Unicode strings and codepoints 
  * @version 2012.06.20
  */
-class UnicodeReader {
+public class Reader {
     /**
      * Transform a sequence of Unicode values (contiguous blocks of four
      * hexadecimal digits) into the string they represent. For example,
@@ -120,11 +120,11 @@ class UnicodeReader {
      */
     public static void main(String[] args) throws Exception {
         if (args[0].equals("-s")) {
-            UnicodeReader.toCodepoints(args[1]);
+            Reader.toCodepoints(args[1]);
         } else {
             for (String arg : args) {
                 File file = new File(arg);
-                UnicodeReader.printHexCodepoints(file);
+                Reader.printHexCodepoints(file);
             }
         }
     }

@@ -62,7 +62,7 @@ public class ErrorMeasureTest {
         System.out.println("merge");
         File file = new File("./src/test/resources/text2.txt");
         String encoding = "utf8";
-        String expResult = "en hora buena";
+        String expResult = "mi en hora buena";
         String result = ErrorMeasure.trim(file, encoding).toString();
 
         //System.out.println(result.replaceAll(" ", "*"));
@@ -79,9 +79,9 @@ public class ErrorMeasureTest {
         String encoding1 = "utf8";
         String fileName2 = "./src/test/resources/text2.txt";
         String encoding2 = "utf8";
-        double expResult = 2;
+        double expResult = 3.0/14;
         double result = ErrorMeasure.cer(fileName1, encoding1, fileName2, encoding2);
-        assertEquals(expResult, 11 * result, 0.001);
+        assertEquals(expResult, result, 0.001);
     }
 
     /**
@@ -94,7 +94,7 @@ public class ErrorMeasureTest {
         String encoding1 = "utf8";
         String fileName2 = "./src/test/resources/text2.txt";
         String encoding2 = "utf8";
-        double expResult = 3.0;
+        double expResult = 0.5;
         double result = ErrorMeasure.wer(fileName1, encoding1, fileName2, encoding2);
         assertEquals(expResult, result, 0.001);
 

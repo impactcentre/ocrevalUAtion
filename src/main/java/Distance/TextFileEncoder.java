@@ -15,8 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.ocr;
+package Distance;
 
+import eu.digiitsation.text.WordScanner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,19 +27,26 @@ import java.util.logging.Logger;
 
 /**
  *
- * Encode a file as an array of Integers. Every word is encoded as an integer.
- * Identical words have identical encodings and different words have different
- * codes. Consistency (between encodings and files) is only guaranteed if the
- * same FileEncoder is used.
+ * Encode a text file as an array of Integers. Every word is encoded as an
+ * integer. Identical words have identical encodings and different words have
+ * different codes. Consistency (between encodings and files) is only guaranteed
+ * if the same TextFileEncoder is used.
  *
  * @version 2012.06.20
  */
-public class FileEncoder {
+public class TextFileEncoder {
 
     HashMap<String, Integer> codes;
+    boolean caseSensitive;   // Case sensitive encoding
 
-    public FileEncoder() {
+    /**
+     *
+     * @param sensitive True if the encoder preserves case, False if the encoder
+     * folds uppercase into lowercase.
+     */
+    public TextFileEncoder(boolean sensitive) {
         codes = new HashMap<String, Integer>();
+        caseSensitive = sensitive;
     }
 
     /**
@@ -48,11 +56,13 @@ public class FileEncoder {
      */
     public Integer getCode(String word) {
         Integer code;
-        if (codes.containsKey(word)) {
-            code = codes.get(word);
+        String key = caseSensitive ? word : word.toLowerCase();
+        
+        if (codes.containsKey(key)) {
+            code = codes.get(key);
         } else {
             code = codes.size();
-            codes.put(word, code);
+            codes.put(key, code);
         }
         return code;
     }
@@ -79,7 +89,7 @@ public class FileEncoder {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(FileEncoder.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TextFileEncoder.class.getName()).log(Level.SEVERE, null, ex);
         }
         return array.toArray(new Integer[array.size()]);
     }
@@ -98,11 +108,10 @@ public class FileEncoder {
         try {
             scanner = new WordScanner(s);
             while ((word = scanner.nextWord()) != null) {
-                //System.out.println("Encoding:'" + word + "'");
                 array.add(getCode(word));
             }
         } catch (IOException ex) {
-            Logger.getLogger(FileEncoder.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TextFileEncoder.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return array.toArray(new Integer[array.size()]);

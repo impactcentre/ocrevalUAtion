@@ -1,7 +1,7 @@
 package eu.digitisation.ocr;
 
 import eu.digitisation.xml.PAGE;
-import eu.digitisation.text.FileFilter;
+import eu.digitisation.Unicode.FileFilter;
 import eu.digitisation.util.MiniBrowser;
 import eu.digitisation.xml.XML2text;
 import java.io.*;
