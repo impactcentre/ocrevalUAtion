@@ -131,7 +131,8 @@ public class Bimage extends BufferedImage {
          ColorConvertOp operation = new ColorConvertOp(space, null);
          return new Bimage(operation.filter(this, null));
          */
-        Bimage bim = new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Bimage bim = 
+                new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = bim.createGraphics();
         g.drawImage(this, 0, 0, null);
         g.dispose();

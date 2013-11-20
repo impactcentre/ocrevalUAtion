@@ -34,6 +34,8 @@ import eu.digitisation.xml.DocumentBuilder;
 public class GroundTruth {
 
     TextRegion[] regions;
+    TextRegion[] lines;
+    TextRegion[] words;
 
     /**
      * Construct GT from file
@@ -42,6 +44,8 @@ public class GroundTruth {
      */
     public GroundTruth(File file) {
         Document doc = DocumentBuilder.parse(file);
+
+        // Get regions
         NodeList rnodes = doc.getElementsByTagName("TextRegion");
         int length = rnodes.getLength();
         regions = new TextRegion[length];
@@ -53,6 +57,33 @@ public class GroundTruth {
             Polygon p = getCoords((Element) rnodes.item(n));
             regions[n] = new TextRegion(id, type, p);
         }
+
+        // Get lines
+        rnodes = doc.getElementsByTagName("TextLine");
+        length = rnodes.getLength();
+        lines = new TextRegion[length];
+
+        for (int n = 0; n < length; ++n) {
+            Element e = (Element) rnodes.item(n);
+            String id = getAttribute(e, "id");
+            String type = "line";
+            Polygon p = getCoords((Element) rnodes.item(n));
+            lines[n] = new TextRegion(id, type, p);
+        }
+
+        // Get words
+        rnodes = doc.getElementsByTagName("Word");
+        length = rnodes.getLength();
+        words = new TextRegion[length];
+
+        for (int n = 0; n < length; ++n) {
+            Element e = (Element) rnodes.item(n);
+            String id = getAttribute(e, "id");
+            String type = "word";
+            Polygon p = getCoords((Element) rnodes.item(n));
+            words[n] = new TextRegion(id, type, p);
+        }
+
     }
 
     /**
@@ -79,30 +110,26 @@ public class GroundTruth {
      * @return the polygon delimiting a text region
      */
     private static Polygon getCoords(Element e) {
-        if (e.getNodeName().equals("TextRegion")) {
-            Polygon region = new Polygon();
-            NodeList cnodes = e.getElementsByTagName("Coords");
-            if (cnodes.getLength() == 1) {
-                Node cnode = cnodes.item(0);
-                NodeList pnodes = cnode.getChildNodes(); // points
-                int length = pnodes.getLength();
-                for (int n = 0; n < length; ++n) {
-                    Node pnode = pnodes.item(n);
-                    if (pnode.getNodeName().equals("Point")) {
-                        int x = Integer.parseInt(getAttribute(pnode, "x"));
-                        int y = Integer.parseInt(getAttribute(pnode, "y"));
-                        region.addPoint(x, y);
-                    }
+        Polygon region = new Polygon();
+        NodeList cnodes = e.getElementsByTagName("Coords");
+        if (cnodes.getLength() == 1) {
+            Node cnode = cnodes.item(0);
+            NodeList pnodes = cnode.getChildNodes(); // points
+            int length = pnodes.getLength();
+            for (int n = 0; n < length; ++n) {
+                Node pnode = pnodes.item(n);
+                if (pnode.getNodeName().equals("Point")) {
+                    int x = Integer.parseInt(getAttribute(pnode, "x"));
+                    int y = Integer.parseInt(getAttribute(pnode, "y"));
+                    region.addPoint(x, y);
                 }
-            } else {
-                throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                        "Multiple Coords in TextRegion");
             }
-            return region;
         } else {
             throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                    "TextRegion node expected");
+                    "Multiple Coords in TextRegion");
         }
+        return region;
+
     }
 
     /**
@@ -111,5 +138,13 @@ public class GroundTruth {
      */
     public TextRegion[] getTextRegions() {
         return regions;
+    }
+    
+    public TextRegion[] getLines() {
+        return lines;
+    }
+    
+    public TextRegion[] getWords() {
+        return words;
     }
 }
