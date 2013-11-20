@@ -36,7 +36,22 @@ public class GroundTruth {
     TextRegion[] regions;
     TextRegion[] lines;
     TextRegion[] words;
+/*
+    private TextRegion[] getSubregions(Element e, String type) {
 
+        NodeList rnodes = e.getElementsByTagName(type);
+        int length = rnodes.getLength();
+        TextRegion[] subregions = new TextRegion[length];
+         for (int n = 0; n < length; ++n) {
+            Element e = (Element) rnodes.item(n);
+            String id = getAttribute(e, "id");
+            //String type = getAttribute(e, "type");
+            Polygon p = getCoords((Element) rnodes.item(n));
+            regions[n] = new TextRegion(id, type, p);
+        }
+        return subregions;
+    }
+*/
     /**
      * Construct GT from file
      *
@@ -139,11 +154,11 @@ public class GroundTruth {
     public TextRegion[] getTextRegions() {
         return regions;
     }
-    
+
     public TextRegion[] getLines() {
         return lines;
     }
-    
+
     public TextRegion[] getWords() {
         return words;
     }
