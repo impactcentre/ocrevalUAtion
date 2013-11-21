@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PcGts xmlns="http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19 http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19/pagecontent.xsd" pcGtsId="pc-00445310">
+	<Metadata>
+	<Creator>ABBYY FineReader Engine 9.0</Creator>
+	<Created>2010-10-30T21:35:40</Created>
+	<LastChange>2011-10-12T11:02:00</LastChange></Metadata>
+	<Page imageFilename="00445310.tif" imageWidth="2783" imageHeight="4005">
+	<ReadingOrder>
+	<OrderedGroup id="ro357564684568544579089">
+	<RegionRefIndexed regionRef="r18" index="0"/>
+	<RegionRefIndexed regionRef="r19" index="1"/>
+	<RegionRefIndexed regionRef="r22" index="2"/>
+	<RegionRefIndexed regionRef="r14" index="3"/>
+	<RegionRefIndexed regionRef="r28" index="4"/>
+	<RegionRefIndexed regionRef="r17" index="5"/></OrderedGroup></ReadingOrder>
+	<TextRegion id="r14" type="paragraph">
+	<Coords>
+	<Point x="267" y="1347"/>
+	<Point x="261" y="1597"/>
+	<Point x="2397" y="1597"/>
+	<Point x="2397" y="1333"/>
+	<Point x="559" y="1350"/>
+	<Point x="448" y="1350"/>
+	<Point x="366" y="1344"/>
+	<Point x="316" y="1341"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>Autores elegidos para el uſo de las voces y modos de hablar, deſpues de los que con-
+tiene la lia, que eá puea al principio del primer Tomo
+del Diccionario.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r15" type="signature-mark">
+	<Coords>
+	<Point x="408" y="3528"/>
+	<Point x="408" y="3685"/>
+	<Point x="741" y="3685"/>
+	<Point x="741" y="3528"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>Tom. II.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r16" type="signature-mark">
+	<Coords>
+	<Point x="1413" y="3566"/>
+	<Point x="1413" y="3713"/>
+	<Point x="1663" y="3713"/>
+	<Point x="1663" y="3566"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>❡ 3</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r17" type="catch-word">
+	<Coords>
+	<Point x="2186" y="3576"/>
+	<Point x="2186" y="3730"/>
+	<Point x="2433" y="3730"/>
+	<Point x="2433" y="3576"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>EX</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r18" type="paragraph">
+	<Coords>
+	<Point x="271" y="258"/>
+	<Point x="271" y="630"/>
+	<Point x="1369" y="641"/>
+	<Point x="1585" y="635"/>
+	<Point x="1833" y="644"/>
+	<Point x="1860" y="649"/>
+	<Point x="1872" y="651"/>
+	<Point x="1883" y="649"/>
+	<Point x="1917" y="637"/>
+	<Point x="1982" y="637"/>
+	<Point x="2355" y="630"/>
+	<Point x="2355" y="258"/>
+	<Point x="532" y="226"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>Vitadór general por ſu Magead, de la Provincia de Caia la nueva,
+Mancha, y Campos de Monuel, Gentilhombre Varleſervan de la boca y
+Teniente de Comiario general de la Infantería, y Cabaería de Eſpaña, fué
+admitido por Académico ſupernumerario, por la auſencia de Don Pedro
+Manuel de Azebedo, en el miſmo dia 14. de Oubre de 1728.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r19" type="paragraph">
+	<Coords>
+	<Point x="271" y="655"/>
+	<Point x="271" y="960"/>
+	<Point x="526" y="948"/>
+	<Point x="603" y="946"/>
+	<Point x="657" y="942"/>
+	<Point x="1182" y="957"/>
+	<Point x="1193" y="962"/>
+	<Point x="1208" y="958"/>
+	<Point x="1210" y="958"/>
+	<Point x="1219" y="944"/>
+	<Point x="1280" y="957"/>
+	<Point x="1436" y="954"/>
+	<Point x="1512" y="948"/>
+	<Point x="1554" y="963"/>
+	<Point x="1844" y="952"/>
+	<Point x="2133" y="966"/>
+	<Point x="2166" y="974"/>
+	<Point x="2344" y="960"/>
+	<Point x="2344" y="655"/>
+	<Point x="1912" y="657"/>
+	<Point x="1780" y="652"/>
+	<Point x="1496" y="646"/>
+	<Point x="1434" y="647"/>
+	<Point x="1427" y="647"/>
+	<Point x="1176" y="645"/>
+	<Point x="1087" y="645"/>
+	<Point x="615" y="641"/>
+	<Point x="557" y="644"/>
+	<Point x="371" y="646"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>Don Camíro Uariz, Oﬁcial tercero de la Secretaría del Deſpacho uni-
+verſal de la Guerra, Secretario de ſu Magead, y de ſu Real Junta de Co-
+mercio, fué admitido por Académico ſupernumerario, por la auſencia del
+Door Don Thomás de Montes y Corrál, en 30. de Diciembre de 1728.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r21" type="credit">
+	<Coords>
+	<Point x="985" y="3887"/>
+	<Point x="985" y="3982"/>
+	<Point x="1941" y="3982"/>
+	<Point x="1941" y="3887"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>© Biblioteca Nacional de España</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r22" type="paragraph">
+	<Coords>
+	<Point x="256" y="969"/>
+	<Point x="257" y="1291"/>
+	<Point x="2388" y="1295"/>
+	<Point x="2369" y="963"/>
+	<Point x="2287" y="972"/>
+	<Point x="2263" y="978"/>
+	<Point x="2198" y="982"/>
+	<Point x="2107" y="972"/>
+	<Point x="1834" y="958"/>
+	<Point x="1570" y="975"/>
+	<Point x="1501" y="957"/>
+	<Point x="1427" y="962"/>
+	<Point x="1246" y="971"/>
+	<Point x="1221" y="965"/>
+	<Point x="1166" y="969"/>
+	<Point x="1143" y="960"/>
+	<Point x="707" y="955"/>
+	<Point x="504" y="960"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>Don Franciſco Manuel de la Mata y Lináres, Cabaero del Orden de
+Alcántara, Colegial en el Viejo y Mayór de San Bartholomé de Salamanca,
+y graduado de Licenciado por la Capia de Santa Bárbara de aquea Uni-
+verdad, obtuvo plaza de Académico honorario en 7. de Oubre de 1728.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r28" type="paragraph">
+	<Coords>
+	<Point x="1999" y="1647"/>
+	<Point x="2246" y="1647"/>
+	<Point x="2246" y="1669"/>
+	<Point x="2247" y="1669"/>
+	<Point x="2247" y="1692"/>
+	<Point x="2248" y="1692"/>
+	<Point x="2248" y="1715"/>
+	<Point x="2249" y="1715"/>
+	<Point x="2249" y="1738"/>
+	<Point x="2250" y="1738"/>
+	<Point x="2250" y="1761"/>
+	<Point x="2172" y="1761"/>
+	<Point x="2172" y="1762"/>
+	<Point x="2171" y="1762"/>
+	<Point x="2171" y="1763"/>
+	<Point x="2170" y="1763"/>
+	<Point x="2170" y="1764"/>
+	<Point x="2169" y="1764"/>
+	<Point x="2169" y="1765"/>
+	<Point x="2168" y="1765"/>
+	<Point x="2168" y="1766"/>
+	<Point x="2167" y="1766"/>
+	<Point x="2167" y="1767"/>
+	<Point x="2166" y="1767"/>
+	<Point x="2166" y="1768"/>
+	<Point x="2165" y="1768"/>
+	<Point x="2165" y="1769"/>
+	<Point x="2164" y="1769"/>
+	<Point x="2164" y="1770"/>
+	<Point x="2163" y="1770"/>
+	<Point x="2163" y="1771"/>
+	<Point x="2162" y="1771"/>
+	<Point x="2162" y="1772"/>
+	<Point x="2161" y="1772"/>
+	<Point x="2161" y="1773"/>
+	<Point x="2160" y="1773"/>
+	<Point x="2160" y="1774"/>
+	<Point x="2159" y="1774"/>
+	<Point x="2159" y="1776"/>
+	<Point x="2154" y="1776"/>
+	<Point x="2154" y="1775"/>
+	<Point x="2150" y="1775"/>
+	<Point x="2150" y="1774"/>
+	<Point x="2146" y="1774"/>
+	<Point x="2146" y="1773"/>
+	<Point x="2142" y="1773"/>
+	<Point x="2142" y="1772"/>
+	<Point x="2138" y="1772"/>
+	<Point x="2138" y="1771"/>
+	<Point x="2134" y="1771"/>
+	<Point x="2134" y="1770"/>
+	<Point x="2130" y="1770"/>
+	<Point x="2130" y="1769"/>
+	<Point x="2129" y="1769"/>
+	<Point x="2129" y="1768"/>
+	<Point x="2128" y="1768"/>
+	<Point x="2128" y="1767"/>
+	<Point x="2127" y="1767"/>
+	<Point x="2127" y="1766"/>
+	<Point x="2126" y="1766"/>
+	<Point x="2126" y="1765"/>
+	<Point x="2125" y="1765"/>
+	<Point x="2125" y="1764"/>
+	<Point x="2124" y="1764"/>
+	<Point x="2124" y="1763"/>
+	<Point x="2123" y="1763"/>
+	<Point x="2123" y="1762"/>
+	<Point x="2122" y="1762"/>
+	<Point x="2122" y="1761"/>
+	<Point x="2121" y="1761"/>
+	<Point x="2121" y="1760"/>
+	<Point x="2120" y="1760"/>
+	<Point x="2120" y="1759"/>
+	<Point x="2119" y="1759"/>
+	<Point x="2119" y="1758"/>
+	<Point x="2118" y="1758"/>
+	<Point x="2118" y="1757"/>
+	<Point x="2117" y="1757"/>
+	<Point x="2117" y="1755"/>
+	<Point x="1995" y="1755"/>
+	<Point x="1995" y="1881"/>
+	<Point x="1996" y="1881"/>
+	<Point x="1996" y="1988"/>
+	<Point x="2243" y="1988"/>
+	<Point x="2243" y="2009"/>
+	<Point x="2244" y="2009"/>
+	<Point x="2244" y="2031"/>
+	<Point x="2245" y="2031"/>
+	<Point x="2245" y="2052"/>
+	<Point x="2246" y="2052"/>
+	<Point x="2246" y="2075"/>
+	<Point x="1960" y="2075"/>
+	<Point x="1960" y="2076"/>
+	<Point x="1703" y="2076"/>
+	<Point x="1703" y="2183"/>
+	<Point x="1704" y="2183"/>
+	<Point x="1704" y="2217"/>
+	<Point x="1705" y="2217"/>
+	<Point x="1705" y="2252"/>
+	<Point x="1631" y="2252"/>
+	<Point x="1631" y="2251"/>
+	<Point x="1557" y="2251"/>
+	<Point x="1557" y="2250"/>
+	<Point x="1483" y="2250"/>
+	<Point x="1483" y="2249"/>
+	<Point x="1409" y="2249"/>
+	<Point x="1409" y="2248"/>
+	<Point x="1335" y="2248"/>
+	<Point x="1335" y="2247"/>
+	<Point x="1261" y="2247"/>
+	<Point x="1261" y="2246"/>
+	<Point x="1186" y="2246"/>
+	<Point x="1186" y="2245"/>
+	<Point x="1112" y="2245"/>
+	<Point x="1112" y="2244"/>
+	<Point x="1038" y="2244"/>
+	<Point x="1038" y="2243"/>
+	<Point x="964" y="2243"/>
+	<Point x="964" y="2242"/>
+	<Point x="890" y="2242"/>
+	<Point x="890" y="2241"/>
+	<Point x="816" y="2241"/>
+	<Point x="816" y="2240"/>
+	<Point x="741" y="2240"/>
+	<Point x="741" y="2239"/>
+	<Point x="667" y="2239"/>
+	<Point x="667" y="2238"/>
+	<Point x="593" y="2238"/>
+	<Point x="593" y="2237"/>
+	<Point x="519" y="2237"/>
+	<Point x="519" y="2236"/>
+	<Point x="445" y="2236"/>
+	<Point x="445" y="2235"/>
+	<Point x="371" y="2235"/>
+	<Point x="371" y="2234"/>
+	<Point x="296" y="2234"/>
+	<Point x="296" y="2233"/>
+	<Point x="295" y="2233"/>
+	<Point x="295" y="2206"/>
+	<Point x="294" y="2206"/>
+	<Point x="294" y="2178"/>
+	<Point x="293" y="2178"/>
+	<Point x="293" y="2064"/>
+	<Point x="291" y="2064"/>
+	<Point x="291" y="2027"/>
+	<Point x="290" y="2027"/>
+	<Point x="290" y="1988"/>
+	<Point x="292" y="1988"/>
+	<Point x="292" y="1944"/>
+	<Point x="293" y="1944"/>
+	<Point x="293" y="1827"/>
+	<Point x="291" y="1827"/>
+	<Point x="291" y="1744"/>
+	<Point x="280" y="1744"/>
+	<Point x="280" y="1722"/>
+	<Point x="281" y="1722"/>
+	<Point x="281" y="1700"/>
+	<Point x="282" y="1700"/>
+	<Point x="282" y="1678"/>
+	<Point x="283" y="1678"/>
+	<Point x="283" y="1655"/>
+	<Point x="284" y="1655"/>
+	<Point x="284" y="1654"/>
+	<Point x="529" y="1654"/>
+	<Point x="529" y="1653"/>
+	<Point x="774" y="1653"/>
+	<Point x="774" y="1652"/>
+	<Point x="1019" y="1652"/>
+	<Point x="1019" y="1651"/>
+	<Point x="1264" y="1651"/>
+	<Point x="1264" y="1650"/>
+	<Point x="1509" y="1650"/>
+	<Point x="1509" y="1649"/>
+	<Point x="1754" y="1649"/>
+	<Point x="1754" y="1648"/>
+	<Point x="1999" y="1648"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>El Cardenal Alvaro de Cienfuegos: La Vida de San Franciſco de Borja.
+Lorenzo Gracián: Sus Obras.
+Don Franciſco de Amáya: Deſengaños de los bienes humanos.
+Don Sebaian Fernandez de Medrano: Sus Obras.
+Don Juan Antonio de Vera y Figueroa, Conde de la Roca: sus Obras.
+Chriobal de Mea: Sus Obras Poéticas.
+Gabriel Lao de la Vega: Su Poéma La Mexicana.</Unicode></TextEquiv></TextRegion></Page></PcGts>
