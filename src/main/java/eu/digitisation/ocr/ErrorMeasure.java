@@ -37,10 +37,8 @@ public class ErrorMeasure {
     /**
      * Compute character error rate
      *
-     * @param b1 the reference text
-     * @param encoding1 first file encoding
-     * @param b2 fuzzy text
-     * @param encoding2 second file encoding
+     * @param s1 the reference text
+     * @param s2 fuzzy text
      * @return character error rate with respect to the reference file
      */
     public static double cer(String s1, String s2) {
@@ -73,11 +71,8 @@ public class ErrorMeasure {
     public static double cer(File file1, String encoding1,
             File file2, String encoding2) {
         try {
-            TextBuilder builder;
-            builder = new TextBuilder(null);
-            StringBuilder b1 = builder.trimmed(file1, encoding1);
-            builder = new TextBuilder(null);
-            StringBuilder b2 = builder.trimmed(file2, encoding2);
+            StringBuilder b1 = TextBuilder.trimmed(file1, encoding1);
+            StringBuilder b2 = TextBuilder.trimmed(file2, encoding2);
 
             return cer(b1.toString(), b2.toString());
         } catch (IOException ex) {

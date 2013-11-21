@@ -50,7 +50,7 @@ public class Main {
                         break;
                     case "-ocr":
                         ocrfile = new File(args[++n]);
-                         if (!args[n].startsWith("-")) {
+                        if (!args[n].startsWith("-")) {
                             ocrencoding = args[n++];
                         }
                         break;
@@ -67,19 +67,16 @@ public class Main {
             }
 
             // input text 
-
-
-
-            CharFilter filter =
-                    (repfile == null) ? null : new CharFilter(repfile);
-            TextBuilder builder = new TextBuilder(filter);
-
+            CharFilter filter
+                    = (repfile == null) ? null : new CharFilter(repfile);
             try {
-                StringBuilder gt = builder.trimmed(gtfile, gtencoding);
-                StringBuilder ocr = builder.trimmed(ocrfile, ocrencoding);
+                StringBuilder gt = 
+                        TextBuilder.trimmed(gtfile, gtencoding, filter);
+                StringBuilder ocr = 
+                        TextBuilder.trimmed(ocrfile, ocrencoding, filter);
                 // Compute and print error rates
                 double cer = ErrorMeasure.cer(gt.toString(), ocr.toString());
-                double wer = ErrorMeasure.wer(gt.toString(), ocr.toString());      
+                double wer = ErrorMeasure.wer(gt.toString(), ocr.toString());
                 // Output
                 System.out.println("Accuracy per char=" + (1 - cer) * 100);
                 System.out.println("Accuracy per word=" + (1 - wer) * 100);
@@ -88,8 +85,8 @@ public class Main {
                     writer.println("WER=" + wer * 100);
                     writer.println("");
                     // Statistics per character
-                    Counter<Character>[] stats =
-                            ErrorMeasure.errors(gt.toString(), ocr.toString());
+                    Counter<Character>[] stats
+                            = ErrorMeasure.errors(gt.toString(), ocr.toString());
                     for (Character c : stats[0].keySet()) {
                         writer.println(c + ": " + 100 * stats[0].get(c));
                     }

@@ -38,7 +38,6 @@ import java.util.logging.Logger;
 public class TextBuilder {
 
     static int maxlen;
-    CharFilter filter;
 
     static {
         Properties prop = new Properties();
@@ -51,19 +50,27 @@ public class TextBuilder {
     }
 
     /**
-     * Basic constructor
+     * Get extension of name
      *
-     * @param encoding the file encoding
-     * @param filter the optional char filter
+     * @param filename the name of a file
+     * @return extension part of the filename (after last dot)
      */
-    public TextBuilder(CharFilter filter) {
-        this.filter = filter;
+    private static String getExtension(File file) {
+        String filename = file.getName();
+        int pos = filename.lastIndexOf('.');
+        return filename.substring(pos + 1);
     }
 
+    
     /**
      * Read a file as an array of lines
+     *
+     * @param file the input text file
+     * @param encoding the text file encoding
+     * @param filter optional CharFilter (null if none applied)
+     * @return the file content as an array of lines
      */
-    private static String[] toArray(File file, String encoding) {
+    public static String[] toArray(File file, String encoding, CharFilter filter) {
         ArrayList<String> list = new ArrayList<String>();
         try {
             FileInputStream fis = new FileInputStream(file);
@@ -72,7 +79,8 @@ public class TextBuilder {
             int size = 0;
 
             while (reader.ready()) {
-                String line = reader.readLine();
+                String line = (filter == null) ? reader.readLine()
+                        : filter.translate(reader.readLine());
                 size += line.length();
                 if (size > maxlen) {
                     throw new RuntimeException("Input file length is limited to "
@@ -89,14 +97,27 @@ public class TextBuilder {
     }
 
     /**
-     * Collapse whitespace: contiguous spaces are considered a single one
+     * Read a file as an array of lines
      *
-     * @param file the input file
-     * @param encoding the text encoding
+     * @param file the input text file
+     * @param encoding the text file encoding
+     * @return the file content as an array of lines
+     */
+    public static String[] toArray(File file, String encoding) {
+        return toArray(file, encoding, null);
+    }
+
+    /**
+     * Return textual content and collapse whitespace: contiguous spaces are
+     * considered a single one
+     *
+     * @param file the input text file
+     * @param encoding the text file encoding
+     * @param filter optional CharFilter
      * @return String as StringBuilder
      * @throws IOException
      */
-    public StringBuilder trimmed(File file, String encoding)
+    public static StringBuilder trimmed(File file, String encoding, CharFilter filter)
             throws IOException {
         StringBuilder builder = new StringBuilder();
         FileInputStream fis = new FileInputStream(file);
@@ -105,8 +126,8 @@ public class TextBuilder {
         int size = 0;
 
         while (reader.ready()) {
-            String line = reader.readLine();
-            String s = filter == null ? line : filter.translate(line);
+            String line = (filter == null) ? reader.readLine()
+                    : filter.translate(reader.readLine());
             if (size > 0) {
                 builder.append(' ');
             }
@@ -119,5 +140,19 @@ public class TextBuilder {
             builder.append(line.replaceAll("\\p{Space}+", " ").trim());
         }
         return builder;
+    }
+    
+      /**
+     * Return textual content and collapse whitespace: contiguous spaces are
+     * considered a single one
+     *
+     * @param file the input text file
+     * @param encoding the text file encoding
+     * @return String as StringBuilder
+     * @throws IOException
+     */
+    public static StringBuilder trimmed(File file, String encoding)
+            throws IOException {
+        return trimmed(file, encoding, null);
     }
 }

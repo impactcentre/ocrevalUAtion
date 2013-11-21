@@ -66,8 +66,7 @@ public class ErrorMeasureTest {
         File file = Paths.get(resourceUrl.toURI()).toFile();
         String encoding = "utf8";
         String expResult = "mi en hora buena";
-        TextBuilder builder = new TextBuilder(null);
-        String result = builder.trimmed(file, encoding).toString();
+        String result = TextBuilder.trimmed(file, encoding).toString();
 
         //System.out.println(result.replaceAll(" ", "*"));
         assertEquals(expResult, result);
