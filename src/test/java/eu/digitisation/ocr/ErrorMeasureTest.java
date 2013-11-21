@@ -17,6 +17,7 @@
  */
 package eu.digitisation.ocr;
 
+import eu.digitisation.io.TextBuilder;
 import java.io.File;
 import java.io.IOException;
 import org.junit.After;
@@ -62,7 +63,8 @@ public class ErrorMeasureTest {
         File file = new File("./src/test/resources/text2.txt");
         String encoding = "utf8";
         String expResult = "mi en hora buena";
-        String result = ErrorMeasure.trim(file, encoding).toString();
+        TextBuilder builder = new TextBuilder(null);
+        String result = builder.trimmed(file, encoding).toString();
 
         //System.out.println(result.replaceAll(" ", "*"));
         assertEquals(expResult, result);
@@ -74,12 +76,12 @@ public class ErrorMeasureTest {
     @Test
     public void testCer() throws IOException {
         System.out.println("cer");
-        String fileName1 = "./target/test-classes/text1.txt";
+        File file1 = new File("./target/test-classes/text1.txt");
         String encoding1 = "utf8";
-        String fileName2 = "./target/test-classes/text2.txt";
+        File file2 = new File("./target/test-classes/text2.txt");
         String encoding2 = "utf8";
         double expResult = 3.0 / 14;
-        double result = ErrorMeasure.cer(fileName1, encoding1, fileName2, encoding2);
+        double result = ErrorMeasure.cer(file1, encoding1, file2, encoding2);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -89,12 +91,12 @@ public class ErrorMeasureTest {
     @Test
     public void testWer() throws IOException {
         System.out.println("wer");
-        String fileName1 = "./target/test-classes/text1.txt";
+         File file1 = new File("./target/test-classes/text1.txt");
         String encoding1 = "utf8";
-        String fileName2 = "./target/test-classes/text2.txt";
+        File file2 = new File("./target/test-classes/text2.txt");
         String encoding2 = "utf8";
         double expResult = 0.5;
-        double result = ErrorMeasure.wer(fileName1, encoding1, fileName2, encoding2);
+        double result = ErrorMeasure.wer(file1, encoding1, file2, encoding2);
         assertEquals(expResult, result, 0.001);
 
     }

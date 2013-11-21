@@ -18,6 +18,7 @@
 
 package eu.digitisation.text;
 
+import eu.digitisation.io.WordScanner;
 import java.io.File;
 import java.io.IOException;
 import static junit.framework.TestCase.assertEquals;

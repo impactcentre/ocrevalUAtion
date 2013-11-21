@@ -34,9 +34,9 @@ public class TextRegion extends Polygon {
     /**
      * Constructor
      *
-     * @param id
-     * @param type
-     * @param poly
+     * @param id region identifier
+     * @param type region type (paragraph, TOC, etc)
+     * @param poly the polygon in the image containing the region
      */
     public TextRegion(String id, String type, Polygon poly) {
         super(poly.xpoints, poly.ypoints, poly.npoints);

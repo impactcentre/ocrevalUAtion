@@ -25,15 +25,15 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.DOMException;
 import eu.digitisation.xml.DocumentBuilder;
-import java.util.ArrayList;
+import eu.digitisation.xml.Elements;
 import java.util.List;
 
 /**
- * Stores the ground truth content of a PAGE-XML file
+ * Geometry information contained in one PAGE-XML file
  *
  * @author R.C.C.
  */
-public class GroundTruth { 
+public class Geometry {
 
     TextRegion[] regions;
     TextRegion[] lines;
@@ -44,7 +44,7 @@ public class GroundTruth {
      *
      * @param file the input file
      */
-    public GroundTruth(File file) {
+    public Geometry(File file) {
         Document doc = DocumentBuilder.parse(file);
 
         // Get regions
@@ -54,8 +54,8 @@ public class GroundTruth {
 
         for (int n = 0; n < length; ++n) {
             Element e = (Element) rnodes.item(n);
-            String id = getAttribute(e, "id");
-            String type = getAttribute(e, "type");
+            String id = Elements.getAttribute(e, "id");
+            String type = Elements.getAttribute(e, "type");
             Polygon p = getCoords((Element) rnodes.item(n));
             regions[n] = new TextRegion(id, type, p);
         }
@@ -67,7 +67,7 @@ public class GroundTruth {
 
         for (int n = 0; n < length; ++n) {
             Element e = (Element) rnodes.item(n);
-            String id = getAttribute(e, "id");
+            String id = Elements.getAttribute(e, "id");
             String type = "line";
             Polygon p = getCoords((Element) rnodes.item(n));
             lines[n] = new TextRegion(id, type, p);
@@ -80,48 +80,12 @@ public class GroundTruth {
 
         for (int n = 0; n < length; ++n) {
             Element e = (Element) rnodes.item(n);
-            String id = getAttribute(e, "id");
+            String id = Elements.getAttribute(e, "id");
             String type = "word";
             Polygon p = getCoords((Element) rnodes.item(n));
             words[n] = new TextRegion(id, type, p);
         }
 
-    }
-
-    /**
-     * Return the value of an attribute
-     *
-     * @param node the node containing the attribute
-     * @param name the attribute name
-     * @return he attribute value or null if the node contains no attribute with
-     * that name
-     */
-    private static String getAttribute(Node node, String name) {
-        Node att = node.getAttributes().getNamedItem(name);
-        if (att != null) {
-            return att.getNodeValue();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     *
-     * @param e The parent element
-     * @param name The child element name
-     * @return list of children of e with the given tag
-     */
-    private static List<Element> getChildElementsByTagName(Element e, String name) {
-        ArrayList<Element> list = new ArrayList<>();
-        NodeList cnodes = e.getChildNodes();
-
-        for (int n = 0; n < cnodes.getLength(); ++n) {
-            Node node = cnodes.item(n);
-            if (node instanceof Element && node.getNodeName().equals(name)) {
-                list.add((Element) node);
-            }
-        }
-        return list;
     }
 
     /**
@@ -132,7 +96,7 @@ public class GroundTruth {
      */
     private static Polygon getCoords(Element e) {
         Polygon region = new Polygon();
-        List<Element> elements = getChildElementsByTagName(e, "Coords");
+        List<Element> elements = Elements.getChildElementsByTagName(e, "Coords");
         if (elements.size() > 1) {
             throw new DOMException(DOMException.INVALID_ACCESS_ERR,
                     "Multiple Coords in TextRegion");
@@ -142,12 +106,12 @@ public class GroundTruth {
             for (int n = 0; n < pnodes.getLength(); ++n) {
                 Node pnode = pnodes.item(n);
                 if (pnode.getNodeName().equals("Point")) {
-                    int x = Integer.parseInt(getAttribute(pnode, "x"));
-                    int y = Integer.parseInt(getAttribute(pnode, "y"));
+                    int x = Integer.parseInt(Elements.getAttribute(pnode, "x"));
+                    int y = Integer.parseInt(Elements.getAttribute(pnode, "y"));
                     region.addPoint(x, y);
                 }
             }
-        } 
+        }
         return region;
     }
 
@@ -159,10 +123,18 @@ public class GroundTruth {
         return regions;
     }
 
+    /**
+     *
+     * @return all line regions in this document
+     */
     public TextRegion[] getLines() {
         return lines;
     }
 
+    /**
+     *
+     * @return all word regions in this document
+     */
     public TextRegion[] getWords() {
         return words;
     }

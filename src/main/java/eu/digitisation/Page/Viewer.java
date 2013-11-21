@@ -53,7 +53,7 @@ public class Viewer {
         File ofile = new File(tokens[0] + "_page." + tokens[1]);
         Bimage page = null;
         Bimage scaled;
-        GroundTruth gt = null;
+        Geometry gt = null;
 
         if (ifile.exists()) {
             try {
@@ -65,7 +65,7 @@ public class Viewer {
             throw new java.io.IOException(ifile.getCanonicalPath() + " not found");
         }
         if (xmlfile.exists()) {
-            gt = new GroundTruth(xmlfile);
+            gt = new Geometry(xmlfile);
         } else {
             throw new java.io.IOException(xmlfile.getCanonicalPath() + " not found");
         }

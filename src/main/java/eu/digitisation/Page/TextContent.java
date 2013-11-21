@@ -33,48 +33,41 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Extracts textual content form PAGE XML file
+ * Textual content in a PAGE XML file
  *
  * @author R.C.C.
  */
-public class Text {
-
-    Document doc;
+public class TextContent {
+    StringBuilder builder;
     static final Set<String> types;
 
     static {
         types = new HashSet<>();
         Properties prop = new Properties();
         try {
-            File dir = new File(".");
-            System.out.println(dir.getAbsolutePath());
-            FileReader reader = new FileReader("src/main/resources/General.properties");
+            FileReader reader = new FileReader("target/classes/General.properties");
             prop.load(reader);
             String s = prop.getProperty("TextRegionTypes");
             String separator = ",\\p{Space}+";
             types.addAll(Arrays.asList(s.trim().split(separator)));
         } catch (IOException ex) {
-            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     /**
-     * Create a PAGE document from file
+     * Create TextContent from file
      *
-     * @param file
+     * @param file the input file
      */
-    public Text(File file) {
-        doc = DocumentBuilder.parse(file);
-    }
-
-    /**
-     *
-     * @return the textual content under the selected region types
-     */
-    public String getText() {
-        StringBuilder builder = new StringBuilder();
+   
+    public TextContent(File file) {
+        Document doc = DocumentBuilder.parse(file);
         NodeList regions = doc.getElementsByTagName("TextRegion");
+          
+        builder = new StringBuilder();
+      
         for (int r = 0; r < regions.getLength(); ++r) {
             Node region = regions.item(r);
             String type = Elements.getAttribute(region, "type");
@@ -87,12 +80,16 @@ public class Text {
                         if (builder.length() > 0) {
                             builder.append(' ');
                         }
-//                      System.out.println(node.getTextContent());
                         builder.append(node.getTextContent());
                     }
                 }
             }
         }
+        builder.trimToSize();
+    }
+    
+    @Override
+    public String toString() {
         return builder.toString();
     }
 }

@@ -60,10 +60,10 @@ public class TextTest {
         System.out.println("getText");
         File ifile  = new File("target/test-classes/00445310.xml");
         File ofile = new File("target/test-classes/00445310.txt");
-        Text instance = new Text(ifile);
+        TextContent instance = new TextContent(ifile);
  //       String expResult = "";
         PrintWriter writer = new PrintWriter(ofile);
-        String result = instance.getText();
+        String result = instance.toString();
         writer.write(result);
         writer.close();
 //        assertEquals(expResult, result);

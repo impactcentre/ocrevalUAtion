@@ -15,9 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.Page;
+package eu.digitisation.deprecated;
 
-import eu.digitisation.tmp.XMLDocument;
+import eu.digitisation.deprecated.XMLDocument;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;

@@ -1,58 +1,98 @@
 package eu.digitisation;
 
+import eu.digitisation.io.TextBuilder;
+import eu.digitisation.io.CharFilter;
+import eu.digitisation.math.Counter;
 import eu.digitisation.ocr.ErrorMeasure;
-import java.io.*;
-import java.util.TreeMap;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Main class for ocrevalUAtion
  */
 public class Main {
+
+    static final String helpMsg = "Usage:\t"
+            + "ocrevalUAtion -gt file1 [encoding] "
+            + "-ocr file2 [encoding] "
+            + "-o output [-f replacements_file]";
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if (args.length != 5) {
-            System.err.println("Usage: ocrevalUAtion filename1 encoding1 filename2 encoding2 output");
+        if (args.length < 1) {
+            System.err.println(helpMsg);
         } else {
-            String encoding = System.getProperty("file.encoding");
-            String inputText1 = args[0];
-            String encoding1 = args[1];
-            String inputText2 = args[2];
-            String encoding2 = args[3];
-            String output = args[4];
-            //File replacements = new File("src/resources/replacements.txt");
-            //FileFilter map = new FileFilter(replacements);
-            PrintWriter writer;
+            File outfile = null;
+            File gtfile = null;
+            File ocrfile = null;
+            File repfile = null;
+            String outencoding = System.getProperty("file.encoding");
+            String gtencoding = outencoding;
+            String ocrencoding = outencoding;
 
-            // Compute and print error rates
-            File GTfile = new File(inputText1);
-            File OCRfile = new File(inputText2);
-            File outfile = new File(output);
-            double cer = ErrorMeasure.cer(inputText1, encoding1, inputText2, encoding2);
-            double wer = ErrorMeasure.wer(inputText1, encoding1, inputText2, encoding2);
-            
-//            map.translate(GTfile);            
-            
-            System.out.println("Accuracy per char=" + (1 - cer) * 100);
-            System.out.println("Accuracy per word=" + (1 - wer) * 100);
-            try {
-                writer = new PrintWriter(outfile);
-                writer.println("CER=" + cer * 100);
-                writer.println("WER=" + wer * 100);
-                writer.println("");
-                // Statistics per character
-                TreeMap<Character, Double> stats =
-                        ErrorMeasure.stats(OCRfile, encoding1, GTfile, encoding2);
-                for (Character c : stats.keySet()) {
-                    writer.println(c + ": " + 100 * stats.get(c));
+
+
+            // Read parameters
+            outencoding = System.getProperty("file.encoding");
+            for (int n = 0; n < args.length; ++n) {
+                String arg = args[n];
+                switch (arg) {
+                    case "-h":
+                        System.err.println(helpMsg);
+                        break;
+                    case "-gt":
+                        gtfile = new File(args[++n]);
+                        break;
+                    case "-ocr":
+                        ocrfile = new File(args[++n]);
+                        break;
+                    case "-o":
+                        outfile = new File(args[++n]);
+                        break;
+                    case "-f":
+                        repfile = new File(args[++n]);
+                        break;
+                    default:
+                        System.err.println(helpMsg);
+                        break;
                 }
+            }
 
-                writer.close();
-            } catch (FileNotFoundException ex) {
+            // input text 
+
+
+
+            CharFilter filter =
+                    (repfile == null) ? null : new CharFilter(repfile);
+            TextBuilder builder = new TextBuilder(filter);
+
+            try {
+                StringBuilder gt = builder.trimmed(gtfile, gtencoding);
+                StringBuilder ocr = builder.trimmed(ocrfile, ocrencoding);
+                // Compute and print error rates
+                double cer = ErrorMeasure.cer(gt.toString(), ocr.toString());
+                double wer = ErrorMeasure.wer(gt.toString(), ocr.toString());      
+                // Output
+                System.out.println("Accuracy per char=" + (1 - cer) * 100);
+                System.out.println("Accuracy per word=" + (1 - wer) * 100);
+                try (PrintWriter writer = new PrintWriter(outfile)) {
+                    writer.println("CER=" + cer * 100);
+                    writer.println("WER=" + wer * 100);
+                    writer.println("");
+                    // Statistics per character
+                    Counter<Character>[] stats =
+                            ErrorMeasure.errors(gt.toString(), ocr.toString());
+                    for (Character c : stats[0].keySet()) {
+                        writer.println(c + ": " + 100 * stats[0].get(c));
+                    }
+                    writer.close();
+                }
+            } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

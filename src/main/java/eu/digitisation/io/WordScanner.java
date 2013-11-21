@@ -15,11 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.text;
+package eu.digitisation.io;
 
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -113,14 +111,8 @@ public class WordScanner {
      */
     public WordScanner(String s)
             throws IOException {
-        InputStream is = null;
-        String encoding = "UTF-8";
-        try {
-            is = new ByteArrayInputStream(s.getBytes(encoding));
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(WordScanner.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        open(is, encoding);
+        InputStream is = new ByteArrayInputStream(s.getBytes());
+        open(is, "UTF-8");
     }
 
     /**

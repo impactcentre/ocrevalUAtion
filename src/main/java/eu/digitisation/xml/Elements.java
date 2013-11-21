@@ -17,9 +17,12 @@
  */
 package eu.digitisation.xml;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -44,10 +47,29 @@ public class Elements {
         }
     }
 
+     /**
+     *
+     * @param e The parent element
+     * @param name The child element name
+     * @return list of children of e with the given tag
+     */
+    public static List<Element> getChildElementsByTagName(Element e, String name) {
+        ArrayList<Element> list = new ArrayList<>();
+        NodeList cnodes = e.getChildNodes();
+
+        for (int n = 0; n < cnodes.getLength(); ++n) {
+            Node node = cnodes.item(n);
+            if (node instanceof Element && node.getNodeName().equals(name)) {
+                list.add((Element) node);
+            }
+        }
+        return list;
+    }
+    
     /**
      * @return the root element of the document
      */
-    public Element getRootElement(Document doc) {
+    public static Element getRootElement(Document doc) {
         return doc.getDocumentElement();
     }
 }

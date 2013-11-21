@@ -17,7 +17,7 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.text.WordScanner;
+import eu.digitisation.io.WordScanner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -115,5 +115,6 @@ public class TextFileEncoder {
         }
 
         return array.toArray(new Integer[array.size()]);
-    }
+    }    
+    
 }
