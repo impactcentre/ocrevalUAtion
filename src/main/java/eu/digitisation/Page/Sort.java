@@ -19,6 +19,7 @@ package eu.digitisation.Page;
 
 import eu.digitisation.xml.DocumentBuilder;
 import eu.digitisation.xml.DocumentWriter;
+import eu.digitisation.xml.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,23 +50,6 @@ public class Sort {
     }
 
     /**
-     * Return the value of an attribute
-     *
-     * @param node the node containing the attribute
-     * @param name the attribute name
-     * @return he attribute value or null if the node contains no attribute with
-     * that name
-     */
-    private static String getAttribute(Node node, String name) {
-        Node att = node.getAttributes().getNamedItem(name);
-        if (att != null) {
-            return att.getNodeValue();
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Sort children consistently with the order defined for their id attribute
      *
      * @param node the parent node
@@ -87,7 +71,7 @@ public class Sort {
             backup.add(child);  // unsure if NodeList remains unchanged after insertions
             if (child instanceof Element
                     && child.getNodeName().equals("TextRegion")) {
-                String id = getAttribute(child, "id");
+                String id = Elements.getAttribute(child, "id");
                 if (index.containsKey(id)) {
                     index.put(id, child);
                 }
@@ -102,7 +86,7 @@ public class Sort {
            
             if (child instanceof Element
                     && child.getNodeName().equals("TextRegion")) {
-                String id = getAttribute(child, "id");
+                String id = Elements.getAttribute(child, "id");
                 if (index.containsKey(id)) {
                     String nextreg = order.get(norder);
                     Node r = index.get(nextreg);
@@ -133,9 +117,9 @@ public class Sort {
             Node child = children.item(n);
             if (child instanceof Element
                     && child.getNodeName().equals("RegionRefIndexed")) {
-                int index = Integer.parseInt(getAttribute(child, "index"));
+                int index = Integer.parseInt(Elements.getAttribute(child, "index"));
                 assert (index == order.size());
-                String idref = getAttribute(child, "regionRef");
+                String idref = Elements.getAttribute(child, "regionRef");
                 order.add(idref);
             }
         }

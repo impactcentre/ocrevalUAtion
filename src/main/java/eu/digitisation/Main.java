@@ -1,5 +1,6 @@
-package eu.digitisation.ocr;
+package eu.digitisation;
 
+import eu.digitisation.ocr.ErrorMeasure;
 import java.io.*;
 import java.util.TreeMap;
 import java.util.logging.Level;

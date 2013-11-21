@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package tmp;
+package eu.digitisation.tmp;
 
 import eu.digitisation.xml.DocumentBuilder;
 import eu.digitisation.xml.DocumentWriter;
