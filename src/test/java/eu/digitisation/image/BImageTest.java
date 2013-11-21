@@ -34,15 +34,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.digitisation.Image.Bimage;
 
 /**
  * 
  * @author emolla
  */
-public class BImage {
+public class BImageTest {
 
-	public BImage() {
+	public BImageTest() {
 	}
 
 	@BeforeClass

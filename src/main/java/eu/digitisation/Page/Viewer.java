@@ -20,8 +20,8 @@ package eu.digitisation.Page;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import eu.digitisation.Image.Bimage;
-import eu.digitisation.Image.GroundTruth;
+import eu.digitisation.image.Bimage;
+import eu.digitisation.image.GroundTruth;
 
 /**
  *
@@ -76,7 +76,7 @@ public class Viewer {
         page.add(gt.getWords(), Color.BLUE, 1);
         scaled = new Bimage(page, 1.0);
         //Display.draw(scaled);
-        scaled.write(ofile, "jpg");
+        scaled.write(ofile, "tiff");
         System.err.println("output=" + ofile);
     }
 }
