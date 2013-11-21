@@ -51,7 +51,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>eu.digitisation.ocr.Main</mainClass>
+							<mainClass>eu.digitisation.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
