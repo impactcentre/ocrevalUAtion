@@ -21,8 +21,8 @@ import eu.digitisation.ocr.ErrorMeasure;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -42,14 +42,12 @@ public class TextBuilder {
 
     static {
         Properties prop = new Properties();
-        try {
-            FileReader reader = new FileReader("target/classes/General.properties");
-            prop.load(reader);
-            maxlen = Integer.parseInt(prop.getProperty("maxlen"));
+        try (InputStream in = TextBuilder.class.getResourceAsStream("/General.properties")) {
+            prop.load(in);
         } catch (IOException ex) {
-            Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TextBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        maxlen = Integer.parseInt(prop.getProperty("maxlen"));
     }
 
     /**

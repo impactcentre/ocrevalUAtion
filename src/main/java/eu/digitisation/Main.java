@@ -35,10 +35,7 @@ public class Main {
             String gtencoding = outencoding;
             String ocrencoding = outencoding;
 
-
-
             // Read parameters
-            outencoding = System.getProperty("file.encoding");
             for (int n = 0; n < args.length; ++n) {
                 String arg = args[n];
                 switch (arg) {

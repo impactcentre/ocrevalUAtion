@@ -17,11 +17,12 @@
  */
 package eu.digitisation.Page;
 
+import eu.digitisation.io.TextBuilder;
 import eu.digitisation.xml.DocumentBuilder;
 import eu.digitisation.xml.Elements;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 import java.util.HashSet;
@@ -46,16 +47,14 @@ public class TextContent {
     static {
         types = new HashSet<>();
         Properties prop = new Properties();
-        try {
-            FileReader reader = new FileReader("target/classes/General.properties");
-            prop.load(reader);
-            String s = prop.getProperty("TextRegionTypes");
-            String separator = ",\\p{Space}+";
-            types.addAll(Arrays.asList(s.trim().split(separator)));
+        try (InputStream in = TextBuilder.class.getResourceAsStream("/General.properties")) {
+            prop.load(in);
         } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TextBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        String s = prop.getProperty("TextRegionTypes");
+        String separator = ",\\p{Space}+";
+        types.addAll(Arrays.asList(s.trim().split(separator)));
     }
 
     /**
