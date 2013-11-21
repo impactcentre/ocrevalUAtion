@@ -13,7 +13,10 @@
     </organization>
     <inceptionYear>2009</inceptionYear>
     <scm>
+        <connection>scm:git:https://github.com/impactcentre/ocrevalUAtion.git</connection>
+        <developerConnection>scm:git:git@github.com:impactcentre/ocrevalUAtion.git</developerConnection>
         <url>https://github.com/impactcentre/ocrevalUAtion</url>
+        <tag>HEAD</tag>
     </scm>
     <licenses>
         <license>
