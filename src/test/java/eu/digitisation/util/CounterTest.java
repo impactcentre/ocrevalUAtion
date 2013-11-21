@@ -18,6 +18,7 @@
 
 package eu.digitisation.util;
 
+import eu.digitisation.math.Counter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
