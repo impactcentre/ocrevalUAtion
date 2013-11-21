@@ -18,7 +18,7 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.ocr.ErrorMeasure;
-import eu.digitisation.util.ArrayMath;
+import eu.digitisation.math.ArrayMath;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

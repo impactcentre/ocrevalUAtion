@@ -15,8 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.xml;
+package eu.digitisation.Page;
 
+import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.xml.DocumentWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,17 +34,17 @@ import org.w3c.dom.NodeList;
  *
  * @author R.C.C.
  */
-public class SortPAGE {
+public class Sort {
 
     Document doc;
-    String[] order; // sorted identifiers
+  //  String[] order; // sorted identifiers
 
     /**
      * Constructor from XML file
      *
      * @param file
      */
-    public SortPAGE(File file) {
+    public Sort(File file) {
         doc = DocumentBuilder.parse(file);
     }
 
@@ -64,7 +66,7 @@ public class SortPAGE {
     }
 
     /**
-     * SortPAGE children consistently with the order defined for their id attribute
+     * Sort children consistently with the order defined for their id attribute
      *
      * @param node the parent node
      * @param order the array of id's in ascending order
@@ -73,8 +75,7 @@ public class SortPAGE {
         Map<String, Node> index = new HashMap<>();
         NodeList children = node.getChildNodes();
         List<Node> backup = new ArrayList<>();
-        //Node clone = null;///node.cloneNode(false);
-        //System.out.println("Cloned " + node.getNodeName());
+     
         for (String id : order) {
             index.put(id, null);
         }
@@ -82,6 +83,7 @@ public class SortPAGE {
         // Create an index ot text regions which need reordering
         for (int n = 0; n < children.getLength(); ++n) {
             Node child = children.item(n);
+           
             backup.add(child);  // unsure if NodeList remains unchanged after insertions
             if (child instanceof Element
                     && child.getNodeName().equals("TextRegion")) {
@@ -125,7 +127,7 @@ public class SortPAGE {
     private List<String> readingOrder(Node e) throws IOException {
         NodeList children = e.getChildNodes();
         int length = children.getLength();
-        List<String> order = new ArrayList<String>();
+        List<String> order = new ArrayList<>();
 
         for (int n = 0; n < length; ++n) {
             Node child = children.item(n);
@@ -154,10 +156,12 @@ public class SortPAGE {
     public static void main(String[] args) throws IOException {
         File ifile = new File(args[0]);
         File ofile = new File(args[1]);
-        SortPAGE s = new SortPAGE(ifile);
+        Sort s = new Sort(ifile);
         s.sort();
         DocumentWriter writer = new DocumentWriter(s.doc);
         writer.write(ofile);
+        Text t = new Text(ifile);
+        System.out.println(t.getText());
     }
 
 }

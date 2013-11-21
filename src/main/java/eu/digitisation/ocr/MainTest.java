@@ -1,9 +1,9 @@
 package eu.digitisation.ocr;
 
-import eu.digitisation.xml.PAGE;
+import eu.digitisation.Page.PAGE;
 import eu.digitisation.Unicode.FileFilter;
 import eu.digitisation.util.MiniBrowser;
-import eu.digitisation.xml.XML2text;
+import tmp.XML2text;
 import java.io.*;
 import java.util.TreeMap;
 import java.util.logging.Level;

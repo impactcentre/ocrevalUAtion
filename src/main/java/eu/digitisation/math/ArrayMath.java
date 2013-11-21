@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.util;
+package eu.digitisation.math;
 
 /**
  * Standard operations on arrays: sum, average, max, min, standard deviation.

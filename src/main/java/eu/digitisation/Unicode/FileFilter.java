@@ -18,7 +18,7 @@
 package eu.digitisation.Unicode;
 
 import eu.digitisation.util.MiniBrowser;
-import eu.digitisation.util.Counter;
+import eu.digitisation.math.Counter;
 import java.io.*;
 import java.util.HashMap;
 import java.util.ArrayList;

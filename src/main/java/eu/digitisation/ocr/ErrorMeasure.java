@@ -20,7 +20,7 @@ package eu.digitisation.ocr;
 import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
-import eu.digitisation.util.Counter;
+import eu.digitisation.math.Counter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +44,8 @@ public class ErrorMeasure {
     static {
         Properties prop = new Properties();
         try {
-            prop.load(new FileReader("src/main/resources/ErrorMeasure.properties"));
+            FileReader reader = new FileReader("src/main/resources/General.properties");
+            prop.load(reader);
             maxlen = Integer.parseInt(prop.getProperty("maxlen"));
         } catch (IOException ex) {
             Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);

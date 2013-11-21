@@ -15,8 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.xml;
+package tmp;
 
+import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.xml.DocumentWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
