@@ -17,7 +17,7 @@
  */
 package eu.digitisation.Page;
 
-import tmp.XMLDocument;
+import eu.digitisation.tmp.XMLDocument;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;

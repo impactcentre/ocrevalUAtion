@@ -15,29 +15,39 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.image;
+package eu.digitisation.xml;
 
-import java.awt.Polygon;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
- * A TextRegion in a PAGE-XML document
  *
- * @author R.C.C.
+ * @author R.C.C
  */
-public class TextRegion extends Polygon {
-
-    String id;
-    String type;
+public class Elements {
 
     /**
-     * Constructor
+     * Return the value of an attribute
      *
-     * @param id
-     * @param type
-     * @param poly
+     * @param node the node containing the attribute
+     * @param name the attribute name
+     * @return he attribute value or null if the node contains no attribute with
+     * that name
      */
-    public TextRegion(String id, String type, Polygon poly) {
-        super(poly.xpoints, poly.ypoints, poly.npoints);
-        this.type = type;
+    public static String getAttribute(Node node, String name) {
+        Node att = node.getAttributes().getNamedItem(name);
+        if (att != null) {
+            return att.getNodeValue();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return the root element of the document
+     */
+    public Element getRootElement(Document doc) {
+        return doc.getDocumentElement();
     }
 }

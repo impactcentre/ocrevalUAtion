@@ -44,7 +44,7 @@ public class ErrorMeasure {
     static {
         Properties prop = new Properties();
         try {
-            FileReader reader = new FileReader("src/main/resources/General.properties");
+            FileReader reader = new FileReader("target/classes/General.properties");
             prop.load(reader);
             maxlen = Integer.parseInt(prop.getProperty("maxlen"));
         } catch (IOException ex) {

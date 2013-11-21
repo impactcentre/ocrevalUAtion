@@ -2,48 +2,39 @@
 <actions>
         <action>
             <actionName>run</actionName>
-            <packagings>
-                <packaging>jar</packaging>
-            </packagings>
             <goals>
                 <goal>process-classes</goal>
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath eu.digitisation.ocr.ErrorMeasure text1.txt text2.txt</exec.args>
+                <exec.args>-classpath %classpath eu.digitisation.ocr.ErrorMeasure src/test/resources/text1.txt src/test/resourcestext2.txt</exec.args>
                 <exec.executable>java</exec.executable>
-                <exec.workingdir>/home/rafa/impactocr/ocrevalUAtion/src/test/resources</exec.workingdir>
+                <exec.workingdir>/home/rafa/impactcentre/ocrevalUAtion</exec.workingdir>
             </properties>
         </action>
         <action>
             <actionName>debug</actionName>
-            <packagings>
-                <packaging>jar</packaging>
-            </packagings>
             <goals>
                 <goal>process-classes</goal>
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath eu.digitisation.ocr.ErrorMeasure text1.txt text2.txt</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath eu.digitisation.ocr.ErrorMeasure src/test/resources/text1.txt src/test/resourcestext2.txt</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
-                <exec.workingdir>/home/rafa/impactocr/ocrevalUAtion/src/test/resources</exec.workingdir>
+                <exec.workingdir>/home/rafa/impactcentre/ocrevalUAtion</exec.workingdir>
             </properties>
         </action>
         <action>
             <actionName>profile</actionName>
-            <packagings>
-                <packaging>jar</packaging>
-            </packagings>
             <goals>
                 <goal>process-classes</goal>
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath eu.digitisation.ocr.ErrorMeasure text1.txt text2.txt</exec.args>
-                <exec.executable>java</exec.executable>
-                <exec.workingdir>/home/rafa/impactocr/ocrevalUAtion/src/test/resources</exec.workingdir>
+                <exec.args>${profiler.args} -classpath %classpath eu.digitisation.ocr.ErrorMeasure src/test/resources/text1.txt src/test/resourcestext2.txt</exec.args>
+                <exec.executable>${profiler.java}</exec.executable>
+                <exec.workingdir>/home/rafa/impactcentre/ocrevalUAtion</exec.workingdir>
             </properties>
         </action>
     </actions>

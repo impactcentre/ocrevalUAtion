@@ -164,14 +164,6 @@ public class Bimage extends BufferedImage {
         g.dispose();
     }
 
-    public void add(TextRegion region, Color color, int stroke) {
-        Graphics2D g = createGraphics();
-        g.setColor(color);
-        g.setStroke(new BasicStroke(stroke));
-        g.drawPolygon(region);
-        g.dispose();
-    }
-
     /**
      * Add a polygonal frontier to the image
      *

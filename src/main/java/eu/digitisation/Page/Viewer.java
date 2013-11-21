@@ -21,7 +21,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import eu.digitisation.image.Bimage;
-import eu.digitisation.image.GroundTruth;
 
 /**
  *
@@ -63,12 +62,12 @@ public class Viewer {
                 throw new IOException("Unsupported format");
             }
         } else {
-            throw new java.io.IOException(ifile + " not found");
+            throw new java.io.IOException(ifile.getCanonicalPath() + " not found");
         }
         if (xmlfile.exists()) {
             gt = new GroundTruth(xmlfile);
         } else {
-            throw new java.io.IOException(xmlfile + " not found");
+            throw new java.io.IOException(xmlfile.getCanonicalPath() + " not found");
         }
 
         page.add(gt.getTextRegions(), Color.RED, 4);

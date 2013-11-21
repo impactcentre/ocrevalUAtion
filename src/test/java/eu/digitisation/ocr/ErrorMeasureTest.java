@@ -74,9 +74,9 @@ public class ErrorMeasureTest {
     @Test
     public void testCer() throws IOException {
         System.out.println("cer");
-        String fileName1 = "./src/test/resources/text1.txt";
+        String fileName1 = "./target/test-classes/text1.txt";
         String encoding1 = "utf8";
-        String fileName2 = "./src/test/resources/text2.txt";
+        String fileName2 = "./target/test-classes/text2.txt";
         String encoding2 = "utf8";
         double expResult = 3.0 / 14;
         double result = ErrorMeasure.cer(fileName1, encoding1, fileName2, encoding2);
@@ -89,9 +89,9 @@ public class ErrorMeasureTest {
     @Test
     public void testWer() throws IOException {
         System.out.println("wer");
-        String fileName1 = "./src/test/resources/text1.txt";
+        String fileName1 = "./target/test-classes/text1.txt";
         String encoding1 = "utf8";
-        String fileName2 = "./src/test/resources/text2.txt";
+        String fileName2 = "./target/test-classes/text2.txt";
         String encoding2 = "utf8";
         double expResult = 0.5;
         double result = ErrorMeasure.wer(fileName1, encoding1, fileName2, encoding2);

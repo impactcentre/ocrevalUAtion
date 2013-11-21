@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.image;
+package eu.digitisation.Page;
 
 import java.awt.Polygon;
 import java.io.File;
@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author R.C.C.
  */
-public class GroundTruth {
+public class GroundTruth { 
 
     TextRegion[] regions;
     TextRegion[] lines;

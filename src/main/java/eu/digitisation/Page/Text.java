@@ -18,13 +18,14 @@
 package eu.digitisation.Page;
 
 import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.xml.Elements;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Document;
@@ -47,8 +48,7 @@ public class Text {
         try {
             File dir = new File(".");
             System.out.println(dir.getAbsolutePath());
-            FileReader reader
-                    = new FileReader("src/main/resources/General.properties");
+            FileReader reader = new FileReader("src/main/resources/General.properties");
             prop.load(reader);
             String s = prop.getProperty("TextRegionTypes");
             String separator = ",\\p{Space}+";
@@ -61,14 +61,15 @@ public class Text {
 
     /**
      * Create a PAGE document from file
-     * @param file 
+     *
+     * @param file
      */
     public Text(File file) {
         doc = DocumentBuilder.parse(file);
     }
 
     /**
-     * 
+     *
      * @return the textual content under the selected region types
      */
     public String getText() {
@@ -76,16 +77,19 @@ public class Text {
         NodeList regions = doc.getElementsByTagName("TextRegion");
         for (int r = 0; r < regions.getLength(); ++r) {
             Node region = regions.item(r);
-            NodeList nodes = region.getChildNodes();
-            for (int n = 0; n < nodes.getLength(); ++n) {
-                Node node = nodes.item(n);
-              
-                if (node.getNodeName().equals("TextEquiv")) {
-                    if (builder.length() > 0) {
-                        builder.append(' ');
+            String type = Elements.getAttribute(region, "type");
+            if (type != null && types.contains(type)) {
+                NodeList nodes = region.getChildNodes();
+                for (int n = 0; n < nodes.getLength(); ++n) {
+                    Node node = nodes.item(n);
+
+                    if (node.getNodeName().equals("TextEquiv")) {
+                        if (builder.length() > 0) {
+                            builder.append(' ');
+                        }
+//                      System.out.println(node.getTextContent());
+                        builder.append(node.getTextContent());
                     }
-                      System.out.println(node.getNodeValue());
-                    builder.append(node.getNodeValue());
                 }
             }
         }
