@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 /**
  * Provides basic implementations of some popular edit distance methods
- * operating on strings
+ * operating on strings (currently, Levenshtein and indel)
  *
  * @version 2011.03.10
  */

@@ -22,7 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A simple and fast text scanner that reads words from a file.
+ * A simple and fast text scanner which reads words from a file and performs the
+ * tokenization oriented by information-retrieval requirements.
  *
  * @version 2012.06.20
  */

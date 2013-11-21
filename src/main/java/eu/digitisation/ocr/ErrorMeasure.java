@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Compute character error rate
+ * Computes character and word error rates by comparing two texts
  *
  * @version 2012.06.20
  */

@@ -33,11 +33,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Textual content in a PAGE XML file
+ * Textual content in a PAGE XML file: selects only those elements listed in a
+ * properties file
  *
  * @author R.C.C.
  */
 public class TextContent {
+
     StringBuilder builder;
     static final Set<String> types;
 
@@ -61,13 +63,12 @@ public class TextContent {
      *
      * @param file the input file
      */
-   
     public TextContent(File file) {
         Document doc = DocumentBuilder.parse(file);
         NodeList regions = doc.getElementsByTagName("TextRegion");
-          
+
         builder = new StringBuilder();
-      
+
         for (int r = 0; r < regions.getLength(); ++r) {
             Node region = regions.item(r);
             String type = Elements.getAttribute(region, "type");
@@ -87,7 +88,7 @@ public class TextContent {
         }
         builder.trimToSize();
     }
-    
+
     @Override
     public String toString() {
         return builder.toString();

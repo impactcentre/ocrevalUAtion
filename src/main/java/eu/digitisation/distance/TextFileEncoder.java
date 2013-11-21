@@ -27,10 +27,10 @@ import java.util.logging.Logger;
 
 /**
  *
- * Encode a text file as an array of Integers. Every word is encoded as an
- * integer. Identical words have identical encodings and different words have
- * different codes. Consistency (between encodings and files) is only guaranteed
- * if the same TextFileEncoder is used.
+ * Encode a text file as an array of Integers (one code per word). Every word is
+ * encoded as an integer. Identical words have identical encodings and different
+ * words have different codes. Consistency (between encodings and files) is only
+ * guaranteed if the same TextFileEncoder is used.
  *
  * @version 2012.06.20
  */
@@ -57,7 +57,7 @@ public class TextFileEncoder {
     public Integer getCode(String word) {
         Integer code;
         String key = caseSensitive ? word : word.toLowerCase();
-        
+
         if (codes.containsKey(key)) {
             code = codes.get(key);
         } else {
@@ -115,6 +115,5 @@ public class TextFileEncoder {
         }
 
         return array.toArray(new Integer[array.size()]);
-    }    
-    
+    }
 }

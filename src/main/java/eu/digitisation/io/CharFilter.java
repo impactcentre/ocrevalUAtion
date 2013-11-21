@@ -25,10 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Transform text according to a mapping between (source,
- * target) character sequences. This can be useful, for example, to replace
- * Unicode characters which are not supported by the browser or editor with
- * printable ones.
+ * Transform text according to a mapping between (source, target) Unicode
+ * character sequences. This can be useful, for example, to replace Unicode
+ * characters which are not supported by the browser or editor with printable
+ * ones.
  *
  * @version 2012.06.20
  */
@@ -192,10 +192,6 @@ public class CharFilter extends HashMap<String, String> {
             System.out.println(Integer.toHexString(code) + " " + n);
         }
     }
-
-   
-
-   
 
     /**
      * The main function

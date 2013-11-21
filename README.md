@@ -10,66 +10,69 @@ You can build an executable jar by using Maven and running
 
 The classes defined are listed below:
 
-**xml.XMLDocument**
+**distance.ArrayEditDistance<Type>**
+Provides a basic implementations of some popular edit distance methods 
+(currently, Levenshtein and indel) applied to arrays of objects.
 
-This auxiliary class supports the opening and writing of XML files as
-well as a number of basic additions of content to the XML file.
+**distance.StringEditDistance**	
+Provides basic implementations of some popular edit distance methods 
+operating on strings (currently, Levenshtein and indel).
 
-**xml.XML2Text**
+**distance.TextFileEncoder**	
+Encode a text file as an array of Integers (one code per word).
 
-Dumps the text content of an .xml file into a .txt file
+**io.CharFilter**
+Transform text according to a mapping between (source, target) 
+Unicode character sequences.
 
-**xml.PAGE**
+**io.TextBuilder**
+Makes text (either as StringBuilder or as array of strings) from file content
+and optionally applies a CharFilter.
 
-Transforms PAGE-XML into a flat and sorted (according to reading
-order) XML document. The current version selects TOC-entry, heading,
-drop-capital, and paragraph elements; next version will read the
-elements selected by default from a properties file.
+**io.UnicodeReader**	
+Transformations between Unicode strings and codepoints.
 
-**ocr.StringEditDistance**
-
-Provides a very basic implementation of some popular edit distance
-methods (currently, Levenshtein and indel) between two strings.
- 
-**ocr.ArrayEditDistance**
-
-Provides a very basic implementation of some popular edit distance
-methods (currently, Levenshtein and indel) between arrays of objects
-(for example, Integers).
-
-**ocr.FileEncoder**
-
-Encode a file as an array of Integers (one per word) to allow faster
-distance computations.
-
-**ocr.WordScanner**
-
-A simple and fast text scanner which reads words from a file and
+**io.WordScanner**
+A simple and fast text scanner that reads words 
+from a File, String or InputStream which reads words from a file and
 performs the tokenization oriented by information-retrieval
 requirements.
 
-**ocr.Measure**
+**math.ArrayMath**	
+Standard operations on arrays: sum, average, max, min, standard deviation.
 
-Computes character error rate (CER) and word error rate (WER) for two
-text files.
-
-**text.FileFilter**
-
-Auxiliary class which performs statistical analysis of unicode files
-and substitution of unicode sequences (for example, in case of
-character not supported by the browser).
-
-**text.UnicodeReader**
-
-Auxiliary class that reads and interprets unicode files, for example,
-to check if non-printable content is correct.
-
-**util.Counter**
-
-Auxiliary class implementing a simple counter, that is, a map between
+**math.Counter<T>**
+Counts the number of different objects, a map between
 objects and integers which can be incremented and decremented.
 
-**util.MiniBrowser**
+**ErrorMeasure**	
+The main class which computes character and word error rates.
 
-A deprecated class only for testing purposes (for example, display the
-output).
+**Page.Geometry**	
+Geometry information contained in one PAGE-XML file.
+
+**Page.Sort**
+PAGE-XML regions order in the document can differ form reading order. 
+This class makes the order of elements in the document consistent 
+with the reading order stored therein.
+
+**Page.TextContent**	
+Textual content in a PAGE XML: selects only those
+elements listed in a properties file (TOC-entry, heading,
+drop-capital, paragraph).
+
+**Page.TextRegion**	
+A TextRegion in a PAGE-XML document.
+
+**Page.Viewer**	 
+Shows text regions (as stored in PAGE XML) on image.
+
+**xml.DocumentBuilder**	
+A builder and parser for XML documents.
+
+**xml.DocumentWriter**	
+Writes XML document to String or File.
+
+**xml.Elements**
+Auxiliary functions to accesss and modify elements in a document.
+

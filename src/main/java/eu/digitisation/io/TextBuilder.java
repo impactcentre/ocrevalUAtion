@@ -30,6 +30,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Makes text (either as StringBuilder or as array of strings) from file content
+ * and optionally applies a CharFilter
  *
  * @author R.C.C
  */
@@ -70,7 +72,7 @@ public class TextBuilder {
             InputStreamReader isr = new InputStreamReader(fis, encoding);
             BufferedReader reader = new BufferedReader(isr);
             int size = 0;
-            
+
             while (reader.ready()) {
                 String line = reader.readLine();
                 size += line.length();

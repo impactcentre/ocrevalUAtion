@@ -23,7 +23,7 @@ import java.io.IOException;
 import eu.digitisation.image.Bimage;
 
 /**
- *
+ * Shows text regions (as stored in PAGE XML) on image
  * @author R.C.C
  */
 public class Viewer {

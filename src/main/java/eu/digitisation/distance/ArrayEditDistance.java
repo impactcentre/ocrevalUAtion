@@ -19,9 +19,9 @@ package eu.digitisation.distance;
 
 /**
  * Provides a basic implementations of some popular edit distance methods
- * applied to arrays of objects. This implementation can accelerates the
- * computation of distances if, for example, text is handled as a sequence of
- * (Integer) word codes.
+ * applied to arrays of objects (currently, Levenshtein and indel). This
+ * implementation can accelerates the computation of distances if, for example,
+ * text is handled as a sequence of (Integer) word codes.
  *
  * @version 2011.03.10
  */
