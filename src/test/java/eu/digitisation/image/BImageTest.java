@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package eu.digitisation.image;
 
 import static org.junit.Assert.assertNotNull;
@@ -24,6 +23,8 @@ import static org.junit.Assert.assertTrue;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
@@ -34,68 +35,67 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 /**
- * 
+ *
  * @author emolla
  */
 public class BImageTest {
 
-	public BImageTest() {
-	}
+    public BImageTest() {
+    }
 
-	@BeforeClass
-	public static void setUpClass() {
-	}
+    @BeforeClass
+    public static void setUpClass() {
+    }
 
-	@AfterClass
-	public static void tearDownClass() {
-	}
+    @AfterClass
+    public static void tearDownClass() {
+    }
 
-	@Before
-	public void setUp() {
-	}
+    @Before
+    public void setUp() {
+    }
 
-	@After
-	public void tearDown() {
-	}
+    @After
+    public void tearDown() {
+    }
 
-	/**
-	 * Test support TIF Image
-	 * 
-	 * @throws IOException
-	 */
-	@Test
-	public void openTiffFile() throws IOException {
-		File ifile = new File("src/test/resources/00445310.tif");
-		Bimage page = null;
+    /**
+     * Test support TIF Image
+     *
+     * @throws IOException
+     */
+    @Test
+    public void openTiffFile() throws Exception {
+        URL resourceUrl = getClass().getResource("/00445310.tif");
+        File ifile = Paths.get(resourceUrl.toURI()).toFile();
+        Bimage page = null;
 
-		if (ifile.exists()) {
-			try {
-				page = new Bimage(ifile).toRGB();
-			} catch (NullPointerException ex) {
-				throw new IOException("Unsupported format");
-			}
-		} else {
-			throw new java.io.IOException(ifile + " not found");
-		}
+        if (ifile.exists()) {
+            try {
+                page = new Bimage(ifile).toRGB();
+            } catch (NullPointerException ex) {
+                throw new IOException("Unsupported format");
+            }
+        } else {
+            throw new java.io.IOException(ifile + " not found");
+        }
 
-		BufferedImage image = ImageIO.read(ifile);
-		assertNotNull(image);
-	}
+        BufferedImage image = ImageIO.read(ifile);
+        assertNotNull(image);
+    }
 
-	/**
-	 * Test support TIF Image
-	 * 
-	 * @throws IOException
-	 */
-	@Test
-	public void getTiffDecoder() throws IOException {
+    /**
+     * Test support TIF Image
+     *
+     * @throws IOException
+     */
+    @Test
+    public void getTiffDecoder() throws IOException {
 
-		Iterator<ImageReader> reader = ImageIO
-				.getImageReadersByFormatName("TIFF");
-		assertNotNull(reader);
-		assertTrue("No tiff decoder", reader.hasNext());
-	}
-
+        Iterator<ImageReader> reader = ImageIO
+                .getImageReadersByFormatName("TIFF");
+        assertNotNull(reader);
+        assertTrue("No tiff decoder", reader.hasNext());
+    }
 }

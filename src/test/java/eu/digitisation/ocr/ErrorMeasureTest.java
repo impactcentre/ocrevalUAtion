@@ -20,6 +20,8 @@ package eu.digitisation.ocr;
 import eu.digitisation.io.TextBuilder;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -58,9 +60,10 @@ public class ErrorMeasureTest {
      * @throws java.io.IOException
      */
     @Test
-    public void testMerge() throws IOException {
+    public void testMerge() throws Exception {
         System.out.println("merge");
-        File file = new File("./src/test/resources/text2.txt");
+        URL resourceUrl = getClass().getResource("/text2.txt");
+        File file = Paths.get(resourceUrl.toURI()).toFile();
         String encoding = "utf8";
         String expResult = "mi en hora buena";
         TextBuilder builder = new TextBuilder(null);
@@ -91,7 +94,7 @@ public class ErrorMeasureTest {
     @Test
     public void testWer() throws IOException {
         System.out.println("wer");
-         File file1 = new File("./target/test-classes/text1.txt");
+        File file1 = new File("./target/test-classes/text1.txt");
         String encoding1 = "utf8";
         File file2 = new File("./target/test-classes/text2.txt");
         String encoding2 = "utf8";

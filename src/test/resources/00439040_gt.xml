@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PcGts xmlns="http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19 http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19/pagecontent.xsd" pcGtsId="pc-00439040">
+	<Metadata>
+	<Creator>ABBYY FineReader Engine 9.0</Creator>
+	<Created>2010-10-30T21:22:50</Created>
+	<LastChange>2010-12-28T12:56:09</LastChange></Metadata>
+	<Page imageFilename="00439040.tif" imageWidth="1736" imageHeight="2947">
+	<ReadingOrder>
+	<OrderedGroup id="ro357564684568544579089">
+	<RegionRefIndexed regionRef="r2" index="0"/>
+	<RegionRefIndexed regionRef="r3" index="1"/></OrderedGroup></ReadingOrder>
+	<TextRegion id="r1" type="header">
+	<Coords>
+	<Point x="361" y="90"/>
+	<Point x="1238" y="97"/>
+	<Point x="1238" y="185"/>
+	<Point x="359" y="178"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>PARTE I. LIB. I. CAP. I.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r2" type="paragraph">
+	<Coords>
+	<Point x="73" y="190"/>
+	<Point x="1526" y="195"/>
+	<Point x="1545" y="2623"/>
+	<Point x="1492" y="2611"/>
+	<Point x="1352" y="2615"/>
+	<Point x="908" y="2629"/>
+	<Point x="850" y="2627"/>
+	<Point x="809" y="2626"/>
+	<Point x="780" y="2622"/>
+	<Point x="750" y="2619"/>
+	<Point x="736" y="2623"/>
+	<Point x="592" y="2629"/>
+	<Point x="76" y="2633"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>eſcriuano, ſe librò. Que hartos indicios huuo para ſer
+caigado. Hermano mio, los indicios no ſon capaces de
+caigo por  ſolos. Aſ te pienſo concluyr, que todas han
+do conſejas de horneras, mentiras y falſos teimonios
+leuantados. Porque confeandote vna parte, no nega-
+ras de la mia ſer juo defenderte la otra. Digo, que tener
+compadres eſcriuanos, es conforme al dinero con que ca-
+da vno pleytea. Que en robar à ojos vias, tienen algu-
+nos el alma del Gitano, y haran de la iuicia el juego de
+paa paa, poniendola en el lugar que ſe les antojare, n
+que las partes lo puedan impedir, ni los Letrados lo ſe-
+pan defender, ni el juez juzgar. Y antes que me huya de
+la memoria, oye lo que en Ia Iglea de ſan Gil de Madrid,
+predicò à los ſeñores del Conſejo ſupremo, vn doo
+predicador, vn Viernes de la Quareſma: Fue diſcurrien-
+do por todos los miniros de juicia, haa egar al eſ-
+criuano, al qual dexò de induria para la pore, y dixo:
+Aqui ha parado el carro, metido y ſonrodado eà en el
+lodo. No sè como ſalga,  el a Angel de Dios no rebuelue
+la piſcina. Conﬁeo ſeñores, que de treynta y mas años
+à ea parte, tengo vias y oydas confeſones de muchos
+pecadores, que caydos en vn pecado, reincidieron mu-
+chas vezes en el, y à todos por la miſericordia de Dios, 
+han ſalido del, reformando ſus vidas y conciencias. Al a-
+mancebado conſumieron el tiempo y la mala muger: y al
+jugador, deſengañò el tablajero,  como ſanguĳuela de
+vnos y otros, poco à poco chupa la ſangre: oy ganas,
+mañana pierdes, rueda el dinero, vaſele quedando, y los
+que juegan n el. Al famoſo ladron reformaron el mie-
+do y la verguença. Al temerario murmurador, la perle-
+a, de que pocos eſcapan. Al ſoberuio, ſu miſma miſeria
+lo deſengaña, conociendoſe que es lodo. Al mentiroſo
+puſo freno la mala boz, y afrentas que de ordinario recibe
+en ſus miſmas baruas. Al deſatinado blasfemo corrigie-
+ron continuas reprehenones de ſus amigos y deudos.
+Todos tarde ò temprano ſacan fruto, y dexan como la
+culebra el habito viejo, aunque para eo ſe ereche. A</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r3" type="catch-word">
+	<Coords>
+	<Point x="1302" y="2623"/>
+	<Point x="1417" y="2617"/>
+	<Point x="1487" y="2622"/>
+	<Point x="1476" y="2691"/>
+	<Point x="1307" y="2704"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>todos</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r4" type="credit">
+	<Coords>
+	<Point x="533" y="2866"/>
+	<Point x="1304" y="2861"/>
+	<Point x="1302" y="2942"/>
+	<Point x="516" y="2928"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>© Biblioteca Nacional de España</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r5" type="signature-mark">
+	<Coords>
+	<Point x="770" y="2638"/>
+	<Point x="769" y="2700"/>
+	<Point x="911" y="2700"/>
+	<Point x="916" y="2652"/>
+	<Point x="900" y="2636"/>
+	<Point x="800" y="2626"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>A 5</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r6" type="page-number">
+	<Coords>
+	<Point x="1416" y="114"/>
+	<Point x="1416" y="185"/>
+	<Point x="1507" y="185"/>
+	<Point x="1507" y="114"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>9</Unicode></TextEquiv></TextRegion></Page></PcGts>
