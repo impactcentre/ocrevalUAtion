@@ -36,6 +36,18 @@
                     <target>${jdk.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>eu.digitisation.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -45,21 +57,21 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-		<dependency>
-			<groupId>org.geotoolkit</groupId>
-			<artifactId>geotk-coverageio</artifactId>
-			<version>3.17</version>
-		</dependency>
-	</dependencies>
-	<repositories>
-		<repository>
-			<releases />
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>geotoolkit</id>
-			<name>maven.geotoolkit.org Repository</name>
-			<url>http://maven.geotoolkit.org/</url>
-		</repository>
-	</repositories>
+        <dependency>
+            <groupId>org.geotoolkit</groupId>
+            <artifactId>geotk-coverageio</artifactId>
+            <version>3.17</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <releases />
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>geotoolkit</id>
+            <name>maven.geotoolkit.org Repository</name>
+            <url>http://maven.geotoolkit.org/</url>
+        </repository>
+    </repositories>
 </project>
