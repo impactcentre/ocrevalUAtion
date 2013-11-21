@@ -47,9 +47,15 @@ public class Main {
                         break;
                     case "-gt":
                         gtfile = new File(args[++n]);
+                        if (!args[n].startsWith("-")) {
+                            gtencoding = args[n++];
+                        }
                         break;
                     case "-ocr":
                         ocrfile = new File(args[++n]);
+                         if (!args[n].startsWith("-")) {
+                            ocrencoding = args[n++];
+                        }
                         break;
                     case "-o":
                         outfile = new File(args[++n]);
