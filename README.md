@@ -1,4 +1,4 @@
-ocrevalUAtion
+ocrevalUAtion [![Build Status](https://secure.travis-ci.org/impactcentre/ocrevalUAtion.png?branch=master)](http://travis-ci.org/impactcentre/ocrevalUAtion)
 =============
 
 This set of classes provides basic support to perform the comparison of
