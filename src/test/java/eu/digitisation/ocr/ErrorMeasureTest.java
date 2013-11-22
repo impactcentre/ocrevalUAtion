@@ -17,7 +17,6 @@
  */
 package eu.digitisation.ocr;
 
-import eu.digitisation.deprecated.TextBuilder;
 import eu.digitisation.io.StringNormalizer;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.math.Counter;
@@ -68,14 +67,14 @@ public class ErrorMeasureTest {
         File file = Paths.get(resourceUrl.toURI()).toFile();
         String encoding = "utf8";
         String expResult = "mi en hora buena";
-        String result = TextBuilder.trimmed(file, encoding).toString();
-
-        //System.out.println(result.replaceAll(" ", "*"));
+        String result = new TextContent(file, encoding, null).toString();
         assertEquals(expResult, result);
     }
 
     /**
      * Test of cer method, of class ErrorMeasure.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testCer() throws Exception {
@@ -90,13 +89,14 @@ public class ErrorMeasureTest {
         TextContent c2 = new TextContent(file2, encoding2, null);
         String s1 = StringNormalizer.reduceWS(c1.toString());
         String s2 = StringNormalizer.reduceWS(c2.toString());
-        double expResult = 3.0/ 14;
+        double expResult = 3.0 / 14;
         double result = ErrorMeasure.cer(s1, s2);
         assertEquals(expResult, result, 0.001);
     }
 
     /**
      * Test of wer method, of class ErrorMeasure.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -115,7 +115,7 @@ public class ErrorMeasureTest {
         double result = ErrorMeasure.wer(c1.toString(), c2.toString());
         assertEquals(expResult, result, 0.001);
     }
-    
+
     @Test
     public void testErrors() {
         String s1 = "alabama";
@@ -123,8 +123,9 @@ public class ErrorMeasureTest {
         Counter<Character>[] stats = ErrorMeasure.errors(s1, s2);
         int expResult = 4;
         int result = stats[0].value('a');
-//         assertEquals(expResult, result);
-//         assertEquals(stats[1].value('d'), 1);
+       
+        assertEquals(expResult, result);
+        assertEquals(1, stats[2].value('b'));
     }
-    
+
 }

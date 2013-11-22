@@ -17,7 +17,6 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.distance.TextFileEncoder;
 import java.io.File;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
@@ -65,21 +64,7 @@ public class FileEncoderTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of encode method, of class FileEncoder.
-     */
-    /*
-     @Test
-     public void testEncode_File_String() {
-     System.out.println("encode");
-     File file = null;
-     String encoding = "hola migo hola";
-     TextFileEncoder instance = new TextFileEncoder();
-     Integer[] expResult = {1, 2, 1};
-     Integer[] result = instance.encode(file, encoding);
-     assertArrayEquals(expResult, result);
-     }
-     */
+ 
     /**
      * Test of encode method, of class TextFileEncoder.
      */

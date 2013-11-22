@@ -18,7 +18,7 @@ public class Main {
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1 [encoding] "
             + "-ocr file2 [encoding] "
-            + "-o output [-f replacements_file]";
+            + "-o output [-r replacements_file]";
 
     private static void exit_gracefully() {
         System.err.println(helpMsg);
@@ -59,7 +59,7 @@ public class Main {
                 case "-o":
                     outfile = new File(args[++n]);
                     break;
-                case "-f":
+                case "-r":
                     repfile = new File(args[++n]);
                     break;
                 default:
@@ -86,6 +86,7 @@ public class Main {
             // Output
             System.out.println("Accuracy per char=" + (1 - cer) * 100);
             System.out.println("Accuracy per word=" + (1 - wer) * 100);
+            
             try (PrintWriter writer = new PrintWriter(outfile)) {
                 writer.println("Character Error Rate = " + cer * 100 + "%");
                 writer.println("Word Error Rate = " + wer * 100 + "%");
@@ -100,7 +101,7 @@ public class Main {
                     int add = stats[3].value(c);
                     double rate = (spu + sub + add)/ (double)tot * 100;
                   
-                    writer.println(c 
+                    writer.println(c + "[" + Integer.toHexString(c) + "]"
                             + ": " + tot 
                             + "; " + spu
                             + "; " + sub

@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
+ * Auxiliary functions to handle XML elements
  *
  * @author R.C.C
  */
@@ -47,7 +48,7 @@ public class Elements {
         }
     }
 
-     /**
+    /**
      *
      * @param e The parent element
      * @param name The child element name
@@ -65,11 +66,43 @@ public class Elements {
         }
         return list;
     }
-    
+
     /**
      * @return the root element of the document
      */
     public static Element getRootElement(Document doc) {
         return doc.getDocumentElement();
     }
+
+    /**
+     * Create a new element under the designated element in the document.
+     *
+     * @param doc the container document
+     * @param parent the parent element
+     * @param tag The tag of the new child element
+     * @return the added element
+     */
+    public Element addElement(Document doc, Element parent, String tag) {
+        Element element = doc.createElement(tag);
+        parent.appendChild(element);
+        return element;
+    }
+
+    /**
+     * Add a text element with the specified textual content under the
+     * designated element in the document.
+     *
+     * @param doc the container document
+     * @param parent the parent element
+     * @param tag the new child element tag
+     * @param content the textual content
+     * @return the added element
+     */
+    public Element addTextElement(Document doc, Element parent, String tag, String content) {
+        Element element = doc.createElement(tag);
+        element.appendChild(doc.createTextNode(content));
+        parent.appendChild(element);
+        return element;
+    }
+
 }

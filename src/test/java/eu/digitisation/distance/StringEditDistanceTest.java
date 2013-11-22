@@ -97,21 +97,12 @@ public class StringEditDistanceTest {
         String first = "grand";
         String second = "rend";
         int[] result = StringEditDistance.align(first, second);
-        int s = 0;
-        
-        System.out.println(java.util.Arrays.toString(result));
-        for (int n = 0; n < first.length(); ++n) {
-            if (result[n] >= 0) {
-                assertEquals(first.charAt(n), second.charAt(result[n]));
-                ++s;
-                System.out.println(n + " " + s);
-            } else {
-                System.out.println(result[n]);
-            }
-        }
+        int[] expResult = {-1, 0, 1, 2, 3};       
+        assertArrayEquals(expResult, result);
+/*
         assertEquals(first.length() + second.length(),
                 2 * s + StringEditDistance.levenshtein(first, second));
-
+*/
     }
 
     @Test

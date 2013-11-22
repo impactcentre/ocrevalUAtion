@@ -2,7 +2,6 @@ package eu.digitisation.Unicode;
 
 import eu.digitisation.io.UnicodeReader;
 import junit.framework.TestCase;
-import org.junit.Test;
 /**
  *
  * @author rafa
@@ -15,7 +14,7 @@ public class TestReader extends TestCase {
 
         String output =
                 java.util.Arrays.toString(UnicodeReader.toCodepoints(input));
-        System.out.println(output);
+        //System.out.println(output);
         assertEquals(ref, output);
     }
 }

@@ -18,7 +18,6 @@
 
 package eu.digitisation.distance;
 
-import eu.digitisation.distance.ArrayEditDistance;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

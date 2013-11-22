@@ -126,7 +126,7 @@ public class ErrorMeasure {
                 }      
                 
                 // spurious characters
-                int jump = alignments[n] - last - 1;
+                //int jump = alignments[n] - last - 1;
                 //System.out.println("jump="+jump);
                 while (last  + 1 < alignments[n]) {                   
                     map[1].inc(s2.charAt(last + 1));

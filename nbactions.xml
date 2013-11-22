@@ -7,7 +7,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath eu.digitisation.Main -gt src/test/resources/00439040_gt.xml -ocr src/test/resources/00439040_ocr.xml -o tmp/result.txt</exec.args>
+                <exec.args>-classpath %classpath eu.digitisation.Main -gt src/test/resources/00439040_gt.xml -ocr src/test/resources/00439040_ocr.xml -r src/main/resources/replacements.txt -o tmp/result.txt</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir></exec.workingdir>
             </properties>
@@ -19,7 +19,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath eu.digitisation.Main -gt src/test/resources/00439040_gt.xml -ocr src/test/resources/00439040_ocr.xml -o tmp/result.txt</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath eu.digitisation.Main -gt src/test/resources/00439040_gt.xml -ocr src/test/resources/00439040_ocr.xml -r src/main/resources/replacements.txt -o tmp/result.txt</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
                 <exec.workingdir></exec.workingdir>
@@ -32,7 +32,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>${profiler.args} -classpath %classpath eu.digitisation.Main -gt src/test/resources/00439040_gt.xml -ocr src/test/resources/00439040_ocr.xml -o tmp/result.txt</exec.args>
+                <exec.args>-classpath %classpath eu.digitisation.Main -gt src/test/resources/00439040_gt.xml -ocr src/test/resources/00439040_ocr.xml -r src/main/resources/replacements.txt -o tmp/result.txt</exec.args>
                 <exec.executable>${profiler.java}</exec.executable>
                 <exec.workingdir></exec.workingdir>
             </properties>

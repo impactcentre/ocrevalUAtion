@@ -65,7 +65,5 @@ public class CounterTest {
         instance.add(1, -1);
         assertEquals(instance.get(1), 3);
     }
-
-    
-    
+   
 }

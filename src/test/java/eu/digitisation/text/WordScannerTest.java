@@ -19,7 +19,6 @@
 package eu.digitisation.text;
 
 import eu.digitisation.io.WordScanner;
-import java.io.File;
 import java.io.IOException;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
@@ -27,7 +26,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -56,6 +54,7 @@ public class WordScannerTest {
 
     /**
      * Test of main method, of class WordScanner.
+     * @throws java.io.IOException
      */
     @Test
     public void testnextWord() throws IOException {
@@ -67,7 +66,7 @@ public class WordScannerTest {
         int num = 0;
         while ((word = scanner.nextWord()) != null) {
             ++num;
-            System.out.println(word);
+            //System.out.println(word);
         }
         assertEquals(18, num);
  

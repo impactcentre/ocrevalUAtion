@@ -17,7 +17,6 @@
  */
 package eu.digitisation.io;
 
-import eu.digitisation.io.TextContent;
 import java.io.File;
 import java.io.PrintWriter;
 import java.net.URL;
