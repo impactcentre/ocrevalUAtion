@@ -20,7 +20,7 @@ package eu.digitisation.ocr;
 import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
-import eu.digitisation.io.TextBuilder;
+import eu.digitisation.deprecated.TextBuilder;
 import eu.digitisation.math.Counter;
 import java.io.File;
 import java.io.IOException;
@@ -59,27 +59,7 @@ public class ErrorMeasure {
          */
     }
 
-    /**
-     * Compute character error rate
-     *
-     * @param file1 containing the reference text
-     * @param encoding1 first file encoding
-     * @param file2 file containing the fuzzy text
-     * @param encoding2 second file encoding
-     * @return character error rate with respect to the reference file
-     */
-    public static double cer(File file1, String encoding1,
-            File file2, String encoding2) {
-        try {
-            StringBuilder b1 = TextBuilder.trimmed(file1, encoding1);
-            StringBuilder b2 = TextBuilder.trimmed(file2, encoding2);
-
-            return cer(b1.toString(), b2.toString());
-        } catch (IOException ex) {
-            Logger.getLogger(ErrorMeasure.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return -1.0;
-    }
+  
 
     /**
      * Compute word error rate (words represented as integer codes)
@@ -108,10 +88,8 @@ public class ErrorMeasure {
     /**
      * Compute word error rate
      *
-     * @param file1 containing the reference text
-     * @param encoding1 first file encoding
-     * @param file2 file containing the fuzzy text
-     * @param encoding2 second file encoding
+     * @param s1 reference text
+     * @param s2 fuzzy text
      * @return word error rate with respect to first file
      */
     public static double wer(String s1, String s2) {
@@ -122,59 +100,10 @@ public class ErrorMeasure {
     }
 
     /**
-     * Compute word error rate
-     *
-     * @param file1 containing the reference text
-     * @param encoding1 first file encoding
-     * @param file2 file containing the fuzzy text
-     * @param encoding2 second file encoding
-     * @return word error rate with respect to first file
-     */
-    public static double wer(File file1, String encoding1,
-            File file2, String encoding2) {
-        TextFileEncoder encoder = new TextFileEncoder(false); // case folding
-        Integer[] a1 = encoder.encode(file1, encoding1);
-        Integer[] a2 = encoder.encode(file2, encoding2);
-
-        return wer(a1, a2);
-    }
-
-    /**
-     * Computes separate statistics for every character error rate
-     *
-     * @param file1
-     * @param encoding1
-     * @param file2
-     * @param encoding2
-     * @return
-     *
-     * public static TreeMap<Character, Double> stats(File file1, String
-     * encoding1, File file2, String encoding2) { TreeMap<Character, Double> map
-     * = new TreeMap<Character, Double>(); Counter<Character> total = new
-     * Counter<Character>(); Counter<Character> wrong = new
-     * Counter<Character>(); try { String s1 = trim(file1,
-     * encoding1).toString(); String s2 = trim(file2, encoding2).toString();
-     * int[] alignments = StringEditDistance.align(s1, s2); for (int n = 0; n <
-     * alignments.length; ++n) { char c1 = s1.charAt(n); total.inc(c1); if
-     * (alignments[n] < 0) { wrong.inc(c1); } else { char c2 =
-     * s2.charAt(alignments[n]); if (c1 != c2) { wrong.inc(c1);
-     *
-     *
-     * }
-     * }
-     * }
-     * } catch (IOException ex) { Logger.getLogger(ErrorMeasure.class
-     * .getName()).log(Level.SEVERE, null, ex); } for (Character c :
-     * total.keySet()) { double rate = wrong.value(c) / (double) total.value(c);
-     * map.put(c, rate); } return map; }
-     */
-    /**
      * Computes separate statistics of errors for every character
      *
-     * @param file1 the reference file
-     * @param encoding1 the encoding of reference file
-     * @param file2 the sample file
-     * @param encoding2 the encoding of the sample file
+     * @param s1 the reference text
+     * @param s2 the fuzzy text
      * @return a map with the number of insertions, substitutions and deletions
      * for every character
      */

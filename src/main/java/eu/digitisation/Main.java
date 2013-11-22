@@ -1,7 +1,7 @@
 package eu.digitisation;
 
-import eu.digitisation.io.TextBuilder;
 import eu.digitisation.io.CharFilter;
+import eu.digitisation.io.TextContent;
 import eu.digitisation.math.Counter;
 import eu.digitisation.ocr.ErrorMeasure;
 import java.io.File;
@@ -67,13 +67,12 @@ public class Main {
             }
 
             // input text 
-            CharFilter filter
+           
+            try { 
+                CharFilter filter
                     = (repfile == null) ? null : new CharFilter(repfile);
-            try {
-                StringBuilder gt = 
-                        TextBuilder.trimmed(gtfile, gtencoding, filter);
-                StringBuilder ocr = 
-                        TextBuilder.trimmed(ocrfile, ocrencoding, filter);
+                TextContent gt = new TextContent(gtfile, gtencoding, filter);
+                TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
                 // Compute and print error rates
                 double cer = ErrorMeasure.cer(gt.toString(), ocr.toString());
                 double wer = ErrorMeasure.wer(gt.toString(), ocr.toString());

@@ -17,9 +17,9 @@
  */
 package eu.digitisation.ocr;
 
-import eu.digitisation.io.TextBuilder;
+import eu.digitisation.deprecated.TextBuilder;
+import eu.digitisation.io.TextContent;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
 import org.junit.After;
@@ -76,30 +76,39 @@ public class ErrorMeasureTest {
      * Test of cer method, of class ErrorMeasure.
      */
     @Test
-    public void testCer() throws IOException {
+    public void testCer() throws Exception {
         System.out.println("cer");
-        File file1 = new File("./target/test-classes/text1.txt");
+        URL resourceUrl1 = getClass().getResource("/text1.txt");
+        File file1 = Paths.get(resourceUrl1.toURI()).toFile();
         String encoding1 = "utf8";
-        File file2 = new File("./target/test-classes/text2.txt");
+        URL resourceUrl2 = getClass().getResource("/text2.txt");
+        File file2 = Paths.get(resourceUrl2.toURI()).toFile();
         String encoding2 = "utf8";
+        TextContent c1 = new TextContent(file1, encoding1, null);
+        TextContent c2 = new TextContent(file2, encoding2, null);
         double expResult = 3.0 / 14;
-        double result = ErrorMeasure.cer(file1, encoding1, file2, encoding2);
+        double result = ErrorMeasure.cer(c1.toString(), c2.toString());
         assertEquals(expResult, result, 0.001);
     }
 
     /**
      * Test of wer method, of class ErrorMeasure.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testWer() throws IOException {
+    public void testWer() throws Exception {
         System.out.println("wer");
-        File file1 = new File("./target/test-classes/text1.txt");
+        System.out.println("cer");
+        URL resourceUrl1 = getClass().getResource("/text1.txt");
+        File file1 = Paths.get(resourceUrl1.toURI()).toFile();
         String encoding1 = "utf8";
-        File file2 = new File("./target/test-classes/text2.txt");
+        URL resourceUrl2 = getClass().getResource("/text2.txt");
+        File file2 = Paths.get(resourceUrl2.toURI()).toFile();
         String encoding2 = "utf8";
+        TextContent c1 = new TextContent(file1, encoding1, null);
+        TextContent c2 = new TextContent(file2, encoding2, null);
         double expResult = 0.5;
-        double result = ErrorMeasure.wer(file1, encoding1, file2, encoding2);
+        double result = ErrorMeasure.wer(c1.toString(), c2.toString());
         assertEquals(expResult, result, 0.001);
-
     }
 }

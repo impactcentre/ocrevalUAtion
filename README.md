@@ -25,8 +25,8 @@ Encode a text file as an array of Integers (one code per word).
 Transform text according to a mapping between (source, target) 
 Unicode character sequences.
 
-**io.TextBuilder**
-Makes text (either as StringBuilder or as array of strings) from file content
+**io.TextContent**
+Reads and normalizes text from file content, 
 and optionally applies a CharFilter.
 
 **io.UnicodeReader**	

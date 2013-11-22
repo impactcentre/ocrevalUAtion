@@ -17,15 +17,18 @@
  */
 package eu.digitisation.Page;
 
+import eu.digitisation.io.TextContent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -54,19 +57,19 @@ public class TextTest {
 
     /**
      * Test of getText method, of class Text.
+     * @throws java.lang.Exception
      */
     @Test
-    public void testGetText() throws FileNotFoundException {
+    public void testGetText() throws Exception {
         System.out.println("getText");
-        File ifile  = new File("target/test-classes/00445310.xml");
-        File ofile = new File("target/test-classes/00445310.txt");
-        TextContent instance = new TextContent(ifile);
- //       String expResult = "";
-        PrintWriter writer = new PrintWriter(ofile);
-        String result = instance.toString();
-        writer.write(result);
-        writer.close();
-//        assertEquals(expResult, result);
-       
+        URL inURL = getClass().getResource("/00445310.xml");
+        File ifile = Paths.get(inURL.toURI()).toFile();
+        URL outURL = getClass().getResource("/00445310.txt");
+        File ofile = Paths.get(outURL.toURI()).toFile();
+        TextContent instance = new TextContent(ifile, "utf-8", null);
+        try (PrintWriter writer = new PrintWriter(ofile)) {
+            String result = instance.toString();
+            writer.write(result);
+        }
     }
 }

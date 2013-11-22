@@ -17,6 +17,7 @@
  */
 package eu.digitisation.Page;
 
+import eu.digitisation.io.TextContent;
 import eu.digitisation.xml.DocumentBuilder;
 import eu.digitisation.xml.DocumentWriter;
 import eu.digitisation.xml.Elements;
@@ -121,8 +122,10 @@ public class Sort {
      * Create document where ordered groups follow the order information
      *
      * @param file the input PAGE XML file
+     * @return the sorted document
+     * @throws java.io.IOException
      */
-    public static Document sort(File file) throws IOException {
+    public static Document sorted(File file) throws IOException {
         Document doc = DocumentBuilder.parse(file);
         NodeList groups = doc.getElementsByTagName("OrderedGroup");
         for (int n = 0; n < groups.getLength(); ++n) {
@@ -138,10 +141,8 @@ public class Sort {
     public static void main(String[] args) throws IOException {
         File ifile = new File(args[0]);
         File ofile = new File(args[1]);
-        Document doc = Sort.sort(ifile);
+        Document doc = Sort.sorted(ifile);
         DocumentWriter writer = new DocumentWriter(doc);
         writer.write(ofile);
-        TextContent t = new TextContent(ifile);
-        System.out.println(t);
     }
 }

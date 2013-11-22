@@ -17,7 +17,6 @@
  */
 package eu.digitisation.io;
 
-import static eu.digitisation.io.CharFilter.encode;
 import eu.digitisation.util.MiniBrowser;
 import java.io.*;
 import java.util.logging.Level;
@@ -138,10 +137,10 @@ public class UnicodeReader {
                         String line = reader.readLine();
                         if (line.contains(pattern)) {
                             writer.print("<p><font color='red'>"
-                                    + encode(line) + "</font></p>");
+                                    + StringNormalizer.encode(line) + "</font></p>");
                             found = true;
                         } else {
-                            writer.print("<p>" + encode(line) + "</p>");
+                            writer.print("<p>" + StringNormalizer.encode(line) + "</p>");
                         }
                     }
                 }

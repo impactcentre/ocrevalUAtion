@@ -15,8 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.io;
+package eu.digitisation.deprecated;
 
+import eu.digitisation.io.CharFilter;
 import eu.digitisation.ocr.ErrorMeasure;
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,7 +62,6 @@ public class TextBuilder {
         return filename.substring(pos + 1);
     }
 
-    
     /**
      * Read a file as an array of lines
      *
