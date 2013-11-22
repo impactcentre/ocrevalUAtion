@@ -189,7 +189,8 @@ public class StringEditDistance {
      
         while (i > 0 && j > 0) {
                
-            if (first.charAt(i - 1) == second.charAt(j - 1)) {
+            if (A[i][j] == A[i - 1][j - 1] && 
+                    first.charAt(i - 1) == second.charAt(j - 1)) {
                 alignments[--i] = --j;
             } else if (A[i][j] == A[i - 1][j] + 1) {
                 --i;

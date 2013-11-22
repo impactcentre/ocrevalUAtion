@@ -26,6 +26,8 @@ package eu.digitisation.math;
  */
 public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
 
+    int total = 0;  // stores aggregated counts
+
     /**
      * Increment the count for an object with the given value
      *
@@ -40,6 +42,7 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
             storedValue = 0;
         }
         put(object, storedValue + value);
+        total += value;
     }
 
     /**
@@ -81,5 +84,9 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
         Integer val = get(object);
         return (val == null) ? 0 : val;
     }
-    
+
+    public int total() {
+        return total;
+    }
 }
+

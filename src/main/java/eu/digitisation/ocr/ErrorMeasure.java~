@@ -103,8 +103,7 @@ public class ErrorMeasure {
      * for every character
      */
     public static Counter<Character>[] errors(String s1, String s2) {
-        int l1 = s1.length();
-        int l2 = s2.length();
+        //File file1, String encoding1,  File file2, String encoding2) {
         Counter<Character> dummy = new Counter<>();
         Counter<Character>[] map;
         map = (Counter<Character>[]) java.lang.reflect.Array.newInstance(dummy.getClass(), 4);
@@ -112,8 +111,9 @@ public class ErrorMeasure {
             map[n] = new Counter<Character>();
         }
         int[] alignments = StringEditDistance.align(s1, s2);
-        int last = -1; // last aligned character in target
-        
+        System.out.println(java.util.Arrays.toString(alignments));
+        System.out.println(s1.length()+"***********"+s2.lengtk());
+        int m = 0; // last aligned character in target
         for (int n = 0; n < alignments.length; ++n) {
             char c1 = s1.charAt(n);
             map[0].inc(c1);  // total
@@ -122,19 +122,21 @@ public class ErrorMeasure {
             } else {
                 char c2 = s2.charAt(alignments[n]);
                 if (c1 != c2) {
+                    //System.out.println(c1 + "-" + c2);
                     map[2].inc(c1); // replaced  
-                }      
+                } else {
+                    ;//map[1].inc(c1); for debugging
+                }         
                 
                 // spurious characters
-                int jump = alignments[n] - last - 1;
-                //System.out.println("jump="+jump);
-                while (last  + 1 < alignments[n]) {                   
-                    map[1].inc(s2.charAt(last + 1));
-                    ++last;
+                while (m  + 10 < alignments[n]) {
+                    System.out.println(m + ":" + alignments[n]);
+                    map[1].inc(s2.charAt(m));
+                    ++m;
                 }
-                ++last;
             }
         }
+
         return map;
     }
 }
