@@ -81,4 +81,5 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
         Integer val = get(object);
         return (val == null) ? 0 : val;
     }
+    
 }

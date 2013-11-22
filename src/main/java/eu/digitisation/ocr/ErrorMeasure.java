@@ -20,12 +20,7 @@ package eu.digitisation.ocr;
 import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
-import eu.digitisation.deprecated.TextBuilder;
 import eu.digitisation.math.Counter;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Computes character and word error rates by comparing two texts
@@ -112,11 +107,12 @@ public class ErrorMeasure {
         Counter<Character> dummy = new Counter<>();
         Counter<Character>[] map;
         map = (Counter<Character>[]) java.lang.reflect.Array.newInstance(dummy.getClass(), 4);
-
-        //String s1 = trim(file1, encoding1).toString();
-        //String s2 = trim(file2, encoding2).toString();
+        for (int n = 0; n < 4; ++n) {
+            map[n] = new Counter<Character>();
+        }
         int[] alignments = StringEditDistance.align(s1, s2);
-        int m = 0; // target character
+        System.out.println(java.util.Arrays.toString(alignments));
+        int m = 0; // last aligned character in target
         for (int n = 0; n < alignments.length; ++n) {
             char c1 = s1.charAt(n);
             map[0].inc(c1);  // total
@@ -125,10 +121,15 @@ public class ErrorMeasure {
             } else {
                 char c2 = s2.charAt(alignments[n]);
                 if (c1 != c2) {
-                    map[2].inc(c1); // replaced
-                }
-                // spurious charcters
-                while (m < alignments[n]) {
+                    //System.out.println(c1 + "-" + c2);
+                    map[2].inc(c1); // replaced  
+                } else {
+                    ;//map[1].inc(c1); for debugging
+                }         
+                
+                // spurious characters
+                while (m  + 10 < alignments[n]) {
+                    System.out.println(m + ":" + alignments[n]);
                     map[1].inc(s2.charAt(m));
                     ++m;
                 }

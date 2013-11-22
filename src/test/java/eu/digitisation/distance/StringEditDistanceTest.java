@@ -17,7 +17,7 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.distance.StringEditDistance;
+import eu.digitisation.io.StringNormalizer;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -79,8 +79,13 @@ public class StringEditDistanceTest {
         // A second test
         first = "holanda";
         second = "wordland";
-        int dist = StringEditDistance.levenshtein(first, second);
-        assertEquals(4, dist);
+        result = StringEditDistance.levenshtein(first, second);
+        assertEquals(4, result);
+        // Test with normalization
+        first = StringNormalizer.reduceWS("Mi enhorabuena");
+        second = StringNormalizer.reduceWS("mi en  hora  buena");
+        result = StringEditDistance.levenshtein(first, second);
+        assertEquals(3, result);
     }
 
     /**
@@ -107,9 +112,10 @@ public class StringEditDistanceTest {
                 2 * s + StringEditDistance.indel(first, second));
 
     }
-  @Test
+
+    @Test
     public void testOperations() {
-         System.out.println("operations");
+        System.out.println("operations");
         String first = "patata";
         String second = "apta";
         int[] expResult = {0, 1, 2};

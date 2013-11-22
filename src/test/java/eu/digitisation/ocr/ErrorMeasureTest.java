@@ -18,7 +18,9 @@
 package eu.digitisation.ocr;
 
 import eu.digitisation.deprecated.TextBuilder;
+import eu.digitisation.io.StringNormalizer;
 import eu.digitisation.io.TextContent;
+import eu.digitisation.math.Counter;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -86,8 +88,10 @@ public class ErrorMeasureTest {
         String encoding2 = "utf8";
         TextContent c1 = new TextContent(file1, encoding1, null);
         TextContent c2 = new TextContent(file2, encoding2, null);
-        double expResult = 3.0 / 14;
-        double result = ErrorMeasure.cer(c1.toString(), c2.toString());
+        String s1 = StringNormalizer.reduceWS(c1.toString());
+        String s2 = StringNormalizer.reduceWS(c2.toString());
+        double expResult = 3.0/ 14;
+        double result = ErrorMeasure.cer(s1, s2);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -111,4 +115,16 @@ public class ErrorMeasureTest {
         double result = ErrorMeasure.wer(c1.toString(), c2.toString());
         assertEquals(expResult, result, 0.001);
     }
+    
+    @Test
+    public void testErrors() {
+        String s1 = "alabama";
+        String s2 = "ladamass";
+        Counter<Character>[] stats = ErrorMeasure.errors(s1, s2);
+        int expResult = 4;
+        int result = stats[0].value('a');
+         assertEquals(expResult, result);
+         assertEquals(stats[1].value('d'), 1);
+    }
+    
 }

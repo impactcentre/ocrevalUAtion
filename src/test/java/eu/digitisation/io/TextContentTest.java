@@ -15,12 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.Page;
+package eu.digitisation.io;
 
 import eu.digitisation.io.TextContent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -34,9 +32,9 @@ import org.junit.Test;
  *
  * @author carrasco@ua.es
  */
-public class TextTest {
+public class TextContentTest {
     
-    public TextTest() {
+    public TextContentTest() {
     }
     
     @BeforeClass

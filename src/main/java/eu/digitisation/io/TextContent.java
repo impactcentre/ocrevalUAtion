@@ -84,7 +84,7 @@ public class TextContent {
                 readTextFile(file, encoding, filter);
                 break;
             default:
-                throw new IOException("Unsupported file format");
+                throw new IOException("Unsupported file format " + type);
         }
     }
 
@@ -114,6 +114,18 @@ public class TextContent {
         }
     }
 
+    /**
+     * Get the region type: if the attribute is not available then return unknown type
+     * @param region
+     * @return 
+     */
+    private String getType(Node region) {
+        String type = Elements.getAttribute(region, "type");
+        if(type ==null) {
+            type = "unknown";
+        } 
+        return type;
+    }
     private void readPageFile(File file, String encoding, CharFilter filter) {
         Document doc = DocumentBuilder.parse(file);
         NodeList regions = doc.getElementsByTagName("TextRegion");
@@ -123,8 +135,8 @@ public class TextContent {
 
         for (int r = 0; r < regions.getLength(); ++r) {
             Node region = regions.item(r);
-            String type = Elements.getAttribute(region, "type");
-            if (type != null && types.contains(type)) {
+            String type = getType(region);
+            if (types.contains(type)) {
                 NodeList nodes = region.getChildNodes();
                 for (int n = 0; n < nodes.getLength(); ++n) {
                     Node node = nodes.item(n);
@@ -163,8 +175,19 @@ public class TextContent {
         }
     }
 
+    /**
+     * @return the text a String
+     */
     @Override
     public String toString() {
         return builder.toString();
+    }
+    
+    /**
+     * 
+     * @return the length of the stored text
+     */
+    public int length () {
+        return builder.length();
     }
 }

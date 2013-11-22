@@ -181,12 +181,16 @@ public class StringEditDistance {
                 }
             }
         }
+        
         int[] alignments = new int[first.length()];
         java.util.Arrays.fill(alignments, -1);
         i = first.length();
         j = second.length();
+     
         while (i > 0 && j > 0) {
-            if (A[i][j] == A[i - 1][j - 1]) {
+               
+            if (A[i][j] == A[i - 1][j - 1] && 
+                    first.charAt(i - 1) == second.charAt(j - 1)) {
                 alignments[--i] = --j;
             } else if (A[i][j] == A[i - 1][j] + 1) {
                 --i;

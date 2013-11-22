@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Supported input file types
@@ -35,7 +36,6 @@ import org.w3c.dom.Document;
 public enum FileType {
 
     TXT, PAGE, FR10, HOC, UNKNOWN;
-    
     String tag;
     String schemaLocation;  // schema URL
 
@@ -46,10 +46,12 @@ public enum FileType {
         } catch (IOException ex) {
             Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
         }
-        PAGE.tag = prop.getProperty("PcGts");
-        PAGE.schemaLocation = prop.getProperty("PAGE");
+        PAGE.tag = "PcGts";
+        PAGE.schemaLocation = 
+                StringNormalizer.reduceWS(prop.getProperty("schemaLocation.PAGE"));
         FR10.tag = "document";
-        FR10.schemaLocation = prop.getProperty("FR10");
+        FR10.schemaLocation = 
+                StringNormalizer.reduceWS(prop.getProperty("schemaLocation.FR10"));
     }
 
     /**
@@ -59,19 +61,22 @@ public enum FileType {
      */
     public static FileType valueOf(File file) {
         String name = file.getName().toLowerCase();
+     
         if (name.endsWith(".txt")) {
             return TXT;
         } else if (name.endsWith(".xml")) {
             Document doc = DocumentBuilder.parse(file);
-            String root = Elements.getRootElement(doc).getTagName();
-            String url = Elements.getAttribute(doc, "xsi:schemaLocation");
-            if (root.equals(PAGE.tag) && url.equals(PAGE.schemaLocation)) {
+            Element root = Elements.getRootElement(doc);
+            String doctype = root.getTagName();
+            String url = 
+                    StringNormalizer.reduceWS(Elements.getAttribute(root, "xsi:schemaLocation"));
+           
+            if (doctype.equals(PAGE.tag) && url.contains(PAGE.schemaLocation)) {
                 return PAGE;
-            } else if (root.equals(FR10.tag) && url.equals(FR10.schemaLocation)) {
+            } else if (doctype.equals(FR10.tag) && url.contains(FR10.schemaLocation)) {
                 return FR10;
-            } 
+            }
         }
         return UNKNOWN;
     }
-
 }
