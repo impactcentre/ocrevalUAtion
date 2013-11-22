@@ -124,7 +124,7 @@ public class StringEditDistance {
             A[i % 2][0][2] = A[(i - 1) % 2][0][2] + 1;
             for (j = 1; j <= second.length(); ++j) {
                 if (first.charAt(i - 1) == second.charAt(j - 1)) {
-                    A[i % 2][j] = 
+                    A[i % 2][j] =
                             java.util.Arrays.copyOf(A[(i - 1) % 2][j - 1], 3);
                 } else {
                     int ins = ArrayMath.sum(A[i % 2][j - 1]);
@@ -150,7 +150,7 @@ public class StringEditDistance {
     }
 
     /**
-     * Aligns two strings (one to one alignments).
+     * Aligns two strings (one to one alignments with substitutions).
      *
      * @param first the first string.
      * @param second the second string.
@@ -181,27 +181,24 @@ public class StringEditDistance {
                 }
             }
         }
-        
+
         int[] alignments = new int[first.length()];
         java.util.Arrays.fill(alignments, -1);
+
         i = first.length();
         j = second.length();
-     
         while (i > 0 && j > 0) {
-               
-            if (first.charAt(i - 1) == second.charAt(j - 1)) {
+            if (first.charAt(i - 1) == second.charAt(j - 1)
+                    || A[i][j] == A[i - 1][j - 1] + 1) {
                 alignments[--i] = --j;
             } else if (A[i][j] == A[i - 1][j] + 1) {
                 --i;
             } else if (A[i][j] == A[i][j - 1] + 1) {
                 --j;
-            } else if (A[i][j] == A[i - 1][j - 1] + 1) {
-                --i;
-                --j;
             } else { // remove after debugging
                 Logger.getLogger(ErrorMeasure.class.getName())
                         .log(Level.SEVERE, null,
-                                "Wrong code at StringEditDistance.alignments");
+                        "Wrong code at StringEditDistance.alignments");
             }
         }
 

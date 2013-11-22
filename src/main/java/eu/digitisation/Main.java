@@ -87,10 +87,11 @@ public class Main {
             System.out.println("Accuracy per char=" + (1 - cer) * 100);
             System.out.println("Accuracy per word=" + (1 - wer) * 100);
             try (PrintWriter writer = new PrintWriter(outfile)) {
-                writer.println("CER=" + cer * 100);
-                writer.println("WER=" + wer * 100);
-                writer.println("");
+                writer.println("Character Error Rate = " + cer * 100 + "%");
+                writer.println("Word Error Rate = " + wer * 100 + "%");
+                writer.println("\n Error rate per character ant type");
                 // Statistics per character
+                writer.println("Character: Total; Spurious; Confused; Lost; Error rate");
                 Counter<Character>[] stats = ErrorMeasure.errors(gt.toString(), ocr.toString());
                 for (Character c : stats[0].keySet()) {
                     int tot = stats[0].value(c);
@@ -101,10 +102,10 @@ public class Main {
                   
                     writer.println(c 
                             + ": " + tot 
-                            + " " + spu
-                            + " " + sub
-                            + " " + add
-                            + " " +   String.format("%.2f", rate) 
+                            + "; " + spu
+                            + "; " + sub
+                            + "; " + add
+                            + "; " +   String.format("%.2f", rate) 
                             );
                 }
                 writer.close();

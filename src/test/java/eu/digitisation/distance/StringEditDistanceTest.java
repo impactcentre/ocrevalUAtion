@@ -94,11 +94,12 @@ public class StringEditDistanceTest {
     @Test
     public void testAlign() {
         System.out.println("align");
-        String first = "patata";
-        String second = "apta";
-        int[] expResult = {-1, 0, -1, -1, 2, 3};
+        String first = "grand";
+        String second = "rend";
         int[] result = StringEditDistance.align(first, second);
         int s = 0;
+        
+        System.out.println(java.util.Arrays.toString(result));
         for (int n = 0; n < first.length(); ++n) {
             if (result[n] >= 0) {
                 assertEquals(first.charAt(n), second.charAt(result[n]));
@@ -109,7 +110,7 @@ public class StringEditDistanceTest {
             }
         }
         assertEquals(first.length() + second.length(),
-                2 * s + StringEditDistance.indel(first, second));
+                2 * s + StringEditDistance.levenshtein(first, second));
 
     }
 
