@@ -81,7 +81,7 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
      * @return the value of the counter for that object, or 0 if not stored
      */
     public int value(Type object) {
-        Integer val = get(object);
+        Integer val = super.get(object);
         return (val == null) ? 0 : val;
     }
 

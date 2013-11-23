@@ -17,10 +17,18 @@
  */
 package eu.digitisation.ocr;
 
+import eu.digitisation.Main;
 import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
+import eu.digitisation.math.BiCounter;
 import eu.digitisation.math.Counter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Computes character and word error rates by comparing two texts
@@ -53,8 +61,6 @@ public class ErrorMeasure {
          return (l1 - l2 + indel) / l1;
          */
     }
-
-  
 
     /**
      * Compute word error rate (words represented as integer codes)
@@ -113,7 +119,7 @@ public class ErrorMeasure {
         }
         int[] alignments = StringEditDistance.align(s1, s2);
         int last = -1; // last aligned character in target
-        
+
         for (int n = 0; n < alignments.length; ++n) {
             char c1 = s1.charAt(n);
             map[0].inc(c1);  // total
@@ -123,15 +129,15 @@ public class ErrorMeasure {
                 char c2 = s2.charAt(alignments[n]);
                 if (c1 != c2) {
                     map[2].inc(c1); // replaced  
-                // if (c1 == ' ' || c2 == ' ') {
-                   //     System.out.println("-"+Integer.toHexString(c1)+":"+Integer.toHexString(c2)+"-");
+                    // if (c1 == ' ' || c2 == ' ') {
+                    //     System.out.println("-"+Integer.toHexString(c1)+":"+Integer.toHexString(c2)+"-");
                     //}
-                }      
-                
+                }
+
                 // spurious characters
                 //int jump = alignments[n] - last - 1;
                 //System.out.println("jump="+jump);
-                while (last  + 1 < alignments[n]) {                   
+                while (last + 1 < alignments[n]) {
                     map[1].inc(s2.charAt(last + 1));
                     ++last;
                 }
@@ -139,5 +145,101 @@ public class ErrorMeasure {
             }
         }
         return map;
+    }
+
+    /**
+     * Computes separate statistics of errors for every character
+     *
+     * @param s1 the reference text
+     * @param s2 the fuzzy text
+     * @return a counter with the number of insertions, substitutions and
+     * deletions for every character
+     */
+    public static BiCounter<Character, EdOp> stats(String s1, String s2) {
+        int l1 = s1.length();
+        int l2 = s2.length();
+        BiCounter<Character, EdOp> stats = new BiCounter<>();
+
+        int[] alignments = StringEditDistance.align(s1, s2);
+        int last = -1; // last aligned character in target
+
+        for (int n = 0; n < alignments.length; ++n) {
+            char c1 = s1.charAt(n);
+//            stats.ap[0].inc(c1);  // total
+            if (alignments[n] < 0) {
+                stats.inc(c1, EdOp.DELETE);  // must be deleted
+            } else {
+                char c2 = s2.charAt(alignments[n]);
+                if (c1 != c2) {
+                    stats.inc(c1, EdOp.SUBSTITUTE); // replaced  
+                } else {
+                    stats.inc(c1, EdOp.KEEP); // correct
+                }
+
+                // spurious characters
+                //int jump = alignments[n] - last - 1;
+                //System.out.println("jump="+jump);
+                while (last + 1 < alignments[n]) {
+                    stats.inc(s2.charAt(last + 1), EdOp.INSERT);
+                    ++last;
+                }
+                ++last;
+            }
+        }
+        return stats;
+    }
+
+    /**
+     * Prints separate statistics of errors for every character in spreadsheet
+     * (CSV) format
+     *
+     * @param s1 the reference text
+     * @param s2 the fuzzy text
+     * @param file the output file
+     * @param fieldSeparator filed separator in CSV
+     * @throws java.io.FileNotFoundException
+     *
+     */
+    public static void stats2CSV(String s1, String s2,
+            File file, char fieldSeparator)
+            throws FileNotFoundException {
+        String sep = fieldSeparator + " ";
+        StringBuilder line = new StringBuilder();
+
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.println("Error rate per character ant type");
+            // Statistics per character
+            line.append("Character")
+                    .append(sep).append("Total")
+                    .append(sep).append("Spurious")
+                    .append(sep).append("Confused")
+                    .append(sep).append("Lost")
+                    .append(sep).append("Error rate");
+            writer.println(line.toString());
+            BiCounter<Character, EdOp> stats = ErrorMeasure.stats(s1, s2);
+            for (Character c : stats.leftKeySet()) {
+                int spu = stats.value(c, EdOp.INSERT);
+                int sub = stats.value(c, EdOp.SUBSTITUTE);
+                int add = stats.value(c, EdOp.DELETE);
+                int tot = stats.value(c, EdOp.KEEP) + sub + add;
+                double rate = (spu + sub + add) / (double) tot * 100;
+
+                line.setLength(0);
+                line.append(c)
+                        .append("[")
+                        .append(Integer.toHexString(c))
+                        .append("]")
+                        .append(sep).append(tot)
+                        .append(sep).append(spu)
+                        .append(sep).append(sub)
+                        .append(sep).append(add)
+                        .append(sep).append(String.format("%.2f", rate));
+                writer.println(line.toString());
+            }
+            writer.close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
