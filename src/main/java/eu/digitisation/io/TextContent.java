@@ -150,6 +150,13 @@ public class TextContent {
         return type;
     }
 
+    /**
+     * Reads textual content and collapse whitespace: contiguous spaces are
+     * considered a single one
+     *
+     * @param file the input text file
+     * @param filter optional CharFilter
+     */
     private void readPageFile(File file, CharFilter filter) {
         Document doc = DocumentBuilder.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
@@ -159,7 +166,7 @@ public class TextContent {
             encoding = xmlEncoding;
             System.err.println("XML file " + file + " encoding is " + encoding);
         } else {
-            System.err.println("No encoding declaration in " 
+            System.err.println("No encoding declaration in "
                     + file + ". Using " + encoding);
         }
 
@@ -181,13 +188,11 @@ public class TextContent {
     }
 
     /**
-     * Return textual content and collapse whitespace: contiguous spaces are
+     * Read textual content and collapse whitespace: contiguous spaces are
      * considered a single one
      *
      * @param file the input text file
      * @param filter optional CharFilter
-     * @return String as StringBuilder
-     * @throws IOException
      */
     private void readTextFile(File file, CharFilter filter) {
         try {
