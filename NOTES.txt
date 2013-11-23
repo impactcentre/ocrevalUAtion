@@ -1,0 +1,21 @@
+For two sentences of length l1 and l2 respectively (number of words) the
+indel distance dI and the number delta of differences are related by:
+
+dI = abs(l1 - l2) + delta
+On the other hand, the number of errors is
+n = abs(l1 - l2) + delta 
+and therefore
+n = 0.5 * (abs(1 - l2) + dI)
+
+WER is the n normalized to the length l1 of the reference sentence.
+Case is folded for WER (case insensitive)
+
+CER is computed as the Levenshtein distance dL normalized to the length l1
+(number of characters) of the reference file.
+
+BWER is the bag of words based WER, that is irrespective of word order (for
+example if reading order of text regions has been incorrectly established).
+Obviously, BWER <= WER.
+ 
+Remark:  WER, BWER and CER, as defined here, can be larger than one.
+

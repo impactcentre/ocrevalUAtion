@@ -3,11 +3,9 @@ package eu.digitisation;
 import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
-import eu.digitisation.math.Counter;
 import eu.digitisation.ocr.ErrorMeasure;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,8 +34,8 @@ public class Main {
         File ocrfile = null;
         File repfile = null;
         String outencoding = System.getProperty("file.encoding");
-        String gtencoding = outencoding;
-        String ocrencoding = outencoding;
+        String gtencoding = null;
+        String ocrencoding = null;
 
         // Read parameters (String switch needs Java 1.7 or later)
         for (int n = 0; n < args.length; ++n) {
@@ -86,11 +84,11 @@ public class Main {
             double cer = ErrorMeasure.cer(gts, ocrs);
             double wer = ErrorMeasure.wer(gts, ocrs);
             double bwer = BagOfWords.wer(gts, ocrs);
-            // Output
+            // Output 
             System.out.println("CER=" + String.format("%.2f", cer * 100));
             System.out.println("WER=" + String.format("%.2f", wer * 100));
             System.out.println("WER (bag of words)=" + String.format("%.2f", bwer * 100));
-
+            // Spreadsheet data
             ErrorMeasure.stats2CSV(gts, ocrs, outfile, ';');
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

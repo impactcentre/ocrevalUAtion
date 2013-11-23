@@ -19,6 +19,7 @@ package eu.digitisation.ocr;
 
 import eu.digitisation.io.StringNormalizer;
 import eu.digitisation.io.TextContent;
+import eu.digitisation.math.BiCounter;
 import eu.digitisation.math.Counter;
 import java.io.File;
 import java.net.URL;
@@ -111,21 +112,27 @@ public class ErrorMeasureTest {
         String encoding2 = "utf8";
         TextContent c1 = new TextContent(file1, encoding1, null);
         TextContent c2 = new TextContent(file2, encoding2, null);
-        double expResult = 0.5;
+        double expResult = 1.5;
         double result = ErrorMeasure.wer(c1.toString(), c2.toString());
         assertEquals(expResult, result, 0.001);
+
+        String s1 = "one two three one two one";
+        String s2 = "one two three";
+        expResult = 0.5;
+        result = ErrorMeasure.wer(s1, s2);
+        assertEquals(expResult, result, 0.01);
     }
 
     @Test
-    public void testErrors() {
+    public void testStats() {
         String s1 = "alabama";
         String s2 = "ladamass";
-        Counter<Character>[] stats = ErrorMeasure.errors(s1, s2);
+        BiCounter<Character, EdOp> stats = ErrorMeasure.stats(s1, s2);
         int expResult = 4;
-        int result = stats[0].value('a');
-       
+        int result = stats.value('a', null);
+
         assertEquals(expResult, result);
-        assertEquals(1, stats[2].value('b'));
+        assertEquals(1, stats.value('b', EdOp.SUBSTITUTE));
     }
 
 }

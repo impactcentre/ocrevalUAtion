@@ -46,21 +46,32 @@ import org.w3c.dom.NodeList;
 public class TextContent {
 
     StringBuilder builder;
+    String encoding;
     static final int maxlen;
+    static final String defaultEncoding;
     static final Set<String> types;
 
     static {
-        types = new HashSet<>();
+
         Properties prop = new Properties();
         try (InputStream in = TextContent.class.getResourceAsStream("/General.properties")) {
             prop.load(in);
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        maxlen = Integer.parseInt(prop.getProperty("maxlen"));
-        String s = prop.getProperty("TextRegionTypes");
+        String maxlenProp = prop.getProperty("maxlen");
+        String defaultEncodingProp = prop.getProperty("defaultEncoding");
+        String typesProp = prop.getProperty("TextRegionTypes");
         String separator = ",\\p{Space}+";
-        types.addAll(Arrays.asList(s.trim().split(separator)));
+
+        maxlen = (maxlenProp == null) ? 1000 : Integer.parseInt(maxlenProp);
+        defaultEncoding = (defaultEncodingProp == null)
+                ? System.getProperty("file.encoding").trim()
+                : defaultEncodingProp;
+        types = new HashSet<>();
+        if (types != null) {
+            types.addAll(Arrays.asList(typesProp.trim().split(separator)));
+        }
     }
 
     /**
@@ -74,14 +85,15 @@ public class TextContent {
     public TextContent(File file, String encoding, CharFilter filter)
             throws IOException {
         FileType type = FileType.valueOf(file);
-        builder = new StringBuilder();
 
+        builder = new StringBuilder();
+        this.encoding = (encoding == null) ? defaultEncoding : encoding;
         switch (type) {
             case PAGE:
-                readPageFile(file, encoding, filter);
+                readPageFile(file, filter);
                 break;
             case TXT:
-                readTextFile(file, encoding, filter);
+                readTextFile(file, filter);
                 break;
             default:
                 throw new IOException("Unsupported file format " + type);
@@ -89,13 +101,14 @@ public class TextContent {
     }
 
     /**
-     * Constructor for debugging purposes
+     * Constructor only for debugging purposes
      *
      * @param s
      * @param filter
      */
     public TextContent(String s, CharFilter filter) {
         builder = new StringBuilder();
+        encoding = defaultEncoding;
         add(s, filter);
     }
 
@@ -116,7 +129,7 @@ public class TextContent {
             }
             builder.append(canonical);
             if (builder.length() > maxlen) {
-                throw new RuntimeException("Input text length limited to "
+                throw new RuntimeException("Text length limited to "
                         + maxlen + " characters");
             }
         }
@@ -137,12 +150,18 @@ public class TextContent {
         return type;
     }
 
-    private void readPageFile(File file, String encoding, CharFilter filter) {
+    private void readPageFile(File file, CharFilter filter) {
         Document doc = DocumentBuilder.parse(file);
+        String xmlEncoding = doc.getXmlEncoding();
         NodeList regions = doc.getElementsByTagName("TextRegion");
 
-        // TBD: check if encoding is consistent with XML PI
-        builder = new StringBuilder();
+        if (xmlEncoding != null) {
+            encoding = xmlEncoding;
+            System.err.println("XML file " + file + " encoding is " + encoding);
+        } else {
+            System.err.println("No encoding declaration in " 
+                    + file + ". Using " + encoding);
+        }
 
         for (int r = 0; r < regions.getLength(); ++r) {
             Node region = regions.item(r);
@@ -166,12 +185,11 @@ public class TextContent {
      * considered a single one
      *
      * @param file the input text file
-     * @param encoding the text file encoding
      * @param filter optional CharFilter
      * @return String as StringBuilder
      * @throws IOException
      */
-    private void readTextFile(File file, String encoding, CharFilter filter) {
+    private void readTextFile(File file, CharFilter filter) {
         try {
             FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis, encoding);
