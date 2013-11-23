@@ -65,8 +65,8 @@ public class ViewerTest {
     	String fileString = "src/test/resources/00445310.tif";
     	String[] args = {fileString};
     	Viewer.main(args);
-    	File file = new File(fileString);
-    	long size = file.length();
+    	File newFile = new File("src/test/resources/00445310_page.tif");
+    	long size = newFile.length();
 
     	assertTrue(size > 0);
     }
