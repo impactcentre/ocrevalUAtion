@@ -1,5 +1,6 @@
 package eu.digitisation;
 
+import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.math.Counter;
@@ -84,9 +85,11 @@ public class Main {
             String ocrs = ocr.toString();
             double cer = ErrorMeasure.cer(gts, ocrs);
             double wer = ErrorMeasure.wer(gts, ocrs);
+            double bwer = BagOfWords.wer(gts, ocrs);
             // Output
             System.out.println("CER=" + String.format("%.2f", cer * 100));
             System.out.println("WER=" + String.format("%.2f", wer * 100));
+            System.out.println("WER (bag of words)=" + String.format("%.2f", bwer * 100));
 
             ErrorMeasure.stats2CSV(gts, ocrs, outfile, ';');
         } catch (IOException ex) {

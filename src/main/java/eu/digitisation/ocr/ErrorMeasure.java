@@ -83,7 +83,7 @@ public class ErrorMeasure {
          / (double) l1;
          */
         int indel = ArrayEditDistance.indel(a1, a2);
-        return (l1 - l2 + indel) / (double) (2 * l1);
+        return (Math.abs(l1 - l2) + indel)/ (double)(2 * l1);
     }
 
     /**
