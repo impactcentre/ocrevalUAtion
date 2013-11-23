@@ -83,6 +83,7 @@ public class ErrorMeasure {
          / (double) l1;
          */
         int indel = ArrayEditDistance.indel(a1, a2);
+        System.out.println(l1+" "+l2+" "+indel);
         return (Math.abs(l1 - l2) + indel)/ (double)(2 * l1);
     }
 
@@ -98,53 +99,6 @@ public class ErrorMeasure {
         Integer[] a1 = encoder.encode(s1);
         Integer[] a2 = encoder.encode(s2);
         return wer(a1, a2);
-    }
-
-    /**
-     * Computes separate statistics of errors for every character
-     *
-     * @param s1 the reference text
-     * @param s2 the fuzzy text
-     * @return a map with the number of insertions, substitutions and deletions
-     * for every character
-     */
-    public static Counter<Character>[] errors(String s1, String s2) {
-        int l1 = s1.length();
-        int l2 = s2.length();
-        Counter<Character> dummy = new Counter<>();
-        Counter<Character>[] map;
-        map = (Counter<Character>[]) java.lang.reflect.Array.newInstance(dummy.getClass(), 4);
-        for (int n = 0; n < 4; ++n) {
-            map[n] = new Counter<Character>();
-        }
-        int[] alignments = StringEditDistance.align(s1, s2);
-        int last = -1; // last aligned character in target
-
-        for (int n = 0; n < alignments.length; ++n) {
-            char c1 = s1.charAt(n);
-            map[0].inc(c1);  // total
-            if (alignments[n] < 0) {
-                map[3].inc(c1);  // must be deleted
-            } else {
-                char c2 = s2.charAt(alignments[n]);
-                if (c1 != c2) {
-                    map[2].inc(c1); // replaced  
-                    // if (c1 == ' ' || c2 == ' ') {
-                    //     System.out.println("-"+Integer.toHexString(c1)+":"+Integer.toHexString(c2)+"-");
-                    //}
-                }
-
-                // spurious characters
-                //int jump = alignments[n] - last - 1;
-                //System.out.println("jump="+jump);
-                while (last + 1 < alignments[n]) {
-                    map[1].inc(s2.charAt(last + 1));
-                    ++last;
-                }
-                ++last;
-            }
-        }
-        return map;
     }
 
     /**
