@@ -89,24 +89,32 @@ public class TextContent {
     }
 
     /**
+     * Constructor for debugging purposes
+     *
+     * @param s
+     * @param filter
+     */
+    public TextContent(String s, CharFilter filter) {
+        builder = new StringBuilder();
+        add(s, filter);
+    }
+
+    /**
      * Add content after normalization and filtering
      *
      * @param s input text
-     * @param filter optional filter (can be nul)
+     * @param filter optional filter (can be null)
      */
     private void add(String s, CharFilter filter) {
-        String reduced = StringNormalizer.reduceWS(s);
+        String filtered = (filter == null)
+                ? s : filter.translate(s);
+        String reduced = StringNormalizer.reduceWS(filtered);
         if (reduced.length() > 0) {
-            String canonical = StringNormalizer.canonical(s);
-
+            String canonical = StringNormalizer.canonical(reduced);
             if (builder.length() > 0) {
                 builder.append(' ');
             }
-            if (filter == null) {
-                builder.append(canonical);
-            } else {
-                builder.append(filter.translate(canonical));
-            }
+            builder.append(canonical);
             if (builder.length() > maxlen) {
                 throw new RuntimeException("Input text length limited to "
                         + maxlen + " characters");
@@ -115,17 +123,20 @@ public class TextContent {
     }
 
     /**
-     * Get the region type: if the attribute is not available then return unknown type
+     * Get the region type: if the attribute is not available then return
+     * unknown type
+     *
      * @param region
-     * @return 
+     * @return
      */
     private String getType(Node region) {
         String type = Elements.getAttribute(region, "type");
-        if(type ==null) {
+        if (type == null) {
             type = "unknown";
-        } 
+        }
         return type;
     }
+
     private void readPageFile(File file, String encoding, CharFilter filter) {
         Document doc = DocumentBuilder.parse(file);
         NodeList regions = doc.getElementsByTagName("TextRegion");
@@ -182,12 +193,12 @@ public class TextContent {
     public String toString() {
         return builder.toString();
     }
-    
+
     /**
-     * 
+     *
      * @return the length of the stored text
      */
-    public int length () {
+    public int length() {
         return builder.length();
     }
 }

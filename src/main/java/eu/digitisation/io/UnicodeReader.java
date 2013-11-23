@@ -117,6 +117,8 @@ public class UnicodeReader {
 
      /**
      * Search for a Unicode sequence and highlight them in browser
+     * @param files files where the sequence is searched
+     * @param codepoints the Unicode sequence
      */
     public static void find(File[] files, String codepoints) {
         String pattern = codepointsToString(codepoints);

@@ -68,7 +68,7 @@ public class CharFilter extends HashMap<String, String> {
      */
     public String translate(String s) {
         for (String pattern : keySet()) {
-            s = s.replace(pattern, get(pattern));
+            s = s.replaceAll(pattern, get(pattern));
         }
         return s;
     }
@@ -128,30 +128,7 @@ public class CharFilter extends HashMap<String, String> {
         }
 
     }
-//
-//    /**
-//     * Escape special characters in XML/HTML
-//     *
-//     * @param s a string
-//     * @return the string with characters <, >, &, " escaped
-//     */
-//    public static String encode(String s) {
-//        StringBuilder result = new StringBuilder();
-//        for (Character c : s.toCharArray()) {
-//            if (c.equals('<')) {
-//                result.append("&lt;");
-//            } else if (c.equals('>')) {
-//                result.append("&gt;");
-//            } else if (c.equals('"')) {
-//                result.append("&quot;");
-//            } else if (c.equals('&')) {
-//                result.append("&amp;");
-//            } else {
-//                result.append(c);
-//            }
-//        }
-//        return result.toString();
-//    }
+
 //
 //    /**
 //     * Identify characters in a file and their frequencies

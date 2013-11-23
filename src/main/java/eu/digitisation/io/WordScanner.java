@@ -53,12 +53,8 @@ public class WordScanner {
      */
     private void open(InputStream is, String encoding)
             throws IOException {
-        InputStreamReader isr = null;
-        try {
-            isr = new InputStreamReader(is, encoding);
-        } catch (UnsupportedEncodingException x) {
-            System.err.println("Unsuported encoding " + encoding);
-        }
+        InputStreamReader isr = new InputStreamReader(is, encoding);
+
         reader = new BufferedReader(isr);
         if (reader.ready()) {
             matcher = pattern.matcher(reader.readLine());
@@ -83,6 +79,7 @@ public class WordScanner {
      * Open a file for scanning.
      *
      * @param file the input file.
+     * @throws java.io.IOException
      */
     public WordScanner(File file)
             throws IOException {
@@ -94,14 +91,11 @@ public class WordScanner {
      *
      * @param file the input file.
      * @param encoding the encoding (e.g., UTF-8).
+     * @throws java.io.IOException
      */
     public WordScanner(File file, String encoding)
-            throws IOException {
-        try {
-            open(new FileInputStream(file), encoding);
-        } catch (FileNotFoundException x) {
-            System.err.println("Cannot open " + file);
-        }
+            throws IOException {   
+            open(new FileInputStream(file), encoding);  
     }
 
     /**
@@ -120,6 +114,7 @@ public class WordScanner {
      *
      * @param file the input file to be processed
      * @return a StringBilider with the file content
+     * @throws java.io.IOException
      */
     public static StringBuilder scanToBuffer(File file)
             throws IOException {
@@ -137,6 +132,7 @@ public class WordScanner {
      * Returns the next word in file.
      *
      * @return the next word in the scanned file
+     * @throws java.io.IOException
      */
     public String nextWord()
             throws IOException {

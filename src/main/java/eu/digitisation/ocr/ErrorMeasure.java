@@ -123,6 +123,9 @@ public class ErrorMeasure {
                 char c2 = s2.charAt(alignments[n]);
                 if (c1 != c2) {
                     map[2].inc(c1); // replaced  
+                // if (c1 == ' ' || c2 == ' ') {
+                   //     System.out.println("-"+Integer.toHexString(c1)+":"+Integer.toHexString(c2)+"-");
+                    //}
                 }      
                 
                 // spurious characters

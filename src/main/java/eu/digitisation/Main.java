@@ -81,15 +81,20 @@ public class Main {
             TextContent gt = new TextContent(gtfile, gtencoding, filter);
             TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
             // Compute error rates
-            double cer = ErrorMeasure.cer(gt.toString(), ocr.toString());
-            double wer = ErrorMeasure.wer(gt.toString(), ocr.toString());
+            String gts = gt.toString();
+            String ocrs = ocr.toString();
+            System.out.println(ocrs.contains("\u2028"));
+            double cer = ErrorMeasure.cer(gts, ocrs);
+            double wer = ErrorMeasure.wer(gts, ocrs);
             // Output
-            System.out.println("Accuracy per char=" + (1 - cer) * 100);
-            System.out.println("Accuracy per word=" + (1 - wer) * 100);
+            System.out.println("CER=" + String.format("%.2f", cer * 100));
+            System.out.println("WER=" + String.format("%.2f", wer * 100));
             
             try (PrintWriter writer = new PrintWriter(outfile)) {
-                writer.println("Character Error Rate = " + cer * 100 + "%");
-                writer.println("Word Error Rate = " + wer * 100 + "%");
+                writer.print("Character Error Rate = ");
+                writer.println(String.format("%.2f", cer * 100) + "%");
+                writer.print("Word Error Rate = ");
+                writer.println(String.format("%.2f",  wer * 100) + "%");
                 writer.println("\n Error rate per character ant type");
                 // Statistics per character
                 writer.println("Character: Total; Spurious; Confused; Lost; Error rate");
