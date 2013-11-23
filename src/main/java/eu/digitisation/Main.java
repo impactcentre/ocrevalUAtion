@@ -73,49 +73,22 @@ public class Main {
             exit_gracefully();
         }
 
-          
         try {
-             // input text       
-            CharFilter filter =
-                    (repfile == null) ? null : new CharFilter(repfile);
+            // input text       
+            CharFilter filter
+                    = (repfile == null) ? null : new CharFilter(repfile);
             TextContent gt = new TextContent(gtfile, gtencoding, filter);
             TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
             // Compute error rates
             String gts = gt.toString();
             String ocrs = ocr.toString();
-            System.out.println(ocrs.contains("\u2028"));
             double cer = ErrorMeasure.cer(gts, ocrs);
             double wer = ErrorMeasure.wer(gts, ocrs);
             // Output
             System.out.println("CER=" + String.format("%.2f", cer * 100));
             System.out.println("WER=" + String.format("%.2f", wer * 100));
-            
-            try (PrintWriter writer = new PrintWriter(outfile)) {
-                writer.print("Character Error Rate = ");
-                writer.println(String.format("%.2f", cer * 100) + "%");
-                writer.print("Word Error Rate = ");
-                writer.println(String.format("%.2f",  wer * 100) + "%");
-                writer.println("\n Error rate per character ant type");
-                // Statistics per character
-                writer.println("Character: Total; Spurious; Confused; Lost; Error rate");
-                Counter<Character>[] stats = ErrorMeasure.errors(gt.toString(), ocr.toString());
-                for (Character c : stats[0].keySet()) {
-                    int tot = stats[0].value(c);
-                    int spu = stats[1].value(c);
-                    int sub =  stats[2].value(c);
-                    int add = stats[3].value(c);
-                    double rate = (spu + sub + add)/ (double)tot * 100;
-                  
-                    writer.println(c + "[" + Integer.toHexString(c) + "]"
-                            + ": " + tot 
-                            + "; " + spu
-                            + "; " + sub
-                            + "; " + add
-                            + "; " +   String.format("%.2f", rate) 
-                            );
-                }
-                writer.close();
-            }
+
+            ErrorMeasure.stats2CSV(gts, ocrs, outfile, ';');
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
