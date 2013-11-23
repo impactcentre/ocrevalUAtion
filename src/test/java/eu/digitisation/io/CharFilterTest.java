@@ -15,6 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+
 package eu.digitisation.io;
 
 import java.io.File;
@@ -23,51 +24,51 @@ import java.net.URL;
 import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author carrasco@ua.es
+ * @author rafa
  */
-public class TextContentTest {
-
-    public TextContentTest() {
+public class CharFilterTest {
+    
+    public CharFilterTest() {
     }
-
+    
     @BeforeClass
     public static void setUpClass() {
     }
-
+    
     @AfterClass
     public static void tearDownClass() {
     }
-
+    
     @Before
     public void setUp() {
     }
-
+    
     @After
     public void tearDown() {
     }
 
     /**
-     * Test of toString method, of class TextContent.
+     * Test of translate method, of class CharFilter.
      * @throws java.net.URISyntaxException
      */
     @Test
-    public void testToString() throws URISyntaxException {
-        System.out.println("toString");
+    public void testTranslate_String() throws URISyntaxException {
+        System.out.println("translate");
         URL resourceUrl = getClass().getResource("/replacements.txt");
         File file = Paths.get(resourceUrl.toURI()).toFile();
         CharFilter filter = new CharFilter(file);
-        String s = "hola   " + "\n" + " y\u2028 de todo\n";
-        TextContent instance = new TextContent(s, filter);
-        String expResult = "hola y de todo";
-        String result = instance.toString();
+        String s = "a\u2028";
+        String expResult = "a ";
+        String result = filter.translate(s);
         assertEquals(expResult.length(), result.length());
         assertEquals(expResult, result);
     }
+    
 }
