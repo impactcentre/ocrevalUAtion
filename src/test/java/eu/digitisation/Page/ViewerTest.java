@@ -19,8 +19,12 @@
 package eu.digitisation.Page;
 
 import eu.digitisation.io.WordScanner;
+
+import java.io.File;
 import java.io.IOException;
 import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.*;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -58,14 +62,13 @@ public class ViewerTest {
      */
     @Test
     public void createTiffPage() throws IOException {
-    	Viewer view = new Viewer();
-    	String[] args = {"src/test/resources/00445310.tif"};
-    	
-    	view.main(args);
-        System.out.println("main");
-         
-        
- 
+    	String fileString = "src/test/resources/00445310.tif";
+    	String[] args = {fileString};
+    	Viewer.main(args);
+    	File newFile = new File("src/test/resources/00445310_page.tif");
+    	long size = newFile.length();
+
+    	assertTrue(size > 0);
     }
     
 }
