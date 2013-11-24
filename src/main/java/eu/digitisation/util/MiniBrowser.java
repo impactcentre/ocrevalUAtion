@@ -26,6 +26,8 @@ import javax.swing.event.*;
 import javax.swing.text.html.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A simple web browser for checking how results will be displayed.
@@ -254,8 +256,8 @@ public class MiniBrowser extends JFrame
     public void addPage(String location) {
         try {
             showPage(new URL(location), true);
-        } catch (java.net.MalformedURLException ex) {
-            System.err.println("Invalid URL " + location);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(MiniBrowser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

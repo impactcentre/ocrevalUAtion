@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.math;
+package eu.digitisation.distance;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,9 +28,9 @@ import static org.junit.Assert.*;
  *
  * @author rafa
  */
-public class BiCounterTest {
+public class EditTableTest {
 
-    public BiCounterTest() {
+    public EditTableTest() {
     }
 
     @BeforeClass
@@ -49,22 +49,42 @@ public class BiCounterTest {
     public void tearDown() {
     }
 
+    @Test
+    public void testSet() {
+        System.out.println("set");
+        byte b = 0;
+        byte result = EditTable.setBit(b, 0, true);
+        System.out.println(result);
+        assertEquals(1, result);
+        assertEquals(true, EditTable.getBit(result,0));
+    }
+
     /**
-     * Test of value method, of class BiCounter.
+     * Test of get method, of class EditTable.
      */
     @Test
-    public void testValue() {
-        System.out.println("value");
-        Object o1 = null;
-        Object o2 = null;
-        BiCounter<Integer, Integer> bc = new BiCounter<>();
-        bc.inc(1, 2);
-        bc.inc(1, 3);
-        bc.add(1, 3, 4);
-        assertEquals(1, bc.value(1, 2));
-        assertEquals(5, bc.value(1, 3));
-        assertEquals(6, bc.value(1, null));
-        assertEquals(6, bc.total());
+    public void testGet() {
+        System.out.println("get");
+        EditTable instance = new EditTable(2, 2);
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 2; ++j) {
+                if (i == j) {
+                    instance.set(i, j, EdOp.KEEP);
+                } else {
+                    instance.set(i, j, EdOp.SUBSTITUTE);
+                }
+            }
+        }
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 2; ++j) {
+                if (i == j) {
+                    assertEquals(EdOp.KEEP, instance.get(i, j));
+                } else {
+                    assertEquals(EdOp.SUBSTITUTE, instance.get(i, j));
+                }
+            }
+        }
+
     }
 
 }

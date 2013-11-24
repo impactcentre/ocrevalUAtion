@@ -17,6 +17,7 @@
  */
 package eu.digitisation.ocr;
 
+import eu.digitisation.distance.EdOp;
 import eu.digitisation.Main;
 import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
@@ -83,8 +84,7 @@ public class ErrorMeasure {
          / (double) l1;
          */
         int indel = ArrayEditDistance.indel(a1, a2);
-        System.out.println(l1+" "+l2+" "+indel);
-        return (Math.abs(l1 - l2) + indel)/ (double)(2 * l1);
+        return (Math.abs(l1 - l2) + indel) / (double) (2 * l1);
     }
 
     /**
@@ -99,48 +99,6 @@ public class ErrorMeasure {
         Integer[] a1 = encoder.encode(s1);
         Integer[] a2 = encoder.encode(s2);
         return wer(a1, a2);
-    }
-
-    /**
-     * Computes separate statistics of errors for every character
-     *
-     * @param s1 the reference text
-     * @param s2 the fuzzy text
-     * @return a counter with the number of insertions, substitutions and
-     * deletions for every character
-     */
-    public static BiCounter<Character, EdOp> stats(String s1, String s2) {
-        int l1 = s1.length();
-        int l2 = s2.length();
-        BiCounter<Character, EdOp> stats = new BiCounter<>();
-
-        int[] alignments = StringEditDistance.align(s1, s2);
-        int last = -1; // last aligned character in target
-
-        for (int n = 0; n < alignments.length; ++n) {
-            char c1 = s1.charAt(n);
-//            stats.ap[0].inc(c1);  // total
-            if (alignments[n] < 0) {
-                stats.inc(c1, EdOp.DELETE);  // must be deleted
-            } else {
-                char c2 = s2.charAt(alignments[n]);
-                if (c1 != c2) {
-                    stats.inc(c1, EdOp.SUBSTITUTE); // replaced  
-                } else {
-                    stats.inc(c1, EdOp.KEEP); // correct
-                }
-
-                // spurious characters
-                //int jump = alignments[n] - last - 1;
-                //System.out.println("jump="+jump);
-                while (last + 1 < alignments[n]) {
-                    stats.inc(s2.charAt(last + 1), EdOp.INSERT);
-                    ++last;
-                }
-                ++last;
-            }
-        }
-        return stats;
     }
 
     /**
@@ -159,7 +117,7 @@ public class ErrorMeasure {
             throws FileNotFoundException {
         String sep = fieldSeparator + " ";
         StringBuilder line = new StringBuilder();
-
+       
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.println("Error rate per character ant type");
             // Statistics per character
@@ -170,7 +128,7 @@ public class ErrorMeasure {
                     .append(sep).append("Lost")
                     .append(sep).append("Error rate");
             writer.println(line.toString());
-            BiCounter<Character, EdOp> stats = ErrorMeasure.stats(s1, s2);
+            BiCounter<Character, EdOp> stats = StringEditDistance.stats(s1, s2);
             for (Character c : stats.leftKeySet()) {
                 int spu = stats.value(c, EdOp.INSERT);
                 int sub = stats.value(c, EdOp.SUBSTITUTE);

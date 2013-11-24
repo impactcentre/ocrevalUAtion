@@ -33,8 +33,9 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
      *
      * @param object the object whose count will be incremented
      * @param value the delta value
+     * @return this Counter
      */
-    public void add(Type object, int value) {
+    public Counter<Type> add(Type object, int value) {
         int storedValue;
         if (containsKey(object)) {
             storedValue = get(object);
@@ -43,24 +44,46 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
         }
         put(object, storedValue + value);
         total += value;
+        return this;
+    }
+
+    /**
+     * Set the count for an object (and the global one) with the given value
+     *
+     * @param object the object whose count will be incremented
+     * @param value the value for this count
+     * @return this Counter
+     */
+    public Counter<Type> set(Type object, int value) {
+        int storedValue;
+        if (containsKey(object)) {
+            storedValue = get(object);
+        } else {
+            storedValue = 0;
+        }
+        put(object, value);
+        total += value - storedValue;
+        return this;
     }
 
     /**
      * Add one to the count for an object
      *
      * @param object the object whose count will be incremented
+     * @return this Counter
      */
-    public void inc(Type object) {
-        add(object, 1);
+    public Counter<Type> inc(Type object) {
+        return add(object, 1);
     }
 
     /**
      * Subtract one to the count for an object
      *
      * @param object the object whose count will be decremented
+     * @return this Counter
      */
-    public void dec(Type object) {
-        add(object, -1);
+    public Counter<Type> dec(Type object) {
+        return add(object, -1);
     }
 
     /**
@@ -68,11 +91,13 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
      * counter.
      *
      * @param counter the counter whose values will be added to this one.
+     * @return this Counter
      */
-    public void add(Counter<Type> counter) {
+    public Counter<Type> add(Counter<Type> counter) {
         for (Type object : counter.keySet()) {
             add(object, counter.get(object));
         }
+        return this;
     }
 
     /**
@@ -85,8 +110,20 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
         return (val == null) ? 0 : val;
     }
 
+    /**
+     *
+     * @return the aggregated count for all objects
+     */
     public int total() {
         return total;
     }
-}
 
+    /**
+     * Clear the counter
+     */
+    @Override
+    public void clear() {
+        super.clear();
+        total = 0;
+    }
+}

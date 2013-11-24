@@ -163,8 +163,8 @@ public class WordScanner {
                 while ((word = scanner.nextWord()) != null) {
                     System.out.println(word);
                 }
-            } catch (IOException x) {
-                System.err.println(x);
+            } catch (IOException ex) {
+                System.err.println(ex);
             }
         }
     }

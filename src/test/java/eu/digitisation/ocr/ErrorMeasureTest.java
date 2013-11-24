@@ -17,10 +17,11 @@
  */
 package eu.digitisation.ocr;
 
+import eu.digitisation.distance.EdOp;
+import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.io.StringNormalizer;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.math.BiCounter;
-import eu.digitisation.math.Counter;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -127,7 +128,7 @@ public class ErrorMeasureTest {
     public void testStats() {
         String s1 = "alabama";
         String s2 = "ladamass";
-        BiCounter<Character, EdOp> stats = ErrorMeasure.stats(s1, s2);
+        BiCounter<Character, EdOp> stats = StringEditDistance.stats(s1, s2);
         int expResult = 4;
         int result = stats.value('a', null);
 

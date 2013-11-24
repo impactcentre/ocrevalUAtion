@@ -18,6 +18,7 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.io.StringNormalizer;
+import eu.digitisation.math.BiCounter;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -97,12 +98,12 @@ public class StringEditDistanceTest {
         String first = "grand";
         String second = "rend";
         int[] result = StringEditDistance.align(first, second);
-        int[] expResult = {-1, 0, 1, 2, 3};       
+        int[] expResult = {-1, 0, 1, 2, 3};
         assertArrayEquals(expResult, result);
-/*
-        assertEquals(first.length() + second.length(),
-                2 * s + StringEditDistance.levenshtein(first, second));
-*/
+        /*
+         assertEquals(first.length() + second.length(),
+         2 * s + StringEditDistance.levenshtein(first, second));
+         */
     }
 
     @Test
@@ -110,8 +111,16 @@ public class StringEditDistanceTest {
         System.out.println("operations");
         String first = "patata";
         String second = "apta";
-        int[] expResult = {0, 1, 2};
-        int[] result = StringEditDistance.operations(first, second);
-        assertArrayEquals(expResult, result);
+        BiCounter<Character, EdOp> expResult = new BiCounter<Character, EdOp>();
+        expResult.add('a', EdOp.KEEP, 2); // sure
+        expResult.inc('t', EdOp.KEEP); // sure
+        expResult.inc('p', EdOp.DELETE);  // sure
+        expResult.inc('t', EdOp.SUBSTITUTE); // not the ony pssibility
+        expResult.inc('a', EdOp.DELETE);  // could exchange with 'a' above
+
+        BiCounter<Character, EdOp> result
+                = StringEditDistance.stats(first, second);
+        System.out.println(result);
+        assertEquals(expResult, result);
     }
 }

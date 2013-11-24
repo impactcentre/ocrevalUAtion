@@ -43,12 +43,31 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * @param o1 first component in pair to be incremented
      * @param o2 second component in pair to be incremented
      * @param value the value to be added for the pair count
+     * @return this BiCounter
      */
-    public void add(T1 o1, T2 o2, int value) {
+    public BiCounter<T1, T2> add(T1 o1, T2 o2, int value) {
         Pair<T1, T2> pair = new Pair(o1, o2);
         super.add(pair, value);
         subtotal1.add(o1, value);
         subtotal2.add(o2, value);
+        return this;
+    }
+
+    /**
+     * Set the value for a count and reset accordingly the total and marginal
+     * counts
+     *
+     * @param o1 first component in pair
+     * @param o2 second component in pair
+     * @param value the value for the pair count
+     * @return this BiCounter
+     */
+    public BiCounter<T1, T2> set(T1 o1, T2 o2, int value) {
+        Pair<T1, T2> pair = new Pair(o1, o2);
+        super.set(pair, value);
+        subtotal1.set(o1, value);
+        subtotal2.set(o2, value);
+        return this;
     }
 
     /**
@@ -56,9 +75,10 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      *
      * @param o1 first component in pair to be incremented
      * @param o2 second component in pair to be incremented
+     * @return this BiCounter
      */
-    public void inc(T1 o1, T2 o2) {
-        add(o1, o2, 1);
+    public BiCounter<T1, T2> inc(T1 o1, T2 o2) {
+        return add(o1, o2, 1);
     }
 
     /**
@@ -66,9 +86,10 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      *
      * @param o1 first component in the pair to be decremented
      * @param o2 second component in the pair be decremented
+     * @return this BiCounter
      */
-    public void dec(T1 o1, T2 o2) {
-        add(o1, o2, -1);
+    public BiCounter<T1, T2> dec(T1 o1, T2 o2) {
+        return add(o1, o2, -1);
     }
 
     /**
@@ -76,11 +97,13 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * BiCounter.
      *
      * @param counter the counter whose values will be added to this one.
+     * @return this BiCounter
      */
-    public void add(BiCounter<T1, T2> counter) {
+    public BiCounter<T1, T2> add(BiCounter<T1, T2> counter) {
         for (Pair<T1, T2> key : counter.keySet()) {
-            add(key, counter.get(key));
+            add(key.first, key.second, counter.get(key));
         }
+        return this;
     }
 
     /**
@@ -88,12 +111,14 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * @param o1 first component in pair
      * @param o2 second component in pair
      * @return the value of the counter for that pair, or 0 if not stored. If
-     * one the components is null the marginal count is returned
+     * one the components is null the marginal count is returned.
+     * @throws NullPointerException if both objects are null
      */
     public int value(T1 o1, T2 o2) {
         if (o1 == null) {
             return subtotal2.value(o2);
         } else if (o2 == null) {
+           
             return subtotal1.value(o1);
         } else {
             Pair<T1, T2> pair = new Pair<T1, T2>(o1, o2);
@@ -117,4 +142,13 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
         return subtotal2.keySet();
     }
 
+    /**
+     * Clear the BiCounter
+     */
+    @Override
+    public void clear() {
+        super.clear();
+        subtotal1.clear();
+        subtotal2.clear();
+    }
 }
