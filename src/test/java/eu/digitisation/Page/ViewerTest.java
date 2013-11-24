@@ -18,7 +18,6 @@
 
 package eu.digitisation.Page;
 
-import eu.digitisation.io.WordScanner;
 
 import java.io.File;
 import java.io.IOException;

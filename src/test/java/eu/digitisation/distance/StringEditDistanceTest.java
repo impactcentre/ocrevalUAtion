@@ -89,6 +89,21 @@ public class StringEditDistanceTest {
         assertEquals(3, result);
     }
 
+    
+     /**
+     * Test of DL method, of class StringEditDistance.
+     */
+    @Test
+    public void testDLDistance() {
+        System.out.println("Damerau-Levenshtein Distance");
+        String first = "abracadabra";
+        String second = "arbadacarba";
+        int expResult = 4;
+        int result = StringEditDistance.DL(first, second);
+        assertEquals(expResult, result);
+
+    }
+    
     /**
      * Test of align method, of class StringEditDistance.
      */

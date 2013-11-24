@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 public class ErrorMeasure {
 
     /**
-     * Compute character error rate
+     * Compute character error rate using Levenshtein distance
      *
      * @param s1 the reference text
      * @param s2 fuzzy text
@@ -56,6 +56,31 @@ public class ErrorMeasure {
         }
 
         return StringEditDistance.levenshtein(s1, s2)
+                / (double) l1;
+        /*
+         int indel = StringEditDistance.indel(b1.toString(), b2.toString());
+         return (l1 - l2 + indel) / l1;
+         */
+    }
+    
+     /**
+     * Compute character error rate using Damerau-Levenshtein distance
+     *
+     * @param s1 the reference text
+     * @param s2 fuzzy text
+     * @return character error rate with respect to the reference file
+     */
+    public static double cerDL(String s1, String s2) {
+        int l1 = s1.length();
+        int l2 = s2.length();
+        double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
+
+        if (delta > 20) {
+            System.err.println("Warning: files differ a "
+                    + delta + " % in character length");
+        }
+
+        return StringEditDistance.DL(s1, s2)
                 / (double) l1;
         /*
          int indel = StringEditDistance.indel(b1.toString(), b2.toString());

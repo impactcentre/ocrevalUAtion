@@ -74,18 +74,19 @@ public class Main {
 
         try {
             // input text       
-            CharFilter filter
-                    = (repfile == null) ? null : new CharFilter(repfile);
+            CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
             TextContent gt = new TextContent(gtfile, gtencoding, filter);
             TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
             // Compute error rates
             String gts = gt.toString();
             String ocrs = ocr.toString();
             double cer = ErrorMeasure.cer(gts, ocrs);
+            double cerDL = ErrorMeasure.cerDL(gts, ocrs);
             double wer = ErrorMeasure.wer(gts, ocrs);
             double bwer = BagOfWords.wer(gts, ocrs);
             // Output 
             System.out.println("CER=" + String.format("%.2f", cer * 100));
+            System.out.println("CER(DL)=" + String.format("%.2f", cerDL * 100));
             System.out.println("WER=" + String.format("%.2f", wer * 100));
             System.out.println("WER (bag of words)=" + String.format("%.2f", bwer * 100));
             // Spreadsheet data

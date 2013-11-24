@@ -18,7 +18,6 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.ocr.ErrorMeasure;
-import eu.digitisation.math.ArrayMath;
 import eu.digitisation.math.BiCounter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,6 +101,56 @@ public class StringEditDistance {
         return A[first.length() % 2][second.length()];
     }
 
+    /**
+     * @param first the first string.
+     * @param second the second string.
+     * @return the Damerau-Levenshtein distance between first and second.
+     */
+    public static int DL(String first, String second) {
+        int i, j;
+        int[][] A;
+
+        // intialize
+        A = new int[3][second.length() + 1];
+
+        // Compute first row
+        A[0][0] = 0;
+        for (j = 1; j <= second.length(); ++j) {
+            A[0][j] = A[0][j - 1] + 1;
+        }
+
+        // Compute other rows
+        for (i = 1; i <= first.length(); ++i) {
+            A[i % 3][0] = A[(i - 1) % 3][0] + 1;
+            for (j = 1; j <= second.length(); ++j) {
+                if (first.charAt(i - 1) == second.charAt(j - 1)) {
+                    A[i % 3][j] = A[(i - 1) % 3][j - 1];
+                } else {
+                    if (i > 1 && j > 1
+                            && first.charAt(i - 1) == second.charAt(j - 2)
+                            && first.charAt(i - 2) == second.charAt(j - 1)) {
+                         A[i % 3][j] = min(A[(i - 1) % 3][j] + 1,
+                                A[i % 3][j - 1] + 1,
+                                A[(i - 2) % 3][j - 2] + 1);
+                    } else {
+                        A[i % 3][j] = min(A[(i - 1) % 3][j] + 1,
+                                A[i % 3][j - 1] + 1,
+                                A[(i - 1) % 3][j - 1] + 1);
+                    }
+                }
+            }
+        }
+        return A[first.length() % 3][second.length()];
+    }
+
+    /**
+     * Computes separate statistics of errors for every character
+     *
+     * @param s1 the reference text
+     * @param s2 the fuzzy text
+     * @return a counter with the number of insertions, substitutions and
+     * deletions for every character
+     */
     public static BiCounter<Character, EdOp> stats(String first, String second) {
         int i, j;
         int[][] A;
@@ -333,7 +382,7 @@ public class StringEditDistance {
             } else { // remove after debugging
                 Logger.getLogger(ErrorMeasure.class.getName())
                         .log(Level.SEVERE, null,
-                                "Wrong code at StringEditDistance.alignments");
+                        "Wrong code at StringEditDistance.alignments");
             }
         }
 
