@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Main class for ocrevalUAtion
+ * Main class for ocrevalUAtion: version 0.92
  */
 public class Main {
 
