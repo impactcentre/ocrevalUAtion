@@ -1,4 +1,4 @@
-package eu.digitisation.Unicode;
+package eu.digitisation.io;
 
 import eu.digitisation.io.UnicodeReader;
 import junit.framework.TestCase;
@@ -6,7 +6,7 @@ import junit.framework.TestCase;
  *
  * @author rafa
  */
-public class TestReader extends TestCase {
+public class TestUnicodeReader extends TestCase {
 
     public void testUnicodeReader() {
         String input = "día, mes y año";

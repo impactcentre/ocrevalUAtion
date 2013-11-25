@@ -91,8 +91,14 @@ public class Main {
             System.out.println("WER (bag of words)=" + String.format("%.2f", bwer * 100));
             // Spreadsheet data
             ErrorMeasure.stats2CSV(gts, ocrs, outfile, ';');
+
+            File file = new  File(outfile.getAbsolutePath().replaceAll("[.][a-z]{3}", "_out.html"));
+            System.out.println("Differences shown at " + file);
+            eu.digitisation.distance.Display.toHTML(gts, ocrs, file);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+
     }
 }

@@ -21,7 +21,6 @@ package eu.digitisation.Page;
 
 import java.io.File;
 import java.io.IOException;
-import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.*;
 
 import org.junit.After;

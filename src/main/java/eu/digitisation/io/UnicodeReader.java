@@ -17,7 +17,6 @@
  */
 package eu.digitisation.io;
 
-import eu.digitisation.util.MiniBrowser;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -118,21 +117,15 @@ public class UnicodeReader {
      /**
      * Search for a Unicode sequence and highlight them in browser
      * @param files files where the sequence is searched
+     * @para File outFile the output file
      * @param codepoints the Unicode sequence
      */
-    public static void find(File[] files, String codepoints) {
+    public static void find(File[] files, String codepoints, File outFile) {
         String pattern = codepointsToString(codepoints);
-        MiniBrowser browser = new MiniBrowser();
-        String outputDir = "output";
         try {
             for (File file : files) {
-                String output = outputDir + "/"
-                        + file.getName().replace(".xml", ".html");
-                File outFile = new File(output);
-                Boolean found;
                 try (BufferedReader reader = new BufferedReader(new FileReader(file));
                         PrintWriter writer = new PrintWriter(outFile)) {
-                    found = false;
                     writer.print("<p><font color='blue'>"
                             + file + "</font></p>");
                     while (reader.ready()) {
@@ -140,35 +133,14 @@ public class UnicodeReader {
                         if (line.contains(pattern)) {
                             writer.print("<p><font color='red'>"
                                     + StringNormalizer.encode(line) + "</font></p>");
-                            found = true;
                         } else {
                             writer.print("<p>" + StringNormalizer.encode(line) + "</p>");
                         }
                     }
                 }
-                if (found) {
-                    browser.addPage("file:" + outFile);
-                }
             }
-            browser.setVisible(true);
         } catch (IOException ex) {
             Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    /**
-     * Sample main
-     * @param args
-     * @throws Exception 
-     */
-    public static void main(String[] args) throws Exception {
-        if (args[0].equals("-s")) {
-            UnicodeReader.toCodepoints(args[1]);
-        } else {
-            for (String arg : args) {
-                File file = new File(arg);
-                UnicodeReader.printHexCodepoints(file);
-            }
         }
     }
 }
