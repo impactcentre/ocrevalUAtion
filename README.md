@@ -32,7 +32,7 @@ Encode a text file as an array of Integers (one code per word).
 Transform text according to a mapping between (source, target) 
 Unicode character sequences.
 
-[io.StringNormalizer]
+[io.StringNormalizer](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/StringNormalizer.java)<br>
 Normalizes strings: collapse whitespace and use composed form (see java.text.Normalizer.Form)
 
 [io.TextContent](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/TextContent.java)<br>
