@@ -1,7 +1,7 @@
 package eu.digitisation;
 
 import eu.digitisation.distance.BagOfWords;
-import eu.digitisation.distance.Display;
+import eu.digitisation.distance.Alignment;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.ocr.ErrorMeasure;
@@ -71,51 +71,50 @@ public class Main {
         if (gtfile == null || ocrfile == null) {
             System.err.println("Not enough arguments");
             exit_gracefully();
-        }
-
-        if (workingDirectory == null) {
+        } else if (workingDirectory == null) {
             String dir = ocrfile.getAbsolutePath()
                     .replaceFirst("[^File.separator]+", "");
             workingDirectory = new File(dir);
         }
+
         System.out.println("Working directory seto to " + workingDirectory);
 
-        if (workingDirectory.isDirectory() == false) {
+        if (workingDirectory == null
+                || !workingDirectory.isDirectory()) {
             System.err.println(workingDirectory + " is not a valid directory");
+        } else {
+            try {
+                // input text       
+                CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
+                TextContent gt = new TextContent(gtfile, gtencoding, filter);
+                TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
+                // Compute error rates
+                String gts = gt.toString();
+                String ocrs = ocr.toString();
+                double cer = ErrorMeasure.cer(gts, ocrs);
+                double cerDL = ErrorMeasure.cerDL(gts, ocrs);
+                double wer = ErrorMeasure.wer(gts, ocrs);
+                double bwer = BagOfWords.wer(gts, ocrs);
+                // Output 
+                String prefix;
+                prefix = workingDirectory + File.separator
+                        + gtfile.getName().replaceFirst("[.][^.]+$", "");
+                PrintWriter writer = new PrintWriter(prefix + "_out.txt");
+                writer.println("CER=" + String.format("%.2f", cer * 100) + "%");
+                writer.println("CER(DL)=" + String.format("%.2f", cerDL * 100) + "%");
+                writer.println("WER=" + String.format("%.2f", wer * 100) + "%");
+                writer.println("WER (bag of words)="
+                        + String.format("%.2f", bwer * 100) + "%");
+                writer.close();
+                // Spreadsheet data
+                File csvfile = new File(prefix + "_out.csv");
+                ErrorMeasure.stats2CSV(gts, ocrs, csvfile, ';');
+                // Graphical presentation of differences
+                File htmlfile = new File(prefix + "_out.html");
+                Alignment.asHTML(gts, ocrs, htmlfile);
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-
-        try {
-            // input text       
-            CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
-            TextContent gt = new TextContent(gtfile, gtencoding, filter);
-            TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
-            // Compute error rates
-            String gts = gt.toString();
-            String ocrs = ocr.toString();
-            double cer = ErrorMeasure.cer(gts, ocrs);
-            double cerDL = ErrorMeasure.cerDL(gts, ocrs);
-            double wer = ErrorMeasure.wer(gts, ocrs);
-            double bwer = BagOfWords.wer(gts, ocrs);
-            // Output 
-            String prefix = workingDirectory +File.separator 
-                    + gtfile.getName().replaceFirst("[.][^.]+$", "");
-            PrintWriter writer = new PrintWriter(prefix + "_out.txt");
-            writer.println("CER=" + String.format("%.2f", cer * 100) + "%");
-            writer.println("CER(DL)=" + String.format("%.2f", cerDL * 100) + "%");
-            writer.println("WER=" + String.format("%.2f", wer * 100) + "%");
-            writer.println("WER (bag of words)=" 
-                    + String.format("%.2f", bwer * 100) + "%");
-            writer.close();
-            // Spreadsheet data
-            File csvfile = new File(prefix + "_out.csv");
-            ErrorMeasure.stats2CSV(gts, ocrs, csvfile, ';');
-            // Graphical presentation of differences
-            File htmlfile = new File(prefix + "_out.html");
-            Display.toHTML(gts, ocrs, htmlfile);
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-
     }
 }

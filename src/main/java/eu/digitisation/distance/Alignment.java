@@ -26,11 +26,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Display alignments as HTML text
+ * Alignment alignments as HTML text
  *
  * @author R.C.C
  */
-public class Display {
+public class Alignment {
 
     /**
      * @return 3-wise minimum.
@@ -38,16 +38,32 @@ public class Display {
     private static int min(int x, int y, int z) {
         return Math.min(x, Math.min(y, z));
     }
-
-    public static void toHTML(String first, String second, File file) {
+    
+ /**
+     * Shows text alignment based on a pseudo-Levenshtein distance where
+     * white-spaces are not allowed to be confused with text or vice-versa
+     *
+     * @param first reference string
+     * @param second fuzzy string
+     * @param file the output  file
+     */
+    public static void asHTML(String first, String second, File file) {
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.write(toHTML(first, second));
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Alignment.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public static String toHTML(String first, String second) {
+
+    /**
+     * Shows text alignment based on a pseudo-Levenshtein distance where
+     * white-spaces are not allowed to be confused with text or vice-versa
+     *
+     * @param first
+     * @param second
+     * @return
+     */
+    private static String toHTML(String first, String second) {
         int i, j;
         int[][] A;
         EditTable B;
@@ -67,10 +83,14 @@ public class Display {
 
         // Compute other rows
         for (i = 1; i <= first.length(); ++i) {
+            char c1 = first.charAt(i - 1);
             A[i % 2][0] = A[(i - 1) % 2][0] + 1;
             B.set(i, 0, EdOp.DELETE);
             for (j = 1; j <= second.length(); ++j) {
-                if (first.charAt(i - 1) == second.charAt(j - 1)) {
+                char c2 = second.charAt(j - 1);
+                boolean notSpaces = !(Character.isSpaceChar(c1)
+                        || Character.isSpaceChar(c2));
+                if (c1 == c2 && notSpaces) {
                     A[i % 2][j] = A[(i - 1) % 2][j - 1];
                     B.set(i, j, EdOp.KEEP);
                 } else {
@@ -132,8 +152,8 @@ public class Display {
         }
         builder.insert(0, "<html><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"><body>");
         builder.append("</body></html>");
-        
+
         return builder.toString();
-        
+
     }
 }
