@@ -18,7 +18,7 @@ Provides a basic implementations of some popular edit distance methods
 [distance.BagOfWords](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/BagOfWords.java)<br>
 Computes distances between two bags of words (order independent distance).
 
-[distance.EditTable]
+[distance.EditTable](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/EditTable.java)<br>
 Compact storage for a large table containing four basic edit operations.
 
 [distance.StringEditDistance](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/StringEditDistance.java)<br>
