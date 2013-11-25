@@ -34,16 +34,17 @@ import java.util.logging.Logger;
 public class CharFilter extends HashMap<String, String> {
 
     /**
-     * Load the transformation map from a file (one transformation per line):
-     * each line contains two Unicode hex values separated with whitespace
+     * Load the transformation map from a CVS file (one transformation per
+     * line): each line contains two Unicode hex values (plus comments)
+     * separated with whitespace or separators
      *
-     * @param file the file to be transformed
+     * @param file the file with the equivalent sequences
      */
     public CharFilter(File file) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             while (reader.ready()) {
                 String line = reader.readLine();
-                String[] tokens = line.split("\\p{Space}");
+                String[] tokens = line.split("(\\p{Space}|[,;])+");
                 if (tokens.length > 1) {  // allow comments in line
                     String left = UnicodeReader.codepointsToString(tokens[0]);
                     String right = UnicodeReader.codepointsToString(tokens[1]);
@@ -57,7 +58,7 @@ public class CharFilter extends HashMap<String, String> {
             Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Find all occurrences of characters in a sequence and substitute them with
      * the replacement specified by the transformation map. Remark: No
@@ -80,8 +81,7 @@ public class CharFilter extends HashMap<String, String> {
 
         try (FileInputStream input = new FileInputStream(file)) {
             FileChannel channel = input.getChannel();
-            java.nio.ByteBuffer buffer
-                    = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+            java.nio.ByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
             return java.nio.charset.Charset.forName("utf-8").newDecoder()
                     .decode(buffer);
         } catch (IOException ex) {
