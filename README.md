@@ -5,8 +5,7 @@ This set of classes provides basic support to perform the comparison of
 two text files: a reference file (a ground-truth document, usually in
 PAGE XML format) and a the output from an OCR engine (a text file).
 
-You can build an executable jar by using Maven and running
-'mvn package'.
+You can download the latest release from [here](https://bintray.com/impactocr/impactocr-maven/ocrevalUAtion). Instructions on how to use ocrevalUAtion can be found in the [wiki](https://github.com/impactcentre/ocrevalUAtion/wiki).
 
 The classes defined are listed below:
 
@@ -60,7 +59,7 @@ objects and integers which can be incremented and decremented.
 Counts the number of different pairs of objects, a map between
 pairs of objects and integers which can be incremented and decremented.
 
-[math.Pair]
+[math.Pair](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/math/Pair.java)<br>
 A pair of objects.
 
 [ocr.ErrorMeasure](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/ocr/ErrorMeasure.java)<br>
