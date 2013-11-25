@@ -1,11 +1,13 @@
 package eu.digitisation;
 
 import eu.digitisation.distance.BagOfWords;
+import eu.digitisation.distance.Display;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.ocr.ErrorMeasure;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +19,7 @@ public class Main {
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1 [encoding] "
             + "-ocr file2 [encoding] "
-            + "-o output [-r replacements_file]";
+            + "-d output_directory [-r replacements_file]";
 
     private static void exit_gracefully() {
         System.err.println(helpMsg);
@@ -29,13 +31,12 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        File outfile = null;
-        File gtfile = null;
-        File ocrfile = null;
-        File repfile = null;
-        String outencoding = System.getProperty("file.encoding");
+        File repfile = null;     // char filter
+        File gtfile = null;      // ground-truth))
+        File ocrfile = null;     // ocr-output
         String gtencoding = null;
         String ocrencoding = null;
+        File workingDirectory = null; // output directory 
 
         // Read parameters (String switch needs Java 1.7 or later)
         for (int n = 0; n < args.length; ++n) {
@@ -55,8 +56,8 @@ public class Main {
                         ocrencoding = args[++n];
                     }
                     break;
-                case "-o":
-                    outfile = new File(args[++n]);
+                case "-d":
+                    workingDirectory = new File(args[++n]);
                     break;
                 case "-r":
                     repfile = new File(args[++n]);
@@ -67,9 +68,20 @@ public class Main {
             }
         }
 
-        if (gtfile == null || ocrfile == null || outfile == null) {
+        if (gtfile == null || ocrfile == null) {
             System.err.println("Not enough arguments");
             exit_gracefully();
+        }
+
+        if (workingDirectory == null) {
+            String dir = ocrfile.getAbsolutePath()
+                    .replaceFirst("[^File.separator]+", "");
+            workingDirectory = new File(dir);
+        }
+        System.out.println("Working directory seto to " + workingDirectory);
+
+        if (workingDirectory.isDirectory() == false) {
+            System.err.println(workingDirectory + " is not a valid directory");
         }
 
         try {
@@ -85,16 +97,21 @@ public class Main {
             double wer = ErrorMeasure.wer(gts, ocrs);
             double bwer = BagOfWords.wer(gts, ocrs);
             // Output 
-            System.out.println("CER=" + String.format("%.2f", cer * 100));
-            System.out.println("CER(DL)=" + String.format("%.2f", cerDL * 100));
-            System.out.println("WER=" + String.format("%.2f", wer * 100));
-            System.out.println("WER (bag of words)=" + String.format("%.2f", bwer * 100));
+            String prefix = workingDirectory +File.separator 
+                    + gtfile.getName().replaceFirst("[.][^.]+$", "");
+            PrintWriter writer = new PrintWriter(prefix + "_out.txt");
+            writer.println("CER=" + String.format("%.2f", cer * 100) + "%");
+            writer.println("CER(DL)=" + String.format("%.2f", cerDL * 100) + "%");
+            writer.println("WER=" + String.format("%.2f", wer * 100) + "%");
+            writer.println("WER (bag of words)=" 
+                    + String.format("%.2f", bwer * 100) + "%");
+            writer.close();
             // Spreadsheet data
-            ErrorMeasure.stats2CSV(gts, ocrs, outfile, ';');
-
-            File file = new  File(outfile.getAbsolutePath().replaceAll("[.][a-z]{3}", "_out.html"));
-            System.out.println("Differences shown at " + file);
-            eu.digitisation.distance.Display.toHTML(gts, ocrs, file);
+            File csvfile = new File(prefix + "_out.csv");
+            ErrorMeasure.stats2CSV(gts, ocrs, csvfile, ';');
+            // Graphical presentation of differences
+            File htmlfile = new File(prefix + "_out.html");
+            Display.toHTML(gts, ocrs, htmlfile);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
