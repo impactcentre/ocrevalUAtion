@@ -32,14 +32,15 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Creates a StringBuilder with the (normalized) textual content in a file.
- * Normalization collapses whitespaces and prefers composed form (see
- * java.text.Normalizer.Form) For PAGE XML files it selects only those elements
- * listed in a properties file.
+ * Creates a StringBuilder with the (normalized) textual content in
+ * a file. Normalization collapses white-spaces and prefers composed
+ * form (see java.text.Normalizer.Form) For PAGE XML files it
+ * selects only those elements listed in a properties file.
  *
  * @author R.C.C.
  */
@@ -95,6 +96,9 @@ public class TextContent {
             case TXT:
                 readTextFile(file, filter);
                 break;
+            case FR10:
+                readFR10File(file, filter);
+                break;
             default:
                 throw new IOException("Unsupported file format " + type);
         }
@@ -110,6 +114,22 @@ public class TextContent {
         builder = new StringBuilder();
         encoding = defaultEncoding;
         add(s, filter);
+    }
+
+    /**
+     *
+     * @return the length of the stored text
+     */
+    public int length() {
+        return builder.length();
+    }
+
+    /**
+     * @return the text a String
+     */
+    @Override
+    public String toString() {
+        return builder.toString();
     }
 
     /**
@@ -136,8 +156,8 @@ public class TextContent {
     }
 
     /**
-     * Get the region type: if the attribute is not available then return
-     * unknown type
+     * Get the region type: if the attribute is not available then
+     * return unknown type
      *
      * @param region
      * @return
@@ -148,6 +168,28 @@ public class TextContent {
             type = "unknown";
         }
         return type;
+    }
+
+    /**
+     * Read textual content and collapse whitespace: contiguous spaces are
+     * considered a single one
+     *
+     * @param file the input text file
+     * @param filter optional CharFilter
+     */
+    private void readTextFile(File file, CharFilter filter) {
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis, encoding);
+            BufferedReader reader = new BufferedReader(isr);
+            int size = 0;
+
+            while (reader.ready()) {
+                add(reader.readLine(), filter);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -188,40 +230,49 @@ public class TextContent {
     }
 
     /**
-     * Read textual content and collapse whitespace: contiguous spaces are
-     * considered a single one
+     * Reads textual content from FR10 XML file
      *
      * @param file the input text file
      * @param filter optional CharFilter
      */
-    private void readTextFile(File file, CharFilter filter) {
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis, encoding);
-            BufferedReader reader = new BufferedReader(isr);
-            int size = 0;
+    private void readFR10File(File file, CharFilter filter) {
+        Document doc = DocumentBuilder.parse(file);
+        String xmlEncoding = doc.getXmlEncoding();
+        NodeList pars = doc.getElementsByTagName("par");
 
-            while (reader.ready()) {
-                add(reader.readLine(), filter);
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+        if (xmlEncoding != null) {
+            encoding = xmlEncoding;
+            System.err.println("XML file " + file + " encoding is " + encoding);
+        } else {
+            System.err.println("No encoding declaration in "
+                    + file + ". Using " + encoding);
         }
-    }
 
-    /**
-     * @return the text a String
-     */
-    @Override
-    public String toString() {
-        return builder.toString();
-    }
-
-    /**
-     *
-     * @return the length of the stored text
-     */
-    public int length() {
-        return builder.length();
+        for (int npar = 0; npar < pars.getLength(); ++npar) {
+            Element par = (Element) pars.item(npar);
+            NodeList lines = par.getElementsByTagName("line");
+            for (int nline = 0; nline < lines.getLength(); ++nline) {
+                Element line = (Element) lines.item(nline);
+                 System.out.println(line.getNodeName());
+                StringBuilder text = new StringBuilder();
+                NodeList formattings = line.getElementsByTagName("formatting");
+                for (int nform = 0; nform < formattings.getLength(); ++nform) {
+                    Element formatting = (Element) formattings.item(nform);
+                    System.out.println(formatting.getNodeName());
+                    NodeList charParams = formatting.getElementsByTagName("charParams");
+                    for (int nchar = 0; nchar < charParams.getLength(); ++nchar) {
+                        Element charParam = (Element) charParams.item(nchar);
+                        String content = charParam.getTextContent();
+                        if (content.length() > 0) {
+                            text.append(content);
+                        } else {
+                            text.append(' ');
+                        }
+                    }
+                }
+                add(text.toString(), filter);
+            }
+        }
+        builder.trimToSize();
     }
 }
