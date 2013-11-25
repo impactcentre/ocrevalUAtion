@@ -18,7 +18,7 @@ Provides a basic implementations of some popular edit distance methods
 Provides basic implementations of some popular edit distance methods 
 operating on strings (currently, Levenshtein and indel).
 
-[distance.TextFileEncoder](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance.TextFileEncoder.java)
+[distance.TextFileEncoder](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/TextFileEncoder.java)
 Encode a text file as an array of Integers (one code per word).
 
 [io.CharFilter](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/CharFilter.java)
