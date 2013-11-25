@@ -14,9 +14,15 @@ The classes defined are listed below:
 Provides a basic implementations of some popular edit distance methods
 (currently, Levenshtein and indel) applied to arrays of objects.
 
+[distance.BagOfWords](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/BagOfWords.java)<br>
+Computes distances between two bags of words (order independent distance).
+
+[distance.EditTable]
+Compact storage for a large table containing four basic edit operations.
+
 [distance.StringEditDistance](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/StringEditDistance.java)<br>
 Provides basic implementations of some popular edit distance methods 
-operating on strings (currently, Levenshtein and indel).
+operating on strings (currently, Levenshtein, Damerau-Levenshtein, and indel).
 
 [distance.TextFileEncoder](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/TextFileEncoder.java)<br>
 Encode a text file as an array of Integers (one code per word).
@@ -25,9 +31,14 @@ Encode a text file as an array of Integers (one code per word).
 Transform text according to a mapping between (source, target) 
 Unicode character sequences.
 
+[io.StringNormalizer]
+Normalizes strings: collapse whitespace and use composed form (see java.text.Normalizer.Form)
+
 [io.TextContent](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/TextContent.java)<br>
 Reads and normalizes text from file content, 
-and optionally applies a CharFilter.
+and optionally applies a CharFilter. Now, it supports text files and PAGE XML files (selects only those
+elements listed in a properties file, TOC-entry, heading,
+drop-capital, paragraph).
 
 [io.UnicodeReader](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/UnicodeReader.java)<br>
 Transformations between Unicode strings and codepoints.
@@ -45,6 +56,13 @@ Standard operations on arrays: sum, average, max, min, standard deviation.
 Counts the number of different objects, a map between
 objects and integers which can be incremented and decremented.
 
+[math.BiCounter<T>](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/math/BiCounter.java)<br>
+Counts the number of different pairs of objects, a map between
+pairs of objects and integers which can be incremented and decremented.
+
+[math.Pair]
+A pair of objects.
+
 [ocr.ErrorMeasure](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/ocr/ErrorMeasure.java)<br>
 The main class which computes character and word error rates.
 
@@ -56,10 +74,6 @@ PAGE-XML regions order in the document can differ form reading order.
 This class makes the order of elements in the document consistent 
 with the reading order stored therein.
 
-[Page.TextContent](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/Page/TextContent.java)<br>
-Textual content in a PAGE XML: selects only those
-elements listed in a properties file (TOC-entry, heading,
-drop-capital, paragraph).
 
 [Page.TextRegion](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/Page/TextRegion.java)<br>
 A TextRegion in a PAGE-XML document.

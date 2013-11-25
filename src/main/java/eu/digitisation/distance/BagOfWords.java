@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Computes distances between two bags of words (order independent distance)
  * @author R.C.C.
  */
 public class BagOfWords {
