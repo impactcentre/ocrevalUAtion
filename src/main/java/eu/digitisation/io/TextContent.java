@@ -253,12 +253,10 @@ public class TextContent {
             NodeList lines = par.getElementsByTagName("line");
             for (int nline = 0; nline < lines.getLength(); ++nline) {
                 Element line = (Element) lines.item(nline);
-                 System.out.println(line.getNodeName());
                 StringBuilder text = new StringBuilder();
                 NodeList formattings = line.getElementsByTagName("formatting");
                 for (int nform = 0; nform < formattings.getLength(); ++nform) {
                     Element formatting = (Element) formattings.item(nform);
-                    System.out.println(formatting.getNodeName());
                     NodeList charParams = formatting.getElementsByTagName("charParams");
                     for (int nchar = 0; nchar < charParams.getLength(); ++nchar) {
                         Element charParam = (Element) charParams.item(nchar);

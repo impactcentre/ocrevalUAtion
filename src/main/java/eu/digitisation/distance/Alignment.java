@@ -18,7 +18,6 @@
 package eu.digitisation.distance;
 
 import static eu.digitisation.distance.EdOp.*;
-import eu.digitisation.math.BiCounter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -38,14 +37,14 @@ public class Alignment {
     private static int min(int x, int y, int z) {
         return Math.min(x, Math.min(y, z));
     }
-    
- /**
+
+    /**
      * Shows text alignment based on a pseudo-Levenshtein distance where
      * white-spaces are not allowed to be confused with text or vice-versa
      *
      * @param first reference string
      * @param second fuzzy string
-     * @param file the output  file
+     * @param file the output file
      */
     public static void asHTML(String first, String second, File file) {
         try (PrintWriter writer = new PrintWriter(file)) {
@@ -53,6 +52,15 @@ public class Alignment {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Alignment.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private static String font(String color, char c) {
+        return "<font color=\"" + color + "\">" + c + "</font>";
+    }
+
+    private static String span(String color, char text, char alt) {
+        return "<span title=\"" + alt + "\">"
+                + font(color, text) + "</span>";
     }
 
     /**
@@ -64,11 +72,12 @@ public class Alignment {
      * @return
      */
     private static String toHTML(String first, String second) {
-        int i, j;
+        int l1 = first.length();
+        int l2 = second.length();
         int[][] A;
         EditTable B;
-        BiCounter<Character, EdOp> stats = new BiCounter<>();
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder1 = new StringBuilder();
+        StringBuilder builder2 = new StringBuilder();
 
         // intialize
         A = new int[2][second.length() + 1];
@@ -76,18 +85,18 @@ public class Alignment {
         // Compute first row
         A[0][0] = 0;
         B.set(0, 0, EdOp.KEEP);
-        for (j = 1; j <= second.length(); ++j) {
+        for (int j = 1; j <= second.length(); ++j) {
             A[0][j] = A[0][j - 1] + 1;
             B.set(0, j, EdOp.INSERT);
         }
 
         // Compute other rows
-        for (i = 1; i <= first.length(); ++i) {
-            char c1 = first.charAt(i - 1);
+        for (int i = 1; i <= first.length(); ++i) {
+            char c1 = first.charAt(l1 - i);
             A[i % 2][0] = A[(i - 1) % 2][0] + 1;
             B.set(i, 0, EdOp.DELETE);
-            for (j = 1; j <= second.length(); ++j) {
-                char c2 = second.charAt(j - 1);
+            for (int j = 1; j <= second.length(); ++j) {
+                char c2 = second.charAt(l2 - j);
                 boolean notSpaces = !(Character.isSpaceChar(c1)
                         || Character.isSpaceChar(c2));
                 if (c1 == c2 && notSpaces) {
@@ -108,52 +117,54 @@ public class Alignment {
             }
         }
 
-        i = first.length();
-        j = second.length();
+        // Output
+        int i = first.length();
+        int j = second.length();
+        builder1.append("<html>")
+                .append("<meta http-equiv=\"content-type\"")
+                .append("content=\"text/html; charset=UTF-8\"><body>");
         while (i > 0 && j > 0) {
             switch (B.get(i, j)) {
                 case KEEP:
-                    builder.insert(0, first.charAt(i - 1));
+                    builder1.append(first.charAt(l1 - i));
+                    builder2.append(first.charAt(l1 - i));
                     --i;
                     --j;
                     break;
                 case DELETE:
-                    builder.insert(0, "<font color=\"red\">"
-                            + first.charAt(i - 1)
-                            + "</font>");
+                    builder1.append(font("red", first.charAt(l1 - i)));
+                    builder2.append(span("red", '#', first.charAt(l1 - i)));
                     --i;
                     break;
                 case INSERT:
-                    builder.insert(0, "<span title=\""
-                            + second.charAt(j - 1)
-                            + "\"><font color=\"blue\">?</font></span>");
-                    stats.inc(second.charAt(j - 1), EdOp.INSERT);
+                    builder1.append(span("blue", '#', second.charAt(l2 - j)));
+                    builder2.append(font("blue", second.charAt(l2 - j)));
                     --j;
                     break;
                 case SUBSTITUTE:
-                    builder.insert(0, "<span title=\""
-                            + second.charAt(j - 1)
-                            + "\"><font color=\"green\">"
-                            + first.charAt(i - 1)
-                            + "</font></span>");
+                    builder1.append(span("green",
+                            first.charAt(l1 - i), second.charAt(l2 - j)));
+                    builder2.append(span("green",
+                            second.charAt(l2 - j), first.charAt(l1 - i)));
                     --i;
                     --j;
                     break;
             }
         }
         while (i > 0) {
-            stats.inc(first.charAt(i - 1), EdOp.DELETE);
+            builder1.append(font("red", first.charAt(l1 - i)));
+            builder2.append(span("red", '#', first.charAt(l1 - i)));
             --i;
         }
         while (j > 0) {
-            stats.inc(second.charAt(j - 1), EdOp.INSERT);
+            builder1.append(span("blue", '#', second.charAt(l2 - j)));
+            builder2.append(font("blue", second.charAt(l2 - j)));
             --j;
-
         }
-        builder.insert(0, "<html><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"><body>");
-        builder.append("</body></html>");
+        builder1.append("<br/><br/>");
+        builder2.append("</body></html>");
 
-        return builder.toString();
+        return builder1.toString() + builder2.toString();
 
     }
 }
