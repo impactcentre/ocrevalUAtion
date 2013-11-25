@@ -1,7 +1,7 @@
 package eu.digitisation;
 
 import eu.digitisation.distance.BagOfWords;
-import eu.digitisation.distance.Alignment;
+import eu.digitisation.distance.Aligner;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.ocr.ErrorMeasure;
@@ -111,7 +111,7 @@ public class Main {
                 ErrorMeasure.stats2CSV(gts, ocrs, csvfile, ';');
                 // Graphical presentation of differences
                 File htmlfile = new File(prefix + "_out.html");
-                Alignment.asHTML(gts, ocrs, htmlfile);
+                Aligner.asHTML(gts, ocrs, htmlfile);
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }

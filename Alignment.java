@@ -18,6 +18,7 @@
 package eu.digitisation.distance;
 
 import static eu.digitisation.distance.EdOp.*;
+import eu.digitisation.math.BiCounter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -54,15 +55,6 @@ public class Alignment {
         }
     }
 
-    private static String font(String color, char c) {
-        return "<font color=\"" + color + "\">" + c + "</font>";
-    }
-
-    private static String span(String color, char text, char alt) {
-        return "<span title=\"" + alt + "\">"
-                + font(color, text) + "</span>";
-    }
-
     /**
      * Shows text alignment based on a pseudo-Levenshtein distance where
      * white-spaces are not allowed to be confused with text or vice-versa
@@ -72,12 +64,10 @@ public class Alignment {
      * @return
      */
     private static String toHTML(String first, String second) {
-        int l1 = first.length();
-        int l2 = second.length();
+        int i, j;
         int[][] A;
         EditTable B;
-        StringBuilder builder1 = new StringBuilder();
-        StringBuilder builder2 = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
         // intialize
         A = new int[2][second.length() + 1];
@@ -85,18 +75,18 @@ public class Alignment {
         // Compute first row
         A[0][0] = 0;
         B.set(0, 0, EdOp.KEEP);
-        for (int j = 1; j <= second.length(); ++j) {
+        for (j = 1; j <= second.length(); ++j) {
             A[0][j] = A[0][j - 1] + 1;
             B.set(0, j, EdOp.INSERT);
         }
 
         // Compute other rows
-        for (int i = 1; i <= first.length(); ++i) {
-            char c1 = first.charAt(l1 - i);
+        for (i = 1; i <= first.length(); ++i) {
+            char c1 = first.charAt(i - 1);
             A[i % 2][0] = A[(i - 1) % 2][0] + 1;
             B.set(i, 0, EdOp.DELETE);
-            for (int j = 1; j <= second.length(); ++j) {
-                char c2 = second.charAt(l2 - j);
+            for (j = 1; j <= second.length(); ++j) {
+                char c2 = second.charAt(j - 1);
                 boolean notSpaces = !(Character.isSpaceChar(c1)
                         || Character.isSpaceChar(c2));
                 if (c1 == c2 && notSpaces) {
@@ -117,54 +107,55 @@ public class Alignment {
             }
         }
 
-        // Output
-        int i = first.length();
-        int j = second.length();
-        builder1.append("<html>")
-                .append("<meta http-equiv=\"content-type\"")
-                .append("content=\"text/html; charset=UTF-8\"><body>");
+        i = first.length();
+        j = second.length();
         while (i > 0 && j > 0) {
             switch (B.get(i, j)) {
                 case KEEP:
-                    builder1.append(first.charAt(l1 - i));
-                    builder2.append(first.charAt(l1 - i));
+                    builder.insert(0, first.charAt(i - 1));
                     --i;
                     --j;
                     break;
                 case DELETE:
-                    builder1.append(font("red", first.charAt(l1 - i)));
-                    builder2.append(span("red", '#', first.charAt(l1 - i)));
+                    builder.insert(0, "<font color=\"red\">"
+                            + first.charAt(i - 1)
+                            + "</font>");
                     --i;
                     break;
                 case INSERT:
-                    builder1.append(span("blue", '#', second.charAt(l2 - j)));
-                    builder2.append(font("blue", second.charAt(l2 - j)));
+                    builder.insert(0, "<span title=\""
+                            + second.charAt(j - 1)
+                            + "\"><font color=\"blue\">?</font></span>");
                     --j;
                     break;
                 case SUBSTITUTE:
-                    builder1.append(span("green",
-                            first.charAt(l1 - i), second.charAt(l2 - j)));
-                    builder2.append(span("green",
-                            second.charAt(l2 - j), first.charAt(l1 - i)));
+                    builder.insert(0, "<span title=\""
+                            + second.charAt(j - 1)
+                            + "\"><font color=\"green\">"
+                            + first.charAt(i - 1)
+                            + "</font></span>");
                     --i;
                     --j;
                     break;
             }
         }
         while (i > 0) {
-            builder1.append(font("red", first.charAt(l1 - i)));
-            builder2.append(span("red", '#', first.charAt(l1 - i)));
+            builder.insert(0, "<font color=\"red\">"
+                    + first.charAt(i - 1)
+                    + "</font>");
             --i;
         }
         while (j > 0) {
-            builder1.append(span("blue", '#', second.charAt(l2 - j)));
-            builder2.append(font("blue", second.charAt(l2 - j)));
+            builder.insert(0, "<span title=\""
+                    + second.charAt(j - 1)
+                    + "\"><font color=\"blue\">?</font></span>");
             --j;
-        }
-        builder1.append("<br/><br/>");
-        builder2.append("</body></html>");
 
-        return builder1.toString() + builder2.toString();
+        }
+        builder.insert(0, "<html><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"><body>");
+        builder.append("</body></html>");
+
+        return builder.toString();
 
     }
 }
