@@ -6,6 +6,7 @@ two text files: a reference file (a ground-truth document, usually in
 PAGE XML format) and a the output from an OCR engine (a text file).
 
 You can download the latest release from [here](https://bintray.com/impactocr/impactocr-maven/ocrevalUAtion).
+
 Instructions on how to use ocrevalUAtion can be found in the [wiki](https://github.com/impactcentre/ocrevalUAtion/wiki).
 
 The classes defined are listed below:
