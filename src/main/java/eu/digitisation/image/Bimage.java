@@ -47,20 +47,22 @@ public class Bimage extends BufferedImage {
 
     /**
      * Create a BufferedImage from an Image
+     * Default type set to TYPE_INT_RGB intead of TYPE_CUSTOM
      *
      * @param image the source image
      */
-    public Bimage(BufferedImage image) {
-        super(image.getWidth(null), image.getHeight(null),
-                image.getType());
-        Graphics2D g = createGraphics();
-        g.drawImage(image, 0, 0, null);
-        g.dispose();
-    }
+	public Bimage(BufferedImage image) {
+		super(image.getWidth(null), image.getHeight(null),
+				image.getType() == 0 ? BufferedImage.TYPE_INT_RGB : image
+						.getType());
+		Graphics2D g = createGraphics();
+		g.drawImage(image, 0, 0, null);
+		g.dispose();
+	}
 
     /**
-     * Crete image from file content Supported formats are bmp, jpg, wbmp, jpeg,
-     * png, gif
+     * Create image from file content. Supported formats are: bmp, jpg, wbmp, jpeg,
+     * png, gif, tif (when used together with geotk-coverageio)
      *
      * @param file the file storing the image
      * @throws IOException
