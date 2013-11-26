@@ -30,24 +30,6 @@ import org.w3c.dom.NodeList;
  * @author R.C.C
  */
 public class Elements {
-
-    /**
-     * Return the value of an attribute
-     *
-     * @param node the node containing the attribute
-     * @param name the attribute name
-     * @return he attribute value or null if the node contains no attribute with
-     * that name
-     */
-    public static String getAttribute(Node node, String name) {
-        Node att = node.getAttributes().getNamedItem(name);
-        if (att != null) {
-            return att.getNodeValue();
-        } else {
-            return null;
-        }
-    }
-
     /**
      *
      * @param e The parent element
@@ -65,13 +47,6 @@ public class Elements {
             }
         }
         return list;
-    }
-
-    /**
-     * @return the root element of the document
-     */
-    public static Element getRootElement(Document doc) {
-        return doc.getDocumentElement();
     }
 
     /**

@@ -17,7 +17,6 @@
  */
 package eu.digitisation.Page;
 
-import eu.digitisation.io.TextContent;
 import eu.digitisation.xml.DocumentBuilder;
 import eu.digitisation.xml.DocumentWriter;
 import eu.digitisation.xml.Elements;
@@ -63,7 +62,7 @@ public class Sort {
             childList.add(child);
             if (child instanceof Element) {
                 String tag = child.getNodeName();
-                String id = Elements.getAttribute(child, "id");
+                String id = ((Element)child).getAttribute("id");
                 if (tag.equals("TextRegion") && index.containsKey(id)) {
                     index.put(id, child);
                 }
@@ -80,7 +79,7 @@ public class Sort {
             Node child = childList.get(n);
             if (child instanceof Element) {
                 String tag = child.getNodeName();
-                String id = Elements.getAttribute(child, "id");
+                String id = ((Element)child).getAttribute("id");
                 if (tag.equals("TextRegion") && index.containsKey(id)) {
                     Node replacement = index.get(order.get(norder));
                     node.appendChild(replacement);
@@ -109,9 +108,9 @@ public class Sort {
             Node child = children.item(n);
             if (child instanceof Element
                     && child.getNodeName().equals("RegionRefIndexed")) {
-                String index = Elements.getAttribute(child, "index");
+                String index = ((Element)child).getAttribute("index");
                 assert Integer.parseInt(index) == order.size();
-                String idref = Elements.getAttribute(child, "regionRef");
+                String idref = ((Element)child).getAttribute("regionRef");
                 order.add(idref);
             }
         }

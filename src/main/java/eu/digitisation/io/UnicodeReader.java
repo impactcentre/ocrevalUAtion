@@ -48,7 +48,7 @@ public class UnicodeReader {
      * Build a string from the codepoints (Unicode values) defining its content
      *
      * @param codes
-     * @return
+     * @return the string represented by those codepoints
      */
     public static String codepointsToString(int[] codes) {
         StringBuilder buff = new StringBuilder();
@@ -117,7 +117,7 @@ public class UnicodeReader {
      /**
      * Search for a Unicode sequence and highlight them in browser
      * @param files files where the sequence is searched
-     * @para File outFile the output file
+     * @param outFile the output file
      * @param codepoints the Unicode sequence
      */
     public static void find(File[] files, String codepoints, File outFile) {

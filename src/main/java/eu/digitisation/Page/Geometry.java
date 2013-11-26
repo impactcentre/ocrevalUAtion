@@ -54,8 +54,8 @@ public class Geometry {
 
         for (int n = 0; n < length; ++n) {
             Element e = (Element) rnodes.item(n);
-            String id = Elements.getAttribute(e, "id");
-            String type = Elements.getAttribute(e, "type");
+            String id = e.getAttribute("id");
+            String type = e.getAttribute("type");
             Polygon p = getCoords((Element) rnodes.item(n));
             regions[n] = new TextRegion(id, type, p);
         }
@@ -67,7 +67,7 @@ public class Geometry {
 
         for (int n = 0; n < length; ++n) {
             Element e = (Element) rnodes.item(n);
-            String id = Elements.getAttribute(e, "id");
+            String id = e.getAttribute("id");
             String type = "line";
             Polygon p = getCoords((Element) rnodes.item(n));
             lines[n] = new TextRegion(id, type, p);
@@ -80,7 +80,7 @@ public class Geometry {
 
         for (int n = 0; n < length; ++n) {
             Element e = (Element) rnodes.item(n);
-            String id = Elements.getAttribute(e, "id");
+            String id = e.getAttribute("id");
             String type = "word";
             Polygon p = getCoords((Element) rnodes.item(n));
             words[n] = new TextRegion(id, type, p);
@@ -94,25 +94,32 @@ public class Geometry {
      * @param e the TextRegion element
      * @return the polygon delimiting a text region
      */
-    private static Polygon getCoords(Element e) {
-        Polygon region = new Polygon();
-        List<Element> elements = Elements.getChildElementsByTagName(e, "Coords");
-        if (elements.size() > 1) {
-            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                    "Multiple Coords in TextRegion");
-        } else {
-            Element element = elements.get(0);
-            NodeList pnodes = element.getChildNodes(); // points
-            for (int n = 0; n < pnodes.getLength(); ++n) {
-                Node pnode = pnodes.item(n);
-                if (pnode.getNodeName().equals("Point")) {
-                    int x = Integer.parseInt(Elements.getAttribute(pnode, "x"));
-                    int y = Integer.parseInt(Elements.getAttribute(pnode, "y"));
-                    region.addPoint(x, y);
+    private static Polygon getCoords(Element element) {
+        Polygon poly = new Polygon();
+        NodeList children = element.getChildNodes();
+
+        for (int nchild = 0; nchild < children.getLength(); ++nchild) {
+            Node child = children.item(nchild);
+            if (child instanceof Element
+                    && child.getNodeName().equals("Coords")) {
+                Element coords = (Element) child;
+                if (poly.npoints > 0) {
+                    throw new DOMException(DOMException.INVALID_ACCESS_ERR,
+                            "Multiple Coords in TextRegion");
+                }
+                NodeList nodes = coords.getChildNodes(); // points
+                for (int n = 0; n < nodes.getLength(); ++n) {
+                    Node node = nodes.item(n);
+                    if (node.getNodeName().equals("Point")) {
+                        Element point = (Element) node;
+                        int x = Integer.parseInt(point.getAttribute("x"));
+                        int y = Integer.parseInt(point.getAttribute("y"));
+                        poly.addPoint(x, y);
+                    }
                 }
             }
         }
-        return region;
+        return poly;
     }
 
     /**

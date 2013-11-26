@@ -47,10 +47,14 @@ public class Viewer {
             System.err.println("usage: Viewer image_file");
             System.exit(0);
         }
+        
         String[] tokens = getFilenameTokens(args[0]);
-        File ifile =  new File(args[0]);
-        File xmlfile =  new File(tokens[0] + ".xml");
-        File ofile = new File(tokens[0] + "_page." + tokens[1]);
+        String id = tokens[0];
+        String ext = tokens[1];
+        
+        File ifile =  new File(id + "." + ext);
+        File xmlfile =  new File(id + ".xml");
+        File ofile = new File(id + "_page." + ext);
         Bimage page = null;
         Bimage scaled;
         Geometry gt = null;
@@ -75,7 +79,7 @@ public class Viewer {
         page.add(gt.getWords(), Color.BLUE, 1);
         scaled = new Bimage(page, 1.0);
         //Display.draw(scaled);
-        scaled.write(ofile, "tiff");
-        System.err.println("output=" + ofile);
+        scaled.write(ofile, ext);
+        System.out.println("output=" + ofile);
     }
 }

@@ -69,7 +69,7 @@ public class Aligner {
      *
      * @param first
      * @param second
-     * @return
+     * @return HTML representation of the alignment
      */
     private static String toHTML(String first, String second) {
         int l1 = first.length();

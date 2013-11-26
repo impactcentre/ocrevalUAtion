@@ -37,10 +37,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Creates a StringBuilder with the (normalized) textual content in
- * a file. Normalization collapses white-spaces and prefers composed
- * form (see java.text.Normalizer.Form) For PAGE XML files it
- * selects only those elements listed in a properties file.
+ * Creates a StringBuilder with the (normalized) textual content in a file.
+ * Normalization collapses white-spaces and prefers composed form (see
+ * java.text.Normalizer.Form) For PAGE XML files it selects only those elements
+ * listed in a properties file.
  *
  * @author R.C.C.
  */
@@ -62,7 +62,7 @@ public class TextContent {
         }
         String maxlenProp = prop.getProperty("maxlen");
         String defaultEncodingProp = prop.getProperty("defaultEncoding");
-        String typesProp = prop.getProperty("TextRegionTypes");
+        String typesProp = prop.getProperty("PAGE.TextRegionTypes");
         String separator = ",\\p{Space}+";
 
         maxlen = (maxlenProp == null) ? 1000 : Integer.parseInt(maxlenProp);
@@ -93,11 +93,14 @@ public class TextContent {
             case PAGE:
                 readPageFile(file, filter);
                 break;
-            case TXT:
+            case TEXT:
                 readTextFile(file, filter);
                 break;
             case FR10:
                 readFR10File(file, filter);
+                break;
+            case HOCR:
+                readHOCRFile(file, filter);
                 break;
             default:
                 throw new IOException("Unsupported file format " + type);
@@ -156,14 +159,14 @@ public class TextContent {
     }
 
     /**
-     * Get the region type: if the attribute is not available then
-     * return unknown type
+     * Get the region type: if the attribute is not available then return
+     * unknown type
      *
      * @param region
-     * @return
+     * @return the region type as specified by the type attribute
      */
-    private String getType(Node region) {
-        String type = Elements.getAttribute(region, "type");
+    private String getType(Element region) {
+        String type = region.getAttribute("type");
         if (type == null) {
             type = "unknown";
         }
@@ -213,7 +216,7 @@ public class TextContent {
         }
 
         for (int r = 0; r < regions.getLength(); ++r) {
-            Node region = regions.item(r);
+            Element region = (Element)regions.item(r);
             String type = getType(region);
             if (types.contains(type)) {
                 NodeList nodes = region.getChildNodes();
@@ -269,6 +272,41 @@ public class TextContent {
                     }
                 }
                 add(text.toString(), filter);
+            }
+        }
+        builder.trimToSize();
+    }
+
+    public void readHOCRFile(File file, CharFilter filter) {
+        Document doc = DocumentBuilder.parse(file);
+        String htmlEncoding = doc.getXmlEncoding();
+        NodeList lines = doc.getElementsByTagName("*");
+
+        if (htmlEncoding == null) {
+            NodeList metas = doc.getElementsByTagName("meta");
+            for (int nmeta = 0; nmeta < metas.getLength(); ++nmeta) {
+                Element meta = (Element) metas.item(nmeta);
+                if (meta.hasAttribute("http-equiv")
+                        && meta.hasAttribute("charset")) {
+                    encoding = meta.getAttribute("charset");
+                    System.err.println("HTML file " + file
+                            + " encoding is " + encoding);
+                }
+            }
+        } else {
+            encoding = htmlEncoding;
+            System.err.println("XHTML file " + file 
+                    + " encoding is " + encoding);
+        }
+        if (htmlEncoding == null) {
+            System.err.println("No encoding declaration in "
+                    + file + ". Using " + encoding);
+        }
+
+        for (int nline = 0; nline < lines.getLength(); ++nline) {
+            Element line = (Element) lines.item(nline);
+            if (line.getAttribute("class").equals("ocr_line")) {
+                add(line.getTextContent(), filter);
             }
         }
         builder.trimToSize();

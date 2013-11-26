@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
  */
 public enum FileType {
 
-    TXT, PAGE, FR10, HOC, UNKNOWN;
+    TEXT, PAGE, FR10, HOCR, ALTO, UNKNOWN;
     String tag;
     String schemaLocation;  // schema URL
 
@@ -46,12 +46,19 @@ public enum FileType {
         } catch (IOException ex) {
             Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
         }
+        TEXT.tag = null;  // no tag for this type 
+        TEXT.schemaLocation = null; // no schema associated to this type
         PAGE.tag = "PcGts";
-        PAGE.schemaLocation = 
-                StringNormalizer.reduceWS(prop.getProperty("schemaLocation.PAGE"));
+        PAGE.schemaLocation
+                = StringNormalizer.reduceWS(prop.getProperty("schemaLocation.PAGE"));
         FR10.tag = "document";
-        FR10.schemaLocation = 
-                StringNormalizer.reduceWS(prop.getProperty("schemaLocation.FR10"));
+        FR10.schemaLocation
+                = StringNormalizer.reduceWS(prop.getProperty("schemaLocation.FR10"));
+        ALTO.tag = "alto";
+        ALTO.schemaLocation
+                = StringNormalizer.reduceWS(prop.getProperty("schemaLocation.ALTO"));
+        HOCR.tag = "html";
+        HOCR.schemaLocation = null;  // no schema for this type 
     }
 
     /**
@@ -61,20 +68,27 @@ public enum FileType {
      */
     public static FileType valueOf(File file) {
         String name = file.getName().toLowerCase();
-     
+
         if (name.endsWith(".txt")) {
-            return TXT;
+            return TEXT;
         } else if (name.endsWith(".xml")) {
             Document doc = DocumentBuilder.parse(file);
-            Element root = Elements.getRootElement(doc);
+            Element root = doc.getDocumentElement();
             String doctype = root.getTagName();
-            String url = 
-                    StringNormalizer.reduceWS(Elements.getAttribute(root, "xsi:schemaLocation"));
-           
+            String url = StringNormalizer
+                    .reduceWS(root.getAttribute("xsi:schemaLocation"));
+
             if (doctype.equals(PAGE.tag) && url.contains(PAGE.schemaLocation)) {
                 return PAGE;
             } else if (doctype.equals(FR10.tag) && url.contains(FR10.schemaLocation)) {
                 return FR10;
+            }
+        } else if (name.endsWith(".html")) {
+            Document doc = DocumentBuilder.parse(file);
+            Element root = doc.getDocumentElement();
+            String doctype = root.getTagName();
+            if (doctype.equals(HOCR.tag)) {
+                return HOCR;
             }
         }
         return UNKNOWN;

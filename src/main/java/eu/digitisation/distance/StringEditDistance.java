@@ -146,8 +146,8 @@ public class StringEditDistance {
     /**
      * Computes separate statistics of errors for every character
      *
-     * @param s1 the reference text
-     * @param s2 the fuzzy text
+     * @param first the reference text
+     * @param second the fuzzy text
      * @return a counter with the number of insertions, substitutions and
      * deletions for every character
      */
@@ -267,70 +267,6 @@ public class StringEditDistance {
             }
         }
         return stats;
-    }
-
-    private static int ldist(BiCounter<Character, EdOp> b) {
-        return b.total() - b.value(null, EdOp.KEEP);
-    }
-
-    /**
-     * Computes separate statistics of errors for every character
-     *
-     * @param first the first string
-     * @param second the second string
-     * @return a counter with the number of insertions, substitutions and
-     * deletions for every character needed to transform the first string into
-     * the second
-     */
-    public static BiCounter<Character, EdOp> stats_with_bug(String first, String second) {
-        int i, j;
-        BiCounter<Character, EdOp>[][] A = new BiCounter[2][second.length() + 1];
-
-        // Create table
-        A[0] = new BiCounter[second.length() + 1];
-        A[1] = new BiCounter[second.length() + 1];
-        for (j = 0; j <= second.length(); ++j) {
-            A[0][j] = new BiCounter<>();
-            A[1][j] = new BiCounter<>();
-        }
-
-        // Compute first row
-        for (j = 1; j <= second.length(); ++j) {
-            A[0][j].add(second.charAt(j - 1), EdOp.DELETE, j);
-        }
-
-        // Compute other rows
-        for (i = 1; i <= first.length(); ++i) {
-            char c1 = first.charAt(i - 1);
-            A[i % 2][0].clear();
-            A[i % 2][0].add(A[(i - 1) % 2][0])
-                    .inc(c1, EdOp.INSERT);
-            for (j = 1; j <= second.length(); ++j) {
-                char c2 = second.charAt(j - 1);
-                A[i % 2][j].clear();
-                if (c1 == c2) {
-                    A[i % 2][j].add(A[(i - 1) % 2][j - 1])
-                            .inc(c1, EdOp.KEEP);
-                } else {
-                    int del = ldist(A[i % 2][j - 1]);
-                    int sub = ldist(A[(i - 1) % 2][j - 1]);
-                    int ins = ldist(A[(i - 1) % 2][j]);
-                    int res = min(del, sub, ins);
-                    if (res == del) {
-                        A[i % 2][j].add(A[i % 2][j - 1])
-                                .inc(c2, EdOp.DELETE);
-                    } else if (res == sub) {
-                        A[i % 2][j].add(A[(i - 1) % 2][j - 1])
-                                .inc(c1, EdOp.SUBSTITUTE);
-                    } else {
-                        A[i % 2][j].add(A[(i - 1) % 2][j])
-                                .inc(c1, EdOp.INSERT);
-                    }
-                }
-
-            }
-        }
-        return A[first.length() % 2][second.length()];
     }
 
     /**

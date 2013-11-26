@@ -23,7 +23,6 @@ import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.math.BiCounter;
-import eu.digitisation.math.Counter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -52,7 +51,7 @@ public class ErrorMeasure {
 
         if (delta > 20) {
             System.err.println("Warning: files differ a "
-                    + delta + " % in character length");
+                    + String.format("%.2f", delta) + " % in character length");
         }
 
         return StringEditDistance.levenshtein(s1, s2)
@@ -77,7 +76,7 @@ public class ErrorMeasure {
 
         if (delta > 20) {
             System.err.println("Warning: files differ a "
-                    + delta + " % in character length");
+                    + String.format("%.2f", delta) + " % in character length");
         }
 
         return StringEditDistance.DL(s1, s2)
@@ -102,7 +101,7 @@ public class ErrorMeasure {
 
         if (delta > 20) {
             System.err.println("Warning: files differ a "
-                    + delta + " % in word length");
+                    + String.format("%.2f", delta) + " % in word length");
         }
         /*
          return ArrayEditDistance.levenshtein(a1, a2)

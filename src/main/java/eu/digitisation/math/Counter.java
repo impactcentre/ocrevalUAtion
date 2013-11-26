@@ -25,6 +25,7 @@ package eu.digitisation.math;
  * @param <Type> the class of objects being counted
  */
 public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
+    private static final long serialVersionUID = 1L;
 
     int total = 0;  // stores aggregated counts
 

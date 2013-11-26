@@ -28,6 +28,7 @@ import java.util.Set;
  */
 public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
         extends Counter<Pair<T1, T2>> {
+    private static final long serialVersionUID = 1L;
 
     Counter<T1> subtotal1;
     Counter<T2> subtotal2;
@@ -46,7 +47,7 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * @return this BiCounter
      */
     public BiCounter<T1, T2> add(T1 o1, T2 o2, int value) {
-        Pair<T1, T2> pair = new Pair(o1, o2);
+        Pair<T1, T2> pair = new Pair<T1,T2>(o1, o2);
         super.add(pair, value);
         subtotal1.add(o1, value);
         subtotal2.add(o2, value);
@@ -63,7 +64,7 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * @return this BiCounter
      */
     public BiCounter<T1, T2> set(T1 o1, T2 o2, int value) {
-        Pair<T1, T2> pair = new Pair(o1, o2);
+        Pair<T1, T2> pair = new Pair<T1,T2>(o1, o2);
         super.set(pair, value);
         subtotal1.set(o1, value);
         subtotal2.set(o2, value);
@@ -117,8 +118,7 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
     public int value(T1 o1, T2 o2) {
         if (o1 == null) {
             return subtotal2.value(o2);
-        } else if (o2 == null) {
-           
+        } else if (o2 == null) {       
             return subtotal1.value(o1);
         } else {
             Pair<T1, T2> pair = new Pair<T1, T2>(o1, o2);
