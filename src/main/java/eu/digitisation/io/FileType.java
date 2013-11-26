@@ -18,7 +18,6 @@
 package eu.digitisation.io;
 
 import eu.digitisation.xml.DocumentBuilder;
-import eu.digitisation.xml.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,13 +83,16 @@ public enum FileType {
                 return FR10;
             }
         } else if (name.endsWith(".html")) {
-            Document doc = DocumentBuilder.parse(file);
-            Element root = doc.getDocumentElement();
-            String doctype = root.getTagName();
-            if (doctype.equals(HOCR.tag)) {
-                return HOCR;
+            try {
+                org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
+                 if(!doc.head().select("meta[name=ocr-system").isEmpty() ) {
+                     return HOCR;
+                 }
+            } catch (IOException ex) {
+                Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return UNKNOWN;
     }
+
 }

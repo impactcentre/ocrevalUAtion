@@ -43,7 +43,7 @@ import org.w3c.dom.NodeList;
  *
  * @author R.C.C.
  */
-public class TextContent {
+public final class TextContent {
 
     StringBuilder builder;
     String encoding;
@@ -198,14 +198,14 @@ public class TextContent {
      * Reads textual content and collapse whitespace: contiguous spaces are
      * considered a single one
      *
-     * @param file the input text file
+     * @param file the input XML file
      * @param filter optional CharFilter
      */
     private void readPageFile(File file, CharFilter filter) {
         Document doc = DocumentBuilder.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList regions = doc.getElementsByTagName("TextRegion");
- 
+
         if (xmlEncoding != null) {
             encoding = xmlEncoding;
             System.err.println("XML file " + file + " encoding is " + encoding);
@@ -233,7 +233,7 @@ public class TextContent {
     /**
      * Reads textual content from FR10 XML file
      *
-     * @param file the input text file
+     * @param file the input XML file
      * @param filter optional CharFilter
      */
     private void readFR10File(File file, CharFilter filter) {
@@ -275,7 +275,37 @@ public class TextContent {
         builder.trimToSize();
     }
 
+    /**
+     * Reads textual content from HOCR HTML file
+     *
+     * @param file the input HTML file
+     * @param filter optional CharFilter
+     */
     public void readHOCRFile(File file, CharFilter filter) {
+        try {
+            org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
+            String htmlEncoding = doc.outputSettings().charset().toString();
+
+            if (htmlEncoding != null) {
+                encoding = htmlEncoding;
+                System.err.println("HTML file " + file + " encoding is " + encoding);
+            } else {
+                System.err.println("No charset declaration in "
+                        + file + ". Using " + encoding);
+            }
+
+            for (org.jsoup.nodes.Element e
+                    : doc.body().select("*[class=ocr_line")) {
+                String text = e.text();
+                add(text, filter);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        builder.trimToSize();
+    }
+
+    public void readHOCRXMLfile(File file, CharFilter filter) {
         Document doc = DocumentBuilder.parse(file);
         String htmlEncoding = doc.getXmlEncoding();
         NodeList lines = doc.getElementsByTagName("*");
