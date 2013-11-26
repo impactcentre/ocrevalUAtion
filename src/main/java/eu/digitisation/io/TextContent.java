@@ -216,7 +216,7 @@ public class TextContent {
         }
 
         for (int r = 0; r < regions.getLength(); ++r) {
-            Element region = (Element)regions.item(r);
+            Element region = (Element) regions.item(r);
             String type = getType(region);
             if (types.contains(type)) {
                 NodeList nodes = region.getChildNodes();
@@ -287,6 +287,8 @@ public class TextContent {
             for (int nmeta = 0; nmeta < metas.getLength(); ++nmeta) {
                 Element meta = (Element) metas.item(nmeta);
                 if (meta.hasAttribute("http-equiv")
+                        && meta.getAttribute("hht-equiv")
+                        .toLowerCase().equals("content-type")
                         && meta.hasAttribute("charset")) {
                     encoding = meta.getAttribute("charset");
                     System.err.println("HTML file " + file
@@ -295,7 +297,7 @@ public class TextContent {
             }
         } else {
             encoding = htmlEncoding;
-            System.err.println("XHTML file " + file 
+            System.err.println("XHTML file " + file
                     + " encoding is " + encoding);
         }
         if (htmlEncoding == null) {
