@@ -97,11 +97,19 @@ public class Aligner {
             B.set(i, 0, EdOp.DELETE);
             for (int j = 1; j <= second.length(); ++j) {
                 char c2 = second.charAt(l2 - j);
-                boolean notSpaces = !(Character.isSpaceChar(c1)
-                        || Character.isSpaceChar(c2));
-                if (c1 == c2 && notSpaces) {
+
+                if (c1 == c2) {
                     A[i % 2][j] = A[(i - 1) % 2][j - 1];
                     B.set(i, j, EdOp.KEEP);
+                } else if (Character.isSpaceChar(c1) ^ Character.isSpaceChar(c2)) {
+                    // No alignment between blank and not-blank
+                    if (A[(i - 1) % 2][j] < A[i % 2][j - 1]) {
+                        A[i % 2][j] = A[(i - 1) % 2][j] + 1;
+                        B.set(i, j, EdOp.DELETE);
+                    } else {
+                        A[i % 2][j] = A[i % 2][j - 1] + 1;
+                        B.set(i, j, EdOp.INSERT);
+                    }
                 } else {
                     A[i % 2][j] = min(A[(i - 1) % 2][j] + 1,
                             A[i % 2][j - 1] + 1,

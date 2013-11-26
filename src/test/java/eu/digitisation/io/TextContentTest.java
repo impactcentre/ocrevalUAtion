@@ -55,6 +55,7 @@ public class TextContentTest {
 
     /**
      * Test of toString method, of class TextContent.
+     *
      * @throws java.net.URISyntaxException
      */
     @Test

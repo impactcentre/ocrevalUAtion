@@ -1,4 +1,0 @@
-CER=7.28%
-CER(DL)=7.28%
-WER=18.41%
-WER (bag of words)=18.41%
