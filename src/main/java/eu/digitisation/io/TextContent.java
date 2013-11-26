@@ -18,7 +18,6 @@
 package eu.digitisation.io;
 
 import eu.digitisation.xml.DocumentBuilder;
-import eu.digitisation.xml.Elements;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -167,7 +166,7 @@ public class TextContent {
      */
     private String getType(Element region) {
         String type = region.getAttribute("type");
-        if (type == null) {
+        if (type.isEmpty()) {
             type = "unknown";
         }
         return type;
@@ -206,7 +205,7 @@ public class TextContent {
         Document doc = DocumentBuilder.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList regions = doc.getElementsByTagName("TextRegion");
-
+ 
         if (xmlEncoding != null) {
             encoding = xmlEncoding;
             System.err.println("XML file " + file + " encoding is " + encoding);
@@ -214,11 +213,10 @@ public class TextContent {
             System.err.println("No encoding declaration in "
                     + file + ". Using " + encoding);
         }
-
         for (int r = 0; r < regions.getLength(); ++r) {
             Element region = (Element) regions.item(r);
             String type = getType(region);
-            if (types.contains(type)) {
+            if (type == null || types.contains(type)) {
                 NodeList nodes = region.getChildNodes();
                 for (int n = 0; n < nodes.getLength(); ++n) {
                     Node node = nodes.item(n);

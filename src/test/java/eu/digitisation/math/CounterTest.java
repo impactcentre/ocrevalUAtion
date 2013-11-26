@@ -18,7 +18,6 @@
 
 package eu.digitisation.math;
 
-import eu.digitisation.math.Counter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -59,11 +58,11 @@ public class CounterTest {
         System.out.println("add");
         Object object = null;
         int value = 0;
-        Counter instance = new Counter();
+        Counter<Integer> instance = new Counter<>();
         instance.add(1, 3);
         instance.inc(1);
         instance.add(1, -1);
-        assertEquals(instance.get(1), 3);
+        assertEquals(instance.get(1).intValue(), 3);
     }
    
 }

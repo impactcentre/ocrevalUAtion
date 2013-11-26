@@ -60,10 +60,10 @@ public class ViewerTest {
      */
     @Test
     public void createTiffPage() throws IOException {
-    	String fileString = "src/test/resources/00445310.tif";
+    	String fileString = "src/test/resources/00439040.tif";//fromurl6705628094196039760.tif";
     	String[] args = {fileString};
     	Viewer.main(args);
-    	File newFile = new File("src/test/resources/00445310_page.tif");
+    	File newFile = new File("src/test/resources/00439040_page.tif");//fromurl6705628094196039760_page.tif");
     	long size = newFile.length();
 
     	assertTrue(size > 0);

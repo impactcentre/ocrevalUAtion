@@ -58,7 +58,7 @@ public class Viewer {
         Bimage page = null;
         Bimage scaled;
         Geometry gt = null;
-
+        
         if (ifile.exists()) {
             try {
                 page = new Bimage(ifile).toRGB();

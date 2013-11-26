@@ -74,15 +74,15 @@ public class Main {
             exit_gracefully();
         } else if (workingDirectory == null) {
             String dir = ocrfile.getAbsolutePath()
-                    .replaceFirst("[^File.separator]+", "");
+                    .replaceAll(File.separator + "(\\.|\\w)+$", "");
             workingDirectory = new File(dir);
         }
 
-        System.out.println("Working directory seto to " + workingDirectory);
+        System.out.println("Working directory set to " + workingDirectory);
 
         if (workingDirectory == null
                 || !workingDirectory.isDirectory()) {
-            System.err.println(workingDirectory + " is not a valid directory");
+            System.out.println(workingDirectory + " is not a valid directory");
         } else {
             try {
                 // input text       

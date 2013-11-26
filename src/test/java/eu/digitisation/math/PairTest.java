@@ -55,9 +55,9 @@ public class PairTest {
     public void testEquals() {
         System.out.println("equals");
         Object o = null;
-        Pair p1 = new Pair(new String("a"), "b");
-        Pair p2 = new Pair("a", "b");
-        Pair p3 = new Pair("a", "c");
+        Pair<String, String> p1 = new Pair<>("a", "b");
+        Pair<String, String> p2 = new Pair<>("a", "b");
+        Pair<String, String> p3 = new Pair<>("a", "c");
         assert (p1.equals(p2));
         assert (!p1.equals(p3));
     }
