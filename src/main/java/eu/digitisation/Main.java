@@ -47,13 +47,13 @@ public class Main {
                     break;  // avoids warning
                 case "-gt":
                     gtfile = new File(args[++n]);
-                    if (!args[n + 1].startsWith("-")) {
+                    if (n + 1 < args.length && !args[n + 1].startsWith("-")) {
                         gtencoding = args[++n];
                     }
                     break;
                 case "-ocr":
                     ocrfile = new File(args[++n]);
-                    if (!args[n + 1].startsWith("-")) {
+                    if (n + 1 < args.length && !args[n + 1].startsWith("-")) {
                         ocrencoding = args[++n];
                     }
                     break;
