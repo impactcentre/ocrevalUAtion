@@ -32,6 +32,7 @@ import java.util.logging.Logger;
  * @version 2012.06.20
  */
 public class CharFilter extends HashMap<String, String> {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Load the transformation map from a CVS file (one transformation per
@@ -103,7 +104,6 @@ public class CharFilter extends HashMap<String, String> {
 
             writer.write(output);
             writer.flush();
-            writer.close();
         } catch (IOException ex) {
             Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -122,7 +122,6 @@ public class CharFilter extends HashMap<String, String> {
 
             writer.write(output);
             writer.flush();
-            writer.close();
         } catch (IOException ex) {
             Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
         }

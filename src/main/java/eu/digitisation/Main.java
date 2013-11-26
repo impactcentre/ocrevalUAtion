@@ -44,6 +44,7 @@ public class Main {
             switch (arg) {
                 case "-h":
                     exit_gracefully();
+                    break;  // avoids warning
                 case "-gt":
                     gtfile = new File(args[++n]);
                     if (!args[n + 1].startsWith("-")) {

@@ -27,6 +27,7 @@ import java.awt.Polygon;
  * @author R.C.C.
  */
 public class TextRegion extends Polygon {
+    private static final long serialVersionUID = 1L;
 
     String id;
     String type;

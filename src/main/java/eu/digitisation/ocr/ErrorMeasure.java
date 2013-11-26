@@ -172,7 +172,7 @@ public class ErrorMeasure {
                         .append(sep).append(String.format("%.2f", rate));
                 writer.println(line.toString());
             }
-            writer.close();
+            writer.flush();
 
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
