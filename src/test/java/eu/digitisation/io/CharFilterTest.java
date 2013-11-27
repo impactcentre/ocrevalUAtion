@@ -65,7 +65,7 @@ public class CharFilterTest {
         File file = Paths.get(resourceUrl.toURI()).toFile();
         CharFilter filter = new CharFilter(file);
         String s = "a\u2028";
-        String expResult = "a ";
+        String expResult = "a\r";
         String result = filter.translate(s);
         assertEquals(expResult.length(), result.length());
         assertEquals(expResult, result);
