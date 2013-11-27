@@ -145,14 +145,14 @@ public class Aligner {
                     --i;
                     break;
                 case INSERT:
-                    builder1.append(span("blue", '#', second.charAt(l2 - j)));
-                    builder2.append(font("blue", second.charAt(l2 - j)));
+                    builder1.append(span("magenta", '#', second.charAt(l2 - j)));
+                    builder2.append(font("magenta", second.charAt(l2 - j)));
                     --j;
                     break;
                 case SUBSTITUTE:
-                    builder1.append(span("green",
+                    builder1.append(span("blue",
                             first.charAt(l1 - i), second.charAt(l2 - j)));
-                    builder2.append(span("green",
+                    builder2.append(span("blue",
                             second.charAt(l2 - j), first.charAt(l1 - i)));
                     --i;
                     --j;
