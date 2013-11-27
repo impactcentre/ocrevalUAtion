@@ -17,6 +17,7 @@
  */
 package eu.digitisation.image;
 
+import eu.digitisation.io.TextContent;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Image;
@@ -26,6 +27,11 @@ import java.awt.Polygon;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorConvertOp;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Extends BufferedImage with some useful operations
@@ -33,6 +39,8 @@ import java.io.IOException;
  * @author R.C.C.
  */
 public class Bimage extends BufferedImage {
+
+    static int defaultImageType;  // Guess image type
 
     /**
      * Default constructor
@@ -46,23 +54,24 @@ public class Bimage extends BufferedImage {
     }
 
     /**
-     * Create a BufferedImage from an Image
-     * Default type set to TYPE_INT_RGB intead of TYPE_CUSTOM
+     * Create a BufferedImage from an Image Default type set to TYPE_INT_RGB
+     * instead of TYPE_CUSTOM
      *
      * @param image the source image
      */
-	public Bimage(BufferedImage image) {
-		super(image.getWidth(null), image.getHeight(null),
-				image.getType() == 0 ? BufferedImage.TYPE_INT_RGB : image
-						.getType());
-		Graphics2D g = createGraphics();
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
-	}
+    public Bimage(BufferedImage image) {
+        super(image.getWidth(null), image.getHeight(null),
+                image.getType() == BufferedImage.TYPE_CUSTOM
+                ? BufferedImage.TYPE_INT_RGB
+                : image.getType());
+        Graphics2D g = createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+    }
 
     /**
-     * Create image from file content. Supported formats are: bmp, jpg, wbmp, jpeg,
-     * png, gif, tif (when used together with geotk-coverageio)
+     * Create image from file content. Supported formats are: bmp, jpg, wbmp,
+     * jpeg, png, gif, tif (when used together with geotk-coverageio)
      *
      * @param file the file storing the image
      * @throws IOException
@@ -133,8 +142,8 @@ public class Bimage extends BufferedImage {
          ColorConvertOp operation = new ColorConvertOp(space, null);
          return new Bimage(operation.filter(this, null));
          */
-        Bimage bim = 
-                new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Bimage bim
+                = new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = bim.createGraphics();
         g.drawImage(this, 0, 0, null);
         g.dispose();

@@ -38,8 +38,8 @@ import org.w3c.dom.NodeList;
 /**
  * Creates a StringBuilder with the (normalized) textual content in a file.
  * Normalization collapses white-spaces and prefers composed form (see
- * java.text.Normalizer.Form) For PAGE XML files it selects only those elements
- * listed in a properties file.
+ java.text.Normalizer.Form) For PAGE XML files it selects only those elements
+ listed in a propserties file.
  *
  * @author R.C.C.
  */
@@ -52,24 +52,23 @@ public final class TextContent {
     static final Set<String> types;
 
     static {
-
-        Properties prop = new Properties();
+        Properties props = new Properties();
         try (InputStream in = TextContent.class.getResourceAsStream("/General.properties")) {
-            prop.load(in);
+            props.load(in);
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String maxlenProp = prop.getProperty("maxlen");
-        String defaultEncodingProp = prop.getProperty("defaultEncoding");
-        String typesProp = prop.getProperty("PAGE.TextRegionTypes");
-        String separator = ",\\p{Space}+";
-
-        maxlen = (maxlenProp == null) ? 1000 : Integer.parseInt(maxlenProp);
-        defaultEncoding = (defaultEncodingProp == null)
-                ? System.getProperty("file.encoding").trim()
-                : defaultEncodingProp;
+        
+        maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
+        
+        defaultEncoding = props.getProperty("defaultEncoding", 
+                System.getProperty("file.encoding").trim());
+          
         types = new HashSet<>();
-        if (types != null) {
+          
+        String typesProp = props.getProperty("PAGE.TextRegionTypes");
+        String separator = ",\\p{Space}+";
+        if (typesProp != null) {
             types.addAll(Arrays.asList(typesProp.trim().split(separator)));
         }
     }
