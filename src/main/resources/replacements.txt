@@ -1,5 +1,6 @@
-2028 0020
-2029 0020
+FEFF 0020 # Byte order mark
+2028 000D # Line sparator
+2029 000D # Paragraph separator
 F1AC 003B
 EFA1 00E6
 EEC4 0063006B

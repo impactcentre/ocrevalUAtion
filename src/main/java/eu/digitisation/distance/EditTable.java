@@ -39,7 +39,7 @@ public class EditTable {
      *
      * @param b a byte
      * @param position the bit position
-     * @return the byte with that  bit set to the specified value
+     * @return the byte with that bit set to the specified value
      */
     public static boolean getBit(byte b, int position) {
         return ((b >> position) & 1) == 1;
