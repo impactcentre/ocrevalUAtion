@@ -54,16 +54,6 @@ public class Aligner {
         }
     }
 
-    // Auxiliary functions: some will be removed in the end
-    private static String font(String color, char c) {
-        return "<font color=\"" + color + "\">" + c + "</font>";
-    }
-
-    private static String span(String color, char text, char alt) {
-        return "<span title=\"" + alt + "\">"
-                + font(color, text) + "</span>";
-    }
-
     private static String font(String color, String text) {
         return "<font color=\"" + color + "\">" + text + "</font>";
     }
@@ -73,6 +63,13 @@ public class Aligner {
                 + font(color, text) + "</span>";
     }
 
+    private static String backspan(String color, String bgcolor, 
+            String text, String alt) {
+        return "<span title=\"" + alt + "\">"
+                + "<font color=\"" + color 
+                + "\" style=\"background-color:" + bgcolor 
+                + "\">" + text + "</font></span>";
+    }
     /**
      * Shows text alignment based on a pseudo-Levenshtein distance where
      * white-spaces are not allowed to be confused with text or vice-versa
@@ -142,10 +139,11 @@ public class Aligner {
         String s1;
         String s2;
 
-        builder1.append("<html>")
+        builder1.append("<html>\n<head>\n")
                 .append("<meta http-equiv=\"content-type\"")
-                .append("content=\"text/html; charset=UTF-8\"><body>")
-                .append("<h2>Reference</h2>");
+                .append("content=\"text/html; charset=UTF-8\">")
+                .append("</head>\n<body>\n")
+                .append("<h2>Reference</h2>\n");
         while (i > 0 && j > 0) {
             switch (B.get(i, j)) {
                 case KEEP:
@@ -160,9 +158,9 @@ public class Aligner {
                         ++len;
                     }
                     s1 = first.substring(l1 - i, l1 - i + len);
-                    s2 = s1.replaceAll(".", "#");
-                    builder1.append(font("red", s1));
-                    builder2.append(span("red", s2, s1));
+                    s2 = "";//s1.replaceAll(".", "&nbsp");
+                    builder1.append(backspan("black", "paleturquoise", s1, s2));
+                    builder2.append(backspan("black", "paleturquoise", s2, s1));
                     i -= len;
                     break;
                 case INSERT:
@@ -172,9 +170,9 @@ public class Aligner {
                         ++len;
                     }
                     s2 = second.substring(l2 - j, l2 - j + len);
-                    s1 = s2.replaceAll(".", "#");
-                    builder2.append(font("magenta", s2));
-                    builder1.append(span("magenta", s1, s2));
+                    s1 = "";//s2.replaceAll(".", "&nbsp;");
+                    builder2.append(backspan("black", "paleturquoise", s2, s1));
+                    builder1.append(backspan("black", "paleturquoise", s1, s2));
                     j -= len;
                     break;
                 case SUBSTITUTE:
@@ -185,8 +183,8 @@ public class Aligner {
                     }
                     s1 = first.substring(l1 - i, l1 - i + len);
                     s2 = second.substring(l2 - j, l2 - j + len);
-                    builder1.append(span("blue", s1, s2));
-                    builder2.append(span("blue",s2, s1));
+                    builder1.append(span("red", s1, s2));
+                    builder2.append(span("red",s2, s1));
                     i -= len;
                     j -= len;
                     break;
@@ -194,19 +192,19 @@ public class Aligner {
         }
         if (i > 0) {
             s1 = first.substring(l1 - i, l1);
-            s2 = s1.replaceAll(".", "#");
-            builder1.append(font("red", s1));
-            builder2.append(span("red", s2, s1));
+            s2 = "";//s1.replaceAll(".", "#");
+            builder1.append(font("paleturquoise", s1));
+            builder2.append(span("paleturquoise", s2, s1));
         }
         if (j > 0) {
             s2 = second.substring(l2 - j, l2);
-            s1 = s2.replaceAll(".", "#");
-            builder2.append(font("magenta", s2));
-            builder1.append(span("magenta", s1, s2));
+            s1 = "";//s2.replaceAll(".", "#");
+            builder2.append(font("paleturquoise", s2));
+            builder1.append(span("paleturquoise", s1, s2));
         }
 
-        builder1.append("<br/><br/><h2>OCR</h2>");
-        builder2.append("</body></html>");
+        builder1.append("<br/><br/>\n<h2>OCR</h2>\n");
+        builder2.append("\n</body>\n</html>");
 
         return builder1.toString() + builder2.toString();
 
