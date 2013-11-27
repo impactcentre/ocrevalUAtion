@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  * Creates a StringBuilder with the (normalized) textual content in a file.
  * Normalization collapses white-spaces and prefers composed form (see
  java.text.Normalizer.Form) For PAGE XML files it selects only those elements
- listed in a propserties file.
+ listed in a properties file.
  *
  * @author R.C.C.
  */
@@ -212,10 +212,12 @@ public final class TextContent {
             System.err.println("No encoding declaration in "
                     + file + ". Using " + encoding);
         }
+        
         for (int r = 0; r < regions.getLength(); ++r) {
             Element region = (Element) regions.item(r);
             String type = getType(region);
-            if (type == null || types.contains(type)) {
+            if (type == null || types.isEmpty() 
+                    || types.contains(type)) {
                 NodeList nodes = region.getChildNodes();
                 for (int n = 0; n < nodes.getLength(); ++n) {
                     Node node = nodes.item(n);
@@ -287,7 +289,8 @@ public final class TextContent {
 
             if (htmlEncoding != null) {
                 encoding = htmlEncoding;
-                System.err.println("HTML file " + file + " encoding is " + encoding);
+                System.err.println("HTML file " + file 
+                        + " encoding is " + encoding);
             } else {
                 System.err.println("No charset declaration in "
                         + file + ". Using " + encoding);
@@ -304,40 +307,28 @@ public final class TextContent {
         builder.trimToSize();
     }
 
-    public void readHOCRXMLfile(File file, CharFilter filter) {
+    public void readALTOfile(File file, CharFilter filter) {
         Document doc = DocumentBuilder.parse(file);
-        String htmlEncoding = doc.getXmlEncoding();
-        NodeList lines = doc.getElementsByTagName("*");
+        String xmlEncoding = doc.getXmlEncoding();
+        NodeList lines = doc.getElementsByTagName("TextLine");
 
-        if (htmlEncoding == null) {
-            NodeList metas = doc.getElementsByTagName("meta");
-            for (int nmeta = 0; nmeta < metas.getLength(); ++nmeta) {
-                Element meta = (Element) metas.item(nmeta);
-                if (meta.hasAttribute("http-equiv")
-                        && meta.getAttribute("hht-equiv")
-                        .toLowerCase().equals("content-type")
-                        && meta.hasAttribute("charset")) {
-                    encoding = meta.getAttribute("charset");
-                    System.err.println("HTML file " + file
-                            + " encoding is " + encoding);
-                }
-            }
+         if (xmlEncoding != null) {
+            encoding = xmlEncoding;
+            System.err.println("XML file " + file + " encoding is " + encoding);
         } else {
-            encoding = htmlEncoding;
-            System.err.println("XHTML file " + file
-                    + " encoding is " + encoding);
-        }
-        if (htmlEncoding == null) {
             System.err.println("No encoding declaration in "
                     + file + ". Using " + encoding);
         }
 
-        for (int nline = 0; nline < lines.getLength(); ++nline) {
-            Element line = (Element) lines.item(nline);
-            if (line.getAttribute("class").equals("ocr_line")) {
-                add(line.getTextContent(), filter);
-            }
-        }
+       for (int nline = 0;  nline < lines.getLength(); ++nline) {
+           Element line = (Element)lines.item(nline);
+           NodeList strings = line.getElementsByTagName("String");
+           for (int nstring = 0; nstring < strings.getLength(); ++nstring) {
+               Element string = (Element)strings.item(nstring);
+               String text = string.getAttribute("CONTENT");
+               add(text, filter);
+           }
+       }
         builder.trimToSize();
     }
 }
