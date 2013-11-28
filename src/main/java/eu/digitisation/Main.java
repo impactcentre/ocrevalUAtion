@@ -19,7 +19,7 @@ public class Main {
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1 [encoding] "
             + "-ocr file2 [encoding] "
-            + "-d output_directory [-r replacements_file]";
+            + "-o output [-r replacements_file]";
 
     private static void exit_gracefully() {
         System.err.println(helpMsg);
@@ -36,7 +36,7 @@ public class Main {
         File ocrfile = null;     // ocr-output
         String gtencoding = null;
         String ocrencoding = null;
-        File workingDirectory = null; // output directory 
+        File output = null; // output file 
 
         // Read parameters (String switch needs Java 1.7 or later)
         for (int n = 0; n < args.length; ++n) {
@@ -57,8 +57,8 @@ public class Main {
                         ocrencoding = args[++n];
                     }
                     break;
-                case "-d":
-                    workingDirectory = new File(args[++n]);
+                case "-o":
+                    output = new File(args[++n]);
                     break;
                 case "-r":
                     repfile = new File(args[++n]);
@@ -72,23 +72,20 @@ public class Main {
         if (gtfile == null || ocrfile == null) {
             System.err.println("Not enough arguments");
             exit_gracefully();
-        } else if (workingDirectory == null) {
+        } else if (output == null) {
             String dir = ocrfile.getAbsolutePath()
                     .replaceAll(File.separator + "(\\.|\\w)+$", "");
-            workingDirectory = new File(dir);
+            output = new File(dir);
         }
 
-        System.out.println("Working directory set to " + workingDirectory);
+        System.out.println("Output file set to " + output);
 
-        if (workingDirectory == null
-                || !workingDirectory.isDirectory()) {
-            System.out.println(workingDirectory + " is not a valid directory");
+        if (output == null) {
+            System.out.println(output + " is not a valid output");
         } else {
             String prefix;
-            prefix = workingDirectory + File.separator
-                    + gtfile.getName().replaceFirst("[.][^.]+$", "");
 
-            try (PrintWriter writer = new PrintWriter(prefix + "_out.html")) {
+            try (PrintWriter writer = new PrintWriter( output + ".html" )) {
 
                 // input text       
                 CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
