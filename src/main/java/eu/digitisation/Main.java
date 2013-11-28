@@ -84,7 +84,12 @@ public class Main {
                 || !workingDirectory.isDirectory()) {
             System.out.println(workingDirectory + " is not a valid directory");
         } else {
-            try {
+            String prefix;
+            prefix = workingDirectory + File.separator
+                    + gtfile.getName().replaceFirst("[.][^.]+$", "");
+
+            try (PrintWriter writer = new PrintWriter(prefix + "_out.html")) {
+
                 // input text       
                 CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
                 TextContent gt = new TextContent(gtfile, gtencoding, filter);
@@ -96,23 +101,39 @@ public class Main {
                 double cerDL = ErrorMeasure.cerDL(gts, ocrs);
                 double wer = ErrorMeasure.wer(gts, ocrs);
                 double bwer = BagOfWords.wer(gts, ocrs);
+
                 // Output 
-                String prefix;
-                prefix = workingDirectory + File.separator
-                        + gtfile.getName().replaceFirst("[.][^.]+$", "");
-                PrintWriter writer = new PrintWriter(prefix + "_out.txt");
-                writer.println("CER=" + String.format("%.2f", cer * 100) + "%");
-                writer.println("CER(DL)=" + String.format("%.2f", cerDL * 100) + "%");
-                writer.println("WER=" + String.format("%.2f", wer * 100) + "%");
-                writer.println("WER (bag of words)="
-                        + String.format("%.2f", bwer * 100) + "%");
-                writer.close();
-                // Spreadsheet data
-                File csvfile = new File(prefix + "_out.csv");
-                ErrorMeasure.stats2CSV(gts, ocrs, csvfile, ';');
+                writer.println("<html>");
+                writer.println(" <head>");
+                writer.println("  <meta http-equiv=\"content-type\""
+                        + "content=\"text/html; charset=UTF-8\">");
+                writer.println(" </head>");
+                writer.println(" <body>");
+                writer.println("   <h2>General results</h2>");
+                writer.println("  <ul>");
+                writer.append("<li>CER=")
+                        .append(String.format("%.2f", cer * 100))
+                        .append("%</li>");
+                writer.append("<li>CER(DL)=")
+                        .append(String.format("%.2f", cerDL * 100))
+                        .append("%</li>");
+                writer.append("<li>WER=")
+                        .append(String.format("%.2f", wer * 100))
+                        .append("%</li>");
+                writer.append("<li>WER (bag of words)=")
+                        .append(String.format("%.2f", bwer * 100)).
+                        append("%</li>");
+                writer.println("  </ul>");
+                // Detailed statistics
+                writer.println(" <h2>Error rate per character ant type</h2>");
+                writer.println("<table border=\"1\" align=\"left\">\n<tl><td>");
+                writer.append(ErrorMeasure.stats(gts, ocrs,
+                        "</td></tr>\n<tr><td align=\"right\">", 
+                        "</td><td align=\"right\">"));
+                writer.println("</td></tr>\n</table>");
                 // Graphical presentation of differences
-                File htmlfile = new File(prefix + "_out.html");
-                Aligner.asHTML(gts, ocrs, htmlfile);
+                writer.append(Aligner.toHTML(gts, ocrs));
+                writer.close();
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }

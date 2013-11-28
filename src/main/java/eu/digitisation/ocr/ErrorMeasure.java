@@ -61,8 +61,8 @@ public class ErrorMeasure {
          return (l1 - l2 + indel) / l1;
          */
     }
-    
-     /**
+
+    /**
      * Compute character error rate using Damerau-Levenshtein distance
      *
      * @param s1 the reference text
@@ -126,56 +126,45 @@ public class ErrorMeasure {
     }
 
     /**
-     * Prints separate statistics of errors for every character in spreadsheet
-     * (CSV) format
+     * Prints separate statistics of errors for every character
      *
      * @param s1 the reference text
      * @param s2 the fuzzy text
-     * @param file the output file
-     * @param fieldSeparator filed separator in CSV
-     * @throws java.io.FileNotFoundException
+     * @param recordSeparator text between data records
+     * @param fieldSeparator text between data fields
+     * @return text with the statistics: every character separated by a record
+     * separator and every type of edit operation separated by field separator.
      *
      */
-    public static void stats2CSV(String s1, String s2,
-            File file, char fieldSeparator)
-            throws FileNotFoundException {
-        String sep = fieldSeparator + " ";
-        StringBuilder line = new StringBuilder();
-       
-        try (PrintWriter writer = new PrintWriter(file)) {
-            writer.println("Error rate per character ant type");
-            // Statistics per character
-            line.append("Character")
-                    .append(sep).append("Total")
-                    .append(sep).append("Spurious")
-                    .append(sep).append("Confused")
-                    .append(sep).append("Lost")
-                    .append(sep).append("Error rate");
-            writer.println(line.toString());
-            BiCounter<Character, EdOp> stats = StringEditDistance.stats(s1, s2);
-            for (Character c : stats.leftKeySet()) {
-                int spu = stats.value(c, EdOp.INSERT);
-                int sub = stats.value(c, EdOp.SUBSTITUTE);
-                int add = stats.value(c, EdOp.DELETE);
-                int tot = stats.value(c, EdOp.KEEP) + sub + add;
-                double rate = (spu + sub + add) / (double) tot * 100;
+    public static String stats(String s1, String s2,
+            String recordSeparator, String fieldSeparator) {
+        StringBuilder builder = new StringBuilder();
+        BiCounter<Character, EdOp> stats = StringEditDistance.stats(s1, s2);
 
-                line.setLength(0);
-                line.append(c)
-                        .append("[")
-                        .append(Integer.toHexString(c))
-                        .append("]")
-                        .append(sep).append(tot)
-                        .append(sep).append(spu)
-                        .append(sep).append(sub)
-                        .append(sep).append(add)
-                        .append(sep).append(String.format("%.2f", rate));
-                writer.println(line.toString());
-            }
-            writer.flush();
+        builder.append("Character")
+                .append(fieldSeparator).append("Total")
+                .append(fieldSeparator).append("Spurious")
+                .append(fieldSeparator).append("Confused")
+                .append(fieldSeparator).append("Lost")
+                .append(fieldSeparator).append("Error rate");
 
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        for (Character c : stats.leftKeySet()) {
+            int spu = stats.value(c, EdOp.INSERT);
+            int sub = stats.value(c, EdOp.SUBSTITUTE);
+            int add = stats.value(c, EdOp.DELETE);
+            int tot = stats.value(c, EdOp.KEEP) + sub + add;
+            double rate = (spu + sub + add) / (double) tot * 100;
+            builder.append(recordSeparator);
+            builder.append(c)
+                    .append("[")
+                    .append(Integer.toHexString(c))
+                    .append("]")
+                    .append(fieldSeparator).append(tot)
+                    .append(fieldSeparator).append(spu)
+                    .append(fieldSeparator).append(sub)
+                    .append(fieldSeparator).append(add)
+                    .append(fieldSeparator).append(String.format("%.2f", rate));
         }
+        return builder.toString();
     }
 }

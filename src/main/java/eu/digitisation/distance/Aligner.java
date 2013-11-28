@@ -78,7 +78,7 @@ public class Aligner {
      * @param second
      * @return HTML representation of the alignment
      */
-    private static String toHTML(String first, String second) {
+    public static String toHTML(String first, String second) {
         int l1 = first.length();
         int l2 = second.length();
         int[][] A;
@@ -139,10 +139,7 @@ public class Aligner {
         String s1;
         String s2;
 
-        builder1.append("<html>\n<head>\n")
-                .append("<meta http-equiv=\"content-type\"")
-                .append("content=\"text/html; charset=UTF-8\">")
-                .append("</head>\n<body>\n")
+        builder1
                 .append("<h2>Reference</h2>\n");
         while (i > 0 && j > 0) {
             switch (B.get(i, j)) {
