@@ -17,7 +17,7 @@ public class Main {
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1 [encoding] "
             + "-ocr file2 [encoding] "
-            + "-d output_directory [-r replacements_file]";
+            + "-o output [-r replacements_file]";
 
     private static void exit_gracefully() {
         System.err.println(helpMsg);
@@ -30,11 +30,11 @@ public class Main {
     public static void main(String[] args) {
 
         File repfile = null;     // char filter
-        File gtfile = null;      // ground-truth))
+        File gtfile = null;      // ground-truth
         File ocrfile = null;     // ocr-output
         String gtencoding = null;
         String ocrencoding = null;
-        File workingDirectory = null; // output directory 
+        File workingDirectory = null; // working directory 
 
         // Read parameters (String switch needs Java 1.7 or later)
         for (int n = 0; n < args.length; ++n) {
@@ -76,7 +76,7 @@ public class Main {
             workingDirectory = new File(dir);
         }
         System.out.println("Working directory set to " + workingDirectory);
-        
+
         if (workingDirectory == null
                 || !workingDirectory.isDirectory()) {
             System.out.println(workingDirectory + " is not a valid directory");
@@ -85,7 +85,7 @@ public class Main {
                     + gtfile.getName().replaceFirst("[.][^.]+$", "");
             File ofile = new File(prefix + "_out.html");
             CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
- 
+
             // Prepare inputs
             TextContent gt = new TextContent(gtfile, gtencoding, filter);
             TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
