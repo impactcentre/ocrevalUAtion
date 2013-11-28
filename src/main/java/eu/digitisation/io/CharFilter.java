@@ -74,7 +74,7 @@ public class CharFilter extends HashMap<String, String> {
         }
         return s;
     }
-
+    
     /**
      * Converts the contents of a file into a CharSequence
      */

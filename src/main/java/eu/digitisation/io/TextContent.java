@@ -47,6 +47,7 @@ public final class TextContent {
 
     StringBuilder builder;
     String encoding;
+    CharFilter filter;
     static final int maxlen;
     static final String defaultEncoding;
     static final Set<String> types;
@@ -82,24 +83,26 @@ public final class TextContent {
      */
     public TextContent(File file, String encoding, CharFilter filter) {
         FileType type = FileType.valueOf(file);
+
+        builder = new StringBuilder();
+        this.encoding = (encoding == null) ? defaultEncoding : encoding;
+        this.filter = filter;
         try {
-            builder = new StringBuilder();
-            this.encoding = (encoding == null) ? defaultEncoding : encoding;
             switch (type) {
                 case PAGE:
-                    readPageFile(file, filter);
+                    readPageFile(file);
                     break;
                 case TEXT:
-                    readTextFile(file, filter);
+                    readTextFile(file);
                     break;
                 case FR10:
-                    readFR10File(file, filter);
+                    readFR10File(file);
                     break;
                 case HOCR:
-                    readHOCRFile(file, filter);
+                    readHOCRFile(file);
                     break;
                 case ALTO:
-                    readALTOfile(file, filter);
+                    readALTOfile(file);
                     break;
                 default:
                     throw new IOException("Unsupported file format " + type);
@@ -118,7 +121,8 @@ public final class TextContent {
     public TextContent(String s, CharFilter filter) {
         builder = new StringBuilder();
         encoding = defaultEncoding;
-        add(s, filter);
+        this.filter = filter;
+        add(s, true);
     }
 
     /**
@@ -141,15 +145,15 @@ public final class TextContent {
      * Add content after normalization and filtering
      *
      * @param s input text
-     * @param filter optional filter (can be null)
+     * @param pad true if space must be inserted between consecutive additions
      */
-    private void add(String s, CharFilter filter) {
+    private void add(String s, boolean pad) {
         String filtered = (filter == null)
                 ? s : filter.translate(s);
         String reduced = StringNormalizer.reduceWS(filtered);
         if (reduced.length() > 0) {
             String canonical = StringNormalizer.canonical(reduced);
-            if (builder.length() > 0) {
+            if (pad && builder.length() > 0) {
                 builder.append(' ');
             }
             builder.append(canonical);
@@ -182,15 +186,14 @@ public final class TextContent {
      * @param file the input text file
      * @param filter optional CharFilter
      */
-    private void readTextFile(File file, CharFilter filter) {
+    private void readTextFile(File file) {
         try {
             FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis, encoding);
             BufferedReader reader = new BufferedReader(isr);
-            int size = 0;
 
             while (reader.ready()) {
-                add(reader.readLine(), filter);
+                add(reader.readLine(), true);
             }
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
@@ -204,7 +207,7 @@ public final class TextContent {
      * @param file the input XML file
      * @param filter optional CharFilter
      */
-    private void readPageFile(File file, CharFilter filter) {
+    private void readPageFile(File file) {
         Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList regions = doc.getElementsByTagName("TextRegion");
@@ -227,7 +230,7 @@ public final class TextContent {
                     Node node = nodes.item(n);
                     if (node.getNodeName().equals("TextEquiv")) {
                         String text = node.getTextContent();
-                        add(text, filter);
+                        add(text, true);
                     }
                 }
             }
@@ -241,9 +244,9 @@ public final class TextContent {
      * @param file the input XML file
      * @param filter optional CharFilter
      */
-    private void readFR10File(File file, CharFilter filter) {
+    private void readFR10File(File file) {
         Document doc = DocumentParser.parse(file);
-        String xmlEncoding = doc.getXmlEncoding();
+        String xmlEncoding = doc.getXmlEncoding(); 
         NodeList pars = doc.getElementsByTagName("par");
 
         if (xmlEncoding != null) {
@@ -274,7 +277,7 @@ public final class TextContent {
                         }
                     }
                 }
-                add(text.toString(), filter);
+                add(text.toString(), true);
             }
         }
         builder.trimToSize();
@@ -284,9 +287,8 @@ public final class TextContent {
      * Reads textual content from HOCR HTML file
      *
      * @param file the input HTML file
-     * @param filter optional CharFilter
      */
-    public void readHOCRFile(File file, CharFilter filter) {
+    public void readHOCRFile(File file) {
         try {
             org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
             String htmlEncoding = doc.outputSettings().charset().toString();
@@ -303,7 +305,7 @@ public final class TextContent {
             for (org.jsoup.nodes.Element e
                     : doc.body().select("*[class=ocr_line")) {
                 String text = e.text();
-                add(text, filter);
+                add(text, true);
             }
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
@@ -311,7 +313,12 @@ public final class TextContent {
         builder.trimToSize();
     }
 
-    public void readALTOfile(File file, CharFilter filter) {
+    /**
+     * Reads textual content from HOCR HTML file
+     *
+     * @param file
+     */
+    public void readALTOfile(File file) {
         Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList lines = doc.getElementsByTagName("TextLine");
@@ -330,7 +337,7 @@ public final class TextContent {
             for (int nstring = 0; nstring < strings.getLength(); ++nstring) {
                 Element string = (Element) strings.item(nstring);
                 String text = string.getAttribute("CONTENT");
-                add(text, filter);
+                add(text, true);
             }
         }
         builder.trimToSize();
