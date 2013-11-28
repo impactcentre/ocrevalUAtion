@@ -134,7 +134,7 @@ public class Main {
                     Aligner.alignmentTable(gts, ocrs));
             // Stats
             builder.addTextElement(body, "h2",
-                    "Error rate per character ant type");
+                    "Error rate per character and type");
             builder.addElement(body, ErrorMeasure.stats(gts, ocrs));
             builder.write(ofile);
 
