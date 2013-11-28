@@ -111,28 +111,31 @@ public class Main {
                 writer.println(" <body>");
                 writer.println("   <h2>General results</h2>");
                 writer.println("  <ul>");
-                writer.append("<li>CER=")
+                writer.append("    <li>CER=")
                         .append(String.format("%.2f", cer * 100))
-                        .append("%</li>");
-                writer.append("<li>CER(DL)=")
+                        .append("%</li>\n");
+                writer.append("    <li>CER(DL)=")
                         .append(String.format("%.2f", cerDL * 100))
-                        .append("%</li>");
-                writer.append("<li>WER=")
+                        .append("%</li>\n");
+                writer.append("    <li>WER=")
                         .append(String.format("%.2f", wer * 100))
-                        .append("%</li>");
-                writer.append("<li>WER (bag of words)=")
+                        .append("%</li>\n");
+                writer.append("    <li>WER (bag of words)=")
                         .append(String.format("%.2f", bwer * 100)).
                         append("%</li>");
                 writer.println("  </ul>");
+
+                // Graphical presentation of differences
+                writer.println(" <h2>Difference spotting</h2>");
+                writer.append(Aligner.toHTML(gts, ocrs));
                 // Detailed statistics
                 writer.println(" <h2>Error rate per character ant type</h2>");
-                writer.println("<table border=\"1\" align=\"left\">\n<tl><td>");
+                writer.println(" <table border=\"1\">\n<tr><td>");
                 writer.append(ErrorMeasure.stats(gts, ocrs,
-                        "</td></tr>\n<tr><td align=\"right\">", 
+                        "</td></tr>\n<tr><td align=\"right\">",
                         "</td><td align=\"right\">"));
-                writer.println("</td></tr>\n</table>");
-                // Graphical presentation of differences
-                writer.append(Aligner.toHTML(gts, ocrs));
+                writer.println("</td></tr>\n </table>");
+                // End
                 writer.close();
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

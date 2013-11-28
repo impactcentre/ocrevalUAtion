@@ -139,8 +139,14 @@ public class Aligner {
         String s1;
         String s2;
 
-        builder1
-                .append("<h2>Reference</h2>\n");
+        builder1.append("  <table>\n")
+                .append("   <tr>\n")
+                .append("    <td align=\"center\"><h3>Reference</h3></td>\n")
+                .append("    <td align=\"center\"><h3>OCR</h3></td>\n")
+                .append("   </tr>\n")
+                .append("   <tr>\n")
+                .append("    <td>\n");
+        builder2.append("    <td>\n");
         while (i > 0 && j > 0) {
             switch (B.get(i, j)) {
                 case KEEP:
@@ -200,8 +206,10 @@ public class Aligner {
             builder1.append(span("paleturquoise", s1, s2));
         }
 
-        builder1.append("<br/><br/>\n<h2>OCR</h2>\n");
-        builder2.append("\n</body>\n</html>");
+        builder1.append("\n    </td>\n");
+        builder2.append("\n    </td>\n").
+                append("   </tr>\n  </table>\n")
+                .append(" </body>\n</html>");
 
         return builder1.toString() + builder2.toString();
 

@@ -18,17 +18,10 @@
 package eu.digitisation.ocr;
 
 import eu.digitisation.distance.EdOp;
-import eu.digitisation.Main;
 import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.math.BiCounter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Computes character and word error rates by comparing two texts
