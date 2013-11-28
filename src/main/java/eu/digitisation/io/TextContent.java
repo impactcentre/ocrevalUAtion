@@ -100,6 +100,9 @@ public final class TextContent {
             case HOCR:
                 readHOCRFile(file, filter);
                 break;
+            case ALTO:
+                readALTOfile(file, filter);
+                break;
             default:
                 throw new IOException("Unsupported file format " + type);
         }

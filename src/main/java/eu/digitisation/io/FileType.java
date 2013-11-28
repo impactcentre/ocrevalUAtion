@@ -62,6 +62,23 @@ public enum FileType {
 
     /**
      *
+     * @param locations1 string of URL schema locations separated by spaces
+     * @param locations2 string of URL schema locations separated by spaces
+     * @return True if at least one URL is in both locations
+     */
+    private static boolean sameLocation(String locations1, String locations2) {
+        String[] urls = locations2.split("\\p{Space}");
+
+        for (String url : urls) {
+            if (locations1.contains(url)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
      * @param file a file
      * @return the FileType of file
      */
@@ -74,20 +91,25 @@ public enum FileType {
             Document doc = DocumentBuilder.parse(file);
             Element root = doc.getDocumentElement();
             String doctype = root.getTagName();
-            String url = StringNormalizer
+            String location = StringNormalizer
                     .reduceWS(root.getAttribute("xsi:schemaLocation"));
 
-            if (doctype.equals(PAGE.tag) && url.contains(PAGE.schemaLocation)) {
+            if (doctype.equals(PAGE.tag)
+                    && sameLocation(location, PAGE.schemaLocation)) {
                 return PAGE;
-            } else if (doctype.equals(FR10.tag) && url.contains(FR10.schemaLocation)) {
+            } else if (doctype.equals(FR10.tag)
+                    && sameLocation(location, FR10.schemaLocation)) {
                 return FR10;
+            } else if (doctype.equals(ALTO.tag)
+                    && sameLocation(location, ALTO.schemaLocation)) {
+                return ALTO;
             }
         } else if (name.endsWith(".html")) {
             try {
                 org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
-                 if(!doc.head().select("meta[name=ocr-system").isEmpty() ) {
-                     return HOCR;
-                 }
+                if (!doc.head().select("meta[name=ocr-system").isEmpty()) {
+                    return HOCR;
+                }
             } catch (IOException ex) {
                 Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
             }
