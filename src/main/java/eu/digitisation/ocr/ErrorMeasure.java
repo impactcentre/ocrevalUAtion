@@ -22,6 +22,8 @@ import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.math.BiCounter;
+import eu.digitisation.xml.DocumentBuilder;
+import org.w3c.dom.Element;
 
 /**
  * Computes character and word error rates by comparing two texts
@@ -123,13 +125,58 @@ public class ErrorMeasure {
      *
      * @param s1 the reference text
      * @param s2 the fuzzy text
+     * @return an element containing table with the statistics: one character
+     * per row and one edit operation per column.
+     *
+     */
+    public static Element stats(String s1, String s2) {
+        BiCounter<Character, EdOp> stats = StringEditDistance.stats(s1, s2);
+        DocumentBuilder builder = new DocumentBuilder("table");
+        Element table = builder.root();
+        Element row = builder.addElement("tr");
+        
+        // features
+        table.setAttribute("border", "1");
+        // header
+        builder.addTextElement(row, "td", "Character");
+        builder.addTextElement(row, "td", "Hex code");
+        builder.addTextElement(row, "td", "Total");
+        builder.addTextElement(row, "td", "Spurious");
+        builder.addTextElement(row, "td", "Confused");
+        builder.addTextElement(row, "td", "Lost");
+        builder.addTextElement(row, "td", "Error rate");
+
+        // content 
+        for (Character c : stats.leftKeySet()) {
+            int spu = stats.value(c, EdOp.INSERT);
+            int sub = stats.value(c, EdOp.SUBSTITUTE);
+            int add = stats.value(c, EdOp.DELETE);
+            int tot = stats.value(c, EdOp.KEEP) + sub + add;
+            double rate = (spu + sub + add) / (double) tot * 100;
+            row = builder.addElement("tr");
+            builder.addTextElement(row, "td", c.toString());
+            builder.addTextElement(row, "td", Integer.toHexString(c));
+            builder.addTextElement(row, "td", "" + tot);
+            builder.addTextElement(row, "td", "" + spu);
+            builder.addTextElement(row, "td", "" + sub);
+            builder.addTextElement(row, "td", "" + add);
+            builder.addTextElement(row, "td", String.format("%.2f", rate));
+        }
+        return builder.document().getDocumentElement();
+    }
+
+    /**
+     * Prints separate statistics of errors for every character
+     *
+     * @param s1 the reference text
+     * @param s2 the fuzzy text
      * @param recordSeparator text between data records
      * @param fieldSeparator text between data fields
      * @return text with the statistics: every character separated by a record
      * separator and every type of edit operation separated by field separator.
      *
      */
-    public static String stats(String s1, String s2,
+    public static String stats2CSV(String s1, String s2,
             String recordSeparator, String fieldSeparator) {
         StringBuilder builder = new StringBuilder();
         BiCounter<Character, EdOp> stats = StringEditDistance.stats(s1, s2);

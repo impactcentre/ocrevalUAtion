@@ -5,11 +5,9 @@ import eu.digitisation.distance.Aligner;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.ocr.ErrorMeasure;
+import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.w3c.dom.Element;
 
 /**
  * Main class for ocrevalUAtion: version 0.92
@@ -77,69 +75,69 @@ public class Main {
                     .replaceAll(File.separator + "(\\.|\\w)+$", "");
             workingDirectory = new File(dir);
         }
-
         System.out.println("Working directory set to " + workingDirectory);
-
+        
         if (workingDirectory == null
                 || !workingDirectory.isDirectory()) {
             System.out.println(workingDirectory + " is not a valid directory");
         } else {
-            String prefix;
-            prefix = workingDirectory + File.separator
+            String prefix = workingDirectory + File.separator
                     + gtfile.getName().replaceFirst("[.][^.]+$", "");
+            File ofile = new File(prefix + "_out.html");
+            CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
+ 
+            // Prepare inputs
+            TextContent gt = new TextContent(gtfile, gtencoding, filter);
+            TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
 
-            try (PrintWriter writer = new PrintWriter(prefix + "_out.html")) {
+            // Compute error rates
+            String gts = gt.toString();
+            String ocrs = ocr.toString();
+            double cer = ErrorMeasure.cer(gts, ocrs);
+            double cerDL = ErrorMeasure.cerDL(gts, ocrs);
+            double wer = ErrorMeasure.wer(gts, ocrs);
+            double bwer = BagOfWords.wer(gts, ocrs);
 
-                // input text       
-                CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
-                TextContent gt = new TextContent(gtfile, gtencoding, filter);
-                TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
-                // Compute error rates
-                String gts = gt.toString();
-                String ocrs = ocr.toString();
-                double cer = ErrorMeasure.cer(gts, ocrs);
-                double cerDL = ErrorMeasure.cerDL(gts, ocrs);
-                double wer = ErrorMeasure.wer(gts, ocrs);
-                double bwer = BagOfWords.wer(gts, ocrs);
+            // HTML output
+            DocumentBuilder builder = new DocumentBuilder("html");
+            Element head = builder.addElement("head");
+            Element meta = builder.addElement(head, "meta");
+            Element body = builder.addElement("body");
 
-                // Output 
-                writer.println("<html>");
-                writer.println(" <head>");
-                writer.println("  <meta http-equiv=\"content-type\""
-                        + "content=\"text/html; charset=UTF-8\">");
-                writer.println(" </head>");
-                writer.println(" <body>");
-                writer.println("   <h2>General results</h2>");
-                writer.println("  <ul>");
-                writer.append("    <li>CER=")
-                        .append(String.format("%.2f", cer * 100))
-                        .append("%</li>\n");
-                writer.append("    <li>CER(DL)=")
-                        .append(String.format("%.2f", cerDL * 100))
-                        .append("%</li>\n");
-                writer.append("    <li>WER=")
-                        .append(String.format("%.2f", wer * 100))
-                        .append("%</li>\n");
-                writer.append("    <li>WER (bag of words)=")
-                        .append(String.format("%.2f", bwer * 100)).
-                        append("%</li>");
-                writer.println("  </ul>");
+            Element table = builder.addElement(body, "table");
 
-                // Graphical presentation of differences
-                writer.println(" <h2>Difference spotting</h2>");
-                writer.append(Aligner.toHTML(gts, ocrs));
-                // Detailed statistics
-                writer.println(" <h2>Error rate per character ant type</h2>");
-                writer.println(" <table border=\"1\">\n<tr><td>");
-                writer.append(ErrorMeasure.stats(gts, ocrs,
-                        "</td></tr>\n<tr><td align=\"right\">",
-                        "</td><td align=\"right\">"));
-                writer.println("</td></tr>\n </table>");
-                // End
-                writer.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            // head content 
+            meta.setAttribute("http-equiv", "content-type");
+            meta.setAttribute("content", "text/html; charset=UTF-8");
+
+            // body 
+            builder.addTextElement(body, "h2", "General results");
+
+            table.setAttribute("border", "1");
+            Element row = builder.addElement(table, "tr");
+            builder.addTextElement(row, "td", "CER");
+            builder.addTextElement(row, "td",
+                    String.format("%.2f", cer * 100));
+            row = builder.addElement(table, "tr");
+            builder.addTextElement(row, "td", "CER-DL");
+            builder.addTextElement(row, "td",
+                    String.format("%.2f", cerDL * 100));
+            row = builder.addElement(table, "tr");
+            builder.addTextElement(row, "td", "WER");
+            builder.addTextElement(row, "td", String.format("%.2f", wer * 100));
+            row = builder.addElement(table, "tr");
+            builder.addTextElement(row, "td", "WER (bag of words)");
+            builder.addTextElement(row, "td", String.format("%.2f", bwer * 100));
+            // Alignments
+            builder.addTextElement(body, "h2", "Difference spotting");
+            builder.addElement(body,
+                    Aligner.alignmentTable(gts, ocrs));
+            // Stats
+            builder.addTextElement(body, "h2",
+                    "Error rate per character ant type");
+            builder.addElement(body, ErrorMeasure.stats(gts, ocrs));
+            builder.write(ofile);
+
         }
     }
 }

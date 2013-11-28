@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 R.C.C.
+ * Copyright (C) 2013 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,68 +17,159 @@
  */
 package eu.digitisation.xml;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
- * A builder and parser for XML documents
+ * Adds some useful auxiliary functions to handle XML documents
  *
- * @author R.C.C.
- * @version 2011.03.10
+ * @author R.C.C
  */
 public class DocumentBuilder {
 
-    static javax.xml.parsers.DocumentBuilder docBuilder;
+    Document doc;
 
-    static {
+    /**
+     * Create an empty document
+     *
+     * @param doctype the document type
+     */
+    public DocumentBuilder(String doctype) {
         try {
-            docBuilder = javax.xml.parsers.DocumentBuilderFactory
-                    .newInstance().newDocumentBuilder();
+            doc = javax.xml.parsers.DocumentBuilderFactory
+                    .newInstance().newDocumentBuilder()
+                    .newDocument();
+            Element root = doc.createElement(doctype);
+            doc.appendChild(root);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(DocumentBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
-     * Create XML document from file content
-     * @param file the input file
-     * @return an XML document
+     *
+     * @return the org.w3c.dom.Document
      */
-    public static Document parse(java.io.File file) {
-        try {
-            return docBuilder.parse(file);
-        } catch (SAXException | IOException ex) {
-            Logger.getLogger(DocumentBuilder.class.getName())
-                    .log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    /**
-     * Create XML document from InputStream content
-     * @param is the InputStream with XML content 
-     * @return an XML document
-     */
-    public static Document parse(java.io.InputStream is) {
-        try {
-            return docBuilder.parse(is);
-        } catch (SAXException | IOException ex) {
-            Logger.getLogger(DocumentBuilder.class.getName())
-                    .log(Level.SEVERE, null, ex);
-        }
-
-        return null;
+    public Document document() {
+        return doc;
     }
     
     /**
-     * Create an empty document
-     * @return an empty document
+     * 
+     * @return the root element in this document
      */
-    public static Document newDocument() {
-        return docBuilder.newDocument();
+    public Element root() {
+        return doc.getDocumentElement();
     }
+
+    /**
+     *
+     * @param e The parent element
+     * @param name The child element name
+     * @return list of children of e with the given tag
+     */
+    public static List<Element> getChildElementsByTagName(Element e, String name) {
+        ArrayList<Element> list = new ArrayList<>();
+        NodeList children = e.getChildNodes();
+
+        for (int n = 0; n < children.getLength(); ++n) {
+            Node node = children.item(n);
+            if (node instanceof Element && node.getNodeName().equals(name)) {
+                list.add((Element) node);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Create a new element under the designated element in the document.
+     *
+     * @param parent the parent element
+     * @param tag The tag of the new child element
+     * @return the added element
+     */
+    public Element addElement(Element parent, String tag) {
+        Element element = doc.createElement(tag);
+        parent.appendChild(element);
+        return element;
+    }
+
+    /**
+     * Create a new element directly under the root element.
+     *
+     * @param tag The tag of the new child element
+     * @return the added element
+     */
+    public Element addElement(String tag) {
+        return addElement(root(), tag);
+    }
+
+    /**
+     * Inset an element a a child of another element
+     *
+     * @param parent the parent element
+     * @param child the child element (even external one)
+     * @return
+     */
+    public Element addElement(Element parent, Element child) {
+        if (parent.getOwnerDocument() == child.getOwnerDocument()) {
+            parent.appendChild(child);
+        } else {
+            parent.appendChild(doc.importNode(child, true));
+        }
+        return parent;
+    }
+
+    /**
+     * Add some text content to a given element
+     *
+     * @param parent the container element
+     * @param content the textual content
+     */
+    public void addText(Element parent, String content) {
+        parent.appendChild(doc.createTextNode(content));
+    }
+
+    /**
+     * Add a text element with the specified textual content under the
+     * designated element in the document.
+     *
+     * @param parent the parent element
+     * @param tag the new child element tag
+     * @param content the textual content
+     * @return the added element
+     */
+    public Element addTextElement(Element parent, String tag, String content) {
+        Element element = doc.createElement(tag);
+        element.appendChild(doc.createTextNode(content));
+        parent.appendChild(element);
+        return element;
+    }
+
+    /**
+     * Dump content to string
+     *
+     * @return the content as a string
+     */
+    @Override
+    public String toString() {
+        return new DocumentWriter(doc).toString();
+    }
+
+    /**
+     * Dump content to file
+     *
+     * @param file the output file
+     */
+    public void write(java.io.File file) {
+        new DocumentWriter(doc).write(file);
+    }
+
 }

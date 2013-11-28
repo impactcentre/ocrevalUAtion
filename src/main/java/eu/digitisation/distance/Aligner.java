@@ -18,11 +18,8 @@
 package eu.digitisation.distance;
 
 import static eu.digitisation.distance.EdOp.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import eu.digitisation.xml.DocumentBuilder;
+import org.w3c.dom.Element;
 
 /**
  * Aligner alignments as HTML text
@@ -37,56 +34,24 @@ public class Aligner {
     private static int min(int x, int y, int z) {
         return Math.min(x, Math.min(y, z));
     }
-
     /**
-     * Shows text alignment based on a pseudo-Levenshtein distance where
-     * white-spaces are not allowed to be confused with text or vice-versa
+     * Compute the table of minimal basic edit operations needed to transform
+     * first into second
      *
-     * @param first reference string
-     * @param second fuzzy string
-     * @param file the output file
+     * @param first source string
+     * @param second target string
+     * @return the table of minimal basic edit operations needed to transform
+     * first into second
      */
-    public static void asHTML(String first, String second, File file) {
-        try (PrintWriter writer = new PrintWriter(file)) {
-            writer.write(toHTML(first, second));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Aligner.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    private static EditTable align(String first, String second) {
+        int l1; // length of first 
+        int l2; // length of second
+        int[][] A; // distance table
+        EditTable B; // edit operations
 
-    private static String font(String color, String text) {
-        return "<font color=\"" + color + "\">" + text + "</font>";
-    }
-
-    private static String span(String color, String text, String alt) {
-        return "<span title=\"" + alt + "\">"
-                + font(color, text) + "</span>";
-    }
-
-    private static String backspan(String color, String bgcolor, 
-            String text, String alt) {
-        return "<span title=\"" + alt + "\">"
-                + "<font color=\"" + color 
-                + "\" style=\"background-color:" + bgcolor 
-                + "\">" + text + "</font></span>";
-    }
-    /**
-     * Shows text alignment based on a pseudo-Levenshtein distance where
-     * white-spaces are not allowed to be confused with text or vice-versa
-     *
-     * @param first
-     * @param second
-     * @return HTML representation of the alignment
-     */
-    public static String toHTML(String first, String second) {
-        int l1 = first.length();
-        int l2 = second.length();
-        int[][] A;
-        EditTable B;
-        StringBuilder builder1 = new StringBuilder();
-        StringBuilder builder2 = new StringBuilder();
-
-        // intialize
+        // intialize (will be  a separete function returning B)
+        l1 = first.length();
+        l2 = second.length();
         A = new int[2][second.length() + 1];
         B = new EditTable(first.length() + 1, second.length() + 1);
         // Compute first row
@@ -131,29 +96,64 @@ public class Aligner {
                 }
             }
         }
+        return B;
+    }
 
-        // Output
-        int i = first.length();
-        int j = second.length();
+    /**
+     * Shows text alignment based on a pseudo-Levenshtein distance where
+     * white-spaces are not allowed to be confused with text or vice-versa
+     *
+     * @param first
+     * @param second
+     * @return a table in HTML format showing the alignments
+     */
+    public static Element alignmentTable(String first, String second) {
+        EditTable B = align(first, second);
+        DocumentBuilder builder = new DocumentBuilder("table");
+        Element table = builder.root();
+        Element row;
+        Element cell1;
+        Element cell2;
+        int l1;
+        int l2;
         int len;
+        int i;
+        int j;
         String s1;
         String s2;
 
-        builder1.append("  <table>\n")
-                .append("   <tr>\n")
-                .append("    <td align=\"center\"><h3>Reference</h3></td>\n")
-                .append("    <td align=\"center\"><h3>OCR</h3></td>\n")
-                .append("   </tr>\n")
-                .append("   <tr>\n")
-                .append("    <td>\n");
-        builder2.append("    <td>\n");
+        // features
+        table.setAttribute("border", "1");
+        // content 
+        row = builder.addElement("tr");
+        cell1 = builder.addElement(row, "td");
+        cell2 = builder.addElement(row, "td");
+        cell1.setAttribute("align", "center");
+        cell2.setAttribute("align", "center");
+        builder.addTextElement(cell1, "h3", "Reference");
+        builder.addTextElement(cell2, "h3", "OCR");
+        row = builder.addElement("tr");
+        cell1 = builder.addElement(row, "td");
+        cell2 = builder.addElement(row, "td");
+
+        l1 = first.length();
+        l2 = second.length();
+        i = l1;
+        j = l2;
         while (i > 0 && j > 0) {
             switch (B.get(i, j)) {
                 case KEEP:
-                    builder1.append(first.charAt(l1 - i));
-                    builder2.append(first.charAt(l1 - i));
-                    --i;
-                    --j;
+                    len = 1;
+                    while (len < i && len < j
+                            && B.get(i - len, j - len) == EdOp.KEEP) {
+                        ++len;
+                    }
+                    s1 = first.substring(l1 - i, l1 - i + len);
+                    s2 = second.substring(l2 - j, l2 - j + len);
+                    builder.addText(cell1, s1);
+                    builder.addText(cell2, s2);
+                    i -= len;
+                    j -= len;
                     break;
                 case DELETE:
                     len = 1;
@@ -161,33 +161,42 @@ public class Aligner {
                         ++len;
                     }
                     s1 = first.substring(l1 - i, l1 - i + len);
-                    s2 = "";//s1.replaceAll(".", "&nbsp");
-                    builder1.append(backspan("black", "paleturquoise", s1, s2));
-                    builder2.append(backspan("black", "paleturquoise", s2, s1));
+                    //s2 = "";//s1.replaceAll(".", "&nbsp");
+                    builder.addTextElement(cell1, "font", s1)
+                            .setAttribute("style", "background-color:aquamarine");
+                    //builder.addText(cell2, s2);
                     i -= len;
                     break;
                 case INSERT:
                     len = 1;
-                    
+
                     while (len < j && B.get(i, j - len) == EdOp.INSERT) {
                         ++len;
                     }
                     s2 = second.substring(l2 - j, l2 - j + len);
-                    s1 = "";//s2.replaceAll(".", "&nbsp;");
-                    builder2.append(backspan("black", "paleturquoise", s2, s1));
-                    builder1.append(backspan("black", "paleturquoise", s1, s2));
+                    //s1 = "";//s2.replaceAll(".", "&nbsp;");
+                    builder.addTextElement(cell2, "font", s2)
+                            .setAttribute("style", "background-color:aquamarine");
+                    //builder.addText(cell2, s2);
                     j -= len;
                     break;
                 case SUBSTITUTE:
                     len = 1;
-                    while (len < i && len < j 
+                    while (len < i && len < j
                             && B.get(i - len, j - len) == EdOp.SUBSTITUTE) {
                         ++len;
                     }
                     s1 = first.substring(l1 - i, l1 - i + len);
                     s2 = second.substring(l2 - j, l2 - j + len);
-                    builder1.append(span("red", s1, s2));
-                    builder2.append(span("red",s2, s1));
+                    Element span1 = builder.addElement(cell1, "span");
+                    Element span2 = builder.addElement(cell2, "span");
+                    span1.setAttribute("title", s2);
+                    span2.setAttribute("title", s1);
+                    builder.addTextElement(span1, "font", s1)
+                            .setAttribute("color", "red");
+
+                    builder.addTextElement(span2, "font", s2)
+                            .setAttribute("color", "red");
                     i -= len;
                     j -= len;
                     break;
@@ -195,23 +204,17 @@ public class Aligner {
         }
         if (i > 0) {
             s1 = first.substring(l1 - i, l1);
-            s2 = "";//s1.replaceAll(".", "#");
-            builder1.append(font("paleturquoise", s1));
-            builder2.append(span("paleturquoise", s2, s1));
+            //s2 = "";//s1.replaceAll(".", "#");
+            builder.addTextElement(cell1, "font", s1)
+                    .setAttribute("style", "background-color:aquamarine");
+
         }
         if (j > 0) {
             s2 = second.substring(l2 - j, l2);
-            s1 = "";//s2.replaceAll(".", "#");
-            builder2.append(font("paleturquoise", s2));
-            builder1.append(span("paleturquoise", s1, s2));
+            //s1 = "";//s2.replaceAll(".", "#");
+            builder.addTextElement(cell2, "font", s2)
+                    .setAttribute("style", "background-color:aquamarine");
         }
-
-        builder1.append("\n    </td>\n");
-        builder2.append("\n    </td>\n").
-                append("   </tr>\n  </table>\n")
-                .append(" </body>\n</html>");
-
-        return builder1.toString() + builder2.toString();
-
+        return builder.document().getDocumentElement();
     }
 }

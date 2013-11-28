@@ -17,7 +17,7 @@
  */
 package eu.digitisation.io;
 
-import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.xml.DocumentParser;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,8 +38,8 @@ import org.w3c.dom.NodeList;
 /**
  * Creates a StringBuilder with the (normalized) textual content in a file.
  * Normalization collapses white-spaces and prefers composed form (see
- java.text.Normalizer.Form) For PAGE XML files it selects only those elements
- listed in a properties file.
+ * java.text.Normalizer.Form) For PAGE XML files it selects only those elements
+ * listed in a properties file.
  *
  * @author R.C.C.
  */
@@ -58,14 +58,14 @@ public final class TextContent {
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
-        
-        defaultEncoding = props.getProperty("defaultEncoding", 
+
+        defaultEncoding = props.getProperty("defaultEncoding",
                 System.getProperty("file.encoding").trim());
-          
+
         types = new HashSet<>();
-          
+
         String typesProp = props.getProperty("PAGE.TextRegionTypes");
         String separator = ",\\p{Space}+";
         if (typesProp != null) {
@@ -79,32 +79,33 @@ public final class TextContent {
      * @param file the input file
      * @param encoding the text encoding
      * @param filter optional CharFilter (can be null)
-     * @throws java.io.IOException
      */
-    public TextContent(File file, String encoding, CharFilter filter)
-            throws IOException {
+    public TextContent(File file, String encoding, CharFilter filter) {
         FileType type = FileType.valueOf(file);
-
-        builder = new StringBuilder();
-        this.encoding = (encoding == null) ? defaultEncoding : encoding;
-        switch (type) {
-            case PAGE:
-                readPageFile(file, filter);
-                break;
-            case TEXT:
-                readTextFile(file, filter);
-                break;
-            case FR10:
-                readFR10File(file, filter);
-                break;
-            case HOCR:
-                readHOCRFile(file, filter);
-                break;
-            case ALTO:
-                readALTOfile(file, filter);
-                break;
-            default:
-                throw new IOException("Unsupported file format " + type);
+        try {
+            builder = new StringBuilder();
+            this.encoding = (encoding == null) ? defaultEncoding : encoding;
+            switch (type) {
+                case PAGE:
+                    readPageFile(file, filter);
+                    break;
+                case TEXT:
+                    readTextFile(file, filter);
+                    break;
+                case FR10:
+                    readFR10File(file, filter);
+                    break;
+                case HOCR:
+                    readHOCRFile(file, filter);
+                    break;
+                case ALTO:
+                    readALTOfile(file, filter);
+                    break;
+                default:
+                    throw new IOException("Unsupported file format " + type);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -204,7 +205,7 @@ public final class TextContent {
      * @param filter optional CharFilter
      */
     private void readPageFile(File file, CharFilter filter) {
-        Document doc = DocumentBuilder.parse(file);
+        Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList regions = doc.getElementsByTagName("TextRegion");
 
@@ -215,11 +216,11 @@ public final class TextContent {
             System.err.println("No encoding declaration in "
                     + file + ". Using " + encoding);
         }
-        
+
         for (int r = 0; r < regions.getLength(); ++r) {
             Element region = (Element) regions.item(r);
             String type = getType(region);
-            if (type == null || types.isEmpty() 
+            if (type == null || types.isEmpty()
                     || types.contains(type)) {
                 NodeList nodes = region.getChildNodes();
                 for (int n = 0; n < nodes.getLength(); ++n) {
@@ -241,7 +242,7 @@ public final class TextContent {
      * @param filter optional CharFilter
      */
     private void readFR10File(File file, CharFilter filter) {
-        Document doc = DocumentBuilder.parse(file);
+        Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList pars = doc.getElementsByTagName("par");
 
@@ -292,7 +293,7 @@ public final class TextContent {
 
             if (htmlEncoding != null) {
                 encoding = htmlEncoding;
-                System.err.println("HTML file " + file 
+                System.err.println("HTML file " + file
                         + " encoding is " + encoding);
             } else {
                 System.err.println("No charset declaration in "
@@ -311,11 +312,11 @@ public final class TextContent {
     }
 
     public void readALTOfile(File file, CharFilter filter) {
-        Document doc = DocumentBuilder.parse(file);
+        Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList lines = doc.getElementsByTagName("TextLine");
 
-         if (xmlEncoding != null) {
+        if (xmlEncoding != null) {
             encoding = xmlEncoding;
             System.err.println("XML file " + file + " encoding is " + encoding);
         } else {
@@ -323,15 +324,15 @@ public final class TextContent {
                     + file + ". Using " + encoding);
         }
 
-       for (int nline = 0;  nline < lines.getLength(); ++nline) {
-           Element line = (Element)lines.item(nline);
-           NodeList strings = line.getElementsByTagName("String");
-           for (int nstring = 0; nstring < strings.getLength(); ++nstring) {
-               Element string = (Element)strings.item(nstring);
-               String text = string.getAttribute("CONTENT");
-               add(text, filter);
-           }
-       }
+        for (int nline = 0; nline < lines.getLength(); ++nline) {
+            Element line = (Element) lines.item(nline);
+            NodeList strings = line.getElementsByTagName("String");
+            for (int nstring = 0; nstring < strings.getLength(); ++nstring) {
+                Element string = (Element) strings.item(nstring);
+                String text = string.getAttribute("CONTENT");
+                add(text, filter);
+            }
+        }
         builder.trimToSize();
     }
 }

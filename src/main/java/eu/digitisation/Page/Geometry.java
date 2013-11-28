@@ -24,8 +24,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.DOMException;
+import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.DocumentBuilder;
-import eu.digitisation.xml.Elements;
 import java.util.List;
 
 /**
@@ -45,7 +45,7 @@ public class Geometry {
      * @param file the input file
      */
     public Geometry(File file) {
-        Document doc = DocumentBuilder.parse(file);
+        Document doc = DocumentParser.parse(file);
 
         // Get regions
         NodeList rnodes = doc.getElementsByTagName("TextRegion");

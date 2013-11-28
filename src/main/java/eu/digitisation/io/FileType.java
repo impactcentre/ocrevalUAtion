@@ -17,7 +17,7 @@
  */
 package eu.digitisation.io;
 
-import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.xml.DocumentParser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -88,7 +88,7 @@ public enum FileType {
         if (name.endsWith(".txt")) {
             return TEXT;
         } else if (name.endsWith(".xml")) {
-            Document doc = DocumentBuilder.parse(file);
+            Document doc = DocumentParser.parse(file);
             Element root = doc.getDocumentElement();
             String doctype = root.getTagName();
             String location = StringNormalizer

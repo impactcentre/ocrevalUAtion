@@ -17,9 +17,9 @@
  */
 package eu.digitisation.Page;
 
-import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.DocumentWriter;
-import eu.digitisation.xml.Elements;
+import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -125,7 +125,7 @@ public class Sort {
      * @throws java.io.IOException
      */
     public static Document sorted(File file) throws IOException {
-        Document doc = DocumentBuilder.parse(file);
+        Document doc = DocumentParser.parse(file);
         NodeList groups = doc.getElementsByTagName("OrderedGroup");
         for (int n = 0; n < groups.getLength(); ++n) {
             Node group = groups.item(n);

@@ -57,18 +57,22 @@ public class DocumentWriter {
         try {
             transformer.transform(source, result);
         } catch (TransformerException ex) {
-            Logger.getLogger(DocumentBuilder.class.getName())
+            Logger.getLogger(DocumentParser.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
         return result.getWriter().toString();
     }
 
+    /**
+     * Dump content to file
+     * @param file the output file 
+     */
     public void write(java.io.File file) {
         result = new javax.xml.transform.stream.StreamResult(file);
         try {
             transformer.transform(source, result);
         } catch (TransformerException ex) {
-            Logger.getLogger(DocumentBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DocumentParser.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
