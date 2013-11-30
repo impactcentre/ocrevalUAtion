@@ -22,7 +22,7 @@ import eu.digitisation.xml.DocumentBuilder;
 import org.w3c.dom.Element;
 
 /**
- * Aligner alignments as HTML text
+ * Alignments between 2 texts (output in HTML format)
  *
  * @author R.C.C
  */

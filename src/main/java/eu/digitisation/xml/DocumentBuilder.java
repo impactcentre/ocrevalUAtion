@@ -116,7 +116,7 @@ public class DocumentBuilder {
      *
      * @param parent the parent element
      * @param child the child element (even external one)
-     * @return
+     * @return the parent element
      */
     public Element addElement(Element parent, Element child) {
         if (parent.getOwnerDocument() == child.getOwnerDocument()) {

@@ -11,6 +11,9 @@ Instructions on how to use ocrevalUAtion can be found in the [wiki](https://gith
 
 The classes defined are listed below:
 
+[distance.Aligner] (https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/Aligner.java)<br>
+Shows the best alignment between two texts (output in HTML format)
+
 [distance.ArrayEditDistance<Type>](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/ArrayEditDistance.java)<br>
 Provides a basic implementations of some popular edit distance methods
 (currently, Levenshtein and indel) applied to arrays of objects.
@@ -28,6 +31,9 @@ operating on strings (currently, Levenshtein, Damerau-Levenshtein, and indel).
 [distance.TextFileEncoder](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/TextFileEncoder.java)<br>
 Encode a text file as an array of Integers (one code per word).
 
+[image.Bimage](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/image/Bimage.java)<br>
+Extends BufferedImage with some useful operations
+
 [io.CharFilter](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/CharFilter.java)<br>
 Transform text according to a mapping between (source, target) 
 Unicode character sequences.
@@ -37,7 +43,7 @@ Normalizes strings: collapse whitespace and use composed form (see java.text.Nor
 
 [io.TextContent](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/TextContent.java)<br>
 Reads and normalizes text from file content, 
-and optionally applies a CharFilter. Now, it supports text files and PAGE XML files (selects only those
+and optionally applies a CharFilter. Now, it supports text files, FineReader 10 files, ALTO files, hOCR files and PAGE XML files (selects only those
 elements listed in a properties file, TOC-entry, heading,
 drop-capital, paragraph).
 
@@ -53,13 +59,13 @@ requirements.
 [math.ArrayMath](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/math/ArrayMath.java)<br>
 Standard operations on arrays: sum, average, max, min, standard deviation.
 
-[math.Counter<T>](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/math/Counter.java)<br>
-Counts the number of different objects, a map between
-objects and integers which can be incremented and decremented.
-
 [math.BiCounter<T>](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/math/BiCounter.java)<br>
 Counts the number of different pairs of objects, a map between
 pairs of objects and integers which can be incremented and decremented.
+
+[math.Counter<T>](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/math/Counter.java)<br>
+Counts the number of different objects, a map between
+objects and integers which can be incremented and decremented.
 
 [math.Pair](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/math/Pair.java)<br>
 A pair of objects.
@@ -75,19 +81,18 @@ PAGE-XML regions order in the document can differ form reading order.
 This class makes the order of elements in the document consistent 
 with the reading order stored therein.
 
-
 [Page.TextRegion](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/Page/TextRegion.java)<br>
 A TextRegion in a PAGE-XML document.
 
 [Page.Viewer](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/Page/Viewer.java)<br>
 Shows text regions (as stored in PAGE XML) on image.
 
-[xml.DocumentBuilder](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/xml/DocumentBuilder.java)<br>
-A builder and parser for XML documents.
+[xml.DocumentParser](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/xml/DocumentParser.java)<br>
+A parser for XML documents.
 
 [xml.DocumentWriter](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/xml/DocumentWriter.java)<br>
 Writes XML document to String or File.
 
-[xml.Elements](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/xml/Elements.java)<br>
+[xml.DocumentBuilder](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/xml/DocumentBuilder.java)<br>
 Auxiliary functions to access and modify elements in a document.
 

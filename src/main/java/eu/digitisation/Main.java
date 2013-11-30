@@ -17,7 +17,7 @@ public class Main {
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1 [encoding] "
             + "-ocr file2 [encoding] "
-            + "-o output [-r replacements_file]";
+            + "-d output_dir [-r replacements_file]";
 
     private static void exit_gracefully() {
         System.err.println(helpMsg);
@@ -32,6 +32,7 @@ public class Main {
         File repfile = null;     // char filter
         File gtfile = null;      // ground-truth
         File ocrfile = null;     // ocr-output
+        File ofile = null;       // this program output
         String gtencoding = null;
         String ocrencoding = null;
         File workingDirectory = null; // working directory 
@@ -61,6 +62,9 @@ public class Main {
                 case "-r":
                     repfile = new File(args[++n]);
                     break;
+                case "-o":
+                    ofile = new File(args[++n]);
+                    break;
                 default:
                     System.err.println("Unrecognized option " + arg);
                     exit_gracefully();
@@ -71,7 +75,8 @@ public class Main {
             System.err.println("Not enough arguments");
             exit_gracefully();
         } else if (workingDirectory == null) {
-            String dir = ocrfile.getAbsolutePath()
+            String dir = ((ofile == null) ? ocrfile : ofile)
+                    .getAbsolutePath()
                     .replaceAll(File.separator + "(\\.|\\w)+$", "");
             workingDirectory = new File(dir);
         }
@@ -81,9 +86,11 @@ public class Main {
                 || !workingDirectory.isDirectory()) {
             System.out.println(workingDirectory + " is not a valid directory");
         } else {
-            String prefix = workingDirectory + File.separator
-                    + gtfile.getName().replaceFirst("[.][^.]+$", "");
-            File ofile = new File(prefix + "_out.html");
+            if (ofile == null) {
+                String prefix = workingDirectory + File.separator
+                        + gtfile.getName().replaceFirst("[.][^.]+$", "");
+                ofile = new File(prefix + "_out.html");
+            }
             CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
 
             // Prepare inputs
@@ -103,18 +110,18 @@ public class Main {
             Element head = builder.addElement("head");
             Element meta = builder.addElement(head, "meta");
             Element body = builder.addElement("body");
-
-            Element table = builder.addElement(body, "table");
-
+            Element table;
+            Element row;
+            
             // head content 
             meta.setAttribute("http-equiv", "content-type");
             meta.setAttribute("content", "text/html; charset=UTF-8");
 
             // body 
             builder.addTextElement(body, "h2", "General results");
-
+            table = builder.addElement(body, "table");
             table.setAttribute("border", "1");
-            Element row = builder.addElement(table, "tr");
+            row = builder.addElement(table, "tr");
             builder.addTextElement(row, "td", "CER");
             builder.addTextElement(row, "td",
                     String.format("%.2f", cer * 100));

@@ -126,7 +126,7 @@ public final class TextContent {
     }
 
     /**
-     *
+     * The length of the stored text
      * @return the length of the stored text
      */
     public int length() {
@@ -134,6 +134,7 @@ public final class TextContent {
     }
 
     /**
+     * The content as a string
      * @return the text a String
      */
     @Override
@@ -184,9 +185,8 @@ public final class TextContent {
      * considered a single one
      *
      * @param file the input text file
-     * @param filter optional CharFilter
      */
-    private void readTextFile(File file) {
+    protected void readTextFile(File file) {
         try {
             FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis, encoding);
@@ -205,9 +205,8 @@ public final class TextContent {
      * considered a single one
      *
      * @param file the input XML file
-     * @param filter optional CharFilter
      */
-    private void readPageFile(File file) {
+    protected void readPageFile(File file) {
         Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList regions = doc.getElementsByTagName("TextRegion");
@@ -242,9 +241,8 @@ public final class TextContent {
      * Reads textual content from FR10 XML file
      *
      * @param file the input XML file
-     * @param filter optional CharFilter
      */
-    private void readFR10File(File file) {
+    protected void readFR10File(File file) {
         Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding(); 
         NodeList pars = doc.getElementsByTagName("par");
@@ -288,7 +286,7 @@ public final class TextContent {
      *
      * @param file the input HTML file
      */
-    public void readHOCRFile(File file) {
+    protected void readHOCRFile(File file) {
         try {
             org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
             String htmlEncoding = doc.outputSettings().charset().toString();
@@ -318,7 +316,7 @@ public final class TextContent {
      *
      * @param file
      */
-    public void readALTOfile(File file) {
+    protected void readALTOfile(File file) {
         Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
         NodeList lines = doc.getElementsByTagName("TextLine");
