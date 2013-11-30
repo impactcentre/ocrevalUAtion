@@ -2,8 +2,10 @@ ocrevalUAtion [![Build Status](https://secure.travis-ci.org/impactcentre/ocreval
 =============
 
 This set of classes provides basic support to perform the comparison of
-two text files: a reference file (a ground-truth document, usually in
-PAGE XML format) and a the output from an OCR engine (a text file).
+two text files: a reference file (a ground-truth document) and a the output from an OCR engine (a text file).
+Supported formats include: text, FineReader 10 XML, PAGE XML, ALTO XML and hOCR HTML.
+
+A gentle introduction to OCR evaluation with this tool for users can be fund at https://sites.google.com/site/textdigitisation/
 
 You can download the latest release from [here](https://bintray.com/impactocr/maven/ocrevalUAtion).
 
