@@ -67,7 +67,7 @@ public class BImageTest {
      */
     @Test
     public void openTiffFile() throws Exception {
-        URL resourceUrl = getClass().getResource("/fromurl6705628094196039760.tif");
+        URL resourceUrl = getClass().getResource("/OfTheSciences.tif");
         File ifile = Paths.get(resourceUrl.toURI()).toFile();
         Bimage page = null;
 
