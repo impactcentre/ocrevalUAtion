@@ -15,12 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package eu.digitisation.Page;
-
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -34,39 +35,46 @@ import org.junit.Test;
  * @author rafa
  */
 public class ViewerTest {
-    
+
     public ViewerTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
     /**
      * Test of main method, of class WordScanner.
+     *
      * @throws java.io.IOException
+     * @throws java.net.URISyntaxException
      */
     @Test
-    public void createTiffPage() throws IOException {
-    	String fileString = "src/test/resources/fromurl6705628094196039760.tif";
-    	String[] args = {fileString};
-    	Viewer.main(args);
-    	File newFile = new File("src/test/resources/fromurl6705628094196039760_page.tif");
-    	long size = newFile.length();
+    public void createTiffPage() throws IOException, URISyntaxException {
+        URL resourceUrl = getClass().getResource("/00439040.tif");
+        File file = Paths.get(resourceUrl.toURI()).toFile();
+        String fileString = file.getCanonicalPath();//"00439040.tif";
+        String[] args = {fileString};
+        
+        Viewer.main(args);
+        
+        resourceUrl = getClass().getResource("/00439040_page.tif");
+        File newFile = Paths.get(resourceUrl.toURI()).toFile();
+        long size = newFile.length();
 
-    	assertTrue(size > 0);
+        assertTrue(size > 0);
     }
-    
+
 }

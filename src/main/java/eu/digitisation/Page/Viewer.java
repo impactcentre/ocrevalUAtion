@@ -53,7 +53,7 @@ public class Viewer {
         String ext = tokens[1];
         
         File ifile =  new File(id + "." + ext);
-        File xmlfile =  new File(id + ".xml");
+        File xmlfile =  new File(id + "_gt_PAGE.xml");
         File ofile = new File(id + "_page." + ext);
         Bimage page = null;
         Bimage scaled;
