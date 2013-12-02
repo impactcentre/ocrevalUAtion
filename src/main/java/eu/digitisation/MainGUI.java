@@ -33,21 +33,23 @@ import javax.swing.border.Border;
  *
  * @author R.C.C.
  */
-class FileDropArea extends JPanel {
+class FileSelector extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
 
-    JTextArea area;  // The area to display the filename
+    JTextPane area;  // The area to display the filename
     boolean accepted; // True if a successful drop took place
     JButton choose; // Optional file chooser
 
-    public FileDropArea(Color color, Color bgcolor,
+    public FileSelector(Color color, Color bgcolor,
             Border border, String desc) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(bgcolor);
         setBorder(border);
-        area = new JTextArea();
+        area = new JTextPane();
         add(area);
+        area.setFont(new Font("Verdana", Font.PLAIN, 12));
+        area.setForeground(color);
         area.setText("Drop here your " + desc);
         enableDragAndDrop(area);
         accepted = false;
@@ -55,7 +57,8 @@ class FileDropArea extends JPanel {
         //choose.setPreferredSize(new Dimension(40, 10));
         choose.setForeground(color);
         choose.setBackground(bgcolor);
-        choose.setFont(new Font("Verdana", Font.PLAIN, 10));  
+        choose.setFont(new Font("Verdana", Font.PLAIN, 10));
+        choose.addActionListener(this);
         add(choose, BorderLayout.EAST);
     }
 
@@ -63,7 +66,7 @@ class FileDropArea extends JPanel {
         return area.getText();
     }
 
-    private void enableDragAndDrop(final JTextArea area) {
+    private void enableDragAndDrop(final JTextPane area) {
         DropTarget target;
         target = new DropTarget(area, new DropTargetListener() {
             @Override
@@ -95,9 +98,38 @@ class FileDropArea extends JPanel {
                     area.setText(file.getCanonicalPath());
                     accepted = true;
                 } catch (UnsupportedFlavorException | IOException ex) {
+                    Logger.getLogger(FileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JButton pressed = (JButton) e.getSource();
+        if (pressed == choose) {
+            File file = choose("input_file");
+            if (file != null) {
+                try {
+                    area.setText(file.getCanonicalPath());
+                } catch (IOException ex) {
+                    Logger.getLogger(FileSelector.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                accepted = true;
+            }
+        }
+    }
+
+    private File choose(String defaultName) {
+        JFileChooser chooser = new JFileChooser();
+
+        chooser.setSelectedFile(new File(defaultName));
+        int returnVal = chooser.showOpenDialog(FileSelector.this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        } else {
+            return null;
+        }
     }
 }
 
@@ -109,13 +141,11 @@ public class MainGUI extends JFrame implements ActionListener {
     static final Border border = BorderFactory.createLineBorder(forecolor, 4);
 
     Container pane;  // top panel
-    JFileChooser fc; // output file selector
+    JButton trigger;  // Go button
     File[] files;  // input/output files
 
     public MainGUI() {
         pane = getContentPane();
-        fc = new JFileChooser();
-        fc.setSelectedFile(new File("output.html"));
 
         // frame attributes
         setTitle("Input files");
@@ -127,20 +157,20 @@ public class MainGUI extends JFrame implements ActionListener {
         //setLocationRelativeTo(null);
 
         // Create drop areas
-        pane.add(new FileDropArea(forecolor, bgcolor,
+        pane.add(new FileSelector(forecolor, bgcolor,
                 border, "ground-truth file"));
-        pane.add(new FileDropArea(forecolor, bgcolor,
+        pane.add(new FileSelector(forecolor, bgcolor,
                 border, "ocr file"));
-        pane.add(new FileDropArea(forecolor, bgcolor,
-                border, "equivalences file (if available)"));
+        pane.add(new FileSelector(forecolor, bgcolor,
+                border, "Unicode character equivalences file (if available)"));
 
         // Button with inverted colors
-        JButton button = new JButton("Generate report");
-        button.setForeground(bgcolor);
-        button.setBackground(forecolor);
-        button.addActionListener(this);
+        trigger = new JButton("Generate report");
+        trigger.setForeground(bgcolor);
+        trigger.setBackground(forecolor);
+        trigger.addActionListener(this);
 
-        pane.add(button, BorderLayout.SOUTH);
+        pane.add(trigger, BorderLayout.SOUTH);
         files = new File[4];
 
     }
@@ -149,8 +179,8 @@ public class MainGUI extends JFrame implements ActionListener {
         boolean ready = true;
         Component[] components = pane.getComponents();
 
-        for (int n = 0; n < 3; ++n) {
-            FileDropArea area = (FileDropArea) components[n];
+        for (int n = 0; n < 2; ++n) {
+            FileSelector area = (FileSelector) components[n];
             if (area.accepted) {
                 files[n] = new File(area.getFileName());
             }
@@ -163,27 +193,29 @@ public class MainGUI extends JFrame implements ActionListener {
         return ready;
     }
 
+    private File choose(String defaultName) {
+        JFileChooser chooser = new JFileChooser();
+
+        chooser.setSelectedFile(new File(defaultName));
+        int returnVal = chooser.showOpenDialog(MainGUI.this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        JButton button = (JButton) e.getSource();
-        System.out.println("Frame Closed." + pane.getComponent(1));
-        //dispose();
+        JButton pressed = (JButton) e.getSource();
 
-        boolean checked = checkInputFiles();
-        if (checked) {
-            int returnVal = fc.showOpenDialog(MainGUI.this);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                files[3] = fc.getSelectedFile();
-                //This is where a real application would open the file.
-                Report.report(files[0], "utf8", files[1], "utf8", files[2], files[3]);
-                try {
-                    System.out.println("Opening: " + files[3].getCanonicalPath() + ".");
-                } catch (IOException ex) {
-                    Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+        if (pressed == trigger) {
+            boolean checked = checkInputFiles();
+            if (checked) {
+                files[3] = choose("output.html");
+                if (files[3] != null) {
+                    Report.report(files[0], "utf8", files[1], "utf8", files[2], files[3]);
                 }
-            } else {
-                System.out.println("Open command cancelled by user.");
             }
         }
     }
