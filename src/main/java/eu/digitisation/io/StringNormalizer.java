@@ -31,13 +31,13 @@ public class StringNormalizer {
             = java.text.Normalizer.Form.NFC;
 
     /**
-     * Reduce whitespace.
+     * Reduce whitespace (including line and paragraph separators)
      *
      * @param s a string.
      * @return The string with simple spaces between words.
      */
     public static String reduceWS(String s) {
-        return s.replaceAll("\\p{Space}+", " ").trim();
+        return s.replaceAll("(\\p{Space}|\\p{general_category=Zl}|\\p{general_category=Zp})+", " ").trim();
     }
 
     /**
