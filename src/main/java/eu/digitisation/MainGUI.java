@@ -214,7 +214,9 @@ public class MainGUI extends JFrame implements ActionListener {
             if (checked) {
                 files[3] = choose("output.html");
                 if (files[3] != null) {
-                    Report.report(files[0], "utf8", files[1], "utf8", files[2], files[3]);
+                    Report.report(files[0], System.getProperty("file.encoding"), 
+                            files[1], System.getProperty("file.encoding"), 
+                            files[2], files[3]);
                 }
             }
         }
