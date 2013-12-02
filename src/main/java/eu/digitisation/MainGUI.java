@@ -27,76 +27,40 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.border.Border;
 
 /**
  *
  * @author R.C.C.
  */
-public class MainGUI extends JFrame implements ActionListener {
+class FileDropArea extends JPanel {
 
-    static final long serialVersionUID = 1L;
-    File gtfile;
-    File ocrfile;
-    File repfile;
-    File ofile;
-    JButton button;
-    JPanel upper;
-    JPanel middle;
-    JPanel lower;
-    JTextArea gt;
-    JTextArea ocr;
-    JTextArea rep;
-    JFileChooser fc;
+    private static final long serialVersionUID = 1L;
 
-    public MainGUI() {
+    JTextArea area;  // The area to display the filename
+    boolean accepted; // True if a successful drop took place
+    JButton choose; // Optional file chooser
 
-        setTitle("Input files");
-        setSize(400, 250);
-        setVisible(true);
-        setLayout(new BorderLayout());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        createAndShowGUI();
-        fc = new JFileChooser();
+    public FileDropArea(Color color, Color bgcolor,
+            Border border, String desc) {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(bgcolor);
+        setBorder(border);
+        area = new JTextArea();
+        add(area);
+        area.setText("Drop here your " + desc);
+        enableDragAndDrop(area);
+        accepted = false;
+        choose = new JButton("Or select the file");
+        //choose.setPreferredSize(new Dimension(40, 10));
+        choose.setForeground(color);
+        choose.setBackground(bgcolor);
+        choose.setFont(new Font("Verdana", Font.PLAIN, 10));  
+        add(choose, BorderLayout.EAST);
     }
 
-    private void createAndShowGUI() {
-        Container pane = getContentPane();
-        Color bgcolor = new Color(200, 240, 255);
-
-        //pane.setBackground((Color.BLUE));
-        // Button
-        button = new JButton("Go");
-        button.addActionListener(this);
-        pane.add(button, BorderLayout.EAST);
-
-        // Create JPanels 
-        upper = new JPanel();
-        upper.setBackground(bgcolor);
-        middle = new JPanel();
-        middle.setBackground(bgcolor);
-        lower = new JPanel();
-        lower.setBackground(bgcolor);
-        pane.add(upper, BorderLayout.NORTH);
-        pane.add(middle, BorderLayout.CENTER);
-        pane.add(lower, BorderLayout.SOUTH);
-
-        // Create JTextAreas
-        gt = new JTextArea(4, 10);
-        upper.add(gt);
-        gt.setText("Drop here your ground truth file");
-        enableDragAndDrop(gt);
-
-        ocr = new JTextArea(4, 10);
-        middle.add(ocr);
-        ocr.setText("Drop here your ocr file");
-        enableDragAndDrop(ocr);
-
-        rep = new JTextArea(4, 10);
-        lower.add(rep);
-        rep.setText("Drop here your replacements file");
-        enableDragAndDrop(rep);
-
-        //setLocationRelativeTo(null);
+    public String getFileName() {
+        return area.getText();
     }
 
     private void enableDragAndDrop(final JTextArea area) {
@@ -129,34 +93,98 @@ public class MainGUI extends JFrame implements ActionListener {
 
                     File file = (File) list.get(0);
                     area.setText(file.getCanonicalPath());
+                    accepted = true;
                 } catch (UnsupportedFlavorException | IOException ex) {
                 }
             }
         });
     }
+}
+
+public class MainGUI extends JFrame implements ActionListener {
+
+    static final long serialVersionUID = 1L;
+    static final Color bgcolor = Color.decode("#FAFAFA");
+    static final Color forecolor = Color.decode("#4C501E");
+    static final Border border = BorderFactory.createLineBorder(forecolor, 4);
+
+    Container pane;  // top panel
+    JFileChooser fc; // output file selector
+    File[] files;  // input/output files
+
+    public MainGUI() {
+        pane = getContentPane();
+        fc = new JFileChooser();
+        fc.setSelectedFile(new File("output.html"));
+
+        // frame attributes
+        setTitle("Input files");
+        setBackground(Color.decode("#FAFAFA"));
+        setSize(400, 250);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+        //setLocationRelativeTo(null);
+
+        // Create drop areas
+        pane.add(new FileDropArea(forecolor, bgcolor,
+                border, "ground-truth file"));
+        pane.add(new FileDropArea(forecolor, bgcolor,
+                border, "ocr file"));
+        pane.add(new FileDropArea(forecolor, bgcolor,
+                border, "equivalences file (if available)"));
+
+        // Button with inverted colors
+        JButton button = new JButton("Generate report");
+        button.setForeground(bgcolor);
+        button.setBackground(forecolor);
+        button.addActionListener(this);
+
+        pane.add(button, BorderLayout.SOUTH);
+        files = new File[4];
+
+    }
+
+    private boolean checkInputFiles() {
+        boolean ready = true;
+        Component[] components = pane.getComponents();
+
+        for (int n = 0; n < 3; ++n) {
+            FileDropArea area = (FileDropArea) components[n];
+            if (area.accepted) {
+                files[n] = new File(area.getFileName());
+            }
+            if (!(area.accepted && files[n].exists())) {
+                area.setBackground(Color.decode("#fffacd"));
+                area.repaint();
+                ready = false;
+            }
+        }
+        return ready;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        button = (JButton) e.getSource();
-        dispose();
-        gtfile = new File(gt.getText());
-        ocrfile = new File(ocr.getText());
-        repfile = new File(rep.getText());
-        System.out.println("Frame Closed." + gtfile);
+        JButton button = (JButton) e.getSource();
+        System.out.println("Frame Closed." + pane.getComponent(1));
+        //dispose();
 
-        int returnVal = fc.showOpenDialog(MainGUI.this);
+        boolean checked = checkInputFiles();
+        if (checked) {
+            int returnVal = fc.showOpenDialog(MainGUI.this);
 
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            ofile = fc.getSelectedFile();
-            //This is where a real application would open the file.
-           Report.report(gtfile, "utf8", ocrfile, "utf8", repfile, ofile);
-            try {
-                System.out.println("Opening: " + ofile.getCanonicalPath()+ ".");
-            } catch (IOException ex) {
-                Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                files[3] = fc.getSelectedFile();
+                //This is where a real application would open the file.
+                Report.report(files[0], "utf8", files[1], "utf8", files[2], files[3]);
+                try {
+                    System.out.println("Opening: " + files[3].getCanonicalPath() + ".");
+                } catch (IOException ex) {
+                    Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                System.out.println("Open command cancelled by user.");
             }
-        } else {
-            System.out.println("Open command cancelled by user.");
         }
     }
 
