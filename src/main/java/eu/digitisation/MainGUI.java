@@ -15,8 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.input;
+package eu.digitisation;
 
+import eu.digitisation.ocr.Report;
 import java.awt.dnd.*;
 import java.awt.*;
 import javax.swing.*;
@@ -24,17 +25,20 @@ import java.awt.datatransfer.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author R.C.C.
  */
-public class DragAndDrop extends JFrame implements ActionListener {
+public class MainGUI extends JFrame implements ActionListener {
 
     static final long serialVersionUID = 1L;
     File gtfile;
     File ocrfile;
     File repfile;
+    File ofile;
     JButton button;
     JPanel upper;
     JPanel middle;
@@ -42,14 +46,17 @@ public class DragAndDrop extends JFrame implements ActionListener {
     JTextArea gt;
     JTextArea ocr;
     JTextArea rep;
+    JFileChooser fc;
 
-    public DragAndDrop() {
+    public MainGUI() {
+
         setTitle("Input files");
         setSize(400, 250);
         setVisible(true);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         createAndShowGUI();
+        fc = new JFileChooser();
     }
 
     private void createAndShowGUI() {
@@ -93,7 +100,8 @@ public class DragAndDrop extends JFrame implements ActionListener {
     }
 
     private void enableDragAndDrop(final JTextArea area) {
-        DropTarget target = new DropTarget(area, new DropTargetListener() {
+        DropTarget target;
+        target = new DropTarget(area, new DropTargetListener() {
             @Override
             public void dragEnter(DropTargetDragEvent e) {
             }
@@ -108,17 +116,15 @@ public class DragAndDrop extends JFrame implements ActionListener {
 
             @Override
             public void dropActionChanged(DropTargetDragEvent e) {
-
             }
 
             @Override
             public void drop(DropTargetDropEvent e) {
                 try {
-                    // Accept the drop first, important!
+                    // Accept the drop first!
                     e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-                    // Get the files that are dropped as java.util.List
-                    java.util.List<File> list
-                            = (java.util.List<File>) e.getTransferable()
+                    // Get files as java.util.List
+                    java.util.List<File> list = (java.util.List<File>) e.getTransferable()
                             .getTransferData(DataFlavor.javaFileListFlavor);
 
                     File file = (File) list.get(0);
@@ -137,9 +143,25 @@ public class DragAndDrop extends JFrame implements ActionListener {
         ocrfile = new File(ocr.getText());
         repfile = new File(rep.getText());
         System.out.println("Frame Closed." + gtfile);
+
+        int returnVal = fc.showOpenDialog(MainGUI.this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            ofile = fc.getSelectedFile();
+            //This is where a real application would open the file.
+           Report.report(gtfile, "utf8", ocrfile, "utf8", repfile, ofile);
+            try {
+                System.out.println("Opening: " + ofile.getCanonicalPath()+ ".");
+            } catch (IOException ex) {
+                Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            System.out.println("Open command cancelled by user.");
+        }
     }
 
     static public void main(String args[]) {
-        new DragAndDrop();
+        MainGUI gui;
+        gui = new MainGUI();
     }
 }

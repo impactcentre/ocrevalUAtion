@@ -144,7 +144,6 @@ public class Main {
                     "Error rate per character and type");
             builder.addElement(body, ErrorMeasure.stats(gts, ocrs));
             builder.write(ofile);
-
         }
     }
 }
