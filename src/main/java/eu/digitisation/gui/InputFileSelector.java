@@ -108,13 +108,16 @@ public class InputFileSelector extends JPanel implements ActionListener {
                     // Accept the drop first!
                     e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
                     // Get files as java.util.List
-                    java.util.List<File> list = (java.util.List<File>) e.getTransferable()
-                            .getTransferData(DataFlavor.javaFileListFlavor);
+                    java.util.List<File> list;
 
+                    list = (java.util.List<File>) e.getTransferable()
+                            .getTransferData(DataFlavor.javaFileListFlavor);
                     File file = (File) list.get(0);
                     area.setText(file.getCanonicalPath());
                     accepted = true;
-                } catch (UnsupportedFlavorException | IOException ex) {
+                } catch (IOException ex) {
+                    Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnsupportedFlavorException ex) {
                     Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

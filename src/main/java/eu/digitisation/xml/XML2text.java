@@ -63,7 +63,9 @@ public class XML2text extends DefaultHandler {
                     .newSAXParser().getXMLReader();
             reader.setContentHandler(this);
 
-        } catch (SAXException | ParserConfigurationException ex) {
+        } catch (SAXException ex) {
+            Logger.getLogger(XML2text.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
             Logger.getLogger(XML2text.class.getName()).log(Level.SEVERE, null, ex);
         }
         return reader;
@@ -80,7 +82,9 @@ public class XML2text extends DefaultHandler {
         buffer = new StringBuilder(10000);
         try {
             reader.parse(fileName);
-        } catch (IOException | SAXException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(XML2text.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SAXException ex) {
             Logger.getLogger(XML2text.class.getName()).log(Level.SEVERE, null, ex);
         }
         return buffer.toString();
@@ -113,11 +117,11 @@ public class XML2text extends DefaultHandler {
                 if (outfile.exists()) {
                     System.err.println(outfileName + "already exists ");
                 } else {
-                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(outfileName))) {
-                        writer.write(xml.getText(arg));
-                    }
+                    BufferedWriter writer = 
+                            new BufferedWriter(new FileWriter(outfileName));
+                    writer.write(xml.getText(arg));
                 }
-            } 
+            }
         }
     }
 }

@@ -45,13 +45,17 @@ public class DocumentParser {
 
     /**
      * Create XML document from file content
+     *
      * @param file the input file
      * @return an XML document
      */
     public static Document parse(java.io.File file) {
         try {
             return docBuilder.parse(file);
-        } catch (SAXException | IOException ex) {
+        } catch (SAXException ex) {
+            Logger.getLogger(DocumentParser.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(DocumentParser.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
@@ -60,13 +64,17 @@ public class DocumentParser {
 
     /**
      * Create XML document from InputStream content
-     * @param is the InputStream with XML content 
+     *
+     * @param is the InputStream with XML content
      * @return an XML document
      */
     public static Document parse(java.io.InputStream is) {
         try {
             return docBuilder.parse(is);
-        } catch (SAXException | IOException ex) {
+        } catch (SAXException ex) {
+            Logger.getLogger(DocumentParser.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(DocumentParser.class.getName())
                     .log(Level.SEVERE, null, ex);
         }

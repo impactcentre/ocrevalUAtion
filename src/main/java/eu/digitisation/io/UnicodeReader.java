@@ -22,10 +22,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Transformations between Unicode strings and codepoints 
+ * Transformations between Unicode strings and codepoints
+ *
  * @version 2012.06.20
  */
 public class UnicodeReader {
+
     /**
      * Transform a sequence of Unicode values (contiguous blocks of four
      * hexadecimal digits) into the string they represent. For example,
@@ -114,8 +116,9 @@ public class UnicodeReader {
         }
     }
 
-     /**
+    /**
      * Search for a Unicode sequence and highlight them in browser
+     *
      * @param files files where the sequence is searched
      * @param outFile the output file
      * @param codepoints the Unicode sequence
@@ -124,18 +127,17 @@ public class UnicodeReader {
         String pattern = codepointsToString(codepoints);
         try {
             for (File file : files) {
-                try (BufferedReader reader = new BufferedReader(new FileReader(file));
-                        PrintWriter writer = new PrintWriter(outFile)) {
-                    writer.print("<p><font color='blue'>"
-                            + file + "</font></p>");
-                    while (reader.ready()) {
-                        String line = reader.readLine();
-                        if (line.contains(pattern)) {
-                            writer.print("<p><font color='red'>"
-                                    + StringNormalizer.encode(line) + "</font></p>");
-                        } else {
-                            writer.print("<p>" + StringNormalizer.encode(line) + "</p>");
-                        }
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                PrintWriter writer = new PrintWriter(outFile);
+                writer.print("<p><font color='blue'>"
+                        + file + "</font></p>");
+                while (reader.ready()) {
+                    String line = reader.readLine();
+                    if (line.contains(pattern)) {
+                        writer.print("<p><font color='red'>"
+                                + StringNormalizer.encode(line) + "</font></p>");
+                    } else {
+                        writer.print("<p>" + StringNormalizer.encode(line) + "</p>");
                     }
                 }
             }

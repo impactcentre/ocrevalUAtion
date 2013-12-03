@@ -76,7 +76,7 @@ public class DocumentBuilder {
      * @return list of children of e with the given tag
      */
     public static List<Element> getChildElementsByTagName(Element e, String name) {
-        ArrayList<Element> list = new ArrayList<>();
+        ArrayList<Element> list = new ArrayList<Element>();
         NodeList children = e.getChildNodes();
 
         for (int n = 0; n < children.getLength(); ++n) {

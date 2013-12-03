@@ -42,7 +42,8 @@ public class CharFilter extends HashMap<String, String> {
      * @param file the file with the equivalent sequences
      */
     public CharFilter(File file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             while (reader.ready()) {
                 String line = reader.readLine();
                 String[] tokens = line.split("(\\p{Space}|[,;])+");
@@ -80,7 +81,8 @@ public class CharFilter extends HashMap<String, String> {
      */
     private CharSequence toCharSequence(File file) {
 
-        try (FileInputStream input = new FileInputStream(file)) {
+        try {
+            FileInputStream input = new FileInputStream(file);
             FileChannel channel = input.getChannel();
             java.nio.ByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
             return java.nio.charset.Charset.forName("utf-8").newDecoder()
@@ -98,7 +100,8 @@ public class CharFilter extends HashMap<String, String> {
      * @param outfile the file where the output must be written
      */
     public void translate(File infile, File outfile) {
-        try (FileWriter writer = new FileWriter(outfile)) {
+        try {
+            FileWriter writer = new FileWriter(outfile);
             String input = toCharSequence(infile).toString();
             String output = translate(input);
 
@@ -116,7 +119,8 @@ public class CharFilter extends HashMap<String, String> {
      *
      */
     public void translate(File file) {
-        try (FileWriter writer = new FileWriter(file)) {
+        try {
+            FileWriter writer = new FileWriter(file);
             String input = toCharSequence(file).toString();
             String output = translate(input);
 

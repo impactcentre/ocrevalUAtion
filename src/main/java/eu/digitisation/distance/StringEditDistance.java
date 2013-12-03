@@ -155,7 +155,7 @@ public class StringEditDistance {
         int i, j;
         int[][] A;
         EditTable B;
-        BiCounter<Character, EdOp> stats = new BiCounter<>();
+        BiCounter<Character, EdOp> stats = new BiCounter<Character, EdOp>();
 
         // intialize
         A = new int[2][second.length() + 1];
@@ -240,7 +240,7 @@ public class StringEditDistance {
     public static BiCounter<Character, EdOp> stats_old(String s1, String s2) {
         int l1 = s1.length();
         int l2 = s2.length();
-        BiCounter<Character, EdOp> stats = new BiCounter<>();
+        BiCounter<Character, EdOp> stats = new BiCounter<Character, EdOp>();
 
         int[] alignments = StringEditDistance.align(s1, s2);
         int last = -1; // last aligned character in target

@@ -40,34 +40,27 @@ public class Main {
         // Read parameters (String switch needs Java 1.7 or later)
         for (int n = 0; n < args.length; ++n) {
             String arg = args[n];
-            switch (arg) {
-                case "-h":
-                    exit_gracefully();
-                    break;  // avoids warning
-                case "-gt":
-                    gtfile = new File(args[++n]);
-                    if (n + 1 < args.length && !args[n + 1].startsWith("-")) {
-                        gtencoding = args[++n];
-                    }
-                    break;
-                case "-ocr":
-                    ocrfile = new File(args[++n]);
-                    if (n + 1 < args.length && !args[n + 1].startsWith("-")) {
-                        ocrencoding = args[++n];
-                    }
-                    break;
-                case "-d":
-                    workingDirectory = new File(args[++n]);
-                    break;
-                case "-r":
-                    repfile = new File(args[++n]);
-                    break;
-                case "-o":
-                    ofile = new File(args[++n]);
-                    break;
-                default:
-                    System.err.println("Unrecognized option " + arg);
-                    exit_gracefully();
+            if (arg.equals("-h")) {
+                exit_gracefully();
+            } else if (arg.equals("-gt")) {
+                gtfile = new File(args[++n]);
+                if (n + 1 < args.length && !args[n + 1].startsWith("-")) {
+                    gtencoding = args[++n];
+                }
+            } else if (arg.equals("-ocr")) {
+                ocrfile = new File(args[++n]);
+                if (n + 1 < args.length && !args[n + 1].startsWith("-")) {
+                    ocrencoding = args[++n];
+                }
+            } else if (arg.equals("-d")) {
+                workingDirectory = new File(args[++n]);
+            } else if (arg.equals("-r")) {
+                repfile = new File(args[++n]);
+            } else if (arg.equals("-o")) {
+                ofile = new File(args[++n]);
+            } else {
+                System.err.println("Unrecognized option " + arg);
+                exit_gracefully();
             }
         }
 
@@ -112,7 +105,7 @@ public class Main {
             Element body = builder.addElement("body");
             Element table;
             Element row;
-            
+
             // head content 
             meta.setAttribute("http-equiv", "content-type");
             meta.setAttribute("content", "text/html; charset=UTF-8");

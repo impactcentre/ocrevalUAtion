@@ -57,7 +57,7 @@ public class BiCounterTest {
         System.out.println("value");
         Object o1 = null;
         Object o2 = null;
-        BiCounter<Integer, Integer> bc = new BiCounter<>();
+        BiCounter<Integer, Integer> bc = new BiCounter<Integer, Integer>();
         bc.inc(1, 2);
         bc.inc(1, 3);
         bc.add(1, 3, 4);

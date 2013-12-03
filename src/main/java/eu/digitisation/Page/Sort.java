@@ -19,7 +19,6 @@ package eu.digitisation.Page;
 
 import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.DocumentWriter;
-import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,9 +46,9 @@ public class Sort {
      * @param order the array of id's in ascending order
      */
     private static void sort(Node node, List<String> order) {
-        Map<String, Node> index = new HashMap<>();  // index of children nodes
+        Map<String, Node> index = new HashMap<String, Node>();  // index of children nodes
         NodeList children = node.getChildNodes();
-        List<Node> childList = new ArrayList<>();   // External copy of children
+        List<Node> childList = new ArrayList<Node>();   // External copy of children
 
         // Initialize index (only nodes tah need reordering will be stored)
         for (String id : order) {
@@ -102,7 +101,7 @@ public class Sort {
      */
     private static List<String> readingOrder(Node node) throws IOException {
         NodeList children = node.getChildNodes();
-        List<String> order = new ArrayList<>();
+        List<String> order = new ArrayList<String>();
 
         for (int n = 0; n < children.getLength(); ++n) {
             Node child = children.item(n);

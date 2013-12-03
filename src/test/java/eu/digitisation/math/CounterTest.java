@@ -58,7 +58,7 @@ public class CounterTest {
         System.out.println("add");
         Object object = null;
         int value = 0;
-        Counter<Integer> instance = new Counter<>();
+        Counter<Integer> instance = new Counter<Integer>();
         instance.add(1, 3);
         instance.inc(1);
         instance.add(1, -1);

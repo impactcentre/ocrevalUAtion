@@ -54,7 +54,10 @@ public final class TextContent {
 
     static {
         Properties props = new Properties();
-        try (InputStream in = TextContent.class.getResourceAsStream("/General.properties")) {
+        try {
+            InputStream in = 
+                    TextContent.class.getResourceAsStream("/General.properties");
+
             props.load(in);
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
@@ -65,7 +68,7 @@ public final class TextContent {
         defaultEncoding = props.getProperty("defaultEncoding",
                 System.getProperty("file.encoding").trim());
 
-        types = new HashSet<>();
+        types = new HashSet<String>();
 
         String typesProp = props.getProperty("PAGE.TextRegionTypes");
         String separator = ",\\p{Space}+";

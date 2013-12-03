@@ -40,7 +40,9 @@ public enum FileType {
 
     static {
         Properties props = new Properties();
-        try (InputStream in = FileType.class.getResourceAsStream("/General.properties")) {
+        try {
+            InputStream in = 
+                    FileType.class.getResourceAsStream("/General.properties");         
             props.load(in);
         } catch (IOException ex) {
             Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
