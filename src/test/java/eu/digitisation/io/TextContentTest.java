@@ -61,7 +61,7 @@ public class TextContentTest {
     @Test
     public void testToString() throws URISyntaxException {
         System.out.println("toString");
-        URL resourceUrl = getClass().getResource("/replacements.txt");
+        URL resourceUrl = getClass().getResource("/UnicodeCharEquivalences.txt");
         File file = Paths.get(resourceUrl.toURI()).toFile();
         CharFilter filter = new CharFilter(file);
         String s = "hola   " + "\n" + " y\u2028 de todo\n";
