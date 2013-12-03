@@ -27,29 +27,34 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import javax.swing.border.Border;
 
-
 public class MainGUI extends JFrame implements ActionListener {
 
     static final long serialVersionUID = 1L;
     static final Color bgcolor = Color.decode("#FAFAFA");
     static final Color forecolor = Color.decode("#4C501E");
     static final Border border = BorderFactory.createLineBorder(forecolor, 4);
-
-    Container pane;  // top panel
-    JButton trigger;  // Go button
-    File[] files;  // input/output files
+    Container pane;         // top panel
+    Pulldown encodingsMenu; // a pulldowwn menu for dteh deafult encoding
+    JButton trigger;        // Go button
+    File[] files;           // input/output files
 
     public MainGUI() {
+        String[] encodings = {"If you know the encoding of .txt files, select it here",
+            "UTF8", "ISO-8859-1", "Windows-1252"};
+
         pane = getContentPane();
+        encodingsMenu = new Pulldown(forecolor, bgcolor, border, encodings);
+        trigger = new JButton("Generate report");
+        files = new File[4];
 
         // frame attributes
         setTitle("Input files");
         setBackground(Color.decode("#FAFAFA"));
         setSize(400, 300);
-        setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        //setLocationRelativeTo(null);
+        setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
+        setLocationRelativeTo(null);
+        setVisible(true);
 
         // Create drop areas
         pane.add(new InputFileSelector(forecolor, bgcolor,
@@ -59,18 +64,19 @@ public class MainGUI extends JFrame implements ActionListener {
         pane.add(new InputFileSelector(forecolor, bgcolor,
                 border, "Unicode character equivalences file (if available)"));
 
-        // Default encoding selector
-        String[] encodings= {"UTF8", "ISO-8859-1"};
-        //pane.add(new Pulldown(encodings), BorderLayout.EAST);
-        
+
+        // Default encoding selector    
+        pane.add(encodingsMenu);
+
         // Button with inverted colors
-        trigger = new JButton("Generate report");
         trigger.setForeground(bgcolor);
         trigger.setBackground(forecolor);
         trigger.addActionListener(this);
+        pane.add(trigger);
 
-        pane.add(trigger, BorderLayout.SOUTH);
-        files = new File[4];
+        repaint();
+
+
 
     }
 
@@ -109,12 +115,15 @@ public class MainGUI extends JFrame implements ActionListener {
         JButton pressed = (JButton) e.getSource();
 
         if (pressed == trigger) {
+            String encoding = encodingsMenu.choice() == null
+                    ? System.getProperty("file.encoding")
+                    : encodingsMenu.choice();
             boolean checked = checkInputFiles();
             if (checked) {
                 files[3] = choose("output.html");
                 if (files[3] != null) {
-                    Report.report(files[0], System.getProperty("file.encoding"), 
-                            files[1], System.getProperty("file.encoding"), 
+                    Report.report(files[0], encoding,
+                            files[1], encoding,
                             files[2], files[3]);
                 }
             }

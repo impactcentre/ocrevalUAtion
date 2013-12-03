@@ -50,7 +50,6 @@ import javax.swing.border.Border;
 public class InputFileSelector extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
-
     JTextPane area;  // The area to display the filename
     boolean accepted; // True if a successful drop took place
     JButton choose; // Optional file chooser
@@ -83,7 +82,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
     public boolean accepted() {
         return accepted;
     }
-    
+
     private void enableDragAndDrop(final JTextPane area) {
         DropTarget target;
         target = new DropTarget(area, new DropTargetListener() {
@@ -139,13 +138,15 @@ public class InputFileSelector extends JPanel implements ActionListener {
     }
 
     /**
-     * Select  file with a file selector (menu)
+     * Select file with a file selector (menu)
+     *
      * @param defaultName
-     * @return 
+     * @return
      */
     private File choose(String defaultName) {
         JFileChooser chooser = new JFileChooser();
 
+        chooser.setDialogTitle("Select input file");
         chooser.setSelectedFile(new File(defaultName));
         int returnVal = chooser.showOpenDialog(InputFileSelector.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {

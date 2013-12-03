@@ -17,22 +17,37 @@
  */
 package eu.digitisation.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 /**
  *
  * @author R.C.C.
  */
-public class Pulldown extends JComboBox<String> implements ActionListener {
+public class Pulldown extends JPanel implements ActionListener {
+
     private static final long serialVersionUID = 1L;
-    
+    JComboBox<String> menu;
     String choice;
 
-    public Pulldown(String[] choices) {
-        super(choices);
-        addActionListener(this);
+    public Pulldown(Color forecolor, Color bgcolor,
+            Border border, String[] choices) {
+        setLayout(new BorderLayout());
+        setBackground(bgcolor);
+        setBorder(border);
+        setPreferredSize(new Dimension(20, 10));
+        setVisible(true);
+        menu = new JComboBox(choices);
+        menu.setFont(new Font("Verdana", Font.PLAIN, 11));
+        menu.addActionListener(this);
+        add(menu);
     }
 
     @Override
@@ -40,5 +55,13 @@ public class Pulldown extends JComboBox<String> implements ActionListener {
         @SuppressWarnings("unchecked")
         JComboBox<String> cb = (JComboBox<String>) e.getSource();
         choice = (String) cb.getSelectedItem();
+    }
+
+    /**
+     *
+     * @return the option chosen
+     */
+    public String choice() {
+        return choice;
     }
 }
