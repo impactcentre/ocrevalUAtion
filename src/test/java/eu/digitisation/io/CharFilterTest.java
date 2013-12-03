@@ -61,7 +61,7 @@ public class CharFilterTest {
     @Test
     public void testTranslate_String() throws URISyntaxException {
         System.out.println("translate");
-        URL resourceUrl = getClass().getResource("/replacements.txt");
+        URL resourceUrl = getClass().getResource("/UnicodeCharEquivalences.txt");
         File file = Paths.get(resourceUrl.toURI()).toFile();
         CharFilter filter = new CharFilter(file);
         String s = "a\u2028";
