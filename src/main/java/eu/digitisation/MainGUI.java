@@ -18,6 +18,7 @@
 package eu.digitisation;
 
 import eu.digitisation.gui.InputFileSelector;
+import eu.digitisation.gui.OutputFileSelector;
 import eu.digitisation.gui.Pulldown;
 import eu.digitisation.ocr.Report;
 import java.awt.*;
@@ -75,9 +76,6 @@ public class MainGUI extends JFrame implements ActionListener {
         pane.add(trigger);
 
         repaint();
-
-
-
     }
 
     private boolean checkInputFiles() {
@@ -119,13 +117,20 @@ public class MainGUI extends JFrame implements ActionListener {
                     ? System.getProperty("file.encoding")
                     : encodingsMenu.choice();
             boolean checked = checkInputFiles();
-            if (checked) {
-                files[3] = choose("output.html");
-                if (files[3] != null) {
-                    Report.report(files[0], encoding,
-                            files[1], encoding,
-                            files[2], files[3]);
-                }
+            if (checked) {          
+                    File dir = files[1].getParentFile();
+                    String name = files[1].getName().replaceAll("\\.\\w+","")
+                            + "_report.html";
+                    File prefile = new File(name);
+                    OutputFileSelector selector = new OutputFileSelector();
+                    
+                    files[3] = selector.choose(dir, prefile);
+                    if (files[3] != null) {
+                        Report.report(files[0], encoding,
+                                files[1], encoding,
+                                files[2], files[3]);
+                    }
+               
             }
         }
     }
