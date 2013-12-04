@@ -25,6 +25,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.border.Border;
 
 public class MainGUI extends JFrame implements ActionListener {
@@ -108,11 +112,21 @@ public class MainGUI extends JFrame implements ActionListener {
                 }
 
             }
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    URI uri = new URI("file://" + files[3].getCanonicalPath());
+                    System.out.println(uri);
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException ex) {
+                    Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 
     static public void main(String args[]) {
-        MainGUI gui;
-        gui = new MainGUI();
+        new MainGUI();
     }
 }

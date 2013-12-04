@@ -1,6 +1,5 @@
 package eu.digitisation.io;
 
-import eu.digitisation.io.UnicodeReader;
 import junit.framework.TestCase;
 /**
  *

@@ -64,8 +64,8 @@ public class CharFilterTest {
         URL resourceUrl = getClass().getResource("/UnicodeCharEquivalences.txt");
         File file = Paths.get(resourceUrl.toURI()).toFile();
         CharFilter filter = new CharFilter(file);
-        String s = "a\u2028";
-        String expResult = "a\r";
+        String s = "a\u0133";  // ij
+        String expResult = "aij";
         String result = filter.translate(s);
         assertEquals(expResult.length(), result.length());
         assertEquals(expResult, result);

@@ -46,7 +46,7 @@ public class CharFilter extends HashMap<String, String> {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             while (reader.ready()) {
                 String line = reader.readLine();
-                String[] tokens = line.split("(\\p{Space}|[,;])+");
+                String[] tokens = line.split("([,;])");
                 if (tokens.length > 1) {  // allow comments in line
                     String left = UnicodeReader.codepointsToString(tokens[0]);
                     String right = UnicodeReader.codepointsToString(tokens[1]);

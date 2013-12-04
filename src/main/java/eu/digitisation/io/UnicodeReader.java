@@ -29,21 +29,29 @@ import java.util.logging.Logger;
 public class UnicodeReader {
 
     /**
-     * Transform a sequence of Unicode values (contiguous blocks of four
-     * hexadecimal digits) into the string they represent. For example,
-     * "00410042" represents "AB"
+     * Transform a sequence of Unicode values (blocks of four hexadecimal
+     * digits) into the string they represent. For example, "00410042" (or "0041
+     * 0042") represents "AB"
      *
-     * @param s the sequence of one or more Unicode values
-     * @return the string represented by s
+     * @param codes the sequence of one or more Unicode hex values
+     * @return the string represented by these codes
      */
-    protected static String codepointsToString(String s) {
-        StringBuilder buff = new StringBuilder();
-        for (int pos = 0; pos + 3 < s.length(); pos += 4) {
-            String sub = s.substring(pos, pos + 4);
-            int val = Integer.parseInt(sub, 16);
-            buff.append((char) val);
+    protected static String codepointsToString(String codes) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        String[] tokens = codes.split("\\p{Space}+");
+
+        for (String token : tokens) {
+            if (token.length() % 4 != 0) {
+                throw new IOException(token
+                        + " is not a alid Unicode hex sequence");
+            }
+            for (int pos = 0; pos + 3 < token.length(); pos += 4) {
+                String sub = token.substring(pos, pos + 4);
+                int val = Integer.parseInt(sub, 16);
+                builder.append((char) val);
+            }
         }
-        return buff.toString();
+        return builder.toString();
     }
 
     /**
@@ -124,8 +132,8 @@ public class UnicodeReader {
      * @param codepoints the Unicode sequence
      */
     public static void find(File[] files, String codepoints, File outFile) {
-        String pattern = codepointsToString(codepoints);
         try {
+            String pattern = codepointsToString(codepoints);
             for (File file : files) {
                 BufferedReader reader = new BufferedReader(new FileReader(file));
                 PrintWriter writer = new PrintWriter(outFile);
