@@ -50,6 +50,7 @@ import javax.swing.border.Border;
 public class InputFileSelector extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
+    static File dir; // directory opened by default
     JTextPane area;  // The area to display the filename
     boolean accepted; // True if a successful drop took place
     JButton choose; // Optional file chooser
@@ -67,7 +68,6 @@ public class InputFileSelector extends JPanel implements ActionListener {
         enableDragAndDrop(area);
         accepted = false;
         choose = new JButton("Or select the file");
-        //choose.setPreferredSize(new Dimension(40, 10));
         choose.setForeground(color);
         choose.setBackground(bgcolor);
         choose.setFont(new Font("Verdana", Font.PLAIN, 10));
@@ -114,6 +114,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
                             .getTransferData(DataFlavor.javaFileListFlavor);
                     File file = (File) list.get(0);
                     area.setText(file.getCanonicalPath());
+                    dir = file.getParentFile();
                     accepted = true;
                 } catch (IOException ex) {
                     Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,6 +133,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
             if (file != null) {
                 try {
                     area.setText(file.getCanonicalPath());
+                    dir = file.getParentFile();
                 } catch (IOException ex) {
                     Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -150,6 +152,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
         JFileChooser chooser = new JFileChooser();
 
         chooser.setDialogTitle("Select input file");
+        chooser.setCurrentDirectory(dir);
         chooser.setSelectedFile(new File(defaultName));
         int returnVal = chooser.showOpenDialog(InputFileSelector.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {

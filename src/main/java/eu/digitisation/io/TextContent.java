@@ -46,16 +46,16 @@ import org.w3c.dom.NodeList;
 public final class TextContent {
 
     StringBuilder builder;
-    String encoding;
+    File file;
     CharFilter filter;
+    String encoding;
     static final int maxlen;
-    static final String defaultEncoding;
     static final Set<String> types;
 
     static {
         Properties props = new Properties();
         try {
-            InputStream in = 
+            InputStream in =
                     TextContent.class.getResourceAsStream("/General.properties");
 
             props.load(in);
@@ -64,10 +64,6 @@ public final class TextContent {
         }
 
         maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
-
-        defaultEncoding = props.getProperty("defaultEncoding",
-                System.getProperty("file.encoding").trim());
-
         types = new HashSet<String>();
 
         String typesProp = props.getProperty("PAGE.TextRegionTypes");
@@ -81,16 +77,17 @@ public final class TextContent {
      * Create TextContent from file
      *
      * @param file the input file
-     * @param encoding the text encoding
-     * @param filter optional CharFilter (can be null)
+     * @param filter optional CharFilter (optional; can be null)
+     * @param encoding the text encoding for text files (optional; can be null)
      */
-    public TextContent(File file, String encoding, CharFilter filter) {
-        FileType type = FileType.valueOf(file);
+    public TextContent(File file, CharFilter filter, String encoding) {
 
         builder = new StringBuilder();
-        this.encoding = (encoding == null) ? defaultEncoding : encoding;
+        this.file = file;
+        this.encoding = encoding;
         this.filter = filter;
         try {
+            FileType type = FileType.valueOf(file);
             switch (type) {
                 case PAGE:
                     readPageFile(file);
@@ -113,6 +110,17 @@ public final class TextContent {
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
+        builder.trimToSize();
+    }
+
+    /**
+     * Create TextContent from file
+     *
+     * @param file the input file
+     * @param filter optional CharFilter (optional; can be null)
+     */
+    public TextContent(File file, CharFilter filter) {
+        this(file, filter, null);
     }
 
     /**
@@ -123,13 +131,14 @@ public final class TextContent {
      */
     public TextContent(String s, CharFilter filter) {
         builder = new StringBuilder();
-        encoding = defaultEncoding;
+        encoding = "utf8";
         this.filter = filter;
         add(s, true);
     }
 
     /**
      * The length of the stored text
+     *
      * @return the length of the stored text
      */
     public int length() {
@@ -138,6 +147,7 @@ public final class TextContent {
 
     /**
      * The content as a string
+     *
      * @return the text a String
      */
     @Override
@@ -175,12 +185,28 @@ public final class TextContent {
      * @param region
      * @return the region type as specified by the type attribute
      */
-    private String getType(Element region) {
+    private String getTextRegionType(Element region) {
         String type = region.getAttribute("type");
         if (type.isEmpty()) {
             type = "unknown";
         }
         return type;
+    }
+
+    private Document loadXMLFile(File file) {
+        Document doc = DocumentParser.parse(file);
+        String xmlEncoding = doc.getXmlEncoding();
+        if (xmlEncoding != null) {
+            encoding = xmlEncoding;
+            System.err.println("XML file " + file + " encoding is " + encoding);
+        } else {
+            if (encoding == null) {
+                encoding = Encoding.detect(file);
+            }
+            System.err.println("No encoding declaration in "
+                    + file + ". Using " + encoding);
+        }
+        return doc;
     }
 
     /**
@@ -190,6 +216,12 @@ public final class TextContent {
      * @param file the input text file
      */
     protected void readTextFile(File file) {
+        // guess encoding if none is provided
+        if (encoding == null) {
+            encoding = Encoding.detect(file);
+        }
+        System.err.println("Text file " + file + " encoding is " + encoding);
+        // read content
         try {
             FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis, encoding);
@@ -210,21 +242,12 @@ public final class TextContent {
      * @param file the input XML file
      */
     protected void readPageFile(File file) {
-        Document doc = DocumentParser.parse(file);
-        String xmlEncoding = doc.getXmlEncoding();
+        Document doc = loadXMLFile(file);
         NodeList regions = doc.getElementsByTagName("TextRegion");
-
-        if (xmlEncoding != null) {
-            encoding = xmlEncoding;
-            System.err.println("XML file " + file + " encoding is " + encoding);
-        } else {
-            System.err.println("No encoding declaration in "
-                    + file + ". Using " + encoding);
-        }
 
         for (int r = 0; r < regions.getLength(); ++r) {
             Element region = (Element) regions.item(r);
-            String type = getType(region);
+            String type = getTextRegionType(region);
             if (type == null || types.isEmpty()
                     || types.contains(type)) {
                 NodeList nodes = region.getChildNodes();
@@ -237,7 +260,6 @@ public final class TextContent {
                 }
             }
         }
-        builder.trimToSize();
     }
 
     /**
@@ -246,17 +268,8 @@ public final class TextContent {
      * @param file the input XML file
      */
     protected void readFR10File(File file) {
-        Document doc = DocumentParser.parse(file);
-        String xmlEncoding = doc.getXmlEncoding(); 
+        Document doc = loadXMLFile(file);
         NodeList pars = doc.getElementsByTagName("par");
-
-        if (xmlEncoding != null) {
-            encoding = xmlEncoding;
-            System.err.println("XML file " + file + " encoding is " + encoding);
-        } else {
-            System.err.println("No encoding declaration in "
-                    + file + ". Using " + encoding);
-        }
 
         for (int npar = 0; npar < pars.getLength(); ++npar) {
             Element par = (Element) pars.item(npar);
@@ -281,7 +294,6 @@ public final class TextContent {
                 add(text.toString(), true);
             }
         }
-        builder.trimToSize();
     }
 
     /**
@@ -294,14 +306,15 @@ public final class TextContent {
             org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
             String htmlEncoding = doc.outputSettings().charset().toString();
 
-            if (htmlEncoding != null) {
+            if (htmlEncoding == null) {
+                encoding = Encoding.detect(file);
+                System.err.println("No charset declaration in "
+                        + file + ". Using " + encoding);
+            } else {
                 encoding = htmlEncoding;
                 System.err.println("HTML file " + file
                         + " encoding is " + encoding);
-            } else {
-                System.err.println("No charset declaration in "
-                        + file + ". Using " + encoding);
-            }
+            } 
 
             for (org.jsoup.nodes.Element e
                     : doc.body().select("*[class=ocr_line")) {
@@ -311,26 +324,16 @@ public final class TextContent {
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        builder.trimToSize();
     }
 
     /**
-     * Reads textual content from HOCR HTML file
+     * Reads textual content from ALTO XML file
      *
-     * @param file
+     * @param file the input ALTO file
      */
     protected void readALTOfile(File file) {
-        Document doc = DocumentParser.parse(file);
-        String xmlEncoding = doc.getXmlEncoding();
+        Document doc = loadXMLFile(file);
         NodeList lines = doc.getElementsByTagName("TextLine");
-
-        if (xmlEncoding != null) {
-            encoding = xmlEncoding;
-            System.err.println("XML file " + file + " encoding is " + encoding);
-        } else {
-            System.err.println("No encoding declaration in "
-                    + file + ". Using " + encoding);
-        }
 
         for (int nline = 0; nline < lines.getLength(); ++nline) {
             Element line = (Element) lines.item(nline);
@@ -341,6 +344,5 @@ public final class TextContent {
                 add(text, true);
             }
         }
-        builder.trimToSize();
     }
 }

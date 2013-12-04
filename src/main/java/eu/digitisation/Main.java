@@ -87,8 +87,8 @@ public class Main {
             CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
 
             // Prepare inputs
-            TextContent gt = new TextContent(gtfile, gtencoding, filter);
-            TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
+            TextContent gt = new TextContent(gtfile, filter, gtencoding);
+            TextContent ocr = new TextContent(ocrfile, filter, ocrencoding);
 
             // Compute error rates
             String gts = gt.toString();

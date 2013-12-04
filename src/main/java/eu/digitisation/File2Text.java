@@ -35,7 +35,7 @@ public class File2Text {
             if (args.length > 1) {
                 filter = new CharFilter(new File(args[1]));
             }
-            TextContent content = new TextContent(file, "utf8", filter);
+            TextContent content = new TextContent(file, filter);
             System.out.println(content.toString());
         }
     }

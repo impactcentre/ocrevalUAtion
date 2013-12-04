@@ -69,7 +69,7 @@ public class ErrorMeasureTest {
         File file = Paths.get(resourceUrl.toURI()).toFile();
         String encoding = "utf8";
         String expResult = "mi en hora buena";
-        String result = new TextContent(file, encoding, null).toString();
+        String result = new TextContent(file, null, encoding).toString();
         assertEquals(expResult, result);
     }
 
@@ -83,12 +83,12 @@ public class ErrorMeasureTest {
         System.out.println("cer");
         URL resourceUrl1 = getClass().getResource("/text1.txt");
         File file1 = Paths.get(resourceUrl1.toURI()).toFile();
-        String encoding1 = "utf8";
+        //String encoding1 = "utf8";
         URL resourceUrl2 = getClass().getResource("/text2.txt");
         File file2 = Paths.get(resourceUrl2.toURI()).toFile();
-        String encoding2 = "utf8";
-        TextContent c1 = new TextContent(file1, encoding1, null);
-        TextContent c2 = new TextContent(file2, encoding2, null);
+        //String encoding2 = "utf8";
+        TextContent c1 = new TextContent(file1, null, null);
+        TextContent c2 = new TextContent(file2, null, null);
         String s1 = StringNormalizer.reduceWS(c1.toString());
         String s2 = StringNormalizer.reduceWS(c2.toString());
         double expResult = 3.0 / 14;
@@ -107,12 +107,12 @@ public class ErrorMeasureTest {
         System.out.println("cer");
         URL resourceUrl1 = getClass().getResource("/text1.txt");
         File file1 = Paths.get(resourceUrl1.toURI()).toFile();
-        String encoding1 = "utf8";
+        //String encoding1 = "utf8";
         URL resourceUrl2 = getClass().getResource("/text2.txt");
         File file2 = Paths.get(resourceUrl2.toURI()).toFile();
-        String encoding2 = "utf8";
-        TextContent c1 = new TextContent(file1, encoding1, null);
-        TextContent c2 = new TextContent(file2, encoding2, null);
+        //String encoding2 = "utf8";
+        TextContent c1 = new TextContent(file1, null);
+        TextContent c2 = new TextContent(file2, null);
         double expResult = 1.5;
         double result = ErrorMeasure.wer(c1.toString(), c2.toString());
         assertEquals(expResult, result, 0.001);

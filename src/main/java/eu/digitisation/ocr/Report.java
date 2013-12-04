@@ -39,8 +39,8 @@ public class Report {
         CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
 
         // Prepare inputs
-        TextContent gt = new TextContent(gtfile, gtencoding, filter);
-        TextContent ocr = new TextContent(ocrfile, ocrencoding, filter);
+        TextContent gt = new TextContent(gtfile, filter, gtencoding);
+        TextContent ocr = new TextContent(ocrfile, filter, ocrencoding);
 
         // Compute error rates
         String gts = gt.toString();
@@ -71,14 +71,14 @@ public class Report {
         builder.addTextElement(row, "td",
                 String.format("%.2f", cer * 100));
         row = builder.addElement(table, "tr");
-        builder.addTextElement(row, "td", "CER-DL");
+        builder.addTextElement(row, "td", "CER (with swaps)");
         builder.addTextElement(row, "td",
                 String.format("%.2f", cerDL * 100));
         row = builder.addElement(table, "tr");
         builder.addTextElement(row, "td", "WER");
         builder.addTextElement(row, "td", String.format("%.2f", wer * 100));
         row = builder.addElement(table, "tr");
-        builder.addTextElement(row, "td", "WER (bag of words)");
+        builder.addTextElement(row, "td", "WER (order independent)");
         builder.addTextElement(row, "td", String.format("%.2f", bwer * 100));
         // Alignments
         builder.addTextElement(body, "h2", "Difference spotting");

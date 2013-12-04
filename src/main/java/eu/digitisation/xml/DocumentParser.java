@@ -17,6 +17,7 @@
  */
 package eu.digitisation.xml;
 
+import eu.digitisation.io.Encoding;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

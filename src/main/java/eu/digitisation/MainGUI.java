@@ -19,8 +19,6 @@ package eu.digitisation;
 
 import eu.digitisation.gui.InputFileSelector;
 import eu.digitisation.gui.OutputFileSelector;
-import eu.digitisation.gui.Pulldown;
-import eu.digitisation.io.Encoding;
 import eu.digitisation.ocr.Report;
 import java.awt.*;
 import javax.swing.*;
@@ -36,16 +34,12 @@ public class MainGUI extends JFrame implements ActionListener {
     static final Color forecolor = Color.decode("#4C501E");
     static final Border border = BorderFactory.createLineBorder(forecolor, 4);
     Container pane;         // top panel
-    Pulldown encodingsMenu; // a pulldowwn menu for dteh deafult encoding
     JButton trigger;        // Go button
     File[] files;           // input/output files
 
     public MainGUI() {
-        String[] encodings = {"If you know the encoding of .txt files, select it here",
-            "UTF8", "ISO-8859-1", "Windows-1252"};
 
         pane = getContentPane();
-        encodingsMenu = new Pulldown(forecolor, bgcolor, border, encodings);
         trigger = new JButton("Generate report");
         files = new File[4];
 
@@ -65,9 +59,6 @@ public class MainGUI extends JFrame implements ActionListener {
                 border, "ocr file"));
         pane.add(new InputFileSelector(forecolor, bgcolor,
                 border, "Unicode character equivalences file (if available)"));
-
-        // Default encoding selector    
-        pane.add(encodingsMenu);
 
         // Button with inverted colors
         trigger.setForeground(bgcolor);
@@ -96,18 +87,6 @@ public class MainGUI extends JFrame implements ActionListener {
         return ready;
     }
 
-    private File choose(String defaultName) {
-        JFileChooser chooser = new JFileChooser();
-
-        chooser.setSelectedFile(new File(defaultName));
-        int returnVal = chooser.showOpenDialog(MainGUI.this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            return chooser.getSelectedFile();
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton pressed = (JButton) e.getSource();
@@ -115,8 +94,6 @@ public class MainGUI extends JFrame implements ActionListener {
         if (pressed == trigger) {
             boolean checked = checkInputFiles();
             if (checked) {
-                String gtencoding = Encoding.detect(files[0]);
-                String ocrencoding = Encoding.detect(files[1]);
                 File dir = files[1].getParentFile();
                 String name = files[1].getName().replaceAll("\\.\\w+", "")
                         + "_report.html";
@@ -125,8 +102,8 @@ public class MainGUI extends JFrame implements ActionListener {
 
                 files[3] = selector.choose(dir, preselected);
                 if (files[3] != null) {
-                    Report.report(files[0], gtencoding,
-                            files[1], ocrencoding,
+                    Report.report(files[0], null,
+                            files[1], null,
                             files[2], files[3]);
                 }
 
