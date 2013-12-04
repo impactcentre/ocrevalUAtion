@@ -20,6 +20,7 @@ package eu.digitisation;
 import eu.digitisation.gui.InputFileSelector;
 import eu.digitisation.gui.OutputFileSelector;
 import eu.digitisation.gui.Pulldown;
+import eu.digitisation.io.Encoding;
 import eu.digitisation.ocr.Report;
 import java.awt.*;
 import javax.swing.*;
@@ -64,7 +65,6 @@ public class MainGUI extends JFrame implements ActionListener {
                 border, "ocr file"));
         pane.add(new InputFileSelector(forecolor, bgcolor,
                 border, "Unicode character equivalences file (if available)"));
-
 
         // Default encoding selector    
         pane.add(encodingsMenu);
@@ -113,24 +113,23 @@ public class MainGUI extends JFrame implements ActionListener {
         JButton pressed = (JButton) e.getSource();
 
         if (pressed == trigger) {
-            String encoding = encodingsMenu.choice() == null
-                    ? System.getProperty("file.encoding")
-                    : encodingsMenu.choice();
             boolean checked = checkInputFiles();
-            if (checked) {          
-                    File dir = files[1].getParentFile();
-                    String name = files[1].getName().replaceAll("\\.\\w+","")
-                            + "_report.html";
-                    File prefile = new File(name);
-                    OutputFileSelector selector = new OutputFileSelector();
-                    
-                    files[3] = selector.choose(dir, prefile);
-                    if (files[3] != null) {
-                        Report.report(files[0], encoding,
-                                files[1], encoding,
-                                files[2], files[3]);
-                    }
-               
+            if (checked) {
+                String gtencoding = Encoding.detect(files[0]);
+                String ocrencoding = Encoding.detect(files[1]);
+                File dir = files[1].getParentFile();
+                String name = files[1].getName().replaceAll("\\.\\w+", "")
+                        + "_report.html";
+                File preselected = new File(name);
+                OutputFileSelector selector = new OutputFileSelector();
+
+                files[3] = selector.choose(dir, preselected);
+                if (files[3] != null) {
+                    Report.report(files[0], gtencoding,
+                            files[1], ocrencoding,
+                            files[2], files[3]);
+                }
+
             }
         }
     }
