@@ -51,8 +51,8 @@ public class InputFileSelector extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
     static File dir; // directory opened by default
+    File file;  // the input file
     JTextPane area;  // The area to display the filename
-    boolean accepted; // True if a successful drop took place
     JButton choose; // Optional file chooser
 
     public InputFileSelector(Color color, Color bgcolor,
@@ -64,9 +64,9 @@ public class InputFileSelector extends JPanel implements ActionListener {
         add(area);
         area.setFont(new Font("Verdana", Font.PLAIN, 12));
         area.setForeground(color);
+        area.setBackground(bgcolor);
         area.setText("Drop here your " + desc);
         enableDragAndDrop(area);
-        accepted = false;
         choose = new JButton("Or select the file");
         choose.setForeground(color);
         choose.setBackground(bgcolor);
@@ -75,12 +75,26 @@ public class InputFileSelector extends JPanel implements ActionListener {
         add(choose, BorderLayout.EAST);
     }
 
-    public String getFileName() {
-        return area.getText();
+    /**
+     * Set the background of panel (excluding choose JButton)
+     *
+     * @param color the background color
+     */
+    public void shade(Color color) {
+        area.setBackground(color);
+        setBackground(color);
+    }
+
+    /**
+     *
+     * @return the selected input file
+     */
+    public File getFile() {
+        return file;
     }
 
     public boolean accepted() {
-        return accepted;
+        return file != null;
     }
 
     private void enableDragAndDrop(final JTextPane area) {
@@ -103,6 +117,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public void drop(DropTargetDropEvent e) {
                 try {
                     // Accept the drop first!
@@ -112,10 +127,10 @@ public class InputFileSelector extends JPanel implements ActionListener {
 
                     list = (java.util.List<File>) e.getTransferable()
                             .getTransferData(DataFlavor.javaFileListFlavor);
-                    File file = (File) list.get(0);
-                    area.setText(file.getCanonicalPath());
+                    file = list.get(0);
+                    area.setText(file.getName());
                     dir = file.getParentFile();
-                    accepted = true;
+                    shade(Color.decode("#80ffe0"));
                 } catch (IOException ex) {
                     Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedFlavorException ex) {
@@ -129,15 +144,11 @@ public class InputFileSelector extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JButton pressed = (JButton) e.getSource();
         if (pressed == choose) {
-            File file = choose("input_file");
+            file = choose("input_file");
             if (file != null) {
-                try {
-                    area.setText(file.getCanonicalPath());
-                    dir = file.getParentFile();
-                } catch (IOException ex) {
-                    Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                accepted = true;
+                area.setText(file.getName());
+                dir = file.getParentFile();
+                shade(Color.decode("#80ffe0"));
             }
         }
     }

@@ -78,13 +78,13 @@ public class MainGUI extends JFrame implements ActionListener {
         Component[] components = pane.getComponents();
 
         for (int n = 0; n < 2; ++n) {
-            InputFileSelector area = (InputFileSelector) components[n];
-            if (area.accepted()) {
-                files[n] = new File(area.getFileName());
+            InputFileSelector ifs = (InputFileSelector) components[n];
+            if (ifs.accepted()) {
+                files[n] = ifs.getFile();
             }
-            if (!(area.accepted() && files[n].exists())) {
-                area.setBackground(Color.decode("#fffacd"));
-                area.repaint();
+            if (!(ifs.accepted() && files[n].exists())) {
+                ifs.shade(Color.decode("#fffacd"));
+                ifs.repaint();
                 ready = false;
             }
         }
@@ -110,17 +110,16 @@ public class MainGUI extends JFrame implements ActionListener {
                             files[1], null,
                             files[2], files[3]);
                 }
-
-            }
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    URI uri = new URI("file://" + files[3].getCanonicalPath());
-                    System.out.println(uri);
-                    Desktop.getDesktop().browse(uri);
-                } catch (IOException ex) {
-                    Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (URISyntaxException ex) {
-                    Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+                if (Desktop.isDesktopSupported()) {
+                    try {
+                        URI uri = new URI("file://" + files[3].getCanonicalPath());
+                        System.out.println(uri);
+                        Desktop.getDesktop().browse(uri);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (URISyntaxException ex) {
+                        Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }

@@ -199,19 +199,18 @@ public class Aligner {
                     span2.setAttribute("id", id2);
                     span1.setAttribute("onmouseover",
                             "document.getElementById('"
-                            + id2 + "').style='background-color:greenyellow;color:black'");
+                            + id2 + "').style.background='greenyellow'");
                     span2.setAttribute("onmouseover",
                             "document.getElementById('"
-                            + id1 + "').style='background-color:greenyellow;color:black'");
+                            + id1 + "').style.background='greenyellow'");
                     span1.setAttribute("onmouseout",
                             "document.getElementById('"
-                            + id2 + "').style='background-color:none;color:red'");
+                            + id2 + "').style.background='none'");
                     span2.setAttribute("onmouseout",
                             "document.getElementById('"
-                            + id1 + "').style='background-color:none;color:red'");
+                            + id1 + "').style.background='none'");
                     builder.addTextElement(span1, "font", s1)
                             .setAttribute("color", "red");
-
                     builder.addTextElement(span2, "font", s2)
                             .setAttribute("color", "red");
                     i -= len;
