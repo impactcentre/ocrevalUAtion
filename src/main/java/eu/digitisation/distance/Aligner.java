@@ -34,6 +34,7 @@ public class Aligner {
     private static int min(int x, int y, int z) {
         return Math.min(x, Math.min(y, z));
     }
+
     /**
      * Compute the table of minimal basic edit operations needed to transform
      * first into second
@@ -190,8 +191,24 @@ public class Aligner {
                     s2 = second.substring(l2 - j, l2 - j + len);
                     Element span1 = builder.addElement(cell1, "span");
                     Element span2 = builder.addElement(cell2, "span");
+                    String id1 = "l" + i + "." + j;
+                    String id2 = "r" + i + "." + j;
                     span1.setAttribute("title", s2);
                     span2.setAttribute("title", s1);
+                    span1.setAttribute("id", id1);
+                    span2.setAttribute("id", id2);
+                    span1.setAttribute("onmouseover",
+                            "document.getElementById('"
+                            + id2 + "').style='background-color:greenyellow;color:black'");
+                    span2.setAttribute("onmouseover",
+                            "document.getElementById('"
+                            + id1 + "').style='background-color:greenyellow;color:black'");
+                    span1.setAttribute("onmouseout",
+                            "document.getElementById('"
+                            + id2 + "').style='background-color:none;color:red'");
+                    span2.setAttribute("onmouseout",
+                            "document.getElementById('"
+                            + id1 + "').style='background-color:none;color:red'");
                     builder.addTextElement(span1, "font", s1)
                             .setAttribute("color", "red");
 
