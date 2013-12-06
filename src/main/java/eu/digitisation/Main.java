@@ -4,7 +4,7 @@ import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.distance.Aligner;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
-import eu.digitisation.ocr.ErrorMeasure;
+import eu.digitisation.ocrevaluation.ErrorMeasure;
 import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
 import org.w3c.dom.Element;

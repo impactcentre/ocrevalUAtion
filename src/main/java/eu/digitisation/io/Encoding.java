@@ -28,14 +28,15 @@ import org.apache.tika.parser.txt.CharsetDetector;
 
 /**
  * Detect the encoding of a text file
+ *
  * @author R.C.C.
  */
 public class Encoding {
 
     /**
-     * 
+     *
      * @param file a text file
-     * @return the name of the encoding or char set 
+     * @return the name of the encoding or char set
      */
     public static String detect(File file) {
         try {

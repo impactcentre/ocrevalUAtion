@@ -17,6 +17,7 @@
  */
 package eu.digitisation.ocr;
 
+import eu.digitisation.ocrevaluation.ErrorMeasure;
 import eu.digitisation.distance.EdOp;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.io.StringNormalizer;
