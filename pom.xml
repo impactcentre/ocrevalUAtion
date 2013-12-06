@@ -98,7 +98,7 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
+                        <configuration>                          
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -109,7 +109,7 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            <minimizeJar>true</minimizeJar>
+                            <minimizeJar>false</minimizeJar>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>eu.digitisation.MainGUI</mainClass>
@@ -127,7 +127,7 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
-        </dependency>
+        </dependency> 
         <dependency>
             <groupId>org.geotoolkit</groupId>
             <artifactId>geotk-coverageio</artifactId>
