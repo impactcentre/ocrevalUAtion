@@ -13,7 +13,7 @@ Instructions on how to use ocrevalUAtion can be found in the [wiki](https://gith
 
 The classes defined are listed below:
 
-[distance.Aligner] (https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/Aligner.java)<br>
+[distance.Aligner](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/Aligner.java)<br>
 Shows the best alignment between two texts (output in HTML format)
 
 [distance.ArrayEditDistance<Type>](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/ArrayEditDistance.java)<br>
@@ -33,12 +33,21 @@ operating on strings (currently, Levenshtein, Damerau-Levenshtein, and indel).
 [distance.TextFileEncoder](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/distance/TextFileEncoder.java)<br>
 Encode a text file as an array of Integers (one code per word).
 
+[gui.InputFileSelector](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/gui/InputFileSelector.java)<br>
+Graphical interface to select input files with both drag and drop or menu selection.
+
+[gui.OutputFileSelector](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/gui/OutputFileSelector.java)<br>
+File chooser with confirmation dialog to avoid accidental overwrites.
+
 [image.Bimage](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/image/Bimage.java)<br>
 Extends BufferedImage with some useful operations
 
 [io.CharFilter](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/CharFilter.java)<br>
 Transform text according to a mapping between (source, target) 
 Unicode character sequences.
+
+[io.Encoding](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/Encoding.java)<br>
+Detect the encoding of a text file.
 
 [io.StringNormalizer](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/io/StringNormalizer.java)<br>
 Normalizes strings: collapse whitespace and use composed form (see java.text.Normalizer.Form)
@@ -72,8 +81,11 @@ objects and integers which can be incremented and decremented.
 [math.Pair](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/math/Pair.java)<br>
 A pair of objects.
 
-[ocr.ErrorMeasure](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/ocr/ErrorMeasure.java)<br>
-The main class which computes character and word error rates.
+[ocrevaluation.ErrorMeasure](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/ocrevaluation/ErrorMeasure.java)<br>
+Computes character and word error rates.
+
+[ocrevaluation.Report](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/ocrevaluation/ErrorMeasure.java)<br>
+Create a report in HTML format.
 
 [Page.Geometry](https://github.com/impactcentre/ocrevalUAtion/blob/master/src/main/java/eu/digitisation/Page/Geometry.java)<br>
 Geometry information contained in one PAGE-XML file.
