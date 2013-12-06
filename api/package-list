@@ -1,8 +1,9 @@
 eu.digitisation
 eu.digitisation.Page
 eu.digitisation.distance
+eu.digitisation.gui
 eu.digitisation.image
 eu.digitisation.io
 eu.digitisation.math
-eu.digitisation.ocr
+eu.digitisation.ocrevaluation
 eu.digitisation.xml
