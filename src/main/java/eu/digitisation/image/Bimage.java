@@ -26,6 +26,7 @@ import java.awt.Polygon;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorConvertOp;
 import java.io.IOException;
+import javax.media.jai.JAI;
 
 /**
  * Extends BufferedImage with some useful operations
@@ -56,7 +57,7 @@ public class Bimage extends BufferedImage {
     public Bimage(BufferedImage image) {
         super(image.getWidth(null), image.getHeight(null),
                 image.getType() == BufferedImage.TYPE_CUSTOM
-                ? BufferedImage.TYPE_INT_RGB
+                ? 0 //BufferedImage.TYPE_INT_RGB
                 : image.getType());
         Graphics2D g = createGraphics();
         g.drawImage(image, 0, 0, null);
@@ -72,7 +73,9 @@ public class Bimage extends BufferedImage {
      * @throws NullPointerException if the file format is unsupported
      */
     public Bimage(java.io.File file) throws IOException {
-        this(javax.imageio.ImageIO.read(file));
+        //            this(javax.imageio.ImageIO.read(file));
+        this(JAI.create("FileLoad", 
+                file.getCanonicalPath()).getAsBufferedImage());
     }
 
     /**
@@ -136,8 +139,7 @@ public class Bimage extends BufferedImage {
          ColorConvertOp operation = new ColorConvertOp(space, null);
          return new Bimage(operation.filter(this, null));
          */
-        Bimage bim
-                = new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Bimage bim = new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = bim.createGraphics();
         g.drawImage(this, 0, 0, null);
         g.dispose();
@@ -184,11 +186,15 @@ public class Bimage extends BufferedImage {
 
     /**
      * @param file the output file
-     * @param format the format (PNG, JPG, GIF, BMP)
      * @throws java.io.IOException
      */
-    public void write(java.io.File file, String format)
+    public void write(java.io.File file)
             throws IOException {
-        javax.imageio.ImageIO.write(this, format, file);
+        String name = file.getName();
+        String ext = name.substring(name.lastIndexOf('.') + 1);
+        Format format = Format.format(ext);
+        JAI.create("filestore", this,
+                file.getCanonicalPath(), format.toString());
+        //javax.imageio.ImageIO.write(this, format, file);
     }
 }

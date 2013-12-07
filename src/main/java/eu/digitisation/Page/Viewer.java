@@ -24,6 +24,7 @@ import eu.digitisation.image.Bimage;
 
 /**
  * Shows text regions (as stored in PAGE XML) on image
+ *
  * @author R.C.C
  */
 public class Viewer {
@@ -43,22 +44,22 @@ public class Viewer {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
-            System.err.println("usage: Viewer image_file");
+        if (args.length != 2) {
+            System.err.println("usage: Viewer image_file page_file");
             System.exit(0);
         }
-        
+
         String[] tokens = getFilenameTokens(args[0]);
         String id = tokens[0];
         String ext = tokens[1];
-        
-        File ifile =  new File(id + "." + ext);
-        File xmlfile =  new File(id + "_gt_PAGE.xml");
-        File ofile = new File(id + "_page." + ext);
+
+        File ifile = new File(args[0]);
+        File xmlfile = new File(args[1]);
+        File ofile = new File(id + "_marked." + ext);
         Bimage page = null;
         Bimage scaled;
         Geometry gt = null;
-        
+
         if (ifile.exists()) {
             try {
                 page = new Bimage(ifile).toRGB();
@@ -79,7 +80,7 @@ public class Viewer {
         page.add(gt.getWords(), Color.BLUE, 1);
         scaled = new Bimage(page, 1.0);
         //Display.draw(scaled);
-        scaled.write(ofile, ext);
+        scaled.write(ofile);
         System.out.println("output=" + ofile);
     }
 }
