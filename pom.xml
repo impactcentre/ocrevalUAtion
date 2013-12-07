@@ -109,7 +109,8 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            <minimizeJar>false</minimizeJar>
+                            <minimizeJar>true</minimizeJar>
+                            <!--promoteTransitiveDependencies>true</promoteTransitiveDependencies-->
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>eu.digitisation.MainGUI</mainClass>
@@ -141,7 +142,7 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>1.4</version>
+            <version>1.0</version>
             <type>jar</type>
         </dependency>
     </dependencies>

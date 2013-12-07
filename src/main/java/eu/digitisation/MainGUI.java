@@ -110,7 +110,7 @@ public class MainGUI extends JFrame implements ActionListener {
                             files[1], null,
                             files[2], files[3]);
                 }
-                System.out.println("DONE");
+    
                 if (Desktop.isDesktopSupported()) {
                     try {
                         URI uri = new URI("file://" + files[3].getCanonicalPath());

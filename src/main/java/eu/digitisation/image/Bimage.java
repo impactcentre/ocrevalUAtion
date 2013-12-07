@@ -17,7 +17,6 @@
  */
 package eu.digitisation.image;
 
-import eu.digitisation.io.TextContent;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Image;
@@ -27,11 +26,6 @@ import java.awt.Polygon;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorConvertOp;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Extends BufferedImage with some useful operations
