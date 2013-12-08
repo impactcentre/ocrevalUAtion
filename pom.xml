@@ -4,7 +4,7 @@
     <groupId>eu.digitisation</groupId>
     <artifactId>ocrevalUAtion</artifactId>
     <name>ocrevalUAtion</name>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <packaging>jar</packaging>
     <description>OCR Evaluation Tool</description>
     <organization>
@@ -113,14 +113,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>1.7</version>
+                <version>2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>                          
+                        <configuration>    
+                            <minimizeJar>true</minimizeJar>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>                      
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -130,9 +132,13 @@
                                         <exclude>META-INF/*.RSA</exclude>
                                     </excludes>
                                 </filter>
+                                <filter>
+                                    <artifact>javax.media.jai:*</artifact>
+                                    <includes>
+                                        <include>**</include>              
+                                    </includes>
+                                </filter>
                             </filters>
-                            <minimizeJar>false</minimizeJar>
-                            <!--promoteTransitiveDependencies>true</promoteTransitiveDependencies-->
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>eu.digitisation.MainGUI</mainClass>
@@ -159,6 +165,11 @@
         <dependency>
             <groupId>javax.media.jai</groupId>
             <artifactId>com.springsource.javax.media.jai.core</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.media.jai</groupId>
+            <artifactId>com.springsource.javax.media.jai.codec</artifactId>
             <version>1.1.3</version>
         </dependency>
         <dependency>

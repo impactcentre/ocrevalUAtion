@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 /**
- *
+ * Panel with a pull-down menu
  * @author R.C.C.
  */
 public class Pulldown extends JPanel implements ActionListener {
@@ -44,7 +44,7 @@ public class Pulldown extends JPanel implements ActionListener {
         setBorder(border);
         setPreferredSize(new Dimension(20, 10));
         setVisible(true);
-        menu = new JComboBox(choices);
+        menu = new JComboBox<String>(choices);
         menu.setFont(new Font("Verdana", Font.PLAIN, 11));
         menu.addActionListener(this);
         add(menu);

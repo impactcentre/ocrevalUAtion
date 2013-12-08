@@ -20,6 +20,7 @@ package eu.digitisation.image;
 import java.io.IOException;
 
 /**
+ * Image formats supported
  *
  * @author rafa
  */
@@ -27,8 +28,17 @@ public enum Format {
 
     BMP, FlashPix, GIF, JPEG, PNG, PNM, TIFF, WBMP;
 
-    public static Format format(String ext) throws IOException {
-        String s = ext.toLowerCase();
+    /**
+     *
+     * @param file the container file
+     * @return the Format associated with this file name extension
+     * @throws IOException
+     */
+    public static Format valueOf(java.io.File file) throws IOException {
+        String name = file.getName();
+        String ext = name
+                .substring(name.lastIndexOf('.') + 1)
+                .toLowerCase();
         if (ext.equals("bpm")) {
             return BMP;
         } else if (ext.equals("fpx")) {
