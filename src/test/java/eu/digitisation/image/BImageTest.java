@@ -81,7 +81,7 @@ public class BImageTest {
             throw new java.io.IOException(ifile + " not found");
         }
 
-        BufferedImage image = ImageIO.read(ifile);
+        BufferedImage image = new Bimage(ifile);
         assertNotNull(image);
     }
 
