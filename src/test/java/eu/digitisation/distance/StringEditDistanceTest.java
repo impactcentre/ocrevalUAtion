@@ -108,11 +108,11 @@ public class StringEditDistanceTest {
      * Test of align method, of class StringEditDistance.
      */
     @Test
-    public void testAlign() {
+    public void testAlignment() {
         System.out.println("align");
         String first = "grand";
         String second = "rend";
-        int[] result = StringEditDistance.align(first, second);
+        int[] result = StringEditDistance.alignment(first, second);
         int[] expResult = {-1, 0, 1, 2, 3};
         assertArrayEquals(expResult, result);
         /*
@@ -134,7 +134,7 @@ public class StringEditDistanceTest {
         expResult.inc('a', EdOp.DELETE);  // could exchange with 'a' above
 
         BiCounter<Character, EdOp> result
-                = StringEditDistance.stats(first, second);
+                = StringEditDistance.operations(first, second);
         System.out.println(result);
         assertEquals(expResult, result);
     }

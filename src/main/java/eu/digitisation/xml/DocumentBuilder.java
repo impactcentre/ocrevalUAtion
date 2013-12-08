@@ -60,9 +60,9 @@ public class DocumentBuilder {
     public Document document() {
         return doc;
     }
-    
+
     /**
-     * 
+     *
      * @return the root element in this document
      */
     public Element root() {

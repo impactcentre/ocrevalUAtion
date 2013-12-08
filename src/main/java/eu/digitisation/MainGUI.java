@@ -106,11 +106,12 @@ public class MainGUI extends JFrame implements ActionListener {
 
                 files[3] = selector.choose(dir, preselected);
                 if (files[3] != null) {
-                    Report.report(files[0], null,
+                    Report report = new Report(files[0], null,
                             files[1], null,
-                            files[2], files[3]);
+                            files[2]);
+                    report.write(files[3]);
                 }
-    
+
                 if (Desktop.isDesktopSupported()) {
                     try {
                         URI uri = new URI("file://" + files[3].getCanonicalPath());

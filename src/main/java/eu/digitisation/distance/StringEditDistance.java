@@ -144,14 +144,14 @@ public class StringEditDistance {
     }
 
     /**
-     * Computes separate statistics of errors for every character
+     * Computes number of edit operations per character
      *
      * @param first the reference text
      * @param second the fuzzy text
      * @return a counter with the number of insertions, substitutions and
      * deletions for every character
      */
-    public static BiCounter<Character, EdOp> stats(String first, String second) {
+    public static BiCounter<Character, EdOp> operations(String first, String second) {
         int i, j;
         int[][] A;
         EditTable B;
@@ -230,53 +230,13 @@ public class StringEditDistance {
     }
 
     /**
-     * Computes separate statistics of errors for every character
-     *
-     * @param s1 the reference text
-     * @param s2 the fuzzy text
-     * @return a counter with the number of insertions, substitutions and
-     * deletions for every character
-     */
-    public static BiCounter<Character, EdOp> stats_old(String s1, String s2) {
-        int l1 = s1.length();
-        int l2 = s2.length();
-        BiCounter<Character, EdOp> stats = new BiCounter<Character, EdOp>();
-
-        int[] alignments = StringEditDistance.align(s1, s2);
-        int last = -1; // last aligned character in target
-
-        for (int n = 0; n < alignments.length; ++n) {
-            char c1 = s1.charAt(n);
-            if (alignments[n] < 0) {
-                stats.inc(c1, EdOp.DELETE);  // must be deleted
-            } else {
-                char c2 = s2.charAt(alignments[n]);
-                if (c1 != c2) {
-                    stats.inc(c1, EdOp.SUBSTITUTE); // replaced  
-                } else {
-                    stats.inc(c1, EdOp.KEEP); // correct
-                }
-
-                // spurious characters
-                //int jump = alignments[n] - last - 1;
-                while (last + 1 < alignments[n]) {
-                    stats.inc(s2.charAt(last + 1), EdOp.INSERT);
-                    ++last;
-                }
-                ++last;
-            }
-        }
-        return stats;
-    }
-
-    /**
      * Aligns two strings (one to one alignments with substitutions).
      *
      * @param first the first string.
      * @param second the second string.
      * @return the mapping between positions.
      */
-    public static int[] align(String first, String second) {
+    public static int[] alignment(String first, String second) {
         int i, j;
         int[][] A;
 

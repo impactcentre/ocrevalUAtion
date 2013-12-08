@@ -19,8 +19,10 @@ package eu.digitisation.ocrevaluation;
 
 import eu.digitisation.distance.Aligner;
 import eu.digitisation.distance.BagOfWords;
+import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
+import eu.digitisation.math.Pair;
 import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
 import org.w3c.dom.Element;
@@ -30,15 +32,58 @@ import org.w3c.dom.Element;
  *
  * @author R.C.C
  */
-public class Report {
+public class Report extends DocumentBuilder {
 
-    public static DocumentBuilder report(File gtfile, String gtencoding,
+    Element head;
+    Element body;
+
+    /**
+     * Initial settings: create an empty HTML document
+     */
+    private void init() {
+        head = addElement("head");
+        body = addElement("body");
+        // metadata
+        Element meta = addElement(head, "meta");
+        meta.setAttribute("http-equiv", "content-type");
+        meta.setAttribute("content", "text/html; charset=UTF-8");
+    }
+
+    /**
+     * Insert a table at the end of the document body
+     *
+     * @param content the table content
+     * @return the table element
+     */
+    private Element addTable(Element parent, String[][] content) {
+        Element table = addElement(parent, "table");
+        table.setAttribute("border", "1");
+        for (String[] row : content) {
+            Element tabrow = addElement(table, "tr");
+            for (String cell : row) {
+                Element tabcell = addTextElement(tabrow, "td", cell);
+            }
+        }
+        return table;
+    }
+
+    /**
+     * Create a report for the input files
+     *
+     * @param gtfile the ground-truth or reference file
+     * @param gtencoding the ground-truth or reference file encoding (optional)
+     * @param ocrfile the OCR file
+     * @param ocrencoding the OCR file encoding (optional)
+     * @param eqfile the Unicode equivalences file (CSV format)
+     */
+    public Report(File gtfile, String gtencoding,
             File ocrfile, String ocrencoding,
-            File repfile, File ofile) {
-
-        CharFilter filter = (repfile == null) ? null : new CharFilter(repfile);
+            File eqfile) {
+        super("html");
+        init();
 
         // Prepare inputs
+        CharFilter filter = (eqfile == null) ? null : new CharFilter(eqfile);
         TextContent gt = new TextContent(gtfile, filter, gtencoding);
         TextContent ocr = new TextContent(ocrfile, filter, ocrencoding);
 
@@ -49,46 +94,52 @@ public class Report {
         double cerDL = ErrorMeasure.cerDL(gts, ocrs);
         double wer = ErrorMeasure.wer(gts, ocrs);
         double bwer = BagOfWords.wer(gts, ocrs);
+        Element alitab = Aligner.alignmentTable(gts, ocrs);
+        CharStatTable stats = new CharStatTable(gts, ocrs);
 
-        // HTML output
-        DocumentBuilder builder = new DocumentBuilder("html");
-        Element head = builder.addElement("head");
-        Element meta = builder.addElement(head, "meta");
-        Element body = builder.addElement("body");
-        Element table;
-        Element row;
-
-        // head content 
-        meta.setAttribute("http-equiv", "content-type");
-        meta.setAttribute("content", "text/html; charset=UTF-8");
-
-        // body 
-        builder.addTextElement(body, "h2", "General results");
-        table = builder.addElement(body, "table");
-        table.setAttribute("border", "1");
-        row = builder.addElement(table, "tr");
-        builder.addTextElement(row, "td", "CER");
-        builder.addTextElement(row, "td",
-                String.format("%.2f", cer * 100));
-        row = builder.addElement(table, "tr");
-        builder.addTextElement(row, "td", "CER (with swaps)");
-        builder.addTextElement(row, "td",
-                String.format("%.2f", cerDL * 100));
-        row = builder.addElement(table, "tr");
-        builder.addTextElement(row, "td", "WER");
-        builder.addTextElement(row, "td", String.format("%.2f", wer * 100));
-        row = builder.addElement(table, "tr");
-        builder.addTextElement(row, "td", "WER (order independent)");
-        builder.addTextElement(row, "td", String.format("%.2f", bwer * 100));
+        // General info
+        String[][] summary = {{"CER", String.format("%.2f", cer * 100)},
+        {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+        {"WER", String.format("%.2f", wer * 100)},
+        {"WER (order independent)", String.format("%.2f", bwer * 100)}
+        };
+        addTextElement(body, "h2", "General results");
+        addTable(body, summary);
         // Alignments
-        builder.addTextElement(body, "h2", "Difference spotting");
-        builder.addElement(body,
-                Aligner.alignmentTable(gts, ocrs));
-        // Stats
-        builder.addTextElement(body, "h2",
-                "Error rate per character and type");
-        builder.addElement(body, ErrorMeasure.stats(gts, ocrs));
-        builder.write(ofile);
-        return builder;
+        addTextElement(body, "h2", "Difference spotting");
+        addElement(body, alitab);
+        // CharStatTable
+        addTextElement(body, "h2", "Error rate per character and type");
+        addElement(body, stats.asTable());
+    }
+
+    public Report(Batch batch, String gtencoding, String ocrencoding,
+            File eqfile) throws NoSuchMethodException {
+        super("html");
+        init();
+
+        CharFilter filter = (eqfile == null) ? null : new CharFilter(eqfile);
+        CharStatTable stats = new CharStatTable();
+        Element summary;
+
+        addTextElement(body, "h2", "General results");
+        summary = addElement(body, "div");
+        addTextElement(body, "h2", "Difference spotting");
+
+        for (int n = 0; n < batch.size(); ++n) {
+            Pair<File, File> input = batch.pair(n);
+            TextContent gt = new TextContent(input.first, filter, gtencoding);
+            TextContent ocr = new TextContent(input.second, filter, ocrencoding);
+            String gts = gt.toString();
+            String ocrs = ocr.toString();
+            Element alitab = Aligner.alignmentTable(gts, ocrs);
+            addElement(body, alitab);
+            stats.add(gts, ocrs);
+        }
+        //Summary table
+        double cer = stats.cer();
+        // CharStatTable
+        addTextElement(body, "h2", "Error rate per character and type");
+        addElement(body, stats.asTable());
     }
 }

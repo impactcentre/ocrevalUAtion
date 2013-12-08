@@ -129,7 +129,7 @@ public class ErrorMeasureTest {
     public void testStats() {
         String s1 = "alabama";
         String s2 = "ladamass";
-        BiCounter<Character, EdOp> stats = StringEditDistance.stats(s1, s2);
+        BiCounter<Character, EdOp> stats = StringEditDistance.operations(s1, s2);
         int expResult = 4;
         int result = stats.value('a', null);
 

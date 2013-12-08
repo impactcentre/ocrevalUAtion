@@ -32,13 +32,13 @@ public class Pair<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
     /**
      * Default class constructor
      */
-    Pair() {
+    public Pair() {
     }
 
     /**
      * Class constructor
      */
-    Pair(T1 first, T2 second) {
+    public Pair(T1 first, T2 second) {
         this.first = first;
         this.second = second;
     }
