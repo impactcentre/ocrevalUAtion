@@ -89,7 +89,7 @@ public class BImageTest {
      * Test support TIF Image
      *
      * @throws IOException
-     */
+     
     @Test
     public void getTiffDecoder() throws IOException {
 
@@ -98,4 +98,5 @@ public class BImageTest {
         assertNotNull(reader);
         assertTrue("No tiff decoder", reader.hasNext());
     }
+    */
 }

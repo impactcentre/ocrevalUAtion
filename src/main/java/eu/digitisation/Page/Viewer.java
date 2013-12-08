@@ -45,7 +45,7 @@ public class Viewer {
 
     public static void main(String[] args) throws IOException {
         if (args.length != 2) {
-            System.err.println("usage: Viewer image_file page_file");
+            System.err.println("Usage: Viewer image_file page_file");
             System.exit(0);
         }
 
