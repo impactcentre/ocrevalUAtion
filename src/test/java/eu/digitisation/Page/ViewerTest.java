@@ -63,16 +63,17 @@ public class ViewerTest {
      */
     @Test
     public void createTiffPage() throws IOException, URISyntaxException {
-        URL resourceUrl = getClass().getResource("/00439040.tif");
-        File file = Paths.get(resourceUrl.toURI()).toFile();
-        String fileString = file.getCanonicalPath();//"00439040.tif";
-        String[] args = {fileString};
-        
+        URL resourceUrl1 = getClass().getResource("/00439040.tif");
+        File file1 = Paths.get(resourceUrl1.toURI()).toFile();
+        URL resourceUrl2 = getClass().getResource("/00439040_gt_PAGE.xml");
+        File file2 = Paths.get(resourceUrl2.toURI()).toFile();
+        String[] args = {file1.getCanonicalPath(), file2.getCanonicalPath()};
+
         Viewer.main(args);
-        
-        resourceUrl = getClass().getResource("/00439040_page.tif");
-        File newFile = Paths.get(resourceUrl.toURI()).toFile();
-        long size = newFile.length();
+
+        URL resourceUrl3 = getClass().getResource("/00439040_marked.tif");
+        File file3 = Paths.get(resourceUrl3.toURI()).toFile();
+        long size = file3.length();
 
         assertTrue(size > 0);
     }

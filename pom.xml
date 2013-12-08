@@ -133,9 +133,9 @@
                                     </excludes>
                                 </filter>
                                 <filter>
-                                    <artifact>javax.media.jai:*</artifact>
+                                    <artifact>javax.media.jai:javax.media.jai</artifact>
                                     <includes>
-                                        <include>**</include>              
+                                        <include>**</include>j              
                                     </includes>
                                 </filter>
                             </filters>
