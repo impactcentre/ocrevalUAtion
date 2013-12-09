@@ -20,7 +20,7 @@ package eu.digitisation.image;
 import java.io.IOException;
 
 /**
- * Image formats supported
+ * Image input formats supported 
  *
  * @author rafa
  */
@@ -56,7 +56,7 @@ public enum Format {
         } else if (ext.equals("wbmp")) {
             return WBMP;
         } else {
-            throw new IOException("Unsupported output format " + ext);
+            throw new IOException("Unsupported image format " + ext);
         }
     }
 }

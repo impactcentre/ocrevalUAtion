@@ -36,7 +36,7 @@ public class ArrayMath {
         }
         return sum;
     }
-
+ 
     /**
      * @return the sum of all doubles in array
      */

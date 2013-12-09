@@ -118,7 +118,7 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
     public int total() {
         return total;
     }
-
+ 
     /**
      * Clear the counter
      */

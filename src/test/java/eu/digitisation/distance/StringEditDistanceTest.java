@@ -103,23 +103,6 @@ public class StringEditDistanceTest {
         assertEquals(expResult, result);
 
     }
-    
-    /**
-     * Test of align method, of class StringEditDistance.
-     */
-    @Test
-    public void testAlignment() {
-        System.out.println("align");
-        String first = "grand";
-        String second = "rend";
-        int[] result = StringEditDistance.alignment(first, second);
-        int[] expResult = {-1, 0, 1, 2, 3};
-        assertArrayEquals(expResult, result);
-        /*
-         assertEquals(first.length() + second.length(),
-         2 * s + StringEditDistance.levenshtein(first, second));
-         */
-    }
 
     @Test
     public void testOperations() {

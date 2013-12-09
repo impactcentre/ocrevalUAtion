@@ -77,23 +77,7 @@ public class XMLPath {
         }
         return null;
     }
-    /*
-     private String toString(Element e) {
-     NodeList nodes = e.getElementsByTagName("*");
-     int n = nodes.getLength();
-     if (n > 0) {
-     StringBuilder buff = new StringBuilder();
-     buff.append("<").append(e.getTagName()).append(">");
-     for (int k = 0; k < n; ++k) {
-     buff.append(toString((Element) nodes.item(k)));
-     }
-     buff.append("</").append(e.getTagName()).append(">");
-     return buff.toString();
-     } else {
-     return "<" + e.getTagName() + "/>";
-     }
-     }
-     */
+
     // Sample main
     public static void main(String[] args) {
         if (args.length != 2) {

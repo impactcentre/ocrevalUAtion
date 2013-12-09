@@ -18,20 +18,25 @@
 package eu.digitisation.distance;
 
 /**
- * A compact structure to store edit operations
+ * A compact structure storing the table of edit operations obtained during the
+ * computation of the edit distance between two sequences a1a2...am and
+ * b1b2...bn: each cell (i,j)in the table contains the last edit operation in
+ * the optimal sequence of editions transforming prefix a1a2...ai into prefix
+ * b1b2...bj. This table supports the retrieval of the full optimal edit
+ * sequence (equivalent to a shortest path problem).
  *
  * @author R.C.C.
  */
 public class EditTable {
 
-    int hlength;
-    int vlength;
-    byte[] bytes;
+    int width;  // table width
+    int height;  // table height
+    byte[] bytes;  // table content
 
-    public EditTable(int hlength, int vlength) {
-        this.hlength = hlength;
-        this.vlength = vlength;
-        bytes = new byte[1 + (hlength * vlength) / 4];  // two bits per operation 
+    public EditTable(int width, int height) {
+        this.width = width;
+        this.height = height;
+        bytes = new byte[1 + (width * height) / 4];  // two bits per operation 
     }
 
     /**
@@ -80,8 +85,14 @@ public class EditTable {
         bytes[position / 8] = setBit(bytes[position / 8], position % 8, value);
     }
 
+    /**
+     *
+     * @param i x-ccordinate
+     * @param j y-coordinate
+     * @return the edit operation stored at cell (i,j)
+     */
     public EdOp get(int i, int j) {
-        int position = 2 * (i * vlength + j);
+        int position = 2 * (i * height + j);
         boolean low = getBit(position);
         boolean high = getBit(position + 1);
         if (low) {
@@ -99,8 +110,14 @@ public class EditTable {
         }
     }
 
+    /**
+     * Store an edit operation at cell (i, j)
+     * @param i x-coordinate
+     * @param j y-coordinate
+     * @return op the edit operation to be stored at cell (i, j)
+     */
     public void set(int i, int j, EdOp op) {
-        int position = 2 * (i * vlength + j);
+        int position = 2 * (i * height + j);
         boolean low;
         boolean high;
 
@@ -129,12 +146,16 @@ public class EditTable {
         setBit(position + 1, high);
     }
 
+    /**
+     * 
+     * @return a string representation of the EditTable
+     */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        for (int i = 0; i < hlength; ++i) {
-            for (int j = 0; j < vlength; ++j) {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
                 EdOp e = get(i, j);
                 switch (e) {
                     case KEEP:

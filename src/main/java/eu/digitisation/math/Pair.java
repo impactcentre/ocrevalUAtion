@@ -48,11 +48,11 @@ public class Pair<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * @param p a pair of objects
      */
     @Override
-    public int compareTo(Pair<T1, T2> p) {
-        if (first.equals(p.first)) {
-            return second.compareTo(p.second);
+    public int compareTo(Pair<T1, T2> other) {
+        if (this.first.equals(other.first)) {
+            return this.second.compareTo(other.second);
         } else {
-            return first.compareTo(p.first);
+            return this.first.compareTo(other.first);
         }
 
     }
@@ -60,18 +60,18 @@ public class Pair<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
     @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object o) {
-        Pair<T1, T2> p;
+        Pair<T1, T2> other;
         if (o == null) {
             return false;
         } else {
             if (o instanceof Pair) {
-                p = (Pair<T1, T2>) o;
+                other = (Pair<T1, T2>) o;
             } else {
                 throw new ClassCastException(Pair.class
                         + " cannot be compared with "
                         + o.getClass());
             }
-            return first.equals(p.first) && second.equals(p.second);
+            return this.first.equals(other.first) && this.second.equals(other.second);
         }
     }
 

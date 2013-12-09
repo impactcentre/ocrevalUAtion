@@ -35,9 +35,9 @@ public class CharFilter extends HashMap<String, String> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Load the transformation map from a CVS file (one transformation per
-     * line): each line contains two Unicode hex values (plus comments)
-     * separated with whitespace or separators
+     * Load the transformation map from a CSV file: one transformation per
+     * line, each line contains two Unicode hex sequences (and comments)
+     * separated with commas
      *
      * @param file the file with the equivalent sequences
      */
@@ -48,9 +48,9 @@ public class CharFilter extends HashMap<String, String> {
                 String line = reader.readLine();
                 String[] tokens = line.split("([,;])");
                 if (tokens.length > 1) {  // allow comments in line
-                    String left = UnicodeReader.codepointsToString(tokens[0]);
-                    String right = UnicodeReader.codepointsToString(tokens[1]);
-                    put(left, right);
+                    String key = UnicodeReader.codepointsToString(tokens[0]);
+                    String value = UnicodeReader.codepointsToString(tokens[1]);
+                    put(key, value);
                 } else {
                     throw new IOException("Wrong line" + line
                             + " at file " + file);

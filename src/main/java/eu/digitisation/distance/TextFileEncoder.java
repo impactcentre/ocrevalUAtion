@@ -84,9 +84,6 @@ public class TextFileEncoder {
             scanner = new WordScanner(file, encoding);
             while ((word = scanner.nextWord()) != null) {
                 array.add(getCode(word));
-                if (array.size() > 10000) {
-                    throw new RuntimeException("Online tests limited to 10000 words");
-                }
             }
         } catch (IOException ex) {
             Logger.getLogger(TextFileEncoder.class.getName()).log(Level.SEVERE, null, ex);

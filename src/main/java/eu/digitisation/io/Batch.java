@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.InvalidObjectException;
 
 /**
- * A batch of files to be processed
+ * A batch of file pairs to be processed Files must be in two different folders
+ * and named unambiguously (a unique one-to-one mapping must be
+ * straightforward from file names)
  *
  * @author R.C.C.
  */
@@ -85,7 +87,7 @@ public class Batch {
     /**
      *
      * @param n the file number
-     * @return the next File pair
+     * @return the n-th File pair 
      */
     public Pair<File, File> pair(int n) {
         return new Pair<File, File>(files1[n], files2[n]);
@@ -111,7 +113,7 @@ public class Batch {
     /**
      * Longest common prefix
      *
-     * @param words an array of files
+     * @param files an array of files
      * @return the longest common prefix to all filenames
      */
     private String lcp(File[] files) {
@@ -160,9 +162,5 @@ public class Batch {
         } else {
             return null;
         }
-    }
-
-    public static void main(String[] args) throws InvalidObjectException {
-        Batch batch = new Batch(new File(args[0]), new File(args[1]));
     }
 }

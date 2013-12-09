@@ -94,7 +94,7 @@ public class Report extends DocumentBuilder {
         double cerDL = ErrorMeasure.cerDL(gts, ocrs);
         double wer = ErrorMeasure.wer(gts, ocrs);
         double bwer = BagOfWords.wer(gts, ocrs);
-        Element alitab = Aligner.alignmentTable(gts, ocrs);
+        Element alitab = Aligner.alignmentMap(gts, ocrs);
         CharStatTable stats = new CharStatTable(gts, ocrs);
 
         // General info
@@ -132,7 +132,7 @@ public class Report extends DocumentBuilder {
             TextContent ocr = new TextContent(input.second, filter, ocrencoding);
             String gts = gt.toString();
             String ocrs = ocr.toString();
-            Element alitab = Aligner.alignmentTable(gts, ocrs);
+            Element alitab = Aligner.alignmentMap(gts, ocrs);
             addElement(body, alitab);
             stats.add(gts, ocrs);
         }

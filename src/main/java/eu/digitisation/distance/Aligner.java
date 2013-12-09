@@ -22,11 +22,16 @@ import eu.digitisation.xml.DocumentBuilder;
 import org.w3c.dom.Element;
 
 /**
- * Alignments between 2 texts (output in HTML format)
+ * Alignments between 2 texts (output in XHTML format)
  *
  * @author R.C.C
  */
 public class Aligner {
+
+    // style for unaligned segments
+    final static String uStyle = "background-color:aquamarine";
+    // style for  highlight replacement in parallel text
+    final static String twinStyle = ""; 
 
     /**
      * @return 3-wise minimum.
@@ -36,8 +41,8 @@ public class Aligner {
     }
 
     /**
-     * Compute the table of minimal basic edit operations needed to transform
-     * first into second
+     * Compute the table of basic edit operations needed to transform first into
+     * second
      *
      * @param first source string
      * @param second target string
@@ -45,12 +50,12 @@ public class Aligner {
      * first into second
      */
     private static EditTable align(String first, String second) {
-        int l1; // length of first 
-        int l2; // length of second
-        int[][] A; // distance table
+        int l1;      // length of first 
+        int l2;      // length of second
+        int[][] A;   // distance table
         EditTable B; // edit operations
 
-        // intialize (will be  a separete function returning B)
+        // intialize 
         l1 = first.length();
         l2 = second.length();
         A = new int[2][second.length() + 1];
@@ -102,13 +107,13 @@ public class Aligner {
 
     /**
      * Shows text alignment based on a pseudo-Levenshtein distance where
-     * white-spaces are not allowed to be confused with text or vice-versa
+     * white-spaces are not allowed to be replaced with text or vice-versa
      *
      * @param first
      * @param second
-     * @return a table in HTML format showing the alignments
+     * @return a table in XHTML format showing the alignments
      */
-    public static Element alignmentTable(String first, String second) {
+    public static Element alignmentMap(String first, String second) {
         EditTable B = align(first, second);
         DocumentBuilder builder = new DocumentBuilder("table");
         Element table = builder.root();
@@ -162,10 +167,8 @@ public class Aligner {
                         ++len;
                     }
                     s1 = first.substring(l1 - i, l1 - i + len);
-                    //s2 = "";//s1.replaceAll(".", "&nbsp");
                     builder.addTextElement(cell1, "font", s1)
-                            .setAttribute("style", "background-color:aquamarine");
-                    //builder.addText(cell2, s2);
+                            .setAttribute("style", uStyle);
                     i -= len;
                     break;
                 case INSERT:
@@ -175,10 +178,8 @@ public class Aligner {
                         ++len;
                     }
                     s2 = second.substring(l2 - j, l2 - j + len);
-                    //s1 = "";//s2.replaceAll(".", "&nbsp;");
                     builder.addTextElement(cell2, "font", s2)
-                            .setAttribute("style", "background-color:aquamarine");
-                    //builder.addText(cell2, s2);
+                            .setAttribute("style", uStyle);
                     j -= len;
                     break;
                 case SUBSTITUTE:
@@ -220,16 +221,14 @@ public class Aligner {
         }
         if (i > 0) {
             s1 = first.substring(l1 - i, l1);
-            //s2 = "";//s1.replaceAll(".", "#");
             builder.addTextElement(cell1, "font", s1)
-                    .setAttribute("style", "background-color:aquamarine");
+                    .setAttribute("style", uStyle);
 
         }
         if (j > 0) {
             s2 = second.substring(l2 - j, l2);
-            //s1 = "";//s2.replaceAll(".", "#");
             builder.addTextElement(cell2, "font", s2)
-                    .setAttribute("style", "background-color:aquamarine");
+                    .setAttribute("style", uStyle);
         }
         return builder.document().getDocumentElement();
     }

@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 public class WordScanner {
 
     static Pattern pattern;
-    static String defaultEncoding;
     Matcher matcher;
     BufferedReader reader;
 
@@ -42,16 +41,16 @@ public class WordScanner {
         builder.append("([\\p{Nd}\\p{Nl}\\p{No}]+([-',./][\\p{Nd}\\p{Nl}\\p{No}]+)*[%]?)");
         builder.append(")");
         pattern = Pattern.compile(builder.toString());
-        defaultEncoding = System.getProperty("file.encoding");
     }
 
     /**
-     * Scan InputStream
+     * Open an InputStream for scanning
      *
-     * @param is input stream.
-     * @param encoding the encoding (e.g., UTF-8).
+     * @param is the InputStream
+     * @param encoding the character encoding (e.g., UTF-8).
+     * @throws IOException
      */
-    private void open(InputStream is, String encoding)
+    public WordScanner(InputStream is, String encoding)
             throws IOException {
         InputStreamReader isr = new InputStreamReader(is, encoding);
 
@@ -64,15 +63,15 @@ public class WordScanner {
     }
 
     /**
-     * Open an InputStream for scanning
+     * Open file with specific encoding for scanning.
      *
-     * @param is the InputStream
-     * @param encoding the character encoding (e.g., UTF-8).
-     * @throws IOException
+     * @param file the input file.
+     * @param encoding the encoding (e.g., UTF-8).
+     * @throws java.io.IOException
      */
-    public WordScanner(InputStream is, String encoding)
+    public WordScanner(File file, String encoding)
             throws IOException {
-        open(is, encoding);
+        this(new FileInputStream(file), encoding);
     }
 
     /**
@@ -83,19 +82,7 @@ public class WordScanner {
      */
     public WordScanner(File file)
             throws IOException {
-        open(new FileInputStream(file), defaultEncoding);
-    }
-
-    /**
-     * Open file with specific encoding for scanning.
-     *
-     * @param file the input file.
-     * @param encoding the encoding (e.g., UTF-8).
-     * @throws java.io.IOException
-     */
-    public WordScanner(File file, String encoding)
-            throws IOException {   
-            open(new FileInputStream(file), encoding);  
+        this(file, Encoding.detect(file));
     }
 
     /**
@@ -106,17 +93,16 @@ public class WordScanner {
      */
     public WordScanner(String s)
             throws IOException {
-        InputStream is = new ByteArrayInputStream(s.getBytes());
-        open(is, "UTF-8");
+        this(new ByteArrayInputStream(s.getBytes()), "UTF-8");
     }
 
     /**
      *
      * @param file the input file to be processed
-     * @return a StringBilider with the file content
+     * @return a StringBuilder with the file content
      * @throws java.io.IOException
      */
-    public static StringBuilder scanToBuffer(File file)
+    public static StringBuilder scanToStringBuilder(File file)
             throws IOException {
         StringBuilder builder = new StringBuilder();
         WordScanner scanner = new WordScanner(file);

@@ -144,7 +144,7 @@ public class StringEditDistance {
     }
 
     /**
-     * Computes number of edit operations per character
+     * Computes the number of edit operations per character
      *
      * @param first the reference text
      * @param second the fuzzy text
@@ -231,10 +231,10 @@ public class StringEditDistance {
 
     /**
      * Aligns two strings (one to one alignments with substitutions).
-     *
      * @param first the first string.
      * @param second the second string.
      * @return the mapping between positions.
+     * @deprecated use Aligner class
      */
     public static int[] alignment(String first, String second) {
         int i, j;

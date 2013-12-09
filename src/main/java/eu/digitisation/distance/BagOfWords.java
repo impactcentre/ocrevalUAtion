@@ -24,7 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Computes distances between two bags of words (order independent distance)
+ * A bag of words is a text where the ordering of words is irrelevant.
+ *
  * @author R.C.C.
  */
 public class BagOfWords {
@@ -51,7 +52,9 @@ public class BagOfWords {
     }
 
     /**
-     * Compute the distance between two bag of words
+     * Compute the distance between two bag of words (order independent
+     * distance)
+     *
      * @param other another bag of words
      * @return the number of differences between this and the other bag of words
      */
@@ -69,27 +72,28 @@ public class BagOfWords {
         }
         return d;
     }
-    
+
     /**
      * The total number of words
+     *
      * @return the total number of words
      */
     public int total() {
         return words.total();
     }
-    
+
     /**
-     * 
+     *
      * @param s1 reference string
-     * @param s2  fuzzy string string
-     * @return the word error rate between the (unsorted) strings 
+     * @param s2 fuzzy string string
+     * @return the word error rate between the (unsorted) strings
      */
-    public static double wer (String s1, String s2) {
+    public static double wer(String s1, String s2) {
         BagOfWords bow1 = new BagOfWords(s1);
         BagOfWords bow2 = new BagOfWords(s2);
         int tot1 = bow1.total();
         int tot2 = bow2.total();
-        int d = bow1.distance(bow2); 
-        return  (Math.abs(tot1 - tot2) + d) / (double)(2 * bow1.total());
+        int d = bow1.distance(bow2);
+        return (Math.abs(tot1 - tot2) + d) / (double) (2 * bow1.total());
     }
 }

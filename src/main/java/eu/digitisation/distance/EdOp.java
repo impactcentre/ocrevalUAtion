@@ -19,7 +19,7 @@ package eu.digitisation.distance;
 
 /**
  *
- * Basic edit operations on a ingle character
+ * Basic edit operations on a single character
  *
  * @author R.C.C.
  */

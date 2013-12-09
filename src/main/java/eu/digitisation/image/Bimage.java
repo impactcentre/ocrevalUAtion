@@ -35,10 +35,10 @@ import javax.media.jai.JAI;
  */
 public class Bimage extends BufferedImage {
 
-    static int defaultImageType;  // Guess image type
+    static int defaultImageType = BufferedImage.TYPE_INT_RGB;
 
     /**
-     * Default constructor
+     * Basic constructor
      *
      * @param width
      * @param height
@@ -47,17 +47,27 @@ public class Bimage extends BufferedImage {
     public Bimage(int width, int height, int imageType) {
         super(width, height, imageType);
     }
+    
+     /**
+     * Basic constructor
+     *
+     * @param width
+     * @param height
+     */
+    public Bimage(int width, int height) {
+        super(width, height, defaultImageType);
+    }
 
     /**
-     * Create a BufferedImage from another BufferedImage.
-     * Default type set to TYPE_INT_RGB instead of TYPE_CUSTOM
+     * Create a BufferedImage from another BufferedImage. Type set to
+     * default in case of TYPE_CUSTOM (not handled by BufferedImage) .
      *
      * @param image the source image
      */
     public Bimage(BufferedImage image) {
         super(image.getWidth(null), image.getHeight(null),
                 image.getType() == BufferedImage.TYPE_CUSTOM
-                ? BufferedImage.TYPE_INT_RGB
+                ? defaultImageType
                 : image.getType());
         Graphics2D g = createGraphics();
         g.drawImage(image, 0, 0, null);
@@ -65,7 +75,7 @@ public class Bimage extends BufferedImage {
     }
 
     /**
-     * Create image from file content. 
+     * Create image from file.
      *
      * @param file the file storing the image
      * @throws IOException
@@ -73,7 +83,7 @@ public class Bimage extends BufferedImage {
      */
     public Bimage(java.io.File file) throws IOException {
         //            this(javax.imageio.ImageIO.read(file));
-        this(JAI.create("FileLoad", 
+        this(JAI.create("FileLoad",
                 file.getCanonicalPath()).getAsBufferedImage());
     }
 
@@ -97,7 +107,7 @@ public class Bimage extends BufferedImage {
     }
 
     /**
-     * Create a new image form two layers (with the type of first)
+     * Create a new image from two layers (with the type of first)
      *
      * @param first the first source image
      * @param second the second source image
@@ -129,15 +139,9 @@ public class Bimage extends BufferedImage {
     /**
      * Transform image to RGB
      *
-     * @return this image as gray-scale image
+     * @return this image as RGB image
      */
     public Bimage toRGB() {
-        /*
-         ColorSpace space
-         = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-         ColorConvertOp operation = new ColorConvertOp(space, null);
-         return new Bimage(operation.filter(this, null));
-         */
         Bimage bim = new Bimage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = bim.createGraphics();
         g.drawImage(this, 0, 0, null);
@@ -171,19 +175,20 @@ public class Bimage extends BufferedImage {
     }
 
     /**
-     * Add a polygonal frontier to the image
+     * Add polygonal frontiers to the image
      *
-     * @param regions an array of polygonal regions
+     * @param ploygons an array of polygonal regions
      * @param color he color of the polygons
      * @param stroke the line width
      */
-    public void add(Polygon[] regions, Color color, int stroke) {
-        for (Polygon p : regions) {
+    public void add(Polygon[] polygons, Color color, int stroke) {
+        for (Polygon p : polygons) {
             add(p, color, stroke);
         }
     }
 
     /**
+     * Write the image to a file
      * @param file the output file
      * @throws java.io.IOException
      */

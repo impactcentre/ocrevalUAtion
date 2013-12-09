@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 R.C.C.
+ * Copyright (C) 2013 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +17,6 @@
  */
 package eu.digitisation.xml;
 
-import eu.digitisation.io.Encoding;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

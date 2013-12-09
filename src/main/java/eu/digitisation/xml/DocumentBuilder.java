@@ -112,7 +112,7 @@ public class DocumentBuilder {
     }
 
     /**
-     * Inset an element a a child of another element
+     * Insert an element as a child of another element
      *
      * @param parent the parent element
      * @param child the child element (even external one)
@@ -128,7 +128,7 @@ public class DocumentBuilder {
     }
 
     /**
-     * Add some text content to a given element
+     * Add text content under the given element
      *
      * @param parent the container element
      * @param content the textual content

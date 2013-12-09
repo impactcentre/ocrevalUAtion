@@ -17,12 +17,19 @@
  */
 package eu.digitisation.xml;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.xml.sax.*;
+
 import org.xml.sax.helpers.*;
 import javax.xml.parsers.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 /**
  * Removes markup, declarations, PI's and comments from XML files. Implemented
