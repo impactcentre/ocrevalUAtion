@@ -79,7 +79,7 @@ public class CharFilter extends HashMap<String, String> {
     /**
      * Converts the contents of a file into a CharSequence
      */
-    private CharSequence toCharSequence(File file) {
+    public CharSequence toCharSequence(File file) {
 
         try {
             FileInputStream input = new FileInputStream(file);
