@@ -18,7 +18,11 @@
 package eu.digitisation.ocrevaluation;
 
 import eu.digitisation.distance.Aligner;
+import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.distance.BagOfWords;
+import eu.digitisation.distance.EditDistanceType;
+import eu.digitisation.distance.TokenArray;
+import eu.digitisation.distance.TokenArrayFactory;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
@@ -93,15 +97,15 @@ public class Report extends DocumentBuilder {
         double cer = ErrorMeasure.cer(gts, ocrs);
         double cerDL = ErrorMeasure.cerDL(gts, ocrs);
         double wer = ErrorMeasure.wer(gts, ocrs);
-        double bwer = BagOfWords.wer(gts, ocrs);
+        double ber = ErrorMeasure.ber(gts, ocrs);
         Element alitab = Aligner.alignmentMap(gts, ocrs);
         CharStatTable stats = new CharStatTable(gts, ocrs);
 
         // General info
         String[][] summary = {{"CER", String.format("%.2f", cer * 100)},
-        {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
-        {"WER", String.format("%.2f", wer * 100)},
-        {"WER (order independent)", String.format("%.2f", bwer * 100)}
+            {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+            {"WER", String.format("%.2f", wer * 100)},
+            {"WER (order independent)", String.format("%.2f", ber * 100)}
         };
         addTextElement(body, "h2", "General results");
         addTable(body, summary);
@@ -114,16 +118,19 @@ public class Report extends DocumentBuilder {
     }
 
     public Report(Batch batch, String gtencoding, String ocrencoding,
-            File eqfile) throws NoSuchMethodException {
+            File eqfile) {
         super("html");
         init();
 
         CharFilter filter = (eqfile == null) ? null : new CharFilter(eqfile);
         CharStatTable stats = new CharStatTable();
-        Element summary;
+        Element summaryTab;
+        int numwords = 0;   // number of words in GT
+        int wdist = 0;      // word distances
+        int bdist = 0;      //bag-of-words distanbces
 
         addTextElement(body, "h2", "General results");
-        summary = addElement(body, "div");
+        summaryTab = addElement(body, "div");
         addTextElement(body, "h2", "Difference spotting");
 
         for (int n = 0; n < batch.size(); ++n) {
@@ -132,12 +139,29 @@ public class Report extends DocumentBuilder {
             TextContent ocr = new TextContent(input.second, filter, ocrencoding);
             String gts = gt.toString();
             String ocrs = ocr.toString();
+            TokenArrayFactory factory = new TokenArrayFactory(false);
+            TokenArray gtarray = factory.newTokenArray(gts);
+            TokenArray ocrarray = factory.newTokenArray(ocrs);
+            BagOfWords gtbag = new BagOfWords(gts);
+            BagOfWords ocrbag = new BagOfWords(ocrs);
             Element alitab = Aligner.alignmentMap(gts, ocrs);
-            addElement(body, alitab);
             stats.add(gts, ocrs);
+            addElement(body, alitab);
+            numwords += gtarray.length();
+            wdist += ArrayEditDistance.distance(gtarray.tokens(), ocrarray.tokens(),
+                EditDistanceType.LEVENSHTEIN) ;
+            bdist += gtbag.distance(ocrbag);
         }
         //Summary table
         double cer = stats.cer();
+        double wer = wdist / (double) numwords;
+        double ber = bdist / (double) numwords;
+        String[][] summaryContent = {{"CER", String.format("%.2f", cer * 100)},
+         //   {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+            {"WER", String.format("%.2f", wer * 100)},
+            {"WER (order independent)", String.format("%.2f", ber * 100)}
+        };
+        addTable(summaryTab, summaryContent);
         // CharStatTable
         addTextElement(body, "h2", "Error rate per character and type");
         addElement(body, stats.asTable());

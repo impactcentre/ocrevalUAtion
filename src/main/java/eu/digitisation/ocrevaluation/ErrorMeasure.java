@@ -17,9 +17,12 @@
  */
 package eu.digitisation.ocrevaluation;
 
-import eu.digitisation.distance.TextFileEncoder;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
+import eu.digitisation.distance.BagOfWords;
+import eu.digitisation.distance.EditDistanceType;
+import eu.digitisation.distance.TokenArray;
+import eu.digitisation.distance.TokenArrayFactory;
 
 /**
  * Computes character and word error rates by comparing two texts
@@ -45,12 +48,8 @@ public class ErrorMeasure {
                     + String.format("%.2f", delta) + " % in character length");
         }
 
-        return StringEditDistance.levenshtein(s1, s2)
+        return StringEditDistance.distance(s1, s2, EditDistanceType.LEVENSHTEIN)
                 / (double) l1;
-        /*
-         int indel = StringEditDistance.indel(b1.toString(), b2.toString());
-         return (l1 - l2 + indel) / l1;
-         */
     }
 
     /**
@@ -70,33 +69,51 @@ public class ErrorMeasure {
                     + String.format("%.2f", delta) + " % in character length");
         }
 
-        return StringEditDistance.DL(s1, s2)
+        return StringEditDistance.distance(s1, s2, EditDistanceType.DAMERAU_LEVENSHTEIN)
                 / (double) l1;
-        /*
-         int indel = StringEditDistance.indel(b1.toString(), b2.toString());
-         return (l1 - l2 + indel) / l1;
-         */
     }
 
     /**
-     * Compute word error rate (words represented as integer codes)
+     * Compute word error rate
      *
      * @param a1 array of integers
      * @param a2 array of integers
      * @return error rate
      */
-    private static double wer(Integer[] a1, Integer[] a2) {
-        int l1 = a1.length;
-        int l2 = a2.length;
+    private static double wer(TokenArray a1, TokenArray a2) {
+        int l1 = a1.length();
+        int l2 = a2.length();
         double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
 
         if (delta > 20) {
             System.err.println("Warning: files differ a "
                     + String.format("%.2f", delta) + " % in word length");
         }
-     
-        int indel = ArrayEditDistance.indel(a1, a2);
-        return (Math.abs(l1 - l2) + indel) / (double) (2 * l1);
+
+        return ArrayEditDistance.distance(a1.tokens(), a2.tokens(),
+                EditDistanceType.LEVENSHTEIN) / (double) l1;
+    }
+
+    /**
+     * Compute word recall rate
+     *
+     * @param a1 first TokenArray
+     * @param a2 second TokenArray
+     * @return word recall (fraction of words in a1 also in a2)
+     */
+    private static double wordRecall(TokenArray a1, TokenArray a2) {
+        int l1 = a1.length();
+        int l2 = a2.length();
+        double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
+
+        if (delta > 20) {
+            System.err.println("Warning: files differ a "
+                    + String.format("%.2f", delta) + " % in word length");
+        }
+
+        int indel = ArrayEditDistance.distance(a1.tokens(), a2.tokens(),
+                EditDistanceType.INDEL);
+        return (l1 + l2 - indel) / (double) (2 * l1);
     }
 
     /**
@@ -107,9 +124,24 @@ public class ErrorMeasure {
      * @return word error rate with respect to first file
      */
     public static double wer(String s1, String s2) {
-        TextFileEncoder encoder = new TextFileEncoder(false); // case folding
-        Integer[] a1 = encoder.encode(s1);
-        Integer[] a2 = encoder.encode(s2);
+        TokenArrayFactory factory = new TokenArrayFactory(false); // case unsensitive  
+        TokenArray a1 = factory.newTokenArray(s1);
+        TokenArray a2 = factory.newTokenArray(s2);
+       
         return wer(a1, a2);
+    }
+    
+    /**
+     * Compute bag-of-word error rate
+     * @param s1 reference string
+     * @param s2 fuzzy string string
+     * @return the word error rate between the (unsorted) strings
+     */
+    public static double ber(String s1, String s2) {
+        BagOfWords bow1 = new BagOfWords(s1);
+        BagOfWords bow2 = new BagOfWords(s2);
+        int tot1 = bow1.total();
+        int tot2 = bow2.total();
+        return bow1.distance(bow2) / (double) bow1.total();
     }
 }

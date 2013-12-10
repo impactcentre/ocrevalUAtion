@@ -129,7 +129,7 @@ public class StringEditDistance {
                     if (i > 1 && j > 1
                             && first.charAt(i - 1) == second.charAt(j - 2)
                             && first.charAt(i - 2) == second.charAt(j - 1)) {
-                         A[i % 3][j] = min(A[(i - 1) % 3][j] + 1,
+                        A[i % 3][j] = min(A[(i - 1) % 3][j] + 1,
                                 A[i % 3][j - 1] + 1,
                                 A[(i - 2) % 3][j - 2] + 1);
                     } else {
@@ -141,6 +141,26 @@ public class StringEditDistance {
             }
         }
         return A[first.length() % 3][second.length()];
+    }
+
+    /**
+     *
+     * @param first the first string.
+     * @param second the second string.
+     * @param type the type of distance to be computed
+     * @return the distance between first and second (defaults to Levenshtein)
+     */
+    public static int distance(String first, String second, EditDistanceType type) {
+        switch (type) {
+            case INDEL:
+                return indel(first, second);
+            case LEVENSHTEIN:
+                return levenshtein(first, second);
+            case DAMERAU_LEVENSHTEIN:
+                return DL(first, second);
+            default:
+                return levenshtein(first, second);
+        }
     }
 
     /**
@@ -231,6 +251,7 @@ public class StringEditDistance {
 
     /**
      * Aligns two strings (one to one alignments with substitutions).
+     *
      * @param first the first string.
      * @param second the second string.
      * @return the mapping between positions.

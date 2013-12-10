@@ -59,18 +59,27 @@ public class BagOfWords {
      * @return the number of differences between this and the other bag of words
      */
     public int distance(BagOfWords other) {
-        int d = 0;
+        int dplus = 0;    // excess
+        int dminus = 0;   // fault
         for (String word : this.words.keySet()) {
             int delta = this.words.value(word) - other.words.value(word);
-            d += Math.abs(delta);
+            if (delta > 0) {
+                dplus += delta;
+            } else {
+                dminus += delta;
+            }
         }
         for (String word : other.words.keySet()) {
             if (!this.words.containsKey(word)) {
                 int delta = this.words.value(word) - other.words.value(word);
-                d += Math.abs(delta);
+                if (delta > 0) {
+                    dplus += delta;
+                } else {
+                    dminus += delta;
+                }
             }
         }
-        return d;
+        return Math.max(dplus, dminus);
     }
 
     /**
@@ -80,20 +89,5 @@ public class BagOfWords {
      */
     public int total() {
         return words.total();
-    }
-
-    /**
-     *
-     * @param s1 reference string
-     * @param s2 fuzzy string string
-     * @return the word error rate between the (unsorted) strings
-     */
-    public static double wer(String s1, String s2) {
-        BagOfWords bow1 = new BagOfWords(s1);
-        BagOfWords bow2 = new BagOfWords(s2);
-        int tot1 = bow1.total();
-        int tot2 = bow2.total();
-        int d = bow1.distance(bow2);
-        return (Math.abs(tot1 - tot2) + d) / (double) (2 * bow1.total());
     }
 }

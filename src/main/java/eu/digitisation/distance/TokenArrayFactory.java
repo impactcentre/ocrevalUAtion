@@ -26,28 +26,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * A TokenArrayFactory guarantees consistency between TokenArrays since the
+ * mapping between words and integer codes is shared by all TokenArrays created
+ * by the same factory and this allows for the comparison of TokenArrays.
  *
- * Encode a text file as an array of Integers (one code per word). Every word is
- * encoded as an integer. Identical words have identical encodings and different
- * words have different codes. Consistency (between encodings and files) is only
- * guaranteed if the same TextFileEncoder is used.
- *
- * @version 2012.06.20
- * @deprecated Use TokenArray instead
+ * @version 2013.12.10
  */
-public class TextFileEncoder {
+public class TokenArrayFactory {
 
     HashMap<String, Integer> codes;
     boolean caseSensitive;   // Case sensitive encoding
 
-    /**
-     *
-     * @param sensitive True if the encoder preserves case, False if the encoder
-     * folds uppercase into lowercase.
-     */
-    public TextFileEncoder(boolean sensitive) {
+    public TokenArrayFactory(boolean caseSensitive) {
         codes = new HashMap<String, Integer>();
-        caseSensitive = sensitive;
+        this.caseSensitive = caseSensitive;
+    }
+
+    public TokenArrayFactory() {
+        this(true);
     }
 
     /**
@@ -55,7 +51,7 @@ public class TextFileEncoder {
      * @param word a word
      * @return The integer code assigned to this word
      */
-    public Integer getCode(String word) {
+    private Integer getCode(String word) {
         Integer code;
         String key = caseSensitive ? word : word.toLowerCase();
 
@@ -69,14 +65,12 @@ public class TextFileEncoder {
     }
 
     /**
-     * Encode a file
+     * Build a TokenArray form the file content
      *
      * @param file the input file
-     * @param encoding the text encoding 
-     * @return the file as an array of integer codes (one per word)
+     * @param encoding the text encoding folds uppercase into lowercase.
      */
-    public Integer[] encode(File file, String encoding)
-            throws RuntimeException {
+    public TokenArray newTokenArray(File file, String encoding) throws RuntimeException {
 
         ArrayList<Integer> array = new ArrayList<Integer>();
         WordScanner scanner;
@@ -88,31 +82,30 @@ public class TextFileEncoder {
                 array.add(getCode(word));
             }
         } catch (IOException ex) {
-            Logger.getLogger(TextFileEncoder.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TokenArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return array.toArray(new Integer[array.size()]);
+        return new TokenArray(codes, array);
     }
 
     /**
-     * Encode a string
+     * Build a TokenArray from a String
      *
      * @param s the input string
-     * @return the string as an array of integer codes (one per word)
      */
-    public Integer[] encode(String s) {
+    public TokenArray newTokenArray(String s) {
         ArrayList<Integer> array = new ArrayList<Integer>();
-        WordScanner scanner;
-        String word;
 
         try {
-            scanner = new WordScanner(s);
+            WordScanner scanner = new WordScanner(s);
+            String word;
+
             while ((word = scanner.nextWord()) != null) {
                 array.add(getCode(word));
             }
         } catch (IOException ex) {
-            Logger.getLogger(TextFileEncoder.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TokenArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return array.toArray(new Integer[array.size()]);
+        return new TokenArray(codes, array);
     }
 }

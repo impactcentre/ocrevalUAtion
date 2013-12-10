@@ -17,22 +17,20 @@
  */
 package eu.digitisation.distance;
 
-import java.io.File;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author rafa
  */
-public class FileEncoderTest {
+public class TokenArrayTest {
 
-    public FileEncoderTest() {
+    public TokenArrayTest() {
     }
 
     @BeforeClass
@@ -52,37 +50,21 @@ public class FileEncoderTest {
     }
 
     /**
-     * Test of getCode method, of class TextFileEncoder.
-     */
-    @Test
-    public void testGetCode() {
-        System.out.println("getCode");
-        String word = "uno";
-        TextFileEncoder instance = new TextFileEncoder(true);
-        Integer expResult = 0;
-        Integer result = instance.getCode(word);
-        assertEquals(expResult, result);
-    }
-
- 
-    /**
      * Test of encode method, of class TextFileEncoder.
      */
     @Test
     public void testEncode_String() {
         System.out.println("encode");
-        String s = "One two one";
-        TextFileEncoder instance = new TextFileEncoder(false);
-        Integer[] expResult = {0, 1, 0};
-        Integer[] result = instance.encode(s);
-        assertArrayEquals(expResult, result);
-        // Another test
         String input = "hola&amigo2\n3.14 mi casa, todos los días\n"
                 + "mesa-camilla java4you i.b.m. i+d Dª María 3+100%";
-        TextFileEncoder encoder = new TextFileEncoder(true);
-        int size = encoder.encode(input).length;
+        String expOutput = "hola&amigo 2 3.14 mi casa todos los días"
+                + " mesa-camilla java 4 you i.b.m i+d Dª María 3 100%";
+        TokenArrayFactory f = new TokenArrayFactory(true);
+        TokenArray array = f.newTokenArray(input);
+        String output = array.toString();
+        assertEquals(expOutput, output);
 
+        int size = array.length();
         assertEquals(18, size);
     }
-
 }

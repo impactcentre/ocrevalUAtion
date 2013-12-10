@@ -1,7 +1,11 @@
 package eu.digitisation;
 
+import eu.digitisation.io.Batch;
 import eu.digitisation.ocrevaluation.Report;
 import java.io.File;
+import java.io.InvalidObjectException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Main class for ocrevalUAtion: version 0.92
@@ -73,13 +77,20 @@ public class Main {
                 || !workingDirectory.isDirectory()) {
             System.out.println(workingDirectory + " is not a valid directory");
         } else {
-            if (ofile == null) {
-                String prefix = workingDirectory + File.separator
-                        + gtfile.getName().replaceFirst("[.][^.]+$", "");
-                ofile = new File(prefix + "_out.html");
+            try {
+                if (ofile == null) {
+                    String prefix = workingDirectory + File.separator
+                            + gtfile.getName().replaceFirst("[.][^.]+$", "");
+                    ofile = new File(prefix + "_out.html");
+                }
+                //           Report report = new Report(gtfile, gtencoding, ocrfile, ocrencoding, repfile);
+                Batch batch = new Batch(gtfile, ocrfile); // accepts also directories
+                Report report = new Report(batch, gtencoding, ocrencoding, repfile);
+
+                report.write(ofile);
+            } catch (InvalidObjectException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Report report = new Report(gtfile, gtencoding, ocrfile, ocrencoding, repfile);
-            report.write(ofile);
 
         }
     }

@@ -22,9 +22,10 @@ import java.io.File;
 import java.io.InvalidObjectException;
 
 /**
- * A batch of file pairs to be processed Files must be in two different folders
- * and named unambiguously (a unique one-to-one mapping must be
- * straightforward from file names)
+ * A batch of file pairs to be processed. Files must be in two different folders
+ * and named unambiguously (a unique one-to-one mapping must be straightforward
+ * from file names). Alternatively a Batch consisting of a single file pair can
+ * be also created.
  *
  * @author R.C.C.
  */
@@ -38,12 +39,15 @@ public class Batch {
         if (dir1.isDirectory()) {
             files1 = dir1.listFiles();
         } else {
-            throw new java.io.InvalidObjectException(dir1 + " is not a folder");
+            String[] a = {};
+            files1 = new File[1];
+            files1[0] = dir1;
         }
         if (dir2.isDirectory()) {
             files2 = dir2.listFiles();
         } else {
-            throw new java.io.InvalidObjectException(dir2 + " is not a folder");
+            files2 = new File[1];
+            files2[0] = dir2;
         }
         if (files1.length != files2.length) {
             throw new java.io.InvalidObjectException(dir1 + " and " + dir2
@@ -87,7 +91,7 @@ public class Batch {
     /**
      *
      * @param n the file number
-     * @return the n-th File pair 
+     * @return the n-th File pair
      */
     public Pair<File, File> pair(int n) {
         return new Pair<File, File>(files1[n], files2[n]);

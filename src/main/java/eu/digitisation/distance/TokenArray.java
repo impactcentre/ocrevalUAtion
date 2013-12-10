@@ -17,18 +17,13 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.io.WordScanner;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A TokenArray is a tokenized string: every word is internally stored as an
- * integer. The mapping between words and integer codes is specific for every
- * TokenArray.
+ * integer. The mapping between words and integer codes is shared by all
+ * TokenArrays to allow for comparison.
  *
  * @version 2013.12.10
  */
@@ -36,95 +31,71 @@ public class TokenArray {
 
     HashMap<String, Integer> codes;
     Integer[] tokens;
-    boolean caseSensitive;   // Case sensitive encoding
 
     /**
-     *
-     * @param sensitive True if the encoder preserves case, False if the encoder
-     * folds uppercase into lowercase.
+     * Default constructor
+     * @param codes the dictionary of codes
+     * @param tokens the integer representation
      */
-    public TokenArray(boolean sensitive) {
-        codes = new HashMap<String, Integer>();
-        caseSensitive = sensitive;
+    public TokenArray(HashMap<String, Integer> codes, Integer[] tokens) {
+        this.codes = codes;
+        this.tokens = tokens;
     }
-
+    
     /**
-     *
-     * @param word a word
-     * @return The integer code assigned to this word
+     * Default constructor
+     * @param codes the dictionary of codes
+     * @param tokens the integer representation
      */
-    private Integer getCode(String word) {
-        Integer code;
-        String key = caseSensitive ? word : word.toLowerCase();
-
-        if (codes.containsKey(key)) {
-            code = codes.get(key);
-        } else {
-            code = codes.size();
-            codes.put(key, code);
-        }
-        return code;
-    }
-
-    /**
-     * Build a TokenArray form the file content
-     *
-     * @param file the input file
-     * @param encoding the text encoding
-     */
-    public TokenArray(File file, String encoding)
-            throws RuntimeException {
-
-        ArrayList<Integer> array = new ArrayList<Integer>();
-        WordScanner scanner;
-        String word;
-
-        try {
-            scanner = new WordScanner(file, encoding);
-            while ((word = scanner.nextWord()) != null) {
-                array.add(getCode(word));
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(TokenArray.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        tokens = array.toArray(new Integer[array.size()]);
-    }
-
-    /**
-     * Build a TokenArray from a String
-     *
-     * @param s the input string
-     */
-    public TokenArray(String s) {
-        ArrayList<Integer> array = new ArrayList<Integer>();
-
-        try {
-            WordScanner scanner = new WordScanner(s);
-            String word;
-
-            while ((word = scanner.nextWord()) != null) {
-                array.add(getCode(word));
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(TokenArray.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        tokens = array.toArray(new Integer[array.size()]);
+    public TokenArray(HashMap<String, Integer> codes, ArrayList<Integer> tokens) {
+        this.codes = codes;
+        this.tokens = tokens.toArray(new Integer[tokens.size()]);
     }
     
     /**
      * The length of the token array
+     *
      * @return the length of the token array
      */
-    public int getLength() {
+    public int length() {
         return tokens.length;
     }
-    
+
     /**
-     * 
+     *
      * @return the internal representation as an array of integer codes
      */
-    public Integer[] getTokens() {
+    public Integer[] tokens() {
         return tokens;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        String[] dictionary = new String[codes.size()];
+       
+        for (String word : codes.keySet()) {
+            dictionary[codes.get(word)] = word;
+        }
+        for (Integer token : tokens) {
+            builder.append(dictionary[token]).append(" ");
+        }
+
+        return builder.toString().trim();
+    }
+
+    /**
+     * Distance between TokenArrays
+     *
+     * @param other another TokenArray
+     * @param type the distance type
+     * @return the distance between this and the other TokenArray
+     */
+    public int distance(TokenArray other, EditDistanceType type) {
+        return ArrayEditDistance.distance(this.tokens, other.tokens, type);
+    }
+
+    public String array() {
+        return java.util.Arrays.toString(tokens);
     }
 }

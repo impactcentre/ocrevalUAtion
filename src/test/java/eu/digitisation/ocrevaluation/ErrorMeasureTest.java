@@ -15,9 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.ocr;
+package eu.digitisation.ocrevaluation;
 
-import eu.digitisation.ocrevaluation.ErrorMeasure;
 import eu.digitisation.distance.EdOp;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.io.StringNormalizer;
@@ -119,12 +118,25 @@ public class ErrorMeasureTest {
         assertEquals(expResult, result, 0.001);
 
         String s1 = "one two three one two one";
-        String s2 = "one two three";
-        expResult = 0.5;
+        String s2 = "one two three four";
+        expResult = 0.5;  // 1 replaced + 2 deleted out of 6 words
         result = ErrorMeasure.wer(s1, s2);
         assertEquals(expResult, result, 0.01);
     }
 
+      /**
+     * Test of distance method, of class BagOfWords.
+     */
+    @Test
+    public void testBwer() {
+        System.out.println("wer");
+        String s1 = "one two three one two one";
+        String s2 = "one four two three";
+        double expResult = 0.5; // 1 replaced + 2 deleted out of 6 words
+        double result = ErrorMeasure.ber(s1, s2);
+        assertEquals(expResult, result, 0.01);
+    }
+    
     @Test
     public void testStats() {
         String s1 = "alabama";
@@ -135,6 +147,6 @@ public class ErrorMeasureTest {
 
         assertEquals(expResult, result);
         assertEquals(1, stats.value('b', EdOp.SUBSTITUTE));
-    }
-
+    } 
+    
 }
