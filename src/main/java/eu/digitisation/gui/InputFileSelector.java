@@ -42,18 +42,19 @@ import javax.swing.JTextPane;
 import javax.swing.border.Border;
 
 /**
- * Graphical interface to select input files with both drag and drop or menu
+ * Graphical interface to select input files with both drag and drop and menu
  * selection.
  *
  * @author R.C.C.
  */
 public class InputFileSelector extends JPanel implements ActionListener {
 
-    private static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
+    static final Color approved = Color.decode("#B5CC9E");
     static File dir; // directory opened by default
-    File file;  // the input file
+    File file;       // the input file
     JTextPane area;  // The area to display the filename
-    JButton choose; // Optional file chooser
+    JButton choose;  // Optional file chooser
 
     public InputFileSelector(Color color, Color bgcolor,
             Border border, String desc) {
@@ -81,8 +82,9 @@ public class InputFileSelector extends JPanel implements ActionListener {
      * @param color the background color
      */
     public void shade(Color color) {
-        area.setBackground(color);
         setBackground(color);
+        area.setBackground(color);
+        area.setForeground(Color.DARK_GRAY);
     }
 
     /**
@@ -120,17 +122,16 @@ public class InputFileSelector extends JPanel implements ActionListener {
             @SuppressWarnings("unchecked")
             public void drop(DropTargetDropEvent e) {
                 try {
+                    java.util.List<File> list;
                     // Accept the drop first!
                     e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-                    // Get files as java.util.List
-                    java.util.List<File> list;
 
                     list = (java.util.List<File>) e.getTransferable()
                             .getTransferData(DataFlavor.javaFileListFlavor);
                     file = list.get(0);
                     area.setText(file.getName());
                     dir = file.getParentFile();
-                    shade(Color.decode("#80ffe0"));
+                    shade(approved);
                 } catch (IOException ex) {
                     Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedFlavorException ex) {
@@ -148,7 +149,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
             if (file != null) {
                 area.setText(file.getName());
                 dir = file.getParentFile();
-                shade(Color.decode("#80ffe0"));
+                shade(approved);
             }
         }
     }

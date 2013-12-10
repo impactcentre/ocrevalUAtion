@@ -35,6 +35,7 @@ public class ArrayEditDistance<Type> {
     }
 
     /**
+     * @param <Type> the type of object in the array
      * @param first the first string.
      * @param second the second string.
      * @return the indel distance between first and second.
@@ -64,6 +65,7 @@ public class ArrayEditDistance<Type> {
     }
 
     /**
+     * @param <Type> the type of object in the array
      * @param first the first string.
      * @param second the second string.
      * @return the Levenshtein distance between first and second.
