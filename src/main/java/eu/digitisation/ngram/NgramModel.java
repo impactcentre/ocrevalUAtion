@@ -20,7 +20,6 @@ package eu.digitisation.ngram;
 import eu.digitisation.io.WordScanner;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,10 +32,11 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * A n-gram model for strings. N is the maximal order of the model (context plus
- * one).
+ * A n-gram model for strings. N is the maximal order of the model (context
+ * length plus one).
  */
-class Ngram implements Serializable {
+class NgramModel implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     int order;                   // The size of the context plus one (n-gram).
@@ -58,14 +58,14 @@ class Ngram implements Serializable {
                 System.err.println("Order must be grater than 0");
             }
         } else {
-            System.err.println("Cannot change order of model with contents");
+            System.err.println("Cannot change order of model with previous content");
         }
     }
 
     /**
      * Class constructor (default order is 2).
      */
-    public Ngram() {
+    public NgramModel() {
         setOrder(2);
         occur = new HashMap<String, Int>();
         lambda = null;
@@ -77,14 +77,14 @@ class Ngram implements Serializable {
      *
      * @param order the size of the context plus one.
      */
-    public Ngram(int order) {
+    public NgramModel(int order) {
         setOrder(order);
         occur = new HashMap<String, Int>();
         lambda = null;
     }
 
     /**
-     * @return number of n-grams stored
+     * @return number of different n-grams stored
      */
     public int size() {
         return occur.keySet().size();
@@ -96,16 +96,15 @@ class Ngram implements Serializable {
      * @param file the output file
      */
     public void save(File file) {
-        FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(file);
+            FileOutputStream fos = new FileOutputStream(file);
             GZIPOutputStream gos = new GZIPOutputStream(fos);
             ObjectOutputStream out = new ObjectOutputStream(gos);
             out.writeObject(this);
             out.close();
         } catch (IOException ex) {
-            Logger.getLogger(Ngram.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -113,21 +112,21 @@ class Ngram implements Serializable {
      *
      * @param file the input file
      */
-    public Ngram(File file) {
+    public NgramModel(File file) {
         try {
             FileInputStream fis = new FileInputStream(file);
             GZIPInputStream gis = new GZIPInputStream(fis);
             ObjectInputStream in = new ObjectInputStream(gis);
-            Ngram ngram = (Ngram) in.readObject();
+            NgramModel ngram = (NgramModel) in.readObject();
             in.close();
-            order = ngram.order;
+            this.order = ngram.order;
             this.occur = ngram.occur;
             this.lambda = ngram.lambda;
         } catch (IOException ex) {
-            Logger.getLogger(Ngram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Ngram.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -176,7 +175,7 @@ class Ngram implements Serializable {
      * @return the number of words in sample text.
      */
     private int numWords() {
-        return occur.get(EOW).getValue(); // $ is end-of-word.
+        return occur.get(EOW).getValue(); // end-of-word.
     }
 
     /**
@@ -187,8 +186,7 @@ class Ngram implements Serializable {
     private double prob(String s) {
         if (occur.containsKey(s)) {
             String h = head(s);
-            if (h.endsWith(BOW)) // head is not stored
-            {
+            if (h.endsWith(BOW)) {  // if head is not stored
                 return occur.get(s).getValue() / (double) numWords();
             } else {
                 return occur.get(s).getValue()
@@ -220,8 +218,7 @@ class Ngram implements Serializable {
      * @return The expected number of occurrences (per word) of s.
      */
     private double expectedNumberOf(String s) {
-        if (s.endsWith(BOW)) // begin of word
-        {
+        if (s.endsWith(BOW)) {
             return 1;
         } else {
             return occur.get(s).getValue() / (double) numWords();
@@ -272,10 +269,10 @@ class Ngram implements Serializable {
     }
 
     /**
-     * Extracts all k-grams in a word upto maximal order. For instance, if word
-     * = "ma" and order = 3 0-grams: "" (three empty strings, to normalize
-     * 1-grams). 1-grams: "m a $" ($ being end-of-word). 2-grams: "#m ma a$" (#
-     * being used to differentiate from 1-gram m). 3-grams: "##m #ma ma$"
+     * Extracts all k-grams in a word upto the maximal order. For instance, if
+     * word = "ma" and order = 3 0-grams: "" (three empty strings, to normalize
+     * 1-grams). 1-grams: "m, a, $" ($ being end-of-word). 2-grams: "#m, ma, a$"
+     * (# being used to differentiate from 1-gram m). 3-grams: "##m, #ma, ma$"
      *
      * @remark do NOT add 1-gram "#" or 1-gram normalization will be wrong.
      * @param word the word to be added.
@@ -300,7 +297,7 @@ class Ngram implements Serializable {
     }
 
     /**
-     * Add kgrams from word
+     * Add k-grams from word
      *
      * @param word the word to be processed
      * @param times the number of occurrences of the word
@@ -327,16 +324,21 @@ class Ngram implements Serializable {
     /*
      * Reads text file and adds words to model.
      * @param fileName a text file
+     * @param caseSensitive true if extracted n-grams are case sensitive
      */
-    public void addTextFile(File file, String encoding) {
+    public void addTextFile(File file, String encoding, boolean caseSensitive) {
         try {
             WordScanner scanner = new WordScanner(file, encoding);
             String word;
             while ((word = scanner.nextWord()) != null) {
-                addWord(word.toLowerCase());
+                if (caseSensitive) {
+                    addWord(word);
+                } else {
+                    addWord(word.toLowerCase());
+                }
             }
         } catch (IOException ex) {
-            Logger.getLogger(Ngram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -363,7 +365,7 @@ class Ngram implements Serializable {
             s = tail(s) + word.charAt(last);
 
             double p = backProb(s);
-	    //	    java.text.DecimalFormat df = new java.text.DecimalFormat("#.####");
+            //	    java.text.DecimalFormat df = new java.text.DecimalFormat("#.####");
             //	    System.err.print(" " + s + " " + df.format(p));
             if (p == 0) {
                 System.err.println(s + " has 0 probability");
@@ -379,22 +381,26 @@ class Ngram implements Serializable {
      * Reads input text and computes cross entropy.
      * @return the log-likelihood of text.
      */
-    public double logLikelihood() {
+    public double logLikelihood(boolean caseSensitive) {
         try {
             String encoding = System.getProperty("file.encoding");
-            WordScanner scanner = 
-                    new WordScanner(System.in, encoding);
+            WordScanner scanner
+                    = new WordScanner(System.in, encoding);
             String word;
-            double result = 0;     
+            double result = 0;
             int numWords = 0;
             while ((word = scanner.nextWord()) != null) {
                 ++numWords;
-                result -= wordLogProb(word.toLowerCase());
+                if (caseSensitive) {
+                    result -= wordLogProb(word);
+                } else {
+                    result -= wordLogProb(word.toLowerCase());
+                }
             }
-            
+
             return result / numWords / Math.log(2);
         } catch (IOException ex) {
-            Logger.getLogger(Ngram.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Double.POSITIVE_INFINITY;
     }
@@ -404,7 +410,7 @@ class Ngram implements Serializable {
      * Main function.
      */
     public static void main(String[] args) {
-        Ngram ngram = new Ngram();
+        NgramModel ngram = new NgramModel();
         String encoding = System.getProperty("file.encoding");
         File fout = null;
 
@@ -422,14 +428,14 @@ class Ngram implements Serializable {
                 } else if (arg.equals("-o")) {
                     fout = new File(args[++k]);
                 } else {
-                    ngram.addTextFile(new File(arg), encoding);
+                    ngram.addTextFile(new File(arg), encoding, false);
                 }
             }
             if (fout != null) {
                 ngram.save(fout);
             } else {
                 System.out.println(ngram.logH());
-                System.out.println(ngram.logLikelihood());
+                System.out.println(ngram.logLikelihood(false));
             }
         }
     }
