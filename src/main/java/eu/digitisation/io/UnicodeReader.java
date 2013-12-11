@@ -43,7 +43,7 @@ public class UnicodeReader {
         for (String token : tokens) {
             if (token.length() % 4 != 0) {
                 throw new IOException(token
-                        + " is not a alid Unicode hex sequence");
+                        + " is not a valid Unicode hex sequence");
             }
             for (int pos = 0; pos + 3 < token.length(); pos += 4) {
                 String sub = token.substring(pos, pos + 4);

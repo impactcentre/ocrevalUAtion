@@ -31,7 +31,7 @@ public class Aligner {
     // style for unaligned segments
     final static String uStyle = "background-color:aquamarine";
     // style for  highlight replacement in parallel text
-    final static String twinStyle = ""; 
+    final static String twinStyle = "";
 
     /**
      * @return 3-wise minimum.
@@ -109,11 +109,14 @@ public class Aligner {
      * Shows text alignment based on a pseudo-Levenshtein distance where
      * white-spaces are not allowed to be replaced with text or vice-versa
      *
-     * @param first
-     * @param second
+     * @param header1 first text title for table head
+     * @param header2 second text title for table head
+     * @param first the first text
+     * @param second the second text
      * @return a table in XHTML format showing the alignments
      */
-    public static Element alignmentMap(String first, String second) {
+    public static Element alignmentMap(String header1, String header2,
+            String first, String second) {
         EditTable B = align(first, second);
         DocumentBuilder builder = new DocumentBuilder("table");
         Element table = builder.root();
@@ -134,10 +137,12 @@ public class Aligner {
         row = builder.addElement("tr");
         cell1 = builder.addElement(row, "td");
         cell2 = builder.addElement(row, "td");
+        cell1.setAttribute("width", "50%");
+        cell2.setAttribute("width", "50%");
         cell1.setAttribute("align", "center");
         cell2.setAttribute("align", "center");
-        builder.addTextElement(cell1, "h3", "Reference");
-        builder.addTextElement(cell2, "h3", "OCR");
+        builder.addTextElement(cell1, "h3", header1);
+        builder.addTextElement(cell2, "h3", header2);
         row = builder.addElement("tr");
         cell1 = builder.addElement(row, "td");
         cell2 = builder.addElement(row, "td");

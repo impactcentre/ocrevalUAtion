@@ -4,7 +4,7 @@
     <groupId>eu.digitisation</groupId>
     <artifactId>ocrevalUAtion</artifactId>
     <name>ocrevalUAtion</name>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
     <packaging>jar</packaging>
     <description>OCR Evaluation Tool</description>
     <organization>
@@ -29,7 +29,7 @@
         <jdk.version>1.7</jdk.version>
     </properties>
     <build> 
-        <finalName>ocrevaluation</finalName>
+        <!--finalName>ocrevaluation</finalName-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -63,10 +63,11 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!--plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
+                    <finalName>ocrevaluation</finalName>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
@@ -87,8 +88,8 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin-->
-            <plugin>
+            </plugin>
+            <!--plugin>
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -109,8 +110,8 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
+            </plugin-->
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.1</version>
@@ -147,7 +148,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
         </plugins>
     </build>
     <dependencies>

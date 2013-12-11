@@ -88,6 +88,14 @@ public class InputFileSelector extends JPanel implements ActionListener {
     }
 
     /**
+     * Change descriptive text
+     * @param text the text to be displayed
+     */
+    public void setText(String text) {
+        area.setText(text);
+    }
+    
+    /**
      *
      * @return the selected input file
      */

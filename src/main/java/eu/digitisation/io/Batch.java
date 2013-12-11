@@ -38,6 +38,7 @@ public class Batch {
     public Batch(File dir1, File dir2) throws InvalidObjectException {
         if (dir1.isDirectory()) {
             files1 = dir1.listFiles();
+            java.util.Arrays.sort(files1);
         } else {
             String[] a = {};
             files1 = new File[1];
@@ -45,18 +46,21 @@ public class Batch {
         }
         if (dir2.isDirectory()) {
             files2 = dir2.listFiles();
+            java.util.Arrays.sort(files2);
         } else {
             files2 = new File[1];
             files2[0] = dir2;
         }
         if (files1.length != files2.length) {
-            throw new java.io.InvalidObjectException(dir1 + " and " + dir2
+            throw new java.io.InvalidObjectException(dir1.getName() 
+                    + " and " + dir2.getName()
                     + " contain a different number of files");
         } else {
             size = files1.length;
         }
         if (!consistent()) {
-            throw new java.io.InvalidObjectException(dir1 + " and " + dir2
+            throw new java.io.InvalidObjectException(dir1.getName() 
+                    + " and " + dir2.getName()
                     + " contain files with inconsistent names");
         }
     }

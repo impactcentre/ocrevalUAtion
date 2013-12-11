@@ -167,6 +167,7 @@ public class CharStatTable extends BiCounter<Character, EdOp> {
                     + value(c, EdOp.SUBSTITUTE)
                     + value(c, EdOp.DELETE);
         }
-        return (spu + sub + add) / (double) tot * 100;
+        
+        return (spu + sub + add) / (double) tot;
     }
 }

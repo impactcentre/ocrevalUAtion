@@ -15,7 +15,7 @@ public class Main {
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1 [encoding] "
             + "-ocr file2 [encoding] "
-            + "-d output_dir [-r replacements_file]";
+            + "-d output_dir [-r equivalences_file]";
 
     private static void exit_gracefully() {
         System.err.println(helpMsg);

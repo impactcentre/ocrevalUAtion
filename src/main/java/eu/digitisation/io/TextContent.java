@@ -221,6 +221,7 @@ public final class TextContent {
             encoding = Encoding.detect(file);
         }
         System.err.println("Text file " + file + " encoding is " + encoding);
+        
         // read content
         try {
             FileInputStream fis = new FileInputStream(file);

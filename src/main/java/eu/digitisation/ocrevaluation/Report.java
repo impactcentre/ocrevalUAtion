@@ -98,7 +98,8 @@ public class Report extends DocumentBuilder {
         double cerDL = ErrorMeasure.cerDL(gts, ocrs);
         double wer = ErrorMeasure.wer(gts, ocrs);
         double ber = ErrorMeasure.ber(gts, ocrs);
-        Element alitab = Aligner.alignmentMap(gts, ocrs);
+        Element alitab = Aligner.alignmentMap(gtfile.getName(), 
+                ocrfile.getName(), gts, ocrs);
         CharStatTable stats = new CharStatTable(gts, ocrs);
 
         // General info
@@ -121,7 +122,7 @@ public class Report extends DocumentBuilder {
             File eqfile) {
         super("html");
         init();
-
+       
         CharFilter filter = (eqfile == null) ? null : new CharFilter(eqfile);
         CharStatTable stats = new CharStatTable();
         Element summaryTab;
@@ -144,8 +145,10 @@ public class Report extends DocumentBuilder {
             TokenArray ocrarray = factory.newTokenArray(ocrs);
             BagOfWords gtbag = new BagOfWords(gts);
             BagOfWords ocrbag = new BagOfWords(ocrs);
-            Element alitab = Aligner.alignmentMap(gts, ocrs);
+            Element alitab = Aligner.alignmentMap(input.first.getName(),
+                    input.second.getName(), gts, ocrs);
             stats.add(gts, ocrs);
+            addTextElement(body, "div", " ");
             addElement(body, alitab);
             numwords += gtarray.length();
             wdist += ArrayEditDistance.distance(gtarray.tokens(), ocrarray.tokens(),
