@@ -171,6 +171,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
     private File choose(String defaultName) {
         JFileChooser chooser = new JFileChooser();
 
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         chooser.setDialogTitle("Select input file");
         chooser.setCurrentDirectory(dir);
         chooser.setSelectedFile(new File(defaultName));
