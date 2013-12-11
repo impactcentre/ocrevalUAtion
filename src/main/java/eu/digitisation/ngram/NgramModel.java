@@ -257,7 +257,7 @@ class NgramModel implements Serializable {
      *
      * @return log entropy per word (in bits).
      */
-    public double logH() {
+    public double entropy() {
         double p, sum = 0;
         for (String word : occur.keySet()) {
             if (word.length() == order) {
@@ -271,8 +271,8 @@ class NgramModel implements Serializable {
     /**
      * Extracts all k-grams in a word upto the maximal order. For instance, if
      * word = "ma" and order = 3 0-grams: "" (three empty strings, to normalize
-     * 1-grams). 1-grams: "m, a, $" ($ being end-of-word). 2-grams: "#m, ma, a$"
-     * (# being used to differentiate from 1-gram m). 3-grams: "##m, #ma, ma$"
+     * 1-grams). 1-grams: "m, a, $" ($ represents end-of-word). 2-grams: "#m, ma, a$"
+     * (# is used to differentiate #m from 1-gram m). 3-grams: "##m, #ma, ma$"
      *
      * @remark do NOT add 1-gram "#" or 1-gram normalization will be wrong.
      * @param word the word to be added.
@@ -289,7 +289,7 @@ class NgramModel implements Serializable {
             s += BOW;
         }
         for (int last = 0; last < word.length(); ++last) {
-            s = tail(s) + word.charAt(last);
+            s = tail(s) + word.charAt(last);          
             for (int first = 0; first <= s.length(); ++first) {
                 addEntry(s.substring(first));
             }
@@ -347,7 +347,7 @@ class NgramModel implements Serializable {
      * Compute probability of a word.
      *
      * @param a word.
-     * @return the log-probability of the contained n-grams.
+     * @return the log-probability (base e) of the contained n-grams.
      */
     public double wordLogProb(String word) {
         double res = 0;
@@ -365,11 +365,9 @@ class NgramModel implements Serializable {
             s = tail(s) + word.charAt(last);
 
             double p = backProb(s);
-            //	    java.text.DecimalFormat df = new java.text.DecimalFormat("#.####");
-            //	    System.err.print(" " + s + " " + df.format(p));
             if (p == 0) {
                 System.err.println(s + " has 0 probability");
-                return -100.0;
+                return Double.NEGATIVE_INFINITY;
             } else {
                 res += Math.log(p);
             }
@@ -434,7 +432,7 @@ class NgramModel implements Serializable {
             if (fout != null) {
                 ngram.save(fout);
             } else {
-                System.out.println(ngram.logH());
+                System.out.println(ngram.entropy());
                 System.out.println(ngram.logLikelihood(false));
             }
         }
