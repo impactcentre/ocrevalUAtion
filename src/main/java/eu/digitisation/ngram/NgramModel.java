@@ -37,12 +37,12 @@ import java.util.zip.GZIPOutputStream;
  */
 class NgramModel implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
+    static final String BOT = "\u0002";      // Begin of text marker.
+    static final String EOT = "\u0003";      // End of text marker.
 
     int order;                   // The size of the context plus one (n-gram).
     HashMap<String, Int> occur;  // Number of occurrences.
-    final String BOW = "#";      // Begin of word marker.
-    final String EOW = "$";      // End of word marker.
     double[] lambda;             // Backoff parameters
 
     /**
@@ -172,21 +172,21 @@ class NgramModel implements Serializable {
     }
 
     /**
-     * @return the number of words in sample text.
+     * @return the number of text entries (usually words) building the model.
      */
     private int numWords() {
-        return occur.get(EOW).getValue(); // end-of-word.
+        return occur.get(EOT).getValue(); // end-of-word.
     }
 
     /**
      * @param s a k-gram (k > 0)
-     * @return the conditional probability of s, normalized to the number of
-     * heads.
+     * @return the conditional probability of the k-gram, normalized to the
+     * number of heads.
      */
     private double prob(String s) {
         if (occur.containsKey(s)) {
             String h = head(s);
-            if (h.endsWith(BOW)) {  // if head is not stored
+            if (h.endsWith(BOT)) {  // if head is not stored
                 return occur.get(s).getValue() / (double) numWords();
             } else {
                 return occur.get(s).getValue()
@@ -202,11 +202,11 @@ class NgramModel implements Serializable {
      * @return The conditional probability of the k-gram, normalized to the
      * frequency of its heads and interpolated with lower order models.
      */
-    private double backProb(String s) {
+    private double smoothProb(String s) {
         double result;
         if (s.length() > 1) {
             double lam = lambda(s.length() - 1);
-            result = (1 - lam) * prob(s) + lam * backProb(tail(s));
+            result = (1 - lam) * prob(s) + lam * smoothProb(tail(s));
         } else {
             result = prob(s);
         }
@@ -218,7 +218,7 @@ class NgramModel implements Serializable {
      * @return The expected number of occurrences (per word) of s.
      */
     private double expectedNumberOf(String s) {
-        if (s.endsWith(BOW)) {
+        if (s.endsWith(BOT)) {
             return 1;
         } else {
             return occur.get(s).getValue() / (double) numWords();
@@ -259,20 +259,36 @@ class NgramModel implements Serializable {
      */
     public double entropy() {
         double p, sum = 0;
-        for (String word : occur.keySet()) {
-            if (word.length() == order) {
-                p = prob(word);
-                sum -= expectedNumberOf(head(word)) * p * Math.log(p);
+        for (String s : occur.keySet()) {
+            if (s.length() == order) {
+                p = prob(s);
+                sum -= expectedNumberOf(head(s)) * p * Math.log(p);
             }
         }
         return sum / Math.log(2);
     }
 
     /**
-     * Extracts all k-grams in a word upto the maximal order. For instance, if
-     * word = "ma" and order = 3 0-grams: "" (three empty strings, to normalize
-     * 1-grams). 1-grams: "m, a, $" ($ represents end-of-word). 2-grams: "#m, ma, a$"
-     * (# is used to differentiate #m from 1-gram m). 3-grams: "##m, #ma, ma$"
+     * Several types of distances will be implemented here
+     * @param other
+     * @return 
+     */
+    public int distance(NgramModel other) {
+        int d = 0;
+        for (String s : occur.keySet()) {
+            int delta = this.occur.get(s).getValue()
+                    - other.occur.get(s).getValue();
+            d += Math.abs(delta);
+        }
+        return d;
+    }
+
+    /**
+     * Extracts all k-grams in a word or text upto the maximal order. For
+     * instance, if word = "ma" and order = 3, then 0-grams are: "" (three empty
+     * strings, to normalize 1-grams). 1-grams: "m, a, $" ($ represents
+     * end-of-word). 2-grams: "#m, ma, a$" (# is used to differentiate #m from
+     * 1-gram m). 3-grams: "##m, #ma, ma$"
      *
      * @remark do NOT add 1-gram "#" or 1-gram normalization will be wrong.
      * @param word the word to be added.
@@ -282,14 +298,14 @@ class NgramModel implements Serializable {
             System.err.println("Cannot extract n-grams from " + word);
             System.exit(1);
         } else {
-            word = word + EOW;
+            word = word + EOT;
         }
         String s = new String();
         while (s.length() < order) {
-            s += BOW;
+            s += BOT;
         }
         for (int last = 0; last < word.length(); ++last) {
-            s = tail(s) + word.charAt(last);          
+            s = tail(s) + word.charAt(last);
             for (int first = 0; first <= s.length(); ++first) {
                 addEntry(s.substring(first));
             }
@@ -297,21 +313,21 @@ class NgramModel implements Serializable {
     }
 
     /**
-     * Add k-grams from word
+     * Add all k-grams in a word or text
      *
-     * @param word the word to be processed
-     * @param times the number of occurrences of the word
+     * @param word the word or text to be processed
+     * @param times the number of occurrences of the word or text
      */
     public void addWords(String word, int times) {
         if (word.length() < 1) {
             System.err.println("Cannot extract n-grams from " + word);
             System.exit(1);
         } else {
-            word = word + EOW;
+            word = word + EOT;
         }
         String s = new String();
         while (s.length() < order) {
-            s += BOW;
+            s += BOT;
         }
         for (int last = 0; last < word.length(); ++last) {
             s = tail(s) + word.charAt(last);
@@ -355,16 +371,16 @@ class NgramModel implements Serializable {
             System.err.println("Cannot compute probability of " + word);
             System.exit(1);
         } else {
-            word = word + EOW;
+            word = word + EOT;
         }
         String s = new String();
         while (s.length() < order) {
-            s += BOW;
+            s += BOT;
         }
         for (int last = 0; last < word.length(); ++last) {
             s = tail(s) + word.charAt(last);
 
-            double p = backProb(s);
+            double p = smoothProb(s);
             if (p == 0) {
                 System.err.println(s + " has 0 probability");
                 return Double.NEGATIVE_INFINITY;
@@ -402,7 +418,6 @@ class NgramModel implements Serializable {
         }
         return Double.POSITIVE_INFINITY;
     }
-
 
     /*
      * Main function.

@@ -103,8 +103,12 @@ public class InputFileSelector extends JPanel implements ActionListener {
         return file;
     }
 
-    public boolean accepted() {
-        return file != null;
+    /**
+     * 
+     * @return true if a file has been selected and the file exists 
+     */
+    public boolean ready() {
+        return file != null && file.exists();
     }
 
     private void enableDragAndDrop(final JTextPane area) {

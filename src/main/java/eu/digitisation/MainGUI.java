@@ -75,20 +75,19 @@ public class MainGUI extends JFrame implements ActionListener {
     }
 
     /**
-     * 
+     *
      * @return true if all required files have been selected
      */
     private boolean checkInputFiles() {
         boolean ready = true;
         Component[] components = pane.getComponents();
         boolean[] required = {true, true, false};
-        
+
         for (int n = 0; n < 3; ++n) {
             InputFileSelector ifs = (InputFileSelector) components[n];
-            if (ifs.accepted()) {
+            if (ifs.ready()) {
                 files[n] = ifs.getFile();
-            }
-            if (required[n] && !(ifs.accepted() && files[n].exists())) {
+            } else if (required[n]) {
                 ifs.shade(Color.decode("#fffacd"));
                 ifs.repaint();
                 ready = false;
@@ -98,17 +97,18 @@ public class MainGUI extends JFrame implements ActionListener {
     }
 
     /**
-     * Show a warning  message
+     * Show a warning message
+     *
      * @param text the text to be displayed
      */
     private void warning(String text) {
-        InputFileSelector ifs = (InputFileSelector)pane.getComponent(0);
+        InputFileSelector ifs = (InputFileSelector) pane.getComponent(0);
         ifs.setForeground(Color.RED);
         ifs.shade(Color.decode("#fffacd"));
         ifs.setText(text);
         ifs.repaint();
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton pressed = (JButton) e.getSource();
@@ -133,10 +133,10 @@ public class MainGUI extends JFrame implements ActionListener {
                         Batch batch = new Batch(files[0], files[1]);
                         Report report = new Report(batch, null, null, files[2]);
                         report.write(files[3]);
-                        if (Desktop.isDesktopSupported()) {                       
-                                URI uri = new URI("file://" + files[3].getCanonicalPath());
-                                System.out.println(uri);
-                                Desktop.getDesktop().browse(uri);                          
+                        if (Desktop.isDesktopSupported()) {
+                            URI uri = new URI("file://" + files[3].getCanonicalPath());
+                            System.out.println(uri);
+                            Desktop.getDesktop().browse(uri);
                         }
                     } catch (InvalidObjectException ex) {
                         warning(ex.getMessage());
