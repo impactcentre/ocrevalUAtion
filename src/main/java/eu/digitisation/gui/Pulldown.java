@@ -36,7 +36,7 @@ import javax.swing.border.Border;
 public class Pulldown extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
-    JComboBox<String> menu;
+    JComboBox menu;
     JLabel title;
     String choice;
 
@@ -49,7 +49,7 @@ public class Pulldown extends JPanel implements ActionListener {
         title = new JLabel(helpText);
         title.setForeground(forecolor);
         add(title);
-        menu = new JComboBox<String>(choices);
+        menu = new JComboBox(choices);
         menu.setFont(new Font("Verdana", Font.PLAIN, 11));
         menu.setMaximumSize(new Dimension(200, 20));
         menu.addActionListener(this);
@@ -59,7 +59,7 @@ public class Pulldown extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         @SuppressWarnings("unchecked")
-        JComboBox<String> cb = (JComboBox<String>) e.getSource();
+        JComboBox cb = (JComboBox) e.getSource();
         choice = (String) cb.getSelectedItem();
     }
 

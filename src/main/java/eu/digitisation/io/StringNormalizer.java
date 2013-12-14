@@ -39,7 +39,7 @@ public class StringNormalizer {
      * @return The string with simple spaces between words.
      */
     public static String reduceWS(String s) {
-        return s.replaceAll("(\\p{Space}|\\p{general_category=Zl}|\\p{general_category=Zp})+", " ")
+        return s.replaceAll("(\\p{Space}|\u2028|\\p{general_category=Zp})+", " ")
                 .trim();
     }
 
