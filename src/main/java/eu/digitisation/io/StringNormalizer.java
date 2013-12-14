@@ -29,6 +29,8 @@ public class StringNormalizer {
             = java.text.Normalizer.Form.NFD;
     final static java.text.Normalizer.Form composed
             = java.text.Normalizer.Form.NFC;
+    static final java.text.Normalizer.Form compatible
+            = java.text.Normalizer.Form.NFKC;
 
     /**
      * Reduce whitespace (including line and paragraph separators)
@@ -48,7 +50,16 @@ public class StringNormalizer {
     public static String canonical(String s) {
         return java.text.Normalizer.normalize(s, composed);
     }
-
+    
+ /**
+     * @param s a string
+     * @return the canonical representation of the string 
+     * with normalized compatible characters.
+     */
+    public static String compatible(String s) {
+        return java.text.Normalizer.normalize(s, compatible);
+    }
+    
     /**
      * @param s a string
      * @return the string with characters <, >, &, " escaped

@@ -19,6 +19,7 @@ package eu.digitisation.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -59,6 +60,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
     public InputFileSelector(Color color, Color bgcolor,
             Border border, String desc) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setMinimumSize(new Dimension(100,100)); 
         setBackground(bgcolor);
         setBorder(border);
         area = new JTextPane();
@@ -88,13 +90,23 @@ public class InputFileSelector extends JPanel implements ActionListener {
     }
 
     /**
+     * Highlight if not ready
+     */
+    public void checkout() {
+        if (!ready()) {
+            shade(Color.decode("#fffacd"));
+        }
+    }
+
+    /**
      * Change descriptive text
+     *
      * @param text the text to be displayed
      */
     public void setText(String text) {
         area.setText(text);
     }
-    
+
     /**
      *
      * @return the selected input file
@@ -104,8 +116,8 @@ public class InputFileSelector extends JPanel implements ActionListener {
     }
 
     /**
-     * 
-     * @return true if a file has been selected and the file exists 
+     *
+     * @return true if a file has been selected and the file exists
      */
     public boolean ready() {
         return file != null && file.exists();

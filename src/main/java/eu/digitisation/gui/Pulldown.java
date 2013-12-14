@@ -23,7 +23,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
@@ -35,17 +37,21 @@ public class Pulldown extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
     JComboBox<String> menu;
+    JLabel title;
     String choice;
 
     public Pulldown(Color forecolor, Color bgcolor,
-            Border border, String[] choices) {
-        setLayout(new BorderLayout());
+            Border border, String helpText, String[] choices) {
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(bgcolor);
         setBorder(border);
-        setPreferredSize(new Dimension(20, 10));
-        setVisible(true);
+       
+        title = new JLabel(helpText);
+        title.setForeground(forecolor);
+        add(title);
         menu = new JComboBox<String>(choices);
         menu.setFont(new Font("Verdana", Font.PLAIN, 11));
+        menu.setSize(new Dimension(200, 20));
         menu.addActionListener(this);
         add(menu);
     }
