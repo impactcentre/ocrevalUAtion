@@ -186,7 +186,7 @@ public class MainGUI2 extends JFrame implements ActionListener {
         } else if (e.getSource() == more) {
             boolean marked = more.isSelected();
             if (marked) {
-                setSize(400, 350);
+                setSize(400, 300);
             } else {
                 setSize(400, 200);
             }
