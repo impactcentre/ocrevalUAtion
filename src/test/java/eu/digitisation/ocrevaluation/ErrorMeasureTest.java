@@ -24,7 +24,6 @@ import eu.digitisation.io.TextContent;
 import eu.digitisation.math.BiCounter;
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -66,7 +65,7 @@ public class ErrorMeasureTest {
     public void testMerge() throws Exception {
         System.out.println("merge");
         URL resourceUrl = getClass().getResource("/text2.txt");
-        File file = Paths.get(resourceUrl.toURI()).toFile();
+        File file = new File(resourceUrl.toURI());
         String encoding = "utf8";
         String expResult = "mi en hora buena";
         String result = new TextContent(file, null, encoding).toString();
@@ -82,10 +81,10 @@ public class ErrorMeasureTest {
     public void testCer() throws Exception {
         System.out.println("cer");
         URL resourceUrl1 = getClass().getResource("/text1.txt");
-        File file1 = Paths.get(resourceUrl1.toURI()).toFile();
+        File file1 = new File(resourceUrl1.toURI());
         //String encoding1 = "utf8";
         URL resourceUrl2 = getClass().getResource("/text2.txt");
-        File file2 = Paths.get(resourceUrl2.toURI()).toFile();
+        File file2 = new File(resourceUrl2.toURI());
         //String encoding2 = "utf8";
         TextContent c1 = new TextContent(file1, null, null);
         TextContent c2 = new TextContent(file2, null, null);
@@ -106,10 +105,10 @@ public class ErrorMeasureTest {
         System.out.println("wer");
         System.out.println("cer");
         URL resourceUrl1 = getClass().getResource("/text1.txt");
-        File file1 = Paths.get(resourceUrl1.toURI()).toFile();
+        File file1 = new File(resourceUrl1.toURI());
         //String encoding1 = "utf8";
         URL resourceUrl2 = getClass().getResource("/text2.txt");
-        File file2 = Paths.get(resourceUrl2.toURI()).toFile();
+        File file2 = new File(resourceUrl2.toURI());
         //String encoding2 = "utf8";
         TextContent c1 = new TextContent(file1, null);
         TextContent c2 = new TextContent(file2, null);

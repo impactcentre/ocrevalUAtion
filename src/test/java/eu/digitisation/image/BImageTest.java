@@ -18,17 +18,11 @@
 package eu.digitisation.image;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.Iterator;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -68,7 +62,7 @@ public class BImageTest {
     @Test
     public void openTiffFile() throws Exception {
         URL resourceUrl = getClass().getResource("/OfTheSciences.tif");
-        File ifile = Paths.get(resourceUrl.toURI()).toFile();
+        File ifile = new File(resourceUrl.toURI());
         Bimage page = null;
 
         if (ifile.exists()) {

@@ -20,7 +20,6 @@ package eu.digitisation.io;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -62,9 +61,9 @@ public class TextContentTest {
     public void testToString() throws URISyntaxException {
         System.out.println("toString");
         URL resourceUrl = getClass().getResource("/UnicodeCharEquivalences.txt");
-        File file = Paths.get(resourceUrl.toURI()).toFile();
-        CharFilter filter = new CharFilter(file);
-        String s = "hola   " + "\n" + " y\u2028 de todo\n";
+        File file = new File(resourceUrl.toURI());
+        CharFilter filter = null;//new CharFilter(file);
+        String s = "hola   " + "\n\t" + " y\u2028 de todo\n";
         TextContent instance = new TextContent(s, filter);
         String expResult = "hola y de todo";
         String result = instance.toString();

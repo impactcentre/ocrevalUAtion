@@ -21,9 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Paths;
 import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -64,15 +62,15 @@ public class ViewerTest {
     @Test
     public void createTiffPage() throws IOException, URISyntaxException {
         URL resourceUrl1 = getClass().getResource("/00439040.tif");
-        File file1 = Paths.get(resourceUrl1.toURI()).toFile();
+        File file1 = new File(resourceUrl1.toURI());
         URL resourceUrl2 = getClass().getResource("/00439040_gt_PAGE.xml");
-        File file2 = Paths.get(resourceUrl2.toURI()).toFile();
+        File file2 = new File(resourceUrl2.toURI());
         String[] args = {file1.getCanonicalPath(), file2.getCanonicalPath()};
 
         Viewer.main(args);
 
         URL resourceUrl3 = getClass().getResource("/00439040_marked.tif");
-        File file3 = Paths.get(resourceUrl3.toURI()).toFile();
+        File file3 = new File(resourceUrl3.toURI());
         long size = file3.length();
 
         assertTrue(size > 0);

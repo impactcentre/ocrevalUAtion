@@ -20,7 +20,6 @@ package eu.digitisation.io;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -61,7 +60,7 @@ public class EncodingTest {
     public void testDetect() throws URISyntaxException {
         System.out.println("detect");
         URL resourceUrl = getClass().getResource("/OfTheSciences_gt_TXT.txt");
-        File file = Paths.get(resourceUrl.toURI()).toFile();
+        File file = new File(resourceUrl.toURI());
         String expResult = "UTF-8";
         String result = Encoding.detect(file);
         assertEquals(expResult, result);
