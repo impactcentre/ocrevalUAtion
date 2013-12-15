@@ -156,6 +156,8 @@ public class InputFileSelector extends JPanel implements ActionListener {
             @Override
             @SuppressWarnings("unchecked")
             public void drop(DropTargetDropEvent e) {
+                DataFlavor[] flavors = e.getTransferable().getTransferDataFlavors();
+
                 try {
                     // Accept the drop first!
                     e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
