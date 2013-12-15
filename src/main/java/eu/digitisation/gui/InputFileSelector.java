@@ -33,6 +33,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -60,7 +62,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
     public InputFileSelector(Color color, Color bgcolor,
             Border border, String desc) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        setMinimumSize(new Dimension(100,100)); 
+        setMinimumSize(new Dimension(100, 100));
         setBackground(bgcolor);
         setBorder(border);
         area = new JTextPane();
@@ -142,20 +144,39 @@ public class InputFileSelector extends JPanel implements ActionListener {
             public void dropActionChanged(DropTargetDragEvent e) {
             }
 
+            private boolean hasFileFlavor(DataFlavor[] flavors) {
+                for (DataFlavor flavor : flavors) {
+                    if (flavor.equals(DataFlavor.javaFileListFlavor)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             @Override
             @SuppressWarnings("unchecked")
             public void drop(DropTargetDropEvent e) {
+                DataFlavor[] flavors = e.getTransferable().getTransferDataFlavors();
+
                 try {
-                    java.util.List<File> list;
                     // Accept the drop first!
                     e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+                    try {
+                        java.util.List<File> list;
 
-                    list = (java.util.List<File>) e.getTransferable()
-                            .getTransferData(DataFlavor.javaFileListFlavor);
-                    file = list.get(0);
+                        list = (java.util.List<File>) e.getTransferable()
+                                .getTransferData(DataFlavor.javaFileListFlavor);
+                        file = list.get(0);
+                    } catch (UnsupportedFlavorException ex) { // try with text
+                        String name = (String) e.getTransferable()
+                                .getTransferData(DataFlavor.stringFlavor);
+                        file = new File(new URI(name));
+                    }
                     area.setText(file.getName());
                     dir = file.getParentFile();
                     shade(approved);
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedFlavorException ex) {
