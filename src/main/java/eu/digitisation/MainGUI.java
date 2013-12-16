@@ -19,6 +19,7 @@ package eu.digitisation;
 
 import eu.digitisation.gui.InputFileSelector;
 import eu.digitisation.gui.OutputFileSelector;
+import eu.digitisation.gui.Pulldown;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.ocrevaluation.Report;
@@ -32,6 +33,7 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 public class MainGUI extends JFrame implements ActionListener {
 
