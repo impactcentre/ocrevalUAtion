@@ -82,12 +82,11 @@ public class Report extends DocumentBuilder {
      */
     public Report(File gtfile, String gtencoding,
             File ocrfile, String ocrencoding,
-            File eqfile) {
+            CharFilter filter) {
         super("html");
         init();
 
         // Prepare inputs
-        CharFilter filter = (eqfile == null) ? null : new CharFilter(eqfile);
         TextContent gt = new TextContent(gtfile, filter, gtencoding);
         TextContent ocr = new TextContent(ocrfile, filter, ocrencoding);
 
@@ -119,11 +118,10 @@ public class Report extends DocumentBuilder {
     }
 
     public Report(Batch batch, String gtencoding, String ocrencoding,
-            File eqfile) {
+            CharFilter filter) {
         super("html");
         init();
-       
-        CharFilter filter = (eqfile == null) ? null : new CharFilter(eqfile);
+     
         CharStatTable stats = new CharStatTable();
         Element summaryTab;
         int numwords = 0;   // number of words in GT

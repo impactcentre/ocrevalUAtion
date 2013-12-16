@@ -1,6 +1,7 @@
 package eu.digitisation;
 
 import eu.digitisation.io.Batch;
+import eu.digitisation.io.CharFilter;
 import eu.digitisation.ocrevaluation.Report;
 import java.io.File;
 import java.io.InvalidObjectException;
@@ -15,7 +16,7 @@ public class Main {
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1 [encoding] "
             + "-ocr file2 [encoding] "
-            + "-d output_dir [-r equivalences_file]";
+            + "-d output_dir [-r equivalences_file] [-c]";
 
     private static void exit_gracefully() {
         System.err.println(helpMsg);
@@ -34,7 +35,8 @@ public class Main {
         String gtencoding = null;
         String ocrencoding = null;
         File workingDirectory = null; // working directory 
-
+        boolean compatibility = false; // Unicode comaptibility mode
+        
         // Read parameters (String switch needs Java 1.7 or later)
         for (int n = 0; n < args.length; ++n) {
             String arg = args[n];
@@ -56,6 +58,8 @@ public class Main {
                 repfile = new File(args[++n]);
             } else if (arg.equals("-o")) {
                 ofile = new File(args[++n]);
+            } else if (arg.equals("-c")) {
+                compatibility = true;
             } else {
                 System.err.println("Unrecognized option " + arg);
                 exit_gracefully();
@@ -85,8 +89,11 @@ public class Main {
                 }
                 //           Report report = new Report(gtfile, gtencoding, ocrfile, ocrencoding, repfile);
                 Batch batch = new Batch(gtfile, ocrfile); // accepts also directories
-                Report report = new Report(batch, gtencoding, ocrencoding, repfile);
-
+                CharFilter filter = (repfile == null) 
+                        ? new CharFilter() 
+                        : new CharFilter(repfile);
+                filter.setCompatibility(compatibility);
+                Report report = new Report(batch, gtencoding, ocrencoding, filter);
                 report.write(ofile);
             } catch (InvalidObjectException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

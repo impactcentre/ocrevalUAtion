@@ -27,21 +27,47 @@ import java.util.logging.Logger;
  * Transform text according to a mapping between (source, target) Unicode
  * character sequences. This can be useful, for example, to replace Unicode
  * characters which are not supported by the browser or editor with printable
- * ones.
+ * ones. It also performs canonicalization an returns the recommended normal
+ * form (NFC = composed or NFKC if compatibility mode is selected).
  *
  * @version 2012.06.20
  */
 public class CharFilter extends HashMap<String, String> {
+
     private static final long serialVersionUID = 1L;
+    boolean compatibility;  // Unicode compatibility mode
+
+    public CharFilter() {
+        super();
+        this.compatibility = false;
+    }
 
     /**
-     * Load the transformation map from a CSV file: one transformation per
-     * line, each line contains two Unicode hex sequences (and comments)
-     * separated with commas
+     * Load the transformation map from a CSV file: one transformation per line,
+     * each line contains two Unicode hex sequences (and comments) separated
+     * with commas
      *
-     * @param file the file with the equivalent sequences
+     * @param file the CSV file (or directory with CSV files) with the
+     * equivalent sequences
      */
     public CharFilter(File file) {
+        this.compatibility = false;
+        if (file.isDirectory()) {
+            String[] filenames = file.list(new ExtensionFilter(".csv"));
+            for (String filename : filenames) {
+                addCSV(new File(filename));
+            }
+        } else if (file.isFile()) {
+            addCSV(file);
+        }
+    }
+
+    /**
+     * Add the equivalences contained in a CSV file
+     *
+     * @param file the CSV file
+     */
+    private void addCSV(File file) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             while (reader.ready()) {
@@ -62,6 +88,15 @@ public class CharFilter extends HashMap<String, String> {
     }
 
     /**
+     * Set the compatibility mode
+     *
+     * @param compatibility the compatibility mode
+     */
+    public void setCompatibility(boolean compatibility) {
+        this.compatibility = compatibility;
+    }
+
+    /**
      * Find all occurrences of characters in a sequence and substitute them with
      * the replacement specified by the transformation map. Remark: No
      * replacement priority is guaranteed in case of overlapping matches.
@@ -70,14 +105,20 @@ public class CharFilter extends HashMap<String, String> {
      * @return a new string with all the transformations performed
      */
     public String translate(String s) {
+        String r = compatibility
+                ? StringNormalizer.compatible(s)
+                : StringNormalizer.canonical(s);
         for (String pattern : keySet()) {
-            s = s.replaceAll(pattern, get(pattern));
+            r = r.replaceAll(pattern, get(pattern));
         }
-        return s;
+        return r;
     }
-    
+
     /**
      * Converts the contents of a file into a CharSequence
+     *
+     * @param file the input file
+     * @return the file content as a CharSequence
      */
     public CharSequence toCharSequence(File file) {
 

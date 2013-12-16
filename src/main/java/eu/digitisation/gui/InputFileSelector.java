@@ -65,6 +65,7 @@ public class InputFileSelector extends JPanel implements ActionListener {
         setMinimumSize(new Dimension(100, 100));
         setBackground(bgcolor);
         setBorder(border);
+        setVisible(true);
         area = new JTextPane();
         add(area);
         area.setFont(new Font("Verdana", Font.PLAIN, 12));
@@ -144,20 +145,9 @@ public class InputFileSelector extends JPanel implements ActionListener {
             public void dropActionChanged(DropTargetDragEvent e) {
             }
 
-            private boolean hasFileFlavor(DataFlavor[] flavors) {
-                for (DataFlavor flavor : flavors) {
-                    if (flavor.equals(DataFlavor.javaFileListFlavor)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
             @Override
             @SuppressWarnings("unchecked")
             public void drop(DropTargetDropEvent e) {
-                DataFlavor[] flavors = e.getTransferable().getTransferDataFlavors();
-
                 try {
                     // Accept the drop first!
                     e.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);

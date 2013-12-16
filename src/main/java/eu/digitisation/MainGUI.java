@@ -19,7 +19,9 @@ package eu.digitisation;
 
 import eu.digitisation.gui.InputFileSelector;
 import eu.digitisation.gui.OutputFileSelector;
+import eu.digitisation.gui.Pulldown;
 import eu.digitisation.io.Batch;
+import eu.digitisation.io.CharFilter;
 import eu.digitisation.ocrevaluation.Report;
 import java.awt.*;
 import javax.swing.*;
@@ -31,69 +33,95 @@ import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 public class MainGUI extends JFrame implements ActionListener {
 
     static final long serialVersionUID = 1L;
     static final Color bgcolor = Color.decode("#FAFAFA");
     static final Color forecolor = Color.decode("#4C501E");
-    static final Border border = BorderFactory.createLineBorder(forecolor, 4);
-    Container pane;         // top panel
-    JButton trigger;        // Go button
-    File[] files;           // input/output files
+    static final Border border = BorderFactory.createLineBorder(forecolor, 2);
+
+    Container pane;            // main panel
+    JPanel basic;              // basic inputs
+    JPanel advanced;           // more options panel
+    JPanel actions;            // actions panel
+
+    InputFileSelector gtinput; // GT file
+    InputFileSelector ocrinput;// OCR file
+    InputFileSelector eqinput; // equivalences file
+    JCheckBox compatibility;   //  Unicode comaptiblity mode
+    JButton trigger;           // Go button
+    JCheckBox more;        // Checkbox for more options
 
     public MainGUI() {
 
         pane = getContentPane();
         trigger = new JButton("Generate report");
-        files = new File[4];
 
-        // frame attributes
+        // JFrame attributes
         setTitle("Input files");
-        setBackground(Color.decode("#FAFAFA"));
-        setSize(400, 300);
+        setBackground(bgcolor);
+        setSize(400, 200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
+        setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         setLocationRelativeTo(null);
-        setVisible(true);
 
-        // Create drop areas
-        pane.add(new InputFileSelector(forecolor, bgcolor,
-                border, "ground-truth file"));
-        pane.add(new InputFileSelector(forecolor, bgcolor,
-                border, "ocr file"));
-        pane.add(new InputFileSelector(forecolor, bgcolor,
-                border, "Unicode character equivalences file (if available)"));
+        // Basic input subpanel
+        basic = new JPanel();
+        basic.setLayout(new GridLayout(0, 1));
+        gtinput = new InputFileSelector(forecolor, bgcolor,
+                border, "ground-truth file");
+        ocrinput = new InputFileSelector(forecolor, bgcolor,
+                border, "ocr file");
+        basic.add(gtinput);
+        basic.add(ocrinput);
 
+        // Advanced options subpanel
+        advanced = new JPanel();
+        advanced.setLayout(new GridLayout(0, 1));
+        advanced.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        eqinput = new InputFileSelector(forecolor, bgcolor,
+                border, "Unicode character equivalences file (if available)");
+
+        compatibility = new JCheckBox();
+        compatibility.setText("Unicode compatibility of characters");
+        compatibility.setForeground(forecolor);
+        compatibility.setBackground(bgcolor);
+        compatibility.setAlignmentX(Component.LEFT_ALIGNMENT);
+        /*
+         String[] options = {"unknown", "utf8", "iso8859-1", "windows-1252"};
+         Pulldown encoding = new Pulldown(forecolor, bgcolor, null,
+         "Text encoding:", options);
+         */
+        advanced.add(eqinput);
+        advanced.add(compatibility);
+        //advanced.add(encoding);
+        advanced.setVisible(false);
+
+        // Actions subpanel
+        actions = new JPanel();
+        actions.setLayout(new BoxLayout(actions, BoxLayout.X_AXIS));
+        actions.setBackground(Color.LIGHT_GRAY);
+        //  Switch for more more
+        more = new JCheckBox("Advanced options");
+        more.setForeground(forecolor);
+        more.setBackground(Color.LIGHT_GRAY);
+        more.addActionListener(this);
+        actions.add(more, BorderLayout.WEST);
+        // Space between checkbox and button
+        actions.add(Box.createHorizontalGlue());
         // Button with inverted colors
         trigger.setForeground(bgcolor);
         trigger.setBackground(forecolor);
         trigger.addActionListener(this);
-        pane.add(trigger);
+        actions.add(trigger);
 
-        repaint();
-    }
-
-    /**
-     *
-     * @return true if all required files have been selected
-     */
-    private boolean checkInputFiles() {
-        boolean ready = true;
-        Component[] components = pane.getComponents();
-        boolean[] required = {true, true, false};
-
-        for (int n = 0; n < 3; ++n) {
-            InputFileSelector ifs = (InputFileSelector) components[n];
-            if (ifs.ready()) {
-                files[n] = ifs.getFile();
-            } else if (required[n]) {
-                ifs.shade(Color.decode("#fffacd"));
-                ifs.repaint();
-                ready = false;
-            }
-        }
-        return ready;
+        // Fianlly, put everything together
+        pane.add(basic);
+        pane.add(advanced);
+        pane.add(actions);
+        setVisible(true);
     }
 
     /**
@@ -111,30 +139,35 @@ public class MainGUI extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JButton pressed = (JButton) e.getSource();
-
-        if (pressed == trigger) {
-            boolean checked = checkInputFiles();
-            if (checked) {
-                File dir = files[1].getParentFile();
-                String name = files[1].getName().replaceAll("\\.\\w+", "")
+        if (e.getSource() == trigger) {
+            if (gtinput.ready() && ocrinput.ready()) {
+                File gtfile = gtinput.getFile();
+                File ocrfile = ocrinput.getFile();
+                File eqfile = eqinput.getFile();
+                File dir = ocrfile.getParentFile();
+                String name = ocrfile.getName().replaceAll("\\.\\w+", "")
                         + "_report.html";
                 File preselected = new File(name);
                 OutputFileSelector selector = new OutputFileSelector();
+                File outfile = selector.choose(dir, preselected);
 
-                files[3] = selector.choose(dir, preselected);
-                if (files[3] != null) {
+                if (outfile != null) {
+                    Report report;
                     try {
                         /*
                          Report report = new Report(files[0], null,
                          files[1], null,
                          files[2]);
                          */
-                        Batch batch = new Batch(files[0], files[1]);
-                        Report report = new Report(batch, null, null, files[2]);
-                        report.write(files[3]);
+                        Batch batch = new Batch(gtfile, ocrfile);
+                        CharFilter filter = (eqfile == null)
+                                ? new CharFilter()
+                                : new CharFilter(eqfile);
+                        filter.setCompatibility(compatibility.isSelected());
+                        report = new Report(batch, null, null, filter);
+                        report.write(outfile);
                         if (Desktop.isDesktopSupported()) {
-                            URI uri = new URI("file://" + files[3].getCanonicalPath());
+                            URI uri = new URI("file://" + outfile.getCanonicalPath());
                             System.out.println(uri);
                             Desktop.getDesktop().browse(uri);
                         }
@@ -146,7 +179,18 @@ public class MainGUI extends JFrame implements ActionListener {
                         Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+            } else {
+                gtinput.checkout();
+                ocrinput.checkout();
             }
+        } else if (e.getSource() == more) {
+            boolean marked = more.isSelected();
+            if (marked) {
+                setSize(400, 300);
+            } else {
+                setSize(400, 200);
+            }
+            advanced.setVisible(marked);
         }
     }
 
