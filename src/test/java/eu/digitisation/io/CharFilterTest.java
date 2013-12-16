@@ -81,6 +81,17 @@ public class CharFilterTest {
         assertEquals(expResult, result);
     }
 
+    @Test
+    public void testCompatibilityMode() {
+          System.out.println("compatibility");
+          CharFilter filter = new CharFilter();
+          String s = "\u0133";
+          String r = "ij";
+          assert(!r.equals(filter.translate(s)));
+          filter.setCompatibility(true);
+          assertEquals(r, filter.translate(s));
+          
+    }
     /**
      * Test of translate method, of class CharFilter. This test creates new
      * files with substituted listed on UnicodeCharEquivalences characters in
