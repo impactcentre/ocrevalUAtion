@@ -17,6 +17,7 @@
  */
 package eu.digitisation;
 
+import eu.digitisation.gui.Browser;
 import eu.digitisation.gui.InputFileSelector;
 import eu.digitisation.gui.OutputFileSelector;
 import eu.digitisation.gui.Pulldown;
@@ -51,6 +52,7 @@ public class MainGUI extends JFrame implements ActionListener {
     InputFileSelector ocrinput;// OCR file
     InputFileSelector eqinput; // equivalences file
     JCheckBox compatibility;   //  Unicode comaptiblity mode
+    JButton help;            // help button
     JButton trigger;           // Go button
     JCheckBox more;        // Checkbox for more options
 
@@ -81,21 +83,32 @@ public class MainGUI extends JFrame implements ActionListener {
         advanced = new JPanel();
         advanced.setLayout(new GridLayout(0, 1));
         advanced.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        // eqfile selector
         eqinput = new InputFileSelector(forecolor, bgcolor,
                 border, "Unicode character equivalences file (if available)");
-
+        // Compatibility option
         compatibility = new JCheckBox();
         compatibility.setText("Unicode compatibility of characters");
         compatibility.setForeground(forecolor);
         compatibility.setBackground(bgcolor);
         compatibility.setAlignmentX(Component.LEFT_ALIGNMENT);
+        help = new HelpButton();
+        help.setPreferredSize(new Dimension(10, 10));
+        help.setForeground(forecolor);
+        help.setBackground(bgcolor);
+        help.addActionListener(this);
+        JPanel cpanel = new JPanel();
+        cpanel.setLayout(new BoxLayout(cpanel, BoxLayout.X_AXIS));
+        cpanel.add(compatibility);
+        cpanel.add(help);
+
         /*
          String[] options = {"unknown", "utf8", "iso8859-1", "windows-1252"};
          Pulldown encoding = new Pulldown(forecolor, bgcolor, null,
          "Text encoding:", options);
          */
         advanced.add(eqinput);
-        advanced.add(compatibility);
+        advanced.add(cpanel);
         //advanced.add(encoding);
         advanced.setVisible(false);
 
@@ -163,18 +176,13 @@ public class MainGUI extends JFrame implements ActionListener {
                         CharFilter filter = (eqfile == null)
                                 ? new CharFilter()
                                 : new CharFilter(eqfile);
+                        String url = "file://" + outfile.getCanonicalPath();
                         filter.setCompatibility(compatibility.isSelected());
                         report = new Report(batch, null, null, filter);
                         report.write(outfile);
-                        if (Desktop.isDesktopSupported()) {
-                            URI uri = new URI("file://" + outfile.getCanonicalPath());
-                            System.out.println(uri);
-                            Desktop.getDesktop().browse(uri);
-                        }
+                        Browser.open(url);
                     } catch (InvalidObjectException ex) {
                         warning(ex.getMessage());
-                    } catch (URISyntaxException ex) {
-                        Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                         Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -191,6 +199,10 @@ public class MainGUI extends JFrame implements ActionListener {
                 setSize(400, 200);
             }
             advanced.setVisible(marked);
+        } else if (e.getSource() == help) {
+            String s = 
+                    "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence";
+            Browser.open(s);
         }
     }
 
