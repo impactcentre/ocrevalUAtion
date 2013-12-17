@@ -18,6 +18,7 @@
 package eu.digitisation.ngram;
 
 import eu.digitisation.io.WordScanner;
+import eu.digitisation.math.ArrayMath;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -38,8 +39,8 @@ import java.util.zip.GZIPOutputStream;
 class NgramModel implements Serializable {
 
     static final long serialVersionUID = 1L;
-    static final String BOT = "\u0002";      // Begin of text marker.
-    static final String EOT = "\u0003";      // End of text marker.
+    static final String BOS = "\u0002";      // Begin of string text marker.
+    static final String EOS = "\u0003";      // End of text marker.
 
     int order;                   // The size of the context plus one (n-gram).
     HashMap<String, Int> occur;  // Number of occurrences.
@@ -175,7 +176,7 @@ class NgramModel implements Serializable {
      * @return the number of text entries (usually words) building the model.
      */
     private int numWords() {
-        return occur.get(EOT).getValue(); // end-of-word.
+        return occur.get(EOS).getValue(); // end-of-word.
     }
 
     /**
@@ -186,7 +187,7 @@ class NgramModel implements Serializable {
     private double prob(String s) {
         if (occur.containsKey(s)) {
             String h = head(s);
-            if (h.endsWith(BOT)) {  // if head is not stored
+            if (h.endsWith(BOS)) {  // if head is not stored
                 return occur.get(s).getValue() / (double) numWords();
             } else {
                 return occur.get(s).getValue()
@@ -218,7 +219,7 @@ class NgramModel implements Serializable {
      * @return The expected number of occurrences (per word) of s.
      */
     private double expectedNumberOf(String s) {
-        if (s.endsWith(BOT)) {
+        if (s.endsWith(BOS)) {
             return 1;
         } else {
             return occur.get(s).getValue() / (double) numWords();
@@ -270,17 +271,17 @@ class NgramModel implements Serializable {
 
     /**
      * Several types of distances will be implemented here
-     * @param other
+     * @param other another NgramModel
      * @return 
      */
-    public int distance(NgramModel other) {
-        int d = 0;
+    public double distance(NgramModel other) {
+        int[] deltas = new int[this.order];
         for (String s : occur.keySet()) {
             int delta = this.occur.get(s).getValue()
                     - other.occur.get(s).getValue();
-            d += Math.abs(delta);
+            deltas[s.length()] += Math.abs(delta);
         }
-        return d;
+        return ArrayMath.logaverage(deltas);
     }
 
     /**
@@ -298,11 +299,11 @@ class NgramModel implements Serializable {
             System.err.println("Cannot extract n-grams from " + word);
             System.exit(1);
         } else {
-            word = word + EOT;
+            word = word + EOS;
         }
         String s = new String();
         while (s.length() < order) {
-            s += BOT;
+            s += BOS;
         }
         for (int last = 0; last < word.length(); ++last) {
             s = tail(s) + word.charAt(last);
@@ -323,11 +324,11 @@ class NgramModel implements Serializable {
             System.err.println("Cannot extract n-grams from " + word);
             System.exit(1);
         } else {
-            word = word + EOT;
+            word = word + EOS;
         }
         String s = new String();
         while (s.length() < order) {
-            s += BOT;
+            s += BOS;
         }
         for (int last = 0; last < word.length(); ++last) {
             s = tail(s) + word.charAt(last);
@@ -371,11 +372,11 @@ class NgramModel implements Serializable {
             System.err.println("Cannot compute probability of " + word);
             System.exit(1);
         } else {
-            word = word + EOT;
+            word = word + EOS;
         }
         String s = new String();
         while (s.length() < order) {
-            s += BOT;
+            s += BOS;
         }
         for (int last = 0; last < word.length(); ++last) {
             s = tail(s) + word.charAt(last);
@@ -418,7 +419,7 @@ class NgramModel implements Serializable {
         }
         return Double.POSITIVE_INFINITY;
     }
-
+    
     /*
      * Main function.
      */

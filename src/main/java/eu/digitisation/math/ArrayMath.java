@@ -36,7 +36,7 @@ public class ArrayMath {
         }
         return sum;
     }
- 
+
     /**
      * @return the sum of all doubles in array
      */
@@ -50,31 +50,48 @@ public class ArrayMath {
 
     /**
      * Transform an int array into a an array of doubles
-     * @param iarray integer array
+     *
+     * @param array integer array
      * @return the array of double precision values
      */
-    public static double[] toDouble(int[] iarray) {
-        double[] darray = new double[iarray.length];
-        for (int i = 0; i < iarray.length; i++) {
-            darray[i] = iarray[i];
+    public static double[] toDouble(int[] array) {
+        double[] darray = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            darray[i] = array[i];
         }
         return darray;
     }
 
     /**
-     * Create an array containing the logarithms of the source array 
-     * @param iarray integer array
+     * Create an array containing the logarithms of the source array
+     *
+     * @param array integer array
      * @return the array of logs
      */
-    public static double[] log(int[] iarray) {
-        double[] darray = new double[iarray.length];
-        for (int i = 0; i < iarray.length; i++) {
-            darray[i] = Math.log(iarray[i]);
+    public static double[] log(int[] array) {
+        double[] darray = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            darray[i] = Math.log(array[i]);
         }
         return darray;
     }
-    
+
     /**
+     * Create an array containing the logarithms of the source array
+     *
+     * @param array array of double
+     * @return the array of logs
+     */
+    public static double[] log(double[] array) {
+        double[] darray = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            darray[i] = Math.log(array[i]);
+        }
+        return darray;
+    }
+
+    /**
+     * @param array
      * @return the average of all integers in an array
      */
     public static double average(int[] array) {
@@ -83,13 +100,38 @@ public class ArrayMath {
 
     /**
      * The average of all doubles in an array
+     *
+     * @param array
+     * @return the average of all doubles in an array
      */
     public static double average(double[] array) {
         return sum(array) / array.length;
     }
 
     /**
+     * @param array
+     * @return the geometric mean (log-average) of all integers in an array
+     */
+    public static double logaverage(int[] array) {
+        return Math.exp(average(log(array)));
+    }
+
+    /**
+     * The geometric mean (log-average) of all doubles in an array
+     *
+     * @param array
+     * @return the average of all doubles in an array
+     */
+    public static double logaverage(double[] array) {
+        return Math.exp(average(log(array)));
+    }
+
+    /**
      * The scalar product
+     *
+     * @param x the first array
+     * @param y the second array
+     * @return the scalar product of x and y
      */
     public static double scalar(double[] x, double[] y) {
         double sum = 0;
@@ -130,7 +172,7 @@ public class ArrayMath {
     public static double cov(int[] X, int[] Y) {
         int len = Math.min(X.length, Y.length);
         double sum = 0;  // double safer against overflows
-        
+
         for (int n = 0; n < len; ++n) {
             sum += X[n] * (double) Y[n];
         }
@@ -152,6 +194,7 @@ public class ArrayMath {
     }
 
     /**
+     * @param X the array with the values of the variable
      * @return the standard deviation of the values in X
      */
     public static double std(int[] X) {
@@ -161,6 +204,7 @@ public class ArrayMath {
     /**
      * Standard deviation
      *
+     * @param X the array with the values of the variable
      * @return the standard deviation of the values in X
      */
     public static double std(double[] X) {

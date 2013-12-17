@@ -54,6 +54,35 @@ public class DocumentBuilder {
     }
 
     /**
+     * Create a copy of another document
+     *
+     * @param other
+     */
+    public DocumentBuilder(Document other) {
+        doc = clone(other);
+    }
+
+    /**
+     * Create a copy of another document
+     *
+     * @param source a source document
+     * @return a deep copy of the document
+     */
+    public static Document clone(Document source) {
+        try {
+            Document target = javax.xml.parsers.DocumentBuilderFactory
+                    .newInstance().newDocumentBuilder()
+                    .newDocument();
+            Node node = target.importNode(source.getDocumentElement(), true);
+            target.getDocumentElement().appendChild(node);
+            return target;
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(DocumentBuilder.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    /**
      *
      * @return the org.w3c.dom.Document
      */
