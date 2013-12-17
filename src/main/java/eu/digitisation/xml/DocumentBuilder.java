@@ -74,7 +74,7 @@ public class DocumentBuilder {
                     .newInstance().newDocumentBuilder()
                     .newDocument();
             Node node = target.importNode(source.getDocumentElement(), true);
-            target.getDocumentElement().appendChild(node);
+            target.appendChild(node);
             return target;
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(DocumentBuilder.class.getName()).log(Level.SEVERE, null, ex);
