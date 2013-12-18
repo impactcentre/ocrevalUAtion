@@ -93,7 +93,7 @@ public class WordScanner {
      */
     public WordScanner(String s)
             throws IOException {
-        this(new ByteArrayInputStream(s.getBytes()), "UTF-8");
+        this(new ByteArrayInputStream(s.getBytes("UTF-8")), "UTF-8");
     }
 
     /**
