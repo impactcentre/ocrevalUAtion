@@ -17,6 +17,13 @@
  */
 package eu.digitisation.math;
 
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Counts number of different objects, a map between objects and integers which
  * can be incremented and decremented.
@@ -24,7 +31,9 @@ package eu.digitisation.math;
  * @version 2012.06.07
  * @param <Type> the class of objects being counted
  */
-public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
+public class Counter<Type extends Comparable<Type>>
+        extends java.util.TreeMap<Type, Integer> {
+
     private static final long serialVersionUID = 1L;
 
     int total = 0;  // stores aggregated counts
@@ -118,7 +127,7 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
     public int total() {
         return total;
     }
- 
+
     /**
      * Clear the counter
      */
@@ -126,5 +135,48 @@ public class Counter<Type> extends java.util.TreeMap<Type, Integer> {
     public void clear() {
         super.clear();
         total = 0;
+    }
+
+    /**
+     * Specifies several orders for keys
+     */
+    public enum Order {
+
+        ASCENDING, DESCENDING, ASCENDING_VALUE, DESCENDING_VALUE, LEXICOGRAPHIC;
+    }
+
+    class KeyComparator implements Comparator<Type> {
+
+        @Override
+        public int compare(Type first, Type second) {
+            int r = get(first).compareTo(get(second));
+            return r;
+        }
+    }
+
+    /**
+     *
+     * @param order determines ascending or descending order
+     * @return the sorted list of keys stored in the counter
+     */
+    public List<Type> keyList(Order order) {
+        List<Type> list = new ArrayList<Type>(keySet());
+        if (order == Order.ASCENDING) {
+            Collections.sort(list);
+        } else if (order == Order.DESCENDING) {
+            Collections.sort(list, Collections.reverseOrder());
+        } else if (order == Order.ASCENDING_VALUE) {
+            Collections.sort(list, new KeyComparator());
+        } else if (order == Order.DESCENDING_VALUE) {
+            Collections.sort(list, Collections.reverseOrder(new KeyComparator()));
+        } else if (order == Order.LEXICOGRAPHIC
+                && list.size() > 0
+                && list.get(0) instanceof String) {
+            Collator collator = Collator.getInstance();
+            collator.setStrength(Collator.TERTIARY);
+            collator.setDecomposition(Collator.FULL_DECOMPOSITION);
+            Collections.sort(list, collator);
+        }
+        return list;
     }
 }

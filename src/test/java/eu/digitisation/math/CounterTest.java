@@ -15,9 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package eu.digitisation.math;
 
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,22 +30,22 @@ import static org.junit.Assert.*;
  * @author rafa
  */
 public class CounterTest {
-    
+
     public CounterTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -64,5 +64,21 @@ public class CounterTest {
         instance.add(1, -1);
         assertEquals(instance.get(1).intValue(), 3);
     }
-   
+
+    @Test
+    public void testKeyList() {
+        System.out.println("keyList");
+        Counter<Integer> instance = new Counter<Integer>();
+        instance.add(1, 6);
+        instance.add(2, 3);
+        instance.add(3, 1);
+        instance.add(4, 5);
+        Integer[] expResult = {3, 2, 4, 1};
+        Integer[] result = new Integer[4];
+        List<Integer> list = instance.keyList(Counter.Order.ASCENDING_VALUE);
+        System.out.println(list);
+        list.toArray(result);
+        assertArrayEquals(expResult, result);
+    }
+
 }
