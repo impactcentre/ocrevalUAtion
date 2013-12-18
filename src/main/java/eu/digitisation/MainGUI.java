@@ -133,7 +133,7 @@ public class MainGUI extends JFrame implements ActionListener {
         trigger.addActionListener(this);
         actions.add(trigger);
 
-        // Fianlly, put everything together
+        // Finally, put everything together
         pane.add(basic);
         pane.add(advanced);
         pane.add(Box.createVerticalStrut(8));
