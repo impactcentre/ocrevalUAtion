@@ -83,102 +83,13 @@ public class CharFilterTest {
 
     @Test
     public void testCompatibilityMode() {
-          System.out.println("compatibility");
-          CharFilter filter = new CharFilter();
-          String s = "\u0133";
-          String r = "ij";
-          assert(!r.equals(filter.translate(s)));
-          filter.setCompatibility(true);
-          assertEquals(r, filter.translate(s));
-          
-    }
-    /**
-     * Test of translate method, of class CharFilter. This test creates new
-     * files with substituted listed on UnicodeCharEquivalences characters in
-     * the specified files
-     *
-     * @throws java.net.URISyntaxException
-     * @throws IOException
-     */
-    @Test
-    public void testTranslateTexts() throws URISyntaxException, IOException {
-        char maxChar = 0xa759;
-        char maxUnicodeChar = 0x7F;
-        List<String> paths = new ArrayList<String>();
-        paths.add("src/test/resources/testToReplaceChars/example/");
+        System.out.println("compatibility");
+        CharFilter filter = new CharFilter();
+        String s = "\u0133";
+        String r = "ij";
+        assert (!r.equals(filter.translate(s)));
+        filter.setCompatibility(true);
+        assertEquals(r, filter.translate(s));
 
-        URL resourceUrl = getClass().getResource("/UnicodeCharEquivalences.txt");
-        File fileEquivalences = new File(resourceUrl.toURI());
-        CharFilter filter = new CharFilter(fileEquivalences);
-
-        HashMap<String, String[]> codes = new HashMap<String, String[]>();
-        HashMap<String, String[]> nonUnicodes = new HashMap<String, String[]>();
-        FilenameFilter filterName = new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".txt");
-            }
-        };
-
-        System.out.println("Initial Filter Size: " + filter.size());
-        System.out.println("Character, HexCode, UniCode");
-        for (String path : paths) {
-            File folder = new File(path);
-
-            File[] listOfFiles = folder.listFiles(filterName);
-
-            for (int i = 0; i < listOfFiles.length; i++) {
-                if (listOfFiles[i].isFile()) {
-                    File newFile = new File(listOfFiles[i].getPath() + ".out");
-
-                    CharSequence caracters = filter.toCharSequence(newFile);
-
-                    if (caracters != null) {
-                        for (int i1 = 0; i1 < caracters.length(); i1++) {
-                            if (caracters.charAt(i1) > maxChar) {
-                                String hexCode = String.valueOf(java.util.Arrays.toString(UnicodeReader.toHexCodepoints(String.valueOf(caracters.charAt(i1)))));
-                                String uniCode = java.util.Arrays.toString(UnicodeReader.toCodepoints(String.valueOf(caracters.charAt(i1))));
-                                String caracter = String.valueOf(caracters.charAt(i1));
-                                String equivalence[] = {hexCode, uniCode};
-
-                                //System.out.print(  "(" + caracters.charAt(i1) + ", " + hexCode + " )" );	        		 
-                                codes.put(caracter, equivalence);
-                            } else {
-                                if (caracters.charAt(i1) > maxUnicodeChar) {
-                                    String hexCode = String.valueOf(java.util.Arrays.toString(UnicodeReader.toHexCodepoints(String.valueOf(caracters.charAt(i1)))));
-                                    String uniCode = java.util.Arrays.toString(UnicodeReader.toCodepoints(String.valueOf(caracters.charAt(i1))));
-                                    String caracter = String.valueOf(caracters.charAt(i1));
-                                    String equivalence[] = {hexCode, uniCode};
-
-                                    nonUnicodes.put(caracter, equivalence);
-                                }
-                            }
-                        }
-                    }
-                    filter.translate(listOfFiles[i], newFile);
-                }
-            }
-        }
-        File resultFile = new File("src/test/resources/testToReplaceChars/nonPrintableCharacters.txt");
-        FileWriter w = new FileWriter(resultFile);
-        BufferedWriter bw = new BufferedWriter(w);
-        PrintWriter wr = new PrintWriter(bw);
-
-        wr.append("Characters > " + maxChar + " \n");
-        for (Map.Entry entry : codes.entrySet()) {
-            System.out.print(entry.getKey() + ", ");
-            System.out.println(Arrays.deepToString((Object[]) entry.getValue()));
-            wr.append(entry.getKey() + ", ");
-            wr.append(Arrays.deepToString((Object[]) entry.getValue()) + "\n");
-        }
-        wr.append("\nNon unicode characters\n");
-        for (Map.Entry entryNonUnicodes : nonUnicodes.entrySet()) {
-            System.out.print(entryNonUnicodes.getKey() + ", ");
-            System.out.println(Arrays.deepToString((Object[]) entryNonUnicodes.getValue()));
-            wr.append(entryNonUnicodes.getKey() + ", ");
-            wr.append(Arrays.deepToString((Object[]) entryNonUnicodes.getValue()) + "\n");
-        }
-
-        wr.close();
-        bw.close();
     }
 }
