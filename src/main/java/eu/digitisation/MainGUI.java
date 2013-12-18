@@ -19,8 +19,8 @@ package eu.digitisation;
 
 import eu.digitisation.gui.Browser;
 import eu.digitisation.gui.InputFileSelector;
+import eu.digitisation.gui.JLink;
 import eu.digitisation.gui.OutputFileSelector;
-import eu.digitisation.gui.Pulldown;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.ocrevaluation.Report;
@@ -29,12 +29,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
 public class MainGUI extends JFrame implements ActionListener {
 
@@ -42,19 +39,20 @@ public class MainGUI extends JFrame implements ActionListener {
     static final Color bgcolor = Color.decode("#FAFAFA");
     static final Color forecolor = Color.decode("#4C501E");
     static final Border border = BorderFactory.createLineBorder(forecolor, 2);
-
+    static final int width = 500;
+    static final int height = 250;
     Container pane;            // main panel
     JPanel basic;              // basic inputs
+    JPanel info;              // link to info
     JPanel advanced;           // more options panel
     JPanel actions;            // actions panel
-
     InputFileSelector gtinput; // GT file
     InputFileSelector ocrinput;// OCR file
     InputFileSelector eqinput; // equivalences file
     JCheckBox compatibility;   //  Unicode comaptiblity mode
-    JButton help;            // help button
+    JButton help;              // help button
     JButton trigger;           // Go button
-    JCheckBox more;        // Checkbox for more options
+    JCheckBox more;            // Checkbox for more options
 
     public MainGUI() {
 
@@ -62,9 +60,9 @@ public class MainGUI extends JFrame implements ActionListener {
         trigger = new JButton("Generate report");
 
         // JFrame attributes
-        setTitle("Input files");
+        setTitle("ocrevalUAtion");
         setBackground(bgcolor);
-        setSize(400, 200);
+        setSize(width, height);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         setLocationRelativeTo(null);
@@ -78,7 +76,12 @@ public class MainGUI extends JFrame implements ActionListener {
                 border, "ocr file");
         basic.add(gtinput);
         basic.add(ocrinput);
-
+        // Link to on-line help
+        info = new JPanel();
+        info.setLayout(new BoxLayout(info, BoxLayout.X_AXIS));
+        info.add(new JLink("Info:",
+                "https://sites.google.com/site/textdigitisation/ocrevaluation",
+                forecolor));
         // Advanced options subpanel
         advanced = new JPanel();
         advanced.setLayout(new GridLayout(0, 1));
@@ -133,6 +136,9 @@ public class MainGUI extends JFrame implements ActionListener {
         // Fianlly, put everything together
         pane.add(basic);
         pane.add(advanced);
+        pane.add(Box.createVerticalStrut(8));
+        pane.add(info);
+        pane.add(Box.createVerticalStrut(8));
         pane.add(actions);
         setVisible(true);
     }
@@ -194,13 +200,13 @@ public class MainGUI extends JFrame implements ActionListener {
         } else if (e.getSource() == more) {
             boolean marked = more.isSelected();
             if (marked) {
-                setSize(400, 300);
+                setSize(width, height + 80);
             } else {
-                setSize(400, 200);
+                setSize(width, height);
             }
             advanced.setVisible(marked);
         } else if (e.getSource() == help) {
-            String s = 
+            String s =
                     "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence";
             Browser.open(s);
         }

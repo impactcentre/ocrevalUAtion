@@ -31,6 +31,7 @@ import javax.swing.border.Border;
 
 /**
  * Panel with a pull-down menu
+ *
  * @author R.C.C.
  */
 public class Pulldown extends JPanel implements ActionListener {
@@ -45,7 +46,7 @@ public class Pulldown extends JPanel implements ActionListener {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(bgcolor);
         setBorder(border);
-       
+
         title = new JLabel(helpText);
         title.setForeground(forecolor);
         add(title);
@@ -57,8 +58,8 @@ public class Pulldown extends JPanel implements ActionListener {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void actionPerformed(ActionEvent e) {
-        @SuppressWarnings("unchecked")
         JComboBox cb = (JComboBox) e.getSource();
         choice = (String) cb.getSelectedItem();
     }
