@@ -37,7 +37,10 @@ public class Browser {
             Desktop desktop = Desktop.getDesktop();
             if (desktop.isSupported(Action.BROWSE)) {
                 try {
-                    URI uri = new URI(url);
+                    String os = System.getProperty("os.name").toLowerCase();
+                    URI uri = os.contains("win")
+                            ? new URI(url.replace("\\", "/"))
+                            : new URI(url);
                     Desktop.getDesktop().browse(uri);
                 } catch (IOException ex) {
                     Logger.getLogger(Browser.class.getName()).log(Level.SEVERE, null, ex);
