@@ -52,6 +52,16 @@ public class CharFilter extends HashMap<String, String> {
      */
     public CharFilter(File file) {
         this.compatibility = false;
+        addFilter(file);
+    }
+
+    /**
+     * Add files to filter
+     *
+     * @param file the CSV file (or directory with CSV files) with the
+     * equivalent sequences
+     */
+    public final void addFilter(File file) {
         if (file.isDirectory()) {
             String[] filenames = file.list(new ExtensionFilter(".csv"));
             for (String filename : filenames) {

@@ -24,6 +24,8 @@ import eu.digitisation.io.WordScanner;
 import eu.digitisation.math.Counter;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +50,17 @@ public class TermFrequency extends Counter<String> {
      */
     public TermFrequency(CharFilter filter) {
         this.filter = filter;
+    }
+
+    /* Select CharFilter
+     * @param filter a CharFilter implementing character equivalences
+     */
+    public void addFilter(File file) {
+        if (filter == null) {
+            filter = new CharFilter(file);
+        } else {
+            filter.addFilter(file);
+        }
     }
 
     /**
@@ -111,26 +124,26 @@ public class TermFrequency extends Counter<String> {
         return builder.toString();
     }
 
-    
-    
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.err.println("Usage: WordCounter [-e equivalences_file] input_files_or_directories");
+            System.err.println("Usage: WordCounter [-e equivalences_file] [-c] input_files_or_directories");
         } else {
-            TermFrequency tf;
-            if (args[0].equals("-e")) {
-                tf = new TermFrequency(new CharFilter(new File(args[1])));
-                for (int n = 2; n < args.length; ++n) {
-                    tf.add(new File(args[n]));
-                }
-            } else {
-                tf = new TermFrequency();
-                for (int n = 0; n < args.length; ++n) {
-                    tf.add(new File(args[n]));
+            TermFrequency tf = new TermFrequency();
+            List<File> files = new ArrayList<File>();
+            CharFilter filter = new CharFilter();
+            for (int n = 0; n < args.length; ++n) {
+                if (args[n].equals("-e")) {
+                    tf.addFilter(new File(args[++n]));
+                } else if (args[n].equals("-c")) {
+                    filter.setCompatibility(true);
+                } else {
+                    files.add(new File(args[n]));
                 }
             }
-            System.out.println(tf.toString(Order.LEXICOGRAPHIC));
+            for (File file : files) {
+                tf.add(file);
+            }
+            System.out.println(tf.toString(Order.DESCENDING_VALUE));
         }
     }
 }
-
