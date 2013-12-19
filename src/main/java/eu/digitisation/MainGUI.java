@@ -17,6 +17,7 @@
  */
 package eu.digitisation;
 
+import eu.digitisation.gui.HelpButton;
 import eu.digitisation.gui.Browser;
 import eu.digitisation.gui.InputFileSelector;
 import eu.digitisation.gui.JLink;
