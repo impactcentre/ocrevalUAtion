@@ -171,7 +171,7 @@ public class Counter<Type extends Comparable<Type>>
             Collections.sort(list, Collections.reverseOrder(new KeyComparator()));
         } else if (order == Order.LEXICOGRAPHIC
                 && list.size() > 0
-                && list.get(0).getClass().equals(String.class)) {
+                && list.get(0).getClass().equals(String.class)) { 
             Collator collator = Collator.getInstance();
             collator.setStrength(Collator.TERTIARY);
             collator.setDecomposition(Collator.FULL_DECOMPOSITION);
