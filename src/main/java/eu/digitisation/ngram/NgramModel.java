@@ -92,7 +92,7 @@ class NgramModel implements Serializable {
     }
 
     /**
-     * Save n-gram model to file
+     * Save n-gram model to GZIP file
      *
      * @param file the output file
      */
@@ -111,7 +111,7 @@ class NgramModel implements Serializable {
     /**
      * Build n-gram model from file
      *
-     * @param file the input file
+     * @param file the GZIP input file
      */
     public NgramModel(File file) {
         try {
@@ -271,15 +271,28 @@ class NgramModel implements Serializable {
 
     /**
      * Several types of distances will be implemented here
+     *
      * @param other another NgramModel
-     * @return 
+     * @return
      */
     public double distance(NgramModel other) {
         int[] deltas = new int[this.order];
-        for (String s : occur.keySet()) {
-            int delta = this.occur.get(s).getValue()
-                    - other.occur.get(s).getValue();
-            deltas[s.length()] += Math.abs(delta);
+        for (String s : this.occur.keySet()) {
+            if (s.length() > 0) {
+                int delta;
+                if (other.occur.containsKey(s)) {
+                    delta = this.occur.get(s).getValue()
+                            - other.occur.get(s).getValue();
+                } else {
+                    delta = this.occur.get(s).getValue();
+                }
+                deltas[s.length() - 1] += Math.abs(delta);
+            }
+        }
+        for (String s : other.occur.keySet()) {
+            if (s.length() > 0 && !this.occur.containsKey(s)) {
+                deltas[s.length() - 1] += other.occur.get(s).getValue();
+            }
         }
         return ArrayMath.logaverage(deltas);
     }
@@ -419,7 +432,7 @@ class NgramModel implements Serializable {
         }
         return Double.POSITIVE_INFINITY;
     }
-    
+
     /*
      * Main function.
      */
