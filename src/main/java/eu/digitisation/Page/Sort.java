@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * along with this program; if not, transform to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package eu.digitisation.Page;
@@ -53,7 +53,7 @@ public class Sort {
         NodeList children = node.getChildNodes();
         List<Node> childList = new ArrayList<Node>();   // External copy of children
 
-        // Initialize index (only nodes tah need reordering will be stored)
+        // Initialize index (only nodes which need reordering will be stored)
         for (String id : order) {
             index.put(id, null);
         }
@@ -65,7 +65,7 @@ public class Sort {
             if (child instanceof Element) {
                 String tag = child.getNodeName();
                 String id = ((Element) child).getAttribute("id");
-                if (tag.equals("TextRegion") && index.containsKey(id)) {
+                if (index.containsKey(id)) {
                     index.put(id, child);
                 }
             }
@@ -82,7 +82,8 @@ public class Sort {
             if (child instanceof Element) {
                 String tag = child.getNodeName();
                 String id = ((Element) child).getAttribute("id");
-                if (tag.equals("TextRegion") && index.containsKey(id)) {
+
+                if (index.containsKey(id)) {
                     Node replacement = index.get(order.get(norder));
                     node.appendChild(replacement);
                     ++norder;
@@ -122,17 +123,17 @@ public class Sort {
     /**
      *
      * @param doc a PAGE XML document
-     * @return true if doc is sorted according to the reading order
+     * @return true if doc is transformed according to the reading order
      * @throws IOException
      */
     public static boolean isSorted(Document doc) throws IOException {
         NodeList groups = doc.getElementsByTagName("OrderedGroup");
         for (int n = 0; n < groups.getLength(); ++n) {
             Node group = groups.item(n);
-            // group element -> ReadingOrder-> OrderedGroup
-            Node container = group.getParentNode().getParentNode();
             List<String> order = readingOrder(group);
-            NodeList children = group.getChildNodes();
+            Node container = group.getParentNode().getParentNode();
+            NodeList children = container.getChildNodes();
+
             int nreg = 0;  // region number in group
             for (int k = 0; k < children.getLength(); ++k) {
                 Node child = children.item(k);
@@ -140,7 +141,8 @@ public class Sort {
                     String tag = child.getNodeName();
                     if (tag.equals("TextRegion")) {
                         String id = ((Element) child).getAttribute("id");
-                        if (!id.equals(order.get(nreg++))) {
+                        if (order.contains(id) && // sometimes item is not listed
+                                !id.equals(order.get(nreg++))) {
                             return false;
                         }
                     }
@@ -151,10 +153,11 @@ public class Sort {
     }
 
     /**
-     * 
-     * @param file a PAGE XML input file 
-     * @return true if the document in file is sorted according to the reading order
-     * @throws IOException 
+     *
+     * @param file a PAGE XML input file
+     * @return true if the document in file is transformed according to the reading
+ order
+     * @throws IOException
      */
     public static boolean isSorted(File file) throws IOException {
         Document doc = DocumentParser.parse(file);
@@ -164,8 +167,8 @@ public class Sort {
     /**
      * Create document where ordered groups follow the order information
      *
-     * @param source the input document to be sorted
-     * @return the sorted document
+     * @param source the input document to be transformed
+     * @return the transformed document
      * @throws java.io.IOException
      */
     public static Document sorted(Document source) throws IOException {
@@ -182,23 +185,26 @@ public class Sort {
     }
 
     /**
-     * Create a document where ordered groups follow the order information
+     * Create a file where ordered groups follow the order information
      *
-     * @param file the input PAGE XML file
-     * @return the sorted document
+     * @param ifile the input PAGE XML file
+     * @param ofile the file with the transformed document
      * @throws java.io.IOException
      */
-    public static Document sorted(File file) throws IOException {
-        Document doc = DocumentParser.parse(file);
-        return sorted(doc);
+    public static void transform(File ifile, File ofile) throws IOException {
+        Document doc = DocumentParser.parse(ifile);
+        DocumentWriter writer = new DocumentWriter(Sort.sorted(doc));
+        writer.write(ofile);
     }
+
 
     public static void main(String[] args) throws IOException {
         File ifile = new File(args[0]);
-        File ofile = new File(args[1]);
+
         System.out.println(Sort.isSorted(ifile));
-        Document doc = Sort.sorted(ifile);
-        DocumentWriter writer = new DocumentWriter(doc);
-        writer.write(ofile);
+        if (args.length > 1) {
+            File ofile = new File(args[1]);
+            Sort.transform(ifile, ofile);
+        }
     }
 }

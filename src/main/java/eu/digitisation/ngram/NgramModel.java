@@ -18,7 +18,6 @@
 package eu.digitisation.ngram;
 
 import eu.digitisation.io.WordScanner;
-import eu.digitisation.math.ArrayMath;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,7 +35,7 @@ import java.util.zip.GZIPOutputStream;
  * A n-gram model for strings. N is the maximal order of the model (context
  * length plus one).
  */
-class NgramModel implements Serializable {
+public class NgramModel implements Serializable {
 
     static final long serialVersionUID = 1L;
     static final String BOS = "\u0002";      // Begin of string text marker.
@@ -56,10 +55,10 @@ class NgramModel implements Serializable {
             if (order > 0) {
                 this.order = order;
             } else {
-                System.err.println("Order must be grater than 0");
+                throw new IllegalArgumentException("Order must be grater than 0");
             }
         } else {
-            System.err.println("Cannot change order of model with previous content");
+            throw new IllegalStateException("Cannot change order of model with previous content");
         }
     }
 
@@ -270,34 +269,6 @@ class NgramModel implements Serializable {
     }
 
     /**
-     * Several types of distances will be implemented here
-     *
-     * @param other another NgramModel
-     * @return
-     */
-    public double distance(NgramModel other) {
-        int[] deltas = new int[this.order];
-        for (String s : this.occur.keySet()) {
-            if (s.length() > 0) {
-                int delta;
-                if (other.occur.containsKey(s)) {
-                    delta = this.occur.get(s).getValue()
-                            - other.occur.get(s).getValue();
-                } else {
-                    delta = this.occur.get(s).getValue();
-                }
-                deltas[s.length() - 1] += Math.abs(delta);
-            }
-        }
-        for (String s : other.occur.keySet()) {
-            if (s.length() > 0 && !this.occur.containsKey(s)) {
-                deltas[s.length() - 1] += other.occur.get(s).getValue();
-            }
-        }
-        return ArrayMath.logaverage(deltas);
-    }
-
-    /**
      * Extracts all k-grams in a word or text upto the maximal order. For
      * instance, if word = "ma" and order = 3, then 0-grams are: "" (three empty
      * strings, to normalize 1-grams). 1-grams: "m, a, $" ($ represents
@@ -309,8 +280,7 @@ class NgramModel implements Serializable {
      */
     public void addWord(String word) {
         if (word.length() < 1) {
-            System.err.println("Cannot extract n-grams from " + word);
-            System.exit(1);
+            throw new IllegalStateException("Cannot extract n-grams from empty word");
         } else {
             word = word + EOS;
         }
@@ -334,8 +304,7 @@ class NgramModel implements Serializable {
      */
     public void addWords(String word, int times) {
         if (word.length() < 1) {
-            System.err.println("Cannot extract n-grams from " + word);
-            System.exit(1);
+            throw new IllegalStateException("Cannot extract n-grams from empty word");
         } else {
             word = word + EOS;
         }
@@ -382,8 +351,7 @@ class NgramModel implements Serializable {
     public double wordLogProb(String word) {
         double res = 0;
         if (word.length() < 1) {
-            System.err.println("Cannot compute probability of " + word);
-            System.exit(1);
+            throw new IllegalArgumentException("Cannot compute probability of empty word");
         } else {
             word = word + EOS;
         }
@@ -431,6 +399,44 @@ class NgramModel implements Serializable {
             Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (String s : occur.keySet()) {
+            builder.append(s).append(' ').append(occur.get(s)).append('\n');
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Show differences between model (debug function)
+     *
+     * @param other another NgramModel (order must coincide)
+     * @return
+     */
+    public void showDiff(NgramModel other) {
+        if (this.order != other.order) {
+            throw new IllegalArgumentException("Illega comparison "
+                    + "of n-gram models with different n");
+        }
+        for (String s : this.occur.keySet()) {
+            if (s.length() > 0) {
+                int val1 = this.occur.get(s).getValue();
+                int val2 = other.occur.containsKey(s)
+                        ? other.occur.get(s).getValue() : 0;
+                if (val1 != val2) {
+                    System.out.println(s + " " + val1 + " " + val2);
+                }
+            }
+        }
+        for (String s : other.occur.keySet()) {
+            if (s.length() > 0 && !this.occur.containsKey(s)) {
+                int val2 = other.occur.get(s).getValue();
+                System.out.println(s + " 0 " + val2);
+            }
+        }
     }
 
     /*

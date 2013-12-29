@@ -37,9 +37,21 @@ public class CharFilter extends HashMap<String, String> {
     private static final long serialVersionUID = 1L;
     boolean compatibility;  // Unicode compatibility mode
 
+    /**
+     * Default constructor
+     */
     public CharFilter() {
         super();
         this.compatibility = false;
+    }
+    
+ /**
+     * Default constructor
+     * @param compatibility the Unicode compatibility mode (true means activated)
+     */
+    public CharFilter(boolean compatibility) {
+        super();
+        this.compatibility = compatibility;
     }
 
     /**
