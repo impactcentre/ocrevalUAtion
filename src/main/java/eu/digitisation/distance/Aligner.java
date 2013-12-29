@@ -17,7 +17,6 @@
  */
 package eu.digitisation.distance;
 
-import static eu.digitisation.distance.EdOp.*;
 import eu.digitisation.xml.DocumentBuilder;
 import org.w3c.dom.Element;
 

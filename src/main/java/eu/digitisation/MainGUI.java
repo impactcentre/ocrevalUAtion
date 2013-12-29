@@ -17,23 +17,38 @@
  */
 package eu.digitisation;
 
-import eu.digitisation.gui.HelpButton;
 import eu.digitisation.gui.Browser;
+import eu.digitisation.gui.HelpButton;
 import eu.digitisation.gui.InputFileSelector;
 import eu.digitisation.gui.JLink;
 import eu.digitisation.gui.OutputFileSelector;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.ocrevaluation.Report;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
-
+/**
+ * Public interface for ocrevaluation tool
+*/
 public class MainGUI extends JFrame implements ActionListener {
 
     static final long serialVersionUID = 1L;
@@ -214,6 +229,6 @@ public class MainGUI extends JFrame implements ActionListener {
     }
 
     static public void main(String args[]) {
-        new MainGUI();
+       new MainGUI();
     }
 }

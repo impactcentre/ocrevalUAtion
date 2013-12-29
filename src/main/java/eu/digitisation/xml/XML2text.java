@@ -24,12 +24,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.xml.sax.helpers.*;
-import javax.xml.parsers.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Removes markup, declarations, PI's and comments from XML files. Implemented
@@ -116,7 +116,9 @@ public class XML2text extends DefaultHandler {
 
             if (arg.equals("-d")) {
                 outDir = args[++n];
-                boolean test = new File(outDir).mkdir();
+                if (! new File(outDir).mkdir()) {
+                 throw new IOException("Unable to create dir " + outDir);   
+                }
             } else if (arg.endsWith(".xml")) {
                 File infile = new File(arg);
                 String outfileName = arg.replace(".xml", ".txt");
@@ -126,7 +128,8 @@ public class XML2text extends DefaultHandler {
                 } else {
                     BufferedWriter writer = 
                             new BufferedWriter(new FileWriter(outfileName));
-                    writer.write(xml.getText(arg));
+                    writer.write(xml.getText(infile.getAbsolutePath()));
+                    writer.close();
                 }
             }
         }

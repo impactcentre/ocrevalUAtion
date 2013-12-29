@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +58,7 @@ public class TextFileEncoder {
      */
     public Integer getCode(String word) {
         Integer code;
-        String key = caseSensitive ? word : word.toLowerCase();
+        String key = caseSensitive ? word : word.toLowerCase(Locale.ROOT);
 
         if (codes.containsKey(key)) {
             code = codes.get(key);

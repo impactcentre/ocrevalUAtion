@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 /**
  * Counts number of different objects, a map between objects and integers which
@@ -104,8 +104,8 @@ public class Counter<Type extends Comparable<Type>>
      * @return this Counter
      */
     public Counter<Type> add(Counter<Type> counter) {
-        for (Type object : counter.keySet()) {
-            add(object, counter.get(object));
+        for (Map.Entry<Type, Integer> entry : counter.entrySet()) {
+            add(entry.getKey(), entry.getValue());
         }
         return this;
     }
@@ -145,7 +145,7 @@ public class Counter<Type extends Comparable<Type>>
         ASCENDING, DESCENDING, ASCENDING_VALUE, DESCENDING_VALUE, LEXICOGRAPHIC;
     }
 
-    class KeyComparator implements Comparator<Type> {
+    private class KeyComparator implements Comparator<Type> {
 
         @Override
         public int compare(Type first, Type second) {

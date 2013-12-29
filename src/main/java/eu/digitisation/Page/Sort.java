@@ -63,7 +63,6 @@ public class Sort {
             Node child = children.item(n);
             childList.add(child);
             if (child instanceof Element) {
-                String tag = child.getNodeName();
                 String id = ((Element) child).getAttribute("id");
                 if (index.containsKey(id)) {
                     index.put(id, child);
@@ -80,7 +79,6 @@ public class Sort {
         for (int n = 0; n < childList.size(); ++n) {
             Node child = childList.get(n);
             if (child instanceof Element) {
-                String tag = child.getNodeName();
                 String id = ((Element) child).getAttribute("id");
 
                 if (index.containsKey(id)) {
@@ -197,7 +195,11 @@ public class Sort {
         writer.write(ofile);
     }
 
-
+/**
+ * Demo main
+ * @param args
+ * @throws IOException 
+ */
     public static void main(String[] args) throws IOException {
         File ifile = new File(args[0]);
 

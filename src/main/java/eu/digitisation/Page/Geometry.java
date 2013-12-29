@@ -17,27 +17,83 @@
  */
 package eu.digitisation.Page;
 
+import eu.digitisation.xml.DocumentParser;
 import java.awt.Polygon;
 import java.io.File;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-import org.w3c.dom.DOMException;
-import eu.digitisation.xml.DocumentParser;
-import eu.digitisation.xml.DocumentBuilder;
-import java.util.List;
 
 /**
  * Geometry information contained in one PAGE-XML file
  *
  * @author R.C.C.
  */
-public class Geometry {
+class Geometry {
 
-    TextRegion[] regions;
-    TextRegion[] lines;
-    TextRegion[] words;
+    private final TextRegion[] regions;
+    private final TextRegion[] lines;
+    private final TextRegion[] words;
+
+    /**
+     *
+     * @return all line regions in this document
+     */
+    public TextRegion[] getLines() {
+        return lines;
+    }
+
+    /**
+     *
+     * @return all word regions in this document
+     */
+    public TextRegion[] getWords() {
+        return words;
+    }
+
+    /**
+     * @return the regions
+     */
+    public TextRegion[] getRegions() {
+        return regions;
+    }
+
+    
+    /**
+     * Return the polygon delimiting a text region
+     *
+     * @param e the TextRegion element
+     * @return the polygon delimiting a text region
+     */
+    private static Polygon getCoords(Element element) {
+        Polygon poly = new Polygon();
+        NodeList children = element.getChildNodes();
+
+        for (int nchild = 0; nchild < children.getLength(); ++nchild) {
+            Node child = children.item(nchild);
+            if (child instanceof Element
+                    && child.getNodeName().equals("Coords")) {
+                Element coords = (Element) child;
+                if (poly.npoints > 0) {
+                    throw new DOMException(DOMException.INVALID_ACCESS_ERR,
+                            "Multiple Coords in TextRegion");
+                }
+                NodeList nodes = coords.getChildNodes(); // points
+                for (int n = 0; n < nodes.getLength(); ++n) {
+                    Node node = nodes.item(n);
+                    if (node.getNodeName().equals("Point")) {
+                        Element point = (Element) node;
+                        int x = Integer.parseInt(point.getAttribute("x"));
+                        int y = Integer.parseInt(point.getAttribute("y"));
+                        poly.addPoint(x, y);
+                    }
+                }
+            }
+        }
+        return poly;
+    }
 
     /**
      * Construct GT from file
@@ -86,63 +142,5 @@ public class Geometry {
             words[n] = new TextRegion(id, type, p);
         }
 
-    }
-
-    /**
-     * Return the polygon delimiting a text region
-     *
-     * @param e the TextRegion element
-     * @return the polygon delimiting a text region
-     */
-    private static Polygon getCoords(Element element) {
-        Polygon poly = new Polygon();
-        NodeList children = element.getChildNodes();
-
-        for (int nchild = 0; nchild < children.getLength(); ++nchild) {
-            Node child = children.item(nchild);
-            if (child instanceof Element
-                    && child.getNodeName().equals("Coords")) {
-                Element coords = (Element) child;
-                if (poly.npoints > 0) {
-                    throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                            "Multiple Coords in TextRegion");
-                }
-                NodeList nodes = coords.getChildNodes(); // points
-                for (int n = 0; n < nodes.getLength(); ++n) {
-                    Node node = nodes.item(n);
-                    if (node.getNodeName().equals("Point")) {
-                        Element point = (Element) node;
-                        int x = Integer.parseInt(point.getAttribute("x"));
-                        int y = Integer.parseInt(point.getAttribute("y"));
-                        poly.addPoint(x, y);
-                    }
-                }
-            }
-        }
-        return poly;
-    }
-
-    /**
-     *
-     * @return all text regions in this document
-     */
-    public TextRegion[] getTextRegions() {
-        return regions;
-    }
-
-    /**
-     *
-     * @return all line regions in this document
-     */
-    public TextRegion[] getLines() {
-        return lines;
-    }
-
-    /**
-     *
-     * @return all word regions in this document
-     */
-    public TextRegion[] getWords() {
-        return words;
     }
 }

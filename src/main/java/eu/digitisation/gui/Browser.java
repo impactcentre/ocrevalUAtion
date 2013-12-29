@@ -22,6 +22,7 @@ import java.awt.Desktop.Action;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +38,7 @@ public class Browser {
             Desktop desktop = Desktop.getDesktop();
             if (desktop.isSupported(Action.BROWSE)) {
                 try {
-                    String os = System.getProperty("os.name").toLowerCase();
+                    String os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
                     URI uri = os.contains("win")
                             ? new URI(url.replace("\\", "/"))
                             : new URI(url);

@@ -31,6 +31,9 @@ public class OutputFileSelector extends JFileChooser {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Default constructor
+     */
     public OutputFileSelector() {
         super();
     }
@@ -38,8 +41,8 @@ public class OutputFileSelector extends JFileChooser {
     /**
      *
      * @param dir the default directory
-     * @param file the preselected file
-     * @return the selected file
+     * @param file the preselected selection
+     * @return the selected selection
      */
     public File choose(File dir, File file) {
         setCurrentDirectory(dir);
@@ -47,16 +50,16 @@ public class OutputFileSelector extends JFileChooser {
         int returnVal = showOpenDialog(OutputFileSelector.this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            file = getSelectedFile();
-            if (file != null && file.exists()) {
+            File selection = getSelectedFile();
+            if (selection != null && selection.exists()) {
                 int response = JOptionPane.showConfirmDialog(new JFrame().getContentPane(),
-                        "The file " + file.getName()
+                        "The file " + selection.getName()
                         + " already exists. Do you want to replace the existing file?",
                         "Overwrite file", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-                return (response == JOptionPane.YES_NO_OPTION) ? file : null;
+                return (response == JOptionPane.YES_NO_OPTION) ? selection : null;
             }
-            return file;
+            return selection;
         }
         return null;
     }

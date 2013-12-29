@@ -37,7 +37,7 @@ public class TokenArray {
      * @param codes the dictionary of codes
      * @param tokens the integer representation
      */
-    public TokenArray(HashMap<String, Integer> codes, Integer[] tokens) {
+    TokenArray(HashMap<String, Integer> codes, Integer[] tokens) {
         this.codes = codes;
         this.tokens = tokens;
     }
@@ -47,7 +47,7 @@ public class TokenArray {
      * @param codes the dictionary of codes
      * @param tokens the integer representation
      */
-    public TokenArray(HashMap<String, Integer> codes, ArrayList<Integer> tokens) {
+    TokenArray(HashMap<String, Integer> codes, ArrayList<Integer> tokens) {
         this.codes = codes;
         this.tokens = tokens.toArray(new Integer[tokens.size()]);
     }
@@ -95,6 +95,10 @@ public class TokenArray {
         return ArrayEditDistance.distance(this.tokens, other.tokens, type);
     }
 
+    /**
+     * Return the TokenArray as array
+     * @return the array of tokens
+     */
     public String array() {
         return java.util.Arrays.toString(tokens);
     }

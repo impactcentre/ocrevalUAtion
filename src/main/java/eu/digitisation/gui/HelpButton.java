@@ -31,6 +31,9 @@ import javax.swing.JButton;
 public class HelpButton extends JButton {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Default constructor
+     */
     public HelpButton() {
         super("?");
         Dimension size = getPreferredSize();

@@ -24,10 +24,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Document;
@@ -55,10 +55,11 @@ public final class TextContent {
     static {
         Properties props = new Properties();
         try {
-            InputStream in =
-                    TextContent.class.getResourceAsStream("/General.properties");
+            InputStream in
+                    = TextContent.class.getResourceAsStream("/General.properties");
 
             props.load(in);
+            in.close();
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -215,13 +216,13 @@ public final class TextContent {
      *
      * @param file the input text file
      */
-    protected void readTextFile(File file) {
+    void readTextFile(File file) {
         // guess encoding if none is provided
         if (encoding == null) {
             encoding = Encoding.detect(file);
         }
         System.err.println("Text file " + file + " encoding is " + encoding);
-        
+
         // read content
         try {
             FileInputStream fis = new FileInputStream(file);
@@ -242,7 +243,7 @@ public final class TextContent {
      *
      * @param file the input XML file
      */
-    protected void readPageFile(File file) {
+    void readPageFile(File file) {
         Document doc = loadXMLFile(file);
         NodeList regions = doc.getElementsByTagName("TextRegion");
 
@@ -268,7 +269,7 @@ public final class TextContent {
      *
      * @param file the input XML file
      */
-    protected void readFR10File(File file) {
+    void readFR10File(File file) {
         Document doc = loadXMLFile(file);
         NodeList pars = doc.getElementsByTagName("par");
 
@@ -302,7 +303,7 @@ public final class TextContent {
      *
      * @param file the input HTML file
      */
-    protected void readHOCRFile(File file) {
+    void readHOCRFile(File file) {
         try {
             org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
             String htmlEncoding = doc.outputSettings().charset().toString();
@@ -315,7 +316,7 @@ public final class TextContent {
                 encoding = htmlEncoding;
                 System.err.println("HTML file " + file
                         + " encoding is " + encoding);
-            } 
+            }
 
             for (org.jsoup.nodes.Element e
                     : doc.body().select("*[class=ocr_line")) {
@@ -332,7 +333,7 @@ public final class TextContent {
      *
      * @param file the input ALTO file
      */
-    protected void readALTOfile(File file) {
+    void readALTOfile(File file) {
         Document doc = loadXMLFile(file);
         NodeList lines = doc.getElementsByTagName("TextLine");
 

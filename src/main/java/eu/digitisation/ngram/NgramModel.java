@@ -48,7 +48,7 @@ public class NgramModel implements Serializable {
     /**
      * Set maximal order of model.
      *
-     * @param n the size of the context plus one (the n in n-gram).
+     * @param order the size of the context plus one (the n in n-gram).
      */
     public final void setOrder(int order) {
         if (occur == null || occur.isEmpty()) {
@@ -282,9 +282,9 @@ public class NgramModel implements Serializable {
         if (word.length() < 1) {
             throw new IllegalStateException("Cannot extract n-grams from empty word");
         } else {
-            word = word + EOS;
+            word += EOS;
         }
-        String s = new String();
+        String s = "";
         while (s.length() < order) {
             s += BOS;
         }
@@ -306,9 +306,9 @@ public class NgramModel implements Serializable {
         if (word.length() < 1) {
             throw new IllegalStateException("Cannot extract n-grams from empty word");
         } else {
-            word = word + EOS;
+            word += EOS;
         }
-        String s = new String();
+        String s = "";
         while (s.length() < order) {
             s += BOS;
         }
@@ -320,9 +320,10 @@ public class NgramModel implements Serializable {
         }
     }
 
-    /*
+    /**
      * Reads text file and adds words to model.
-     * @param fileName a text file
+     * @param file a text file
+     * @param encoding the text encoding
      * @param caseSensitive true if extracted n-grams are case sensitive
      */
     public void addTextFile(File file, String encoding, boolean caseSensitive) {
@@ -345,7 +346,7 @@ public class NgramModel implements Serializable {
     /**
      * Compute probability of a word.
      *
-     * @param a word.
+     * @param word a word.
      * @return the log-probability (base e) of the contained n-grams.
      */
     public double wordLogProb(String word) {
@@ -353,9 +354,9 @@ public class NgramModel implements Serializable {
         if (word.length() < 1) {
             throw new IllegalArgumentException("Cannot compute probability of empty word");
         } else {
-            word = word + EOS;
+            word += EOS;
         }
-        String s = new String();
+        String s = "";
         while (s.length() < order) {
             s += BOS;
         }
@@ -373,8 +374,9 @@ public class NgramModel implements Serializable {
         return res;
     }
 
-    /*
+    /**
      * Reads input text and computes cross entropy.
+     * @param caseSensitive true if the model is case sensitive
      * @return the log-likelihood of text.
      */
     public double logLikelihood(boolean caseSensitive) {
@@ -414,7 +416,6 @@ public class NgramModel implements Serializable {
      * Show differences between model (debug function)
      *
      * @param other another NgramModel (order must coincide)
-     * @return
      */
     public void showDiff(NgramModel other) {
         if (this.order != other.order) {
@@ -439,8 +440,9 @@ public class NgramModel implements Serializable {
         }
     }
 
-    /*
+    /**
      * Main function.
+     * @param args
      */
     public static void main(String[] args) {
         NgramModel ngram = new NgramModel();

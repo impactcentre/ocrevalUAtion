@@ -34,14 +34,24 @@ import java.util.logging.Logger;
  */
 public class TokenArrayFactory {
 
-    HashMap<String, Integer> codes;
+    /**
+     * The codes used to encode the text into tokens
+     */
+    public final HashMap<String, Integer> codes;
     boolean caseSensitive;   // Case sensitive encoding
 
+    /**
+     * Create a new TokenArrayFactory
+     * @param caseSensitive true if the TokenArrays must be case sensitive
+     */
     public TokenArrayFactory(boolean caseSensitive) {
         codes = new HashMap<String, Integer>();
         this.caseSensitive = caseSensitive;
     }
 
+    /**
+     * Default constructor (case sensitive factory)
+     */
     public TokenArrayFactory() {
         this(true);
     }
@@ -65,10 +75,11 @@ public class TokenArrayFactory {
     }
 
     /**
-     * Build a TokenArray form the file content
+     * Build a TokenArray from the file content
      *
      * @param file the input file
      * @param encoding the text encoding folds uppercase into lowercase.
+     * @return a TokenArray representing the file content
      */
     public TokenArray newTokenArray(File file, String encoding) throws RuntimeException {
 
@@ -91,6 +102,7 @@ public class TokenArrayFactory {
      * Build a TokenArray from a String
      *
      * @param s the input string
+     * @return a TokenArray representing s
      */
     public TokenArray newTokenArray(String s) {
         ArrayList<Integer> array = new ArrayList<Integer>();

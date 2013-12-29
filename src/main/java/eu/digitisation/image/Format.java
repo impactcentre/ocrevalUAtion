@@ -18,12 +18,14 @@
 package eu.digitisation.image;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Image input formats supported 
  *
  * @author rafa
  */
+@SuppressWarnings("javadoc")
 public enum Format {
 
     BMP, FlashPix, GIF, JPEG, PNG, PNM, TIFF, WBMP;
@@ -38,7 +40,7 @@ public enum Format {
         String name = file.getName();
         String ext = name
                 .substring(name.lastIndexOf('.') + 1)
-                .toLowerCase();
+                .toLowerCase(Locale.ENGLISH);
         if (ext.equals("bpm")) {
             return BMP;
         } else if (ext.equals("fpx")) {

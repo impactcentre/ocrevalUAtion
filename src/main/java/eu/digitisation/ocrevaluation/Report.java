@@ -65,7 +65,7 @@ public class Report extends DocumentBuilder {
         for (String[] row : content) {
             Element tabrow = addElement(table, "tr");
             for (String cell : row) {
-                Element tabcell = addTextElement(tabrow, "td", cell);
+                addTextElement(tabrow, "td", cell);
             }
         }
         return table;
@@ -78,7 +78,7 @@ public class Report extends DocumentBuilder {
      * @param gtencoding the ground-truth or reference file encoding (optional)
      * @param ocrfile the OCR file
      * @param ocrencoding the OCR file encoding (optional)
-     * @param eqfile the Unicode equivalences file (CSV format)
+     * @param filter the Unicode equivalences file (CSV format)
      */
     public Report(File gtfile, String gtencoding,
             File ocrfile, String ocrencoding,
@@ -117,6 +117,13 @@ public class Report extends DocumentBuilder {
         addElement(body, stats.asTable());
     }
 
+    /**
+     * 
+     * @param batch a batch of file pairs
+     * @param gtencoding the ground-truth file encoding
+     * @param ocrencoding the OCR file encoding
+     * @param filter  Unicode character filter 
+     */
     public Report(Batch batch, String gtencoding, String ocrencoding,
             CharFilter filter) {
         super("html");

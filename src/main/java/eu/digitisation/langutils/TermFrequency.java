@@ -37,8 +37,11 @@ import java.util.logging.Logger;
 public class TermFrequency extends Counter<String> {
 
     private static final long serialVersionUID = 1L;
-    CharFilter filter;
+    private CharFilter filter;
 
+    /**
+     * Default constructor
+     */
     public TermFrequency() {
         filter = null;
     }
@@ -52,8 +55,9 @@ public class TermFrequency extends Counter<String> {
         this.filter = filter;
     }
 
-    /* Select CharFilter
-     * @param filter a CharFilter implementing character equivalences
+    /**
+     * Add CharFilter
+     * @param file a CSV file with character equivalences
      */
     public void addFilter(File file) {
         if (filter == null) {
@@ -124,6 +128,10 @@ public class TermFrequency extends Counter<String> {
         return builder.toString();
     }
 
+    /**
+     * Main function
+     * @param args see help
+     */
     public static void main(String[] args) {
         if (args.length < 1) {
             System.err.println("Usage: WordCounter [-e equivalences_file] [-c] input_files_or_directories");

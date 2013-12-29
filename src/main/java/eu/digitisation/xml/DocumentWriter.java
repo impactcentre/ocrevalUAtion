@@ -25,13 +25,15 @@ import org.w3c.dom.Document;
 
 /**
  * Writes XML document to String or File
+ *
  * @author R.C.C.
  */
 public class DocumentWriter {
+
     static javax.xml.transform.Transformer transformer;
-    static javax.xml.transform.stream.StreamResult result;
 
     javax.xml.transform.dom.DOMSource source;
+    javax.xml.transform.stream.StreamResult result;
 
     static {
         try {
@@ -42,6 +44,10 @@ public class DocumentWriter {
         }
     }
 
+    /**
+     * Create a DocumentWriter for a given document
+     * @param document the XML document
+     */
     public DocumentWriter(Document document) {
         source = new javax.xml.transform.dom.DOMSource(document);
     }
@@ -65,7 +71,8 @@ public class DocumentWriter {
 
     /**
      * Dump content to file
-     * @param file the output file 
+     *
+     * @param file the output file
      */
     public void write(java.io.File file) {
         result = new javax.xml.transform.stream.StreamResult(file);

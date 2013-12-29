@@ -19,11 +19,11 @@ package eu.digitisation.image;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.IOException;
 import javax.media.jai.JAI;
@@ -177,7 +177,7 @@ public class Bimage extends BufferedImage {
     /**
      * Add polygonal frontiers to the image
      *
-     * @param ploygons an array of polygonal regions
+     * @param polygons an array of polygonal regions
      * @param color he color of the polygons
      * @param stroke the line width
      */

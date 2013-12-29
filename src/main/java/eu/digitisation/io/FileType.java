@@ -21,6 +21,7 @@ import eu.digitisation.xml.DocumentParser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import org.w3c.dom.Element;
  *
  * @author R.C.C.
  */
+@SuppressWarnings("javadoc")
 public enum FileType {
 
     TEXT, PAGE, FR10, HOCR, ALTO, UNKNOWN;
@@ -44,6 +46,7 @@ public enum FileType {
             InputStream in = 
                     FileType.class.getResourceAsStream("/General.properties");         
             props.load(in);
+            in.close();
         } catch (IOException ex) {
             Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -85,7 +88,7 @@ public enum FileType {
      * @return the FileType of file
      */
     public static FileType valueOf(File file) {
-        String name = file.getName().toLowerCase();
+        String name = file.getName().toLowerCase(Locale.ENGLISH);
 
         if (name.endsWith(".txt")) {
             return TEXT;
