@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Open a file with an operating system application
  * @author R.C.C.
  */
 public class Browser {

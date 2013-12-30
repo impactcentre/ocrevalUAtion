@@ -19,6 +19,7 @@ package eu.digitisation.Page;
 
 import eu.digitisation.image.Bimage;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
@@ -45,8 +46,9 @@ public class Viewer {
 
     /**
      * Demo main
+     *
      * @param args
-     * @throws IOException 
+     * @throws IOException
      */
     public static void main(String[] args) throws IOException {
         if (args.length != 2) {
@@ -80,12 +82,15 @@ public class Viewer {
             throw new java.io.IOException(xmlfile.getCanonicalPath() + " not found");
         }
 
-        page.add(gt.getRegions(), Color.RED, 4);
-        page.add(gt.getLines(), Color.GREEN, 2);
-        page.add(gt.getWords(), Color.BLUE, 1);
+        page.add(gt.getTextRegions(), Color.RED, 4);
+      //  page.add(gt.getTextLines(), Color.GREEN, 2);
+      //  page.add(gt.getWords(), Color.BLUE, 1);
         scaled = new Bimage(page, 1.0);
         //Display.draw(scaled);
         scaled.write(ofile);
+        if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+            Desktop.getDesktop().open(ofile);
+        }
         System.out.println("output=" + ofile);
     }
 }

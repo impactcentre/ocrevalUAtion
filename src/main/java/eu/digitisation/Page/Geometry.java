@@ -17,13 +17,16 @@
  */
 package eu.digitisation.Page;
 
+import eu.digitisation.io.FileType;
+import eu.digitisation.io.TextContent;
 import eu.digitisation.xml.DocumentParser;
-import java.awt.Polygon;
 import java.io.File;
-import org.w3c.dom.DOMException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jsoup.select.Elements;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -33,114 +36,124 @@ import org.w3c.dom.NodeList;
  */
 class Geometry {
 
-    private final TextRegion[] regions;
-    private final TextRegion[] lines;
-    private final TextRegion[] words;
+    private Region[] textRegions;
+    private Region[] textLines;
+    private Region[] words;
 
     /**
      *
-     * @return all line regions in this document
+     * @return all line textRegions in this document
      */
-    public TextRegion[] getLines() {
-        return lines;
+    public Region[] getTextLines() {
+        return textLines;
     }
 
     /**
      *
-     * @return all word regions in this document
+     * @return all word textRegions in this document
      */
-    public TextRegion[] getWords() {
+    public Region[] getWords() {
         return words;
     }
 
     /**
-     * @return the regions
+     * @return the textRegions
      */
-    public TextRegion[] getRegions() {
-        return regions;
+    public Region[] getTextRegions() {
+        return textRegions;
     }
 
-    
-    /**
-     * Return the polygon delimiting a text region
-     *
-     * @param e the TextRegion element
-     * @return the polygon delimiting a text region
-     */
-    private static Polygon getCoords(Element element) {
-        Polygon poly = new Polygon();
-        NodeList children = element.getChildNodes();
-
-        for (int nchild = 0; nchild < children.getLength(); ++nchild) {
-            Node child = children.item(nchild);
-            if (child instanceof Element
-                    && child.getNodeName().equals("Coords")) {
-                Element coords = (Element) child;
-                if (poly.npoints > 0) {
-                    throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                            "Multiple Coords in TextRegion");
-                }
-                NodeList nodes = coords.getChildNodes(); // points
-                for (int n = 0; n < nodes.getLength(); ++n) {
-                    Node node = nodes.item(n);
-                    if (node.getNodeName().equals("Point")) {
-                        Element point = (Element) node;
-                        int x = Integer.parseInt(point.getAttribute("x"));
-                        int y = Integer.parseInt(point.getAttribute("y"));
-                        poly.addPoint(x, y);
-                    }
-                }
-            }
+    Geometry(File file) throws IOException {
+        FileType type = FileType.valueOf(file);
+        switch (type) {
+            case PAGE:
+                readPageFile(file);
+                break;
+//            case FR10:
+//                readFR10File(file);
+//                break;
+            case HOCR:
+                readHOCRFile(file);
+                break;
+ //           case ALTO:
+ //               readALTOfile(file);
+ //               break;
+            default:
+                throw new IOException("Unsupported file format " + type);
         }
-        return poly;
     }
 
     /**
-     * Construct GT from file
+     * Constructor from PAGE-XML file
      *
-     * @param file the input file
+     * @param file the input PAGE-XML file
      */
-    public Geometry(File file) {
+    final void readPageFile(File file) {
         Document doc = DocumentParser.parse(file);
+        NodeList nodes;
+        int length;
 
-        // Get regions
-        NodeList rnodes = doc.getElementsByTagName("TextRegion");
-        int length = rnodes.getLength();
-        regions = new TextRegion[length];
+        // Get textRegions
+        nodes = doc.getElementsByTagName("TextRegion");
+        length = nodes.getLength();
+        textRegions = new Region[length];
 
         for (int n = 0; n < length; ++n) {
-            Element e = (Element) rnodes.item(n);
-            String id = e.getAttribute("id");
-            String type = e.getAttribute("type");
-            Polygon p = getCoords((Element) rnodes.item(n));
-            regions[n] = new TextRegion(id, type, p);
+            Element e = (Element) nodes.item(n);
+            textRegions[n] = new Region(e);
         }
 
-        // Get lines
-        rnodes = doc.getElementsByTagName("TextLine");
-        length = rnodes.getLength();
-        lines = new TextRegion[length];
+        // Get textLines
+        nodes = doc.getElementsByTagName("TextLine");
+        length = nodes.getLength();
+        textLines = new Region[length];
 
         for (int n = 0; n < length; ++n) {
-            Element e = (Element) rnodes.item(n);
-            String id = e.getAttribute("id");
-            String type = "line";
-            Polygon p = getCoords((Element) rnodes.item(n));
-            lines[n] = new TextRegion(id, type, p);
+            Element e = (Element) nodes.item(n);
+            textLines[n] = new Region(e);
         }
 
         // Get words
-        rnodes = doc.getElementsByTagName("Word");
-        length = rnodes.getLength();
-        words = new TextRegion[length];
+        nodes = doc.getElementsByTagName("Word");
+        length = nodes.getLength();
+        words = new Region[length];
 
         for (int n = 0; n < length; ++n) {
-            Element e = (Element) rnodes.item(n);
-            String id = e.getAttribute("id");
-            String type = "word";
-            Polygon p = getCoords((Element) rnodes.item(n));
-            words[n] = new TextRegion(id, type, p);
+            Element e = (Element) nodes.item(n);
+            words[n] = new Region(e);
         }
 
     }
+
+    final void readHOCRFile(File file) {
+        try {
+            org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
+            Elements elements;
+            int length;
+
+            elements = doc.body().select("*[class=ocr_par");
+            length = elements.size();
+            textRegions = new Region[length];
+            for (int n = 0; n < length; ++n) {
+                textRegions[n] = new Region(elements.get(n));
+            }
+
+            elements = doc.body().select("*[class=ocr_line");
+            length = elements.size();
+            textLines = new Region[length];
+            for (int n = 0; n < length; ++n) {
+                textLines[n] = new Region(elements.get(n));
+            }
+
+            elements = doc.body().select("*[class=ocrx_word");
+            length = elements.size();
+            words = new Region[length];
+            for (int n = 0; n < length; ++n) {
+                words[n] = new Region(elements.get(n));
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }
