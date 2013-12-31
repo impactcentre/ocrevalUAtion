@@ -31,16 +31,18 @@ import java.io.IOException;
 public class Viewer {
 
     /**
-     * Split a file name in basename and extension
+     * Split a file name into path, basename and extension
      *
      * @param filename
      * @return basename (before last dot) and extension (after last dot)
      */
     private static String[] getFilenameTokens(String filename) {
-        String[] tokens = new String[2];
-        int pos = filename.lastIndexOf('.');
-        tokens[0] = filename.substring(0, pos);
-        tokens[1] = filename.substring(pos + 1);
+        String[] tokens = new String[3];
+        int first = filename.lastIndexOf('/');
+        int last = filename.lastIndexOf('.');
+        tokens[0] = filename.substring(0, first);
+        tokens[1] = filename.substring(first + 1, last);
+        tokens[2] = filename.substring(last + 1);
         return tokens;
     }
 
@@ -56,13 +58,13 @@ public class Viewer {
             System.exit(0);
         }
 
-        String[] tokens = getFilenameTokens(args[0]);
-        String id = tokens[0];
-        String ext = tokens[1];
-
         File ifile = new File(args[0]);
         File xmlfile = new File(args[1]);
-        File ofile = new File(id + "_marked." + ext);
+        String[] tokens = getFilenameTokens(args[0]);
+        String path = tokens[0];
+        String id = tokens[1];
+        String ext = tokens[2];
+        File ofile = new File("/tmp/" + id + "_marked." + ext);
         Bimage page = null;
         Bimage scaled;
         Geometry gt = null;
@@ -83,14 +85,16 @@ public class Viewer {
         }
 
         page.add(gt.getTextRegions(), Color.RED, 4);
-      //  page.add(gt.getTextLines(), Color.GREEN, 2);
-      //  page.add(gt.getWords(), Color.BLUE, 1);
+        page.add(gt.getTextLines(), Color.GREEN, 2);
+        page.add(gt.getWords(), Color.BLUE, 1);
         scaled = new Bimage(page, 1.0);
         //Display.draw(scaled);
+        System.out.println("output=" + ofile);
         scaled.write(ofile);
+
         if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
             Desktop.getDesktop().open(ofile);
         }
-        System.out.println("output=" + ofile);
+
     }
 }

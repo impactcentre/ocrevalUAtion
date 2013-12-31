@@ -17,6 +17,7 @@ package eu.digitisation.Page;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+import eu.digitisation.io.FileType;
 import java.awt.Polygon;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -24,7 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * A region in a PAGE-XML document (TextRegion, TextLine and Word elements)
+ * A region in a document (a page, a block, line (TextLine) or word)
  *
  * @author R.C.C.
  */
@@ -32,33 +33,37 @@ public class Region extends Polygon {
 
     private static final long serialVersionUID = 1L;
 
-    String id;    // id attribute
-    String type;  // type attribute
-    String content; // text content
+    String id;       // id attribute
+    RegionType type; // the type of region (page, block, line, word)
+    String subtype;  // block type (paragraph, header, TOC).
+    String content;  // text content
 
     /**
      * Constructor
      *
      * @param id region identifier
-     * @param type region type (paragraph, TOC, etc)
+     * @param type the type of region
+     * @param subtype region subtype (paragraph, TOC, etc)
      * @param content the textual content
      * @param poly the polygon in the image containing the region
      */
-    public Region(String id, String type, String content, Polygon poly) {
+    public Region(String id, RegionType type, String subtype, String content, Polygon poly) {
         super(poly.xpoints, poly.ypoints, poly.npoints);
         this.id = id;
         this.type = type;
+        this.subtype = subtype;
         this.content = content;
     }
 
     /**
-     * Constructor
+     * Constructor from a PAGE-XML element
      *
      * @param element the XML element containing the region
      */
     public Region(Element element) {
         id = element.getAttribute("id");
-        type = element.getAttribute("type");
+        type = RegionType.valueOf(FileType.PAGE, element.getTagName());
+        subtype = element.getAttribute("type");
 
         // Get coordinates and content
         NodeList children = element.getChildNodes();
@@ -93,9 +98,15 @@ public class Region extends Polygon {
         }
     }
 
+    /**
+     * Constructor from an hOCR-HTML element
+     *
+     * @param element the HTML element containing the region
+     */
     public Region(org.jsoup.nodes.Element element) {
         id = element.attr("id");
-        type = element.attr("type");
+        type = RegionType.valueOf(FileType.HOCR, element.attr("type"));
+        subtype = element.attr("type");
         content = element.text();
 
         // extract coordinates
