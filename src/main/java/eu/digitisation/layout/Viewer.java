@@ -55,13 +55,14 @@ public class Viewer {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
-            System.err.println("Usage: Viewer image_file page_file");
+        if (args.length < 2) {
+            System.err.println("Usage: Viewer image_file page_file [options]");
             System.exit(0);
         }
 
         File ifile = new File(args[0]);
         File xmlfile = new File(args[1]);
+        String opts = (args.length > 2) ? args[2] : "";
         FileType ftype = FileType.valueOf(xmlfile);
         String[] tokens = getFilenameTokens(args[0]);
         String path = tokens[0];
@@ -71,9 +72,9 @@ public class Viewer {
 
         Bimage page = null;
         Bimage scaled;
-        float[] shortDash = {4f,2f};
-        float[] longDash = {8f,4f};
-        
+        float[] shortDash = {4f, 2f};
+        float[] longDash = {8f, 4f};
+
         Page gt = null;
 
         if (ifile.exists()) {
@@ -86,22 +87,44 @@ public class Viewer {
             throw new java.io.IOException(ifile.getCanonicalPath() + " not found");
         }
         if (xmlfile.exists()) {
-            if (ftype == FileType.PAGE) {
-                gt = new PAGEPage(xmlfile);
-            } else if(ftype == FileType.HOCR) {
-                gt = new HOCRPage(xmlfile);
+            switch (ftype) {
+                case PAGE:
+                    gt = new PAGEPage(xmlfile);
+                    break;
+                case HOCR:
+                    gt = new HOCRPage(xmlfile);
+                    break;
+                case FR10:
+                    gt = new FR10Page(xmlfile);
+                    break;
+                case ALTO:
+                    gt = new ALTOPage(xmlfile);
+                    break;
+                default:
+                    throw new java.lang.UnsupportedOperationException("Still not implemented");
             }
         } else {
             throw new java.io.IOException(xmlfile.getCanonicalPath() + " not found");
         }
-//
-        page.add(gt.getFrontiers(ComponentType.BLOCK), Color.RED, 2f, shortDash);
-        page.add(gt.getFrontiers(ComponentType.LINE), Color.GREEN, 2f, longDash);
-        page.add(gt.getFrontiers(ComponentType.WORD), Color.BLUE, 2f);
+
+        if (opts.contains("b")) {
+            page.add(gt.getFrontiers(ComponentType.BLOCK), Color.RED, 2f, shortDash);
+        }
+        if (opts.contains("l")) {
+            page.add(gt.getFrontiers(ComponentType.LINE), Color.GREEN, 2f, longDash);
+        }
+        if (opts.contains("w")) {
+            page.add(gt.getFrontiers(ComponentType.WORD), Color.BLUE, 2f);
+        }
+
+        for (TextComponent component : gt.getComponents(ComponentType.WORD)) {
+            System.out.println(component);
+           // page.add(component.getFrontier(), Color.BLUE, 2f);
+        }
+
         scaled = new Bimage(page, 1.0);
-        //Display.draw(scaled);
-        System.out.println("output=" + ofile);
         scaled.write(ofile);
+        System.out.println("output=" + ofile);
 
         if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
             Desktop.getDesktop().open(ofile);

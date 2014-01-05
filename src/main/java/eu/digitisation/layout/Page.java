@@ -102,8 +102,8 @@ abstract class Page {
         }
         return list;
     }
-    
-      /**
+
+    /**
      * Get the textual content of the document
      *
      * @return the textual content of the document
@@ -112,7 +112,7 @@ abstract class Page {
         return root.getContent();
     }
 
- /**
+    /**
      * Get the text content of a given component
      *
      * @param component a component of the document being parsed
@@ -143,13 +143,14 @@ abstract class Page {
 
     /**
      * Text content in subcomponents of a given type
+     *
      * @param component a component
      * @param type a component type
      * @return the text content under subcomponents with this type
      */
     public String getText(TextComponent component, ComponentType type) {
-         StringBuilder builder = new StringBuilder();
-         for (TextComponent subcomponent : subcomponents.get(component)) {
+        StringBuilder builder = new StringBuilder();
+        for (TextComponent subcomponent : subcomponents.get(component)) {
             if (subcomponent.getType() == type) {
                 if (builder.length() > 0) {
                     builder.append(' ');
@@ -159,20 +160,22 @@ abstract class Page {
         }
         return builder.toString();
     }
-    
+
     /**
      * Transofrm a list of components into a list of polygonal frontiers
+     *
      * @param components
-     * @return 
+     * @return
      */
     private List<Polygon> frontiers(List<TextComponent> components) {
         List<Polygon> frontiers = new ArrayList<Polygon>(components.size());
-        for (TextComponent component: components) {
+        for (TextComponent component : components) {
             frontiers.add(component.getFrontier());
         }
         return frontiers;
     }
-      /**
+
+    /**
      * Get all the components in this document
      *
      * @return all the components in this document
@@ -192,7 +195,7 @@ abstract class Page {
     }
 
     /**
-     * List of frontiers of components with a given type
+     * List of (non-null) frontiers of components with a given type
      *
      * @param type a component type
      * @return the list of polygonal frontiers of components with this type
@@ -201,14 +204,17 @@ abstract class Page {
         List<Polygon> list = new ArrayList<Polygon>();
         for (TextComponent component : components) {
             if (component.getType() == type) {
-                list.add(component.getFrontier());
+                Polygon p = component.getFrontier();
+                if (p != null) {
+                    list.add(p);
+                }
             }
         }
         return list;
     }
 
     /**
-     * List frontiers of subcomponents with a given type
+     * List (non-null) frontiers of subcomponents with a given type
      *
      * @param type a component type
      * @return the list of frontiers of subcomponents with this type
@@ -217,12 +223,16 @@ abstract class Page {
         List<Polygon> list = new ArrayList<Polygon>();
         for (TextComponent subcomponent : subcomponents.get(component)) {
             if (subcomponent.getType() == type) {
+                Polygon p = subcomponent.getFrontier();
+                if (p != null) {
+                    list.add(p);
+                }
                 list.add(subcomponent.getFrontier());
             }
         }
         return list;
     }
-    
+
     public static void main(String[] args) {
         File file = new File(args[0]);
         FileType ftype = FileType.valueOf(file);

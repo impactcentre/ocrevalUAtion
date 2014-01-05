@@ -38,17 +38,21 @@ public enum ComponentType {
         types.put(ComponentTag.PAGE_TextLine, LINE);
         types.put(ComponentTag.PAGE_Word, WORD);
         types.put(ComponentTag.HOCR_ocr_page, PAGE);
-        types.put(ComponentTag.HOCR_ocr_carea, BLOCK);
+        types.put(ComponentTag.HOCR_ocr_carea, OTHER);  // page content-area
         types.put(ComponentTag.HOCR_ocr_par, BLOCK);
         types.put(ComponentTag.HOCR_ocr_line, LINE);
         types.put(ComponentTag.HOCR_ocr_word, WORD);
         types.put(ComponentTag.HOCR_ocrx_word, WORD);
         types.put(ComponentTag.FR10_page, PAGE);
         types.put(ComponentTag.FR10_block, BLOCK);
-        types.put(ComponentTag.FR10_text, BLOCK);
+        types.put(ComponentTag.FR10_text, OTHER);  // text in block
+        types.put(ComponentTag.FR10_par, LINE);
         types.put(ComponentTag.FR10_line, LINE);
+        types.put(ComponentTag.FR10_formatting, OTHER);  // text in line
         types.put(ComponentTag.FR10_word, WORD);
         types.put(ComponentTag.ALTO_Page, PAGE);
+        types.put(ComponentTag.ALTO_PrintSpace, OTHER); // page main area
+        types.put(ComponentTag.ALTO_ComposedBlock, OTHER);
         types.put(ComponentTag.ALTO_TextBlock, BLOCK);
         types.put(ComponentTag.ALTO_TextLine, LINE);
         types.put(ComponentTag.ALTO_String, WORD);

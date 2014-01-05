@@ -30,10 +30,12 @@ import eu.digitisation.io.FileType;
 public enum ComponentTag {
 
     PAGE_Page, PAGE_TextRegion, PAGE_TextLine, PAGE_Word,
-    HOCR_ocr_page, HOCR_ocr_carea, HOCR_ocr_par, 
+    HOCR_ocr_page, HOCR_ocr_carea, HOCR_ocr_par,
     HOCR_ocr_line, HOCR_ocr_word, HOCR_ocrx_word,
-    FR10_page, FR10_block, FR10_text, FR10_line, FR10_word,
-    ALTO_Page, ALTO_TextBlock, ALTO_TextLine, ALTO_String;
+    FR10_page, FR10_block, FR10_text, FR10_par, FR10_line,
+    FR10_formatting, FR10_word,
+    ALTO_Page, ALTO_PrintSpace, ALTO_ComposedBlock, ALTO_TextBlock,
+    ALTO_TextLine, ALTO_String;
 
     /**
      * The type for a given tag and type of file

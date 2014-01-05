@@ -72,5 +72,4 @@ public class BoundingBox extends Rectangle {
         polygon.addPoint(x + width, y);
         return polygon;
     }
-
 }

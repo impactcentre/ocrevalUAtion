@@ -17,13 +17,7 @@ package eu.digitisation.layout;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-import eu.digitisation.io.FileType;
 import java.awt.Polygon;
-import java.io.IOException;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * A region in a document (a page, a block, line, or word)
@@ -124,92 +118,4 @@ public class TextComponent {
         builder.append("</TextComponent>\n");
         return builder.toString();
     }
-
-    /**
-     * Constructor from XML element
-     *
-     * @param ftype the file type
-     * @param element the XML element containing the region
-     * @throws java.io.IOException
-     */
-    public TextComponent(FileType ftype, Element element) throws IOException {
-        if (ftype == FileType.PAGE) {
-            id = element.getAttribute("id");
-            type = ComponentType.valueOf(ftype, element.getTagName());
-            subtype = element.getAttribute("type");
-
-            // Get frontier and content
-            NodeList children = element.getChildNodes();
-            for (int nchild = 0; nchild < children.getLength(); ++nchild) {
-                Node child = children.item(nchild);
-                if (child instanceof Element) {
-                    if (child.getNodeName().equals("Coords")) {
-                        Element coords = (Element) child;
-                        if (frontier.npoints > 0) {
-                            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                                    "Multiple Coords in region " + id);
-                        }
-                        NodeList nodes = coords.getChildNodes(); // points
-                        for (int n = 0; n < nodes.getLength(); ++n) {
-                            Node node = nodes.item(n);
-                            if (node.getNodeName().equals("Point")) {
-                                Element point = (Element) node;
-                                int x = Integer.parseInt(point.getAttribute("x"));
-                                int y = Integer.parseInt(point.getAttribute("y"));
-                                frontier.addPoint(x, y);
-                            }
-                        }
-                    } else if (child.getNodeName().equals("TextEquiv")) {
-                        String text = child.getTextContent();
-                        if (content != null) {
-                            throw new DOMException(DOMException.INVALID_ACCESS_ERR,
-                                    "Multiple content in region " + id);
-                        }
-                        content = text;
-                    }
-                }
-            }
-
-//      }  else if (ftype == FileType.FR10) {
-//            id = element.getAttribute("id");
-//            type = ComponentType.valueOf(ftype, element.getTagName());
-//            subtype = (type == ComponentType.BLOCK)
-//                    ? element.getAttribute("blockType")
-//                    : null;
-//
-//            NodeList pars = element.getElementsByTagName(tag);
-        } else {
-            throw new java.lang.IllegalArgumentException("unsupported format " + ftype);
-        }
-    }
-
-    /**
-     * Constructor from an hOCR-HTML element
-     *
-     * @param element the HTML element containing the region
-     */
-    public TextComponent(org.jsoup.nodes.Element element) {
-        id = element.attr("id");
-        type = ComponentType.valueOf(FileType.HOCR, element.attr("type"));
-        subtype = element.attr("type");
-        content = element.text();
-
-        // extract coordinates
-        String[] coords = element.attr("title").trim().split("\\p{Space}+");
-        if (coords[0].equals("bbox")) {
-            int x0 = Integer.parseInt(coords[1]);
-            int y0 = Integer.parseInt(coords[2]);
-            int x1 = Integer.parseInt(coords[3]);
-            int y1 = Integer.parseInt(coords[4]);
-            frontier = new BoundingBox(x0, y0, x1, y1).asPolygon();
-        } else if (coords[0].equals("poly")) {
-            int n = 1;
-            while (n + 1 < coords.length) {
-                int x = Integer.parseInt(coords[n]);
-                int y = Integer.parseInt(coords[n + 1]);
-                frontier.addPoint(x, y);
-                n += 2;
-            }
-        }
-    }
-}
+   }
