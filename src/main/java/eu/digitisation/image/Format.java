@@ -23,7 +23,7 @@ import java.util.Locale;
 /**
  * Image input formats supported 
  *
- * @author rafa
+ * @author R.C.C
  */
 @SuppressWarnings("javadoc")
 public enum Format {

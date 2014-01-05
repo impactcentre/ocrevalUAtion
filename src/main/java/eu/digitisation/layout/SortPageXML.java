@@ -15,7 +15,7 @@
  * along with this program; if not, transform to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.Page;
+package eu.digitisation.layout;
 
 import eu.digitisation.xml.DocumentBuilder;
 import eu.digitisation.xml.DocumentParser;
@@ -38,12 +38,12 @@ import org.w3c.dom.NodeList;
  *
  * @author R.C.C.
  */
-public class Sort {
+public class SortPageXML {
 
     /**
-     * Sort children consistently with the order defined for their id attribute
-     * Remark: NodeList mutates when operations on nodes take place: an backup
-     * childList is used to avoid such conflicts.
+     * SortPageXML children consistently with the order defined for their id attribute
+ Remark: NodeList mutates when operations on nodes take place: an backup
+ childList is used to avoid such conflicts.
      *
      * @param node the parent node
      * @param order the array of id's in ascending order
@@ -191,7 +191,7 @@ public class Sort {
      */
     public static void transform(File ifile, File ofile) throws IOException {
         Document doc = DocumentParser.parse(ifile);
-        DocumentWriter writer = new DocumentWriter(Sort.sorted(doc));
+        DocumentWriter writer = new DocumentWriter(SortPageXML.sorted(doc));
         writer.write(ofile);
     }
 
@@ -203,10 +203,10 @@ public class Sort {
     public static void main(String[] args) throws IOException {
         File ifile = new File(args[0]);
 
-        System.out.println(Sort.isSorted(ifile));
+        System.out.println(SortPageXML.isSorted(ifile));
         if (args.length > 1) {
             File ofile = new File(args[1]);
-            Sort.transform(ifile, ofile);
+            SortPageXML.transform(ifile, ofile);
         }
     }
 }

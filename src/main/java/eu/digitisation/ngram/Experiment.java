@@ -17,7 +17,7 @@
  */
 package eu.digitisation.ngram;
 
-import eu.digitisation.Page.Sort;
+import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.ocrevaluation.ErrorMeasure;
@@ -37,7 +37,7 @@ public class Experiment {
         String s1 = c1.toString();
         String s2 = c2.toString();
         String s3 = c3.toString();
-        boolean sorted = Sort.isSorted(f1);
+        boolean sorted = SortPageXML.isSorted(f1);
         int l1 = s1.length();
         final int N = 10;
 
@@ -81,7 +81,7 @@ public class Experiment {
                     dir1.getName().replace(".xml", "_sorted.xml"));
 
             if (dir2.exists()) {
-                Sort.transform(dir1, dir3);
+                SortPageXML.transform(dir1, dir3);
                 Experiment.compare(dir1, dir2, dir3, filter);
             }
         } else {
@@ -90,7 +90,7 @@ public class Experiment {
                 File f2 = new File(dir2, name.replace(".xml", ".html"));
                 File f3 = new File(dir3, name.replace(".xml", "_sorted.xml"));
                 if (f2.exists()) {
-                    Sort.transform(f1, f3);
+                    SortPageXML.transform(f1, f3);
                     compare(f1, f2, f3, filter);
                 }
             }

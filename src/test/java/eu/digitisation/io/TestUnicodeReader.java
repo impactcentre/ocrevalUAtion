@@ -3,7 +3,7 @@ package eu.digitisation.io;
 import junit.framework.TestCase;
 /**
  *
- * @author rafa
+ * @author R.C.C
  */
 public class TestUnicodeReader extends TestCase {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Universidad de Alicante
+ * Copyright (C) 2014 IMPACT Centre of Competence
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,26 +15,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.math;
 
+package eu.digitisation.layout;
+
+import eu.digitisation.io.FileType;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
  *
  * @author R.C.C
  */
-public class PairTest {
+public class ComponentTagTest {
+    
     /**
-     * Test of equals method, of class Pair.
+     * Test of shortTag method, of class ComponentTag.
      */
     @Test
-    public void testEquals() {
-        System.out.println("equals");
-        Object o = null;
-        Pair<String, String> p1 = new Pair<String, String>("a", "b");
-        Pair<String, String> p2 = new Pair<String, String>("a", "b");
-        Pair<String, String> p3 = new Pair<String, String>("a", "c");
-        assert (p1.equals(p2));
-        assert (!p1.equals(p3));
+    public void testShortTag() {
+        System.out.println("shortTag");
+        ComponentTag tag = ComponentTag.valueOf(FileType.PAGE, "TextRegion");
+        String expResult = "TextRegion";
+        String result = ComponentTag.shortTag(tag);
+        assertEquals(expResult, result);
     }
+    
 }
