@@ -109,6 +109,18 @@ public class Counter<Type extends Comparable<Type>>
         }
         return this;
     }
+    
+    /**
+     * Increment counts for a an array of objects
+     * @param objects the array of objects
+     * @return this Counter
+     */
+    public Counter<Type> add(Type[] objects) {
+        for (Type object: objects) {
+            inc(object);
+        }
+        return this;
+    }
 
     /**
      *
@@ -118,6 +130,19 @@ public class Counter<Type extends Comparable<Type>>
     public int value(Type object) {
         Integer val = super.get(object);
         return (val == null) ? 0 : val;
+    }
+
+    /**
+     * Maximum value stored
+     *
+     * @return max stored value or 0 if no value is stored
+     */
+    public int maxValue() {
+        if (size() > 0) {
+            return java.util.Collections.max(values());
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -171,7 +196,7 @@ public class Counter<Type extends Comparable<Type>>
             Collections.sort(list, Collections.reverseOrder(new KeyComparator()));
         } else if (order == Order.LEXICOGRAPHIC
                 && list.size() > 0
-                && list.get(0).getClass().equals(String.class)) { 
+                && list.get(0).getClass().equals(String.class)) {
             Collator collator = Collator.getInstance();
             collator.setStrength(Collator.TERTIARY);
             collator.setDecomposition(Collator.FULL_DECOMPOSITION);

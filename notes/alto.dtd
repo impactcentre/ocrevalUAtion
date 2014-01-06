@@ -1,0 +1,16 @@
+alto=Description,Styles,Layout
+Layout=Page*
+Page=TopMargin?, LeftMargin?, RightMargin?, BottomMargin?, Printspace?
+PrintSpace=BlockGroup*
+BlogGroup = TextBlock | Illustration | GraphicalElement | ComposedBlock
+TextBlock = Shape, TextLine*
+TextLine = String*
+String = ALTERNATIVE*
+
+Shape=Polygon|Ellipse|Circle
+
+page-printspace-textblock-textline-string-@CONTENT
+fr10: page-block-text-par-line
+
+
+http://www.abbyy-developers.eu/en:tech:features:alto

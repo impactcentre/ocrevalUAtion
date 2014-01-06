@@ -76,6 +76,19 @@ public class Bimage extends BufferedImage {
     }
 
     /**
+     * Create a BufferedImage of the given type from another BufferedImage.
+     *
+     * @param image the source image
+     * @param type the type of BufferedImage
+     */
+    public Bimage(BufferedImage image, int type) {
+        super(image.getWidth(null), image.getHeight(null), type);
+        Graphics2D g = createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+    }
+
+    /**
      * Create image from file.
      *
      * @param file the file storing the image
