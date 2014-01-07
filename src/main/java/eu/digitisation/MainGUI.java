@@ -165,7 +165,7 @@ public class MainGUI extends JFrame implements ActionListener {
      * @param text the text to be displayed
      */
     private void warning(String text) {
-        InputFileSelector ifs = (InputFileSelector) pane.getComponent(0);
+        InputFileSelector ifs = (InputFileSelector) basic.getComponent(0);
         ifs.setForeground(Color.RED);
         ifs.shade(Color.decode("#fffacd"));
         ifs.setText(text);
