@@ -105,7 +105,7 @@ public final class TextContent {
                     readALTOfile(file);
                     break;
                 default:
-                    throw new IOException("Unsupported file format " + type);
+                    throw new IOException("Unsupported file format " + type + " in file " + file.getName());
             }
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
