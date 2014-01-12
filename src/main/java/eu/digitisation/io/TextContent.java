@@ -17,6 +17,7 @@
  */
 package eu.digitisation.io;
 
+import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.xml.DocumentParser;
 import java.io.BufferedReader;
 import java.io.File;
@@ -243,9 +244,10 @@ public final class TextContent {
      *
      * @param file the input XML file
      */
-    void readPageFile(File file) {
+    void readPageFile(File file) throws IOException {
         Document doc = loadXMLFile(file);
-        NodeList regions = doc.getElementsByTagName("TextRegion");
+        Document sorted = SortPageXML.isSorted(doc) ? doc : SortPageXML.sorted(doc);
+        NodeList regions = sorted.getElementsByTagName("TextRegion");
 
         for (int r = 0; r < regions.getLength(); ++r) {
             Element region = (Element) regions.item(r);
