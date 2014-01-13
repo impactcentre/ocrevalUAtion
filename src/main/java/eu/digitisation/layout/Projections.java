@@ -136,6 +136,29 @@ public class Projections extends Bimage {
     }
 
     /**
+     *
+     * @param alpha the line angle with respect to the horizontal (alpha>0 if
+     * growing, alpha<0 if declining)
+     *
+     * @return t he projection of darkness for every line y + x / tan(alpha)
+     */
+    private int[] projection(double alpha) {
+        double slope = 1 / Math.tan(alpha);
+        int shift = (int) Math.round(slope * getWidth());
+        int ymin = Math.min(0, shift);
+        int ymax = Math.max(getHeight(), getHeight() + shift);
+        int[] values = new int[ymax - ymin];
+        for (int y = 0; y < getHeight(); ++y) {
+            for (int x = 0; x < getWidth(); ++x) {
+                int rgb = getRGB(x, y);
+                int pos = (int) Math.round(y + slope * x);
+                values[pos] += darkness(rgb);
+            }
+        }
+        return values;
+    }
+
+    /**
      * Split image into component lines
      */
     public void slice() {
