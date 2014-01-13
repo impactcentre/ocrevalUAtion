@@ -109,14 +109,15 @@ public class Counter<Type extends Comparable<Type>>
         }
         return this;
     }
-    
+
     /**
      * Increment counts for a an array of objects
+     *
      * @param objects the array of objects
      * @return this Counter
      */
     public Counter<Type> add(Type[] objects) {
-        for (Type object: objects) {
+        for (Type object : objects) {
             inc(object);
         }
         return this;
@@ -204,4 +205,19 @@ public class Counter<Type extends Comparable<Type>>
         }
         return list;
     }
+
+    /**
+     * A list key-value pairs
+     *
+     * @return a string containing one key and value per line
+     */
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder();
+        for (Type key : keySet()) {
+            b.append(key).append(" ").append(get(key)).append("\n");
+        }
+        return b.toString();
+    }
+
 }

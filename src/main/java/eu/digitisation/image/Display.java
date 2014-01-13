@@ -29,16 +29,32 @@ import javax.swing.JFrame;
  */
 class ImageComponent extends JComponent {
     private static final long serialVersionUID = 1L;
-
+    int x;
+    int y;
+    int width;
+    int height;
     BufferedImage img = null;
 
     ImageComponent(BufferedImage img) {
         this.img = img;
+        x = 0;
+        y = 0;
+        width = img.getWidth();
+        height = img.getHeight();
     }
+    
+    ImageComponent(BufferedImage img, int x, int y, int width, int height) {
+        this.img = img;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+    
 
     @Override
     public void paint(Graphics g) {
-        g.drawImage(img, 0, 0, this);
+        g.drawImage(img, x, y, width, height, this);
         // g.finalize();
     }
 }
@@ -59,4 +75,12 @@ public class Display {
         window.setVisible(true);
     }
 
+    public static void draw(BufferedImage img, int width, int height) {
+        JFrame window = new JFrame();
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setBounds(0, 0, width, height);
+        window.getContentPane().add(new ImageComponent(img, 0, 0,width, height));
+        window.setVisible(true);
+    }
+    
 }

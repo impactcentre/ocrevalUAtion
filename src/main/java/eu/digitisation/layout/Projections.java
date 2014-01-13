@@ -18,15 +18,21 @@
 package eu.digitisation.layout;
 
 import eu.digitisation.image.Bimage;
+import eu.digitisation.image.Display;
+import eu.digitisation.io.FileType;
 import eu.digitisation.math.ArrayMath;
+import eu.digitisation.math.Plot;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.media.jai.JAI;
 
 /**
@@ -54,13 +60,20 @@ public class Projections extends Bimage {
 
     private void readProperties() {
         Properties prop = new Properties();
-        //     try {
-//            prop.load(new java.io.FileReader("Page.properties"));
-//            threshold = new Double(prop.getProperty("threshold"));
-        threshold = -0.5;
-//        } catch (IOException ex) {
-        //           Logger.getLogger(Page.class.getName()).log(Level.SEVERE, null, ex);
-        //      }
+        try {
+            InputStream in
+                    = FileType.class.getResourceAsStream("/General.properties");
+            prop.load(in);
+            String s = prop.getProperty("line.threshold");
+            if (s != null && s.length() > 0) {
+                threshold = Double.valueOf(s);
+            } else { // defualt value
+                threshold = -0.4;
+            }
+            System.err.println("threshold=" + threshold);
+        } catch (IOException ex) {
+            Logger.getLogger(Page.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
@@ -131,14 +144,16 @@ public class Projections extends Bimage {
         double B = ArrayMath.average(values);
         //double A = Math.max(Stat.max(values) - B, B - Stat.min(values));
         double sigma = ArrayMath.std(values);
-        double norvalues[] = new double[values.length]; // normalized
         int upper = 0;
         boolean inner = false;
+        double[] Y = new double[values.length];
+        double[] Z = new double[values.length]; // normalized values
 
         for (int y = 0; y < getHeight(); ++y) {
             double nval = (values[y] - B) / sigma; // normalized value
-            norvalues[y] = nval;
-            //System.err.println(y + " " + nval);
+            System.out.println(y + " " + nval);
+            Y[y] = y;
+            Z[y] = nval;
             if (inner) {
                 if (nval < threshold) {
                     limits.add(y);
@@ -152,6 +167,7 @@ public class Projections extends Bimage {
             }
         }
         addBoxes(limits);
+        new Plot(Y, Z).show(400, 400, 40);
     }
 
     /**
@@ -187,7 +203,7 @@ public class Projections extends Bimage {
         //p.addLabel("(x,y)=(100,50)", 100, 50);
         p.write(ofile);
         System.err.println("Output image in " + ofname);
-        //Display.draw(BufferedImageProcessor.scaled(page.getImage(), 0.75));
+        Display.draw(p, 600, 900);
     }
 
 }

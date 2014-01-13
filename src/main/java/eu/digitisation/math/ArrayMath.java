@@ -39,7 +39,7 @@ public class ArrayMath {
     }
 
     /**
-     * 
+     *
      * @param array array of double
      * @return the sum of all doubles in array
      */
@@ -158,6 +158,19 @@ public class ArrayMath {
     }
 
     /**
+     * @param array array of doubles
+     * @return the max value in this array
+     */
+    public static double max(double[] array) {
+        double mu = array[0];
+
+        for (int n = 1; n < array.length; ++n) {
+            mu = Math.max(mu, array[n]);
+        }
+        return mu;
+    }
+
+    /**
      * @param array int array
      * @return the min value in int array
      */
@@ -170,6 +183,19 @@ public class ArrayMath {
         return mu;
     }
 
+    /**
+     * @param array array of doubles
+     * @return the min value in this array
+     */
+    public static double min(double[] array) {
+        double mu = array[0];
+
+        for (int n = 1; n < array.length; ++n) {
+            mu = Math.min(mu, array[n]);
+        }
+        return mu;
+    }
+    
     /**
      * @param X array of int
      * @param Y another array of int
@@ -189,6 +215,7 @@ public class ArrayMath {
 
     /**
      * Covariance of two variables
+     *
      * @param X array of double
      * @param Y another array of double
      * @return Covariance of X and Y
