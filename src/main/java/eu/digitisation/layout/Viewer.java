@@ -62,7 +62,7 @@ public class Viewer {
 
         File ifile = new File(args[0]);
         File xmlfile = new File(args[1]);
-        String opts = (args.length > 2) ? args[2] : "";
+        String opts = (args.length > 2) ? args[2] : null;
         FileType ftype = FileType.valueOf(xmlfile);
         String[] tokens = getFilenameTokens(args[0]);
         String path = tokens[0];
@@ -107,13 +107,13 @@ public class Viewer {
             throw new java.io.IOException(xmlfile.getCanonicalPath() + " not found");
         }
 
-        if (opts.contains("b")) {
+        if (opts == null || opts.contains("b")) {
             page.add(gt.getFrontiers(ComponentType.BLOCK), Color.RED, 2f, shortDash);
         }
-        if (opts.contains("l")) {
+        if (opts == null || opts.contains("l")) {
             page.add(gt.getFrontiers(ComponentType.LINE), Color.GREEN, 2f, longDash);
         }
-        if (opts.contains("w")) {
+        if (opts == null || opts.contains("w")) {
             page.add(gt.getFrontiers(ComponentType.WORD), Color.BLUE, 2f);
         }
 
