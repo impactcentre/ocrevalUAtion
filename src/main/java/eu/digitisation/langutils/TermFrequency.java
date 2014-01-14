@@ -118,7 +118,7 @@ public class TermFrequency extends Counter<String> {
     /**
      *
      * @param other another term frequency vector
-     * @return the cosine distance (normalised scalar product)
+     * @return the cosine distance (normalized scalar product)
      */
     public double cosine(TermFrequency other) {
         double norm1 = 0;
@@ -181,7 +181,7 @@ public class TermFrequency extends Counter<String> {
      */
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.err.println("Usage: WordCounter [-e equivalences_file] [-c] input_files_or_directories");
+            System.err.println("Usage: TermFrequency [-e equivalences_file] [-c] input_files_or_directories");
         } else {
             TermFrequency tf = new TermFrequency();
             List<File> files = new ArrayList<File>();

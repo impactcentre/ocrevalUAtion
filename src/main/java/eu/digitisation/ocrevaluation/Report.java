@@ -29,6 +29,7 @@ import eu.digitisation.io.TextContent;
 import eu.digitisation.math.Pair;
 import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
+import java.io.InvalidObjectException;
 import org.w3c.dom.Element;
 
 /**
@@ -79,10 +80,11 @@ public class Report extends DocumentBuilder {
      * @param ocrfile the OCR file
      * @param ocrencoding the OCR file encoding (optional)
      * @param filter the Unicode equivalences file (CSV format)
+     * @throws java.io.InvalidObjectException
      */
     public Report(File gtfile, String gtencoding,
             File ocrfile, String ocrencoding,
-            CharFilter filter) {
+            CharFilter filter) throws InvalidObjectException {
         super("html");
         init();
 
@@ -97,15 +99,15 @@ public class Report extends DocumentBuilder {
         double cerDL = ErrorMeasure.cerDL(gts, ocrs);
         double wer = ErrorMeasure.wer(gts, ocrs);
         double ber = ErrorMeasure.ber(gts, ocrs);
-        Element alitab = Aligner.alignmentMap(gtfile.getName(), 
+        Element alitab = Aligner.alignmentMap(gtfile.getName(),
                 ocrfile.getName(), gts, ocrs);
         CharStatTable stats = new CharStatTable(gts, ocrs);
 
         // General info
         String[][] summary = {{"CER", String.format("%.2f", cer * 100)},
-            {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
-            {"WER", String.format("%.2f", wer * 100)},
-            {"WER (order independent)", String.format("%.2f", ber * 100)}
+        {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+        {"WER", String.format("%.2f", wer * 100)},
+        {"WER (order independent)", String.format("%.2f", ber * 100)}
         };
         addTextElement(body, "h2", "General results");
         addTable(body, summary);
@@ -118,17 +120,18 @@ public class Report extends DocumentBuilder {
     }
 
     /**
-     * 
+     *
      * @param batch a batch of file pairs
      * @param gtencoding the ground-truth file encoding
      * @param ocrencoding the OCR file encoding
-     * @param filter  Unicode character filter 
+     * @param filter Unicode character filter
+     * @throws java.io.IOException
      */
     public Report(Batch batch, String gtencoding, String ocrencoding,
-            CharFilter filter) {
+            CharFilter filter) throws InvalidObjectException {
         super("html");
         init();
-     
+
         CharStatTable stats = new CharStatTable();
         Element summaryTab;
         int numwords = 0;   // number of words in GT
@@ -157,7 +160,7 @@ public class Report extends DocumentBuilder {
             addElement(body, alitab);
             numwords += gtarray.length();
             wdist += ArrayEditDistance.distance(gtarray.tokens(), ocrarray.tokens(),
-                EditDistanceType.LEVENSHTEIN) ;
+                    EditDistanceType.LEVENSHTEIN);
             bdist += gtbag.distance(ocrbag);
         }
         //Summary table
@@ -165,9 +168,9 @@ public class Report extends DocumentBuilder {
         double wer = wdist / (double) numwords;
         double ber = bdist / (double) numwords;
         String[][] summaryContent = {{"CER", String.format("%.2f", cer * 100)},
-         //   {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
-            {"WER", String.format("%.2f", wer * 100)},
-            {"WER (order independent)", String.format("%.2f", ber * 100)}
+        //   {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+        {"WER", String.format("%.2f", wer * 100)},
+        {"WER (order independent)", String.format("%.2f", ber * 100)}
         };
         addTable(summaryTab, summaryContent);
         // CharStatTable

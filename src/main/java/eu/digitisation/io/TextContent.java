@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.InvalidObjectException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
@@ -81,8 +82,9 @@ public final class TextContent {
      * @param file the input file
      * @param filter optional CharFilter (optional; can be null)
      * @param encoding the text encoding for text files (optional; can be null)
+     * @throws java.io.InvalidObjectException
      */
-    public TextContent(File file, CharFilter filter, String encoding) {
+    public TextContent(File file, CharFilter filter, String encoding) throws InvalidObjectException {
 
         builder = new StringBuilder();
         this.file = file;
@@ -107,7 +109,7 @@ public final class TextContent {
                     readALTOfile(file);
                     break;
                 default:
-                    throw new IOException("Unsupported file format " + type);
+                    throw new InvalidObjectException("Unsupported file format " + type);
             }
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
@@ -121,7 +123,7 @@ public final class TextContent {
      * @param file the input file
      * @param filter optional CharFilter (optional; can be null)
      */
-    public TextContent(File file, CharFilter filter) {
+    public TextContent(File file, CharFilter filter) throws IOException {
         this(file, filter, null);
     }
 

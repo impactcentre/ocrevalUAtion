@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,15 +38,18 @@ public class TokenArrayFactory {
     /**
      * The codes used to encode the text into tokens
      */
-    public final HashMap<String, Integer> codes;
+    public final HashMap<String, Integer> codes;  // token->code mapping
+    public final List<String> dictionary;         // code->token mapping
     boolean caseSensitive;   // Case sensitive encoding
 
     /**
      * Create a new TokenArrayFactory
+     *
      * @param caseSensitive true if the TokenArrays must be case sensitive
      */
     public TokenArrayFactory(boolean caseSensitive) {
         codes = new HashMap<String, Integer>();
+        dictionary = new ArrayList<String>();
         this.caseSensitive = caseSensitive;
     }
 
@@ -59,7 +63,7 @@ public class TokenArrayFactory {
     /**
      *
      * @param word a word
-     * @return The integer code assigned to this word
+     * @return the integer code assigned to this word
      */
     private Integer getCode(String word) {
         Integer code;
@@ -70,8 +74,18 @@ public class TokenArrayFactory {
         } else {
             code = codes.size();
             codes.put(key, code);
+            dictionary.add(key);
         }
         return code;
+    }
+
+    /**
+     *
+     * @param code an integer code
+     * @return the string or word associated with this code
+     */
+    public String getWord(int code) {
+        return dictionary.get(code);
     }
 
     /**
@@ -95,7 +109,7 @@ public class TokenArrayFactory {
         } catch (IOException ex) {
             Logger.getLogger(TokenArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return new TokenArray(codes, array);
+        return new TokenArray(this, array);
     }
 
     /**
@@ -118,6 +132,6 @@ public class TokenArrayFactory {
             Logger.getLogger(TokenArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return new TokenArray(codes, array);
+        return new TokenArray(this, array);
     }
 }

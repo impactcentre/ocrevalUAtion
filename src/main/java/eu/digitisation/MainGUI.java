@@ -36,8 +36,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InvalidObjectException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -206,7 +204,7 @@ public class MainGUI extends JFrame implements ActionListener {
                     } catch (InvalidObjectException ex) {
                         warning(ex.getMessage());
                     } catch (IOException ex) {
-                        Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        warning("Could not open " + outfile);
                     }
                 }
             } else {
