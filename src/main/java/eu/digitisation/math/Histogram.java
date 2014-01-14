@@ -30,7 +30,7 @@ public class Histogram {
 
     private static final long serialVersionUID = 1L;
     int[] X;
-    int [] Y;
+    int[] Y;
    
 
     /**
@@ -44,7 +44,13 @@ public class Histogram {
         int n = 0;
 
         for (Type key : counter.keySet()) {
-            X[n] = (key instanceof Integer) ? (Integer) key : n;
+            Object obj = key;
+            if (obj instanceof Integer) {
+               Integer iobj = (Integer)obj;
+               X[n] = iobj.intValue();
+            } else {
+               X[n] =  n;
+            }
             Y[n] = counter.get(key);
             ++n;
         }
