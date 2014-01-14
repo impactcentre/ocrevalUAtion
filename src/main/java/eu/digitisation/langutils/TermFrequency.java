@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,6 +58,7 @@ public class TermFrequency extends Counter<String> {
 
     /**
      * Add CharFilter
+     *
      * @param file a CSV file with character equivalences
      */
     public void addFilter(File file) {
@@ -114,6 +116,50 @@ public class TermFrequency extends Counter<String> {
     }
 
     /**
+     *
+     * @param other another term frequency vector
+     * @return the cosine distance (normalised scalar product)
+     */
+    public double cosine(TermFrequency other) {
+        double norm1 = 0;
+        double norm2 = 0;
+        double scalar = 0;
+
+        for (Map.Entry<String, Integer> entry : this.entrySet()) {
+            int freq = entry.getValue();
+            norm1 += freq * freq;
+            scalar += freq * other.get(entry.getKey());
+        }
+
+        for (int freq2 : other.values()) {
+            norm2 += freq2 * freq2;
+        }
+
+        return scalar / Math.sqrt(norm1 * norm2);
+    }
+
+    /**
+     *
+     * @param other another term frequency vector
+     * @return the recall provided by this term frequency vector (rate of words
+     * in the other TF matching one in this TF)
+     */
+    public double recall(TermFrequency other) {
+        int total = 0;
+        int matched = 0;
+       
+
+        for (Map.Entry<String, Integer> entry : other.entrySet()) {
+            total += entry.getValue();
+            if (this.containsKey(entry.getKey())) {
+                ++matched;
+            }
+        }
+
+        return matched / (double)total;
+    }
+
+    /**
      * String representation
      *
      * @param order the criteria to sort words
@@ -130,6 +176,7 @@ public class TermFrequency extends Counter<String> {
 
     /**
      * Main function
+     *
      * @param args see help
      */
     public static void main(String[] args) {
