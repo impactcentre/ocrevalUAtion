@@ -117,17 +117,20 @@ public class Viewer {
             page.add(gt.getFrontiers(ComponentType.WORD), Color.BLUE, 2f);
         }
 
+
         for (TextComponent component : gt.getComponents(ComponentType.WORD)) {
             System.out.println(component);
-           // page.add(component.getFrontier(), Color.BLUE, 2f);
+            // page.add(component.getFrontier(), Color.BLUE, 2f);
         }
 
         scaled = new Bimage(page, 1.0);
         scaled.write(ofile);
         System.out.println("output=" + ofile);
 
-        if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-            Desktop.getDesktop().open(ofile);
+        if (opts != null && opts.contains("s")) {
+            if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                Desktop.getDesktop().open(ofile);
+            }
         }
 
     }
