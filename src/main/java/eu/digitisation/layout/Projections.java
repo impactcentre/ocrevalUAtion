@@ -61,8 +61,7 @@ public class Projections extends Bimage {
     private void readProperties() {
         Properties prop = new Properties();
         try {
-            InputStream in
-                    = FileType.class.getResourceAsStream("/General.properties");
+            InputStream in = FileType.class.getResourceAsStream("/General.properties");
             prop.load(in);
             String s = prop.getProperty("line.threshold");
             if (s != null && s.length() > 0) {
@@ -140,22 +139,42 @@ public class Projections extends Bimage {
      * @param alpha the line angle with respect to the horizontal (alpha>0 if
      * growing, alpha<0 if declining)
      *
-     * @return t he projection of darkness for every line y + x / tan(alpha)
+     * @return the projection of darkness for every line y' = y + x * tan(alpha)
      */
     private int[] projection(double alpha) {
-        double slope = 1 / Math.tan(alpha);
+        double slope = Math.tan(alpha);
         int shift = (int) Math.round(slope * getWidth());
         int ymin = Math.min(0, shift);
         int ymax = Math.max(getHeight(), getHeight() + shift);
+        //System.out.println(ymin+" "+ymax);
         int[] values = new int[ymax - ymin];
         for (int y = 0; y < getHeight(); ++y) {
             for (int x = 0; x < getWidth(); ++x) {
                 int rgb = getRGB(x, y);
                 int pos = (int) Math.round(y + slope * x);
-                values[pos] += darkness(rgb);
+                values[pos - ymin] += darkness(rgb);
             }
         }
         return values;
+    }
+
+    public double skew() {
+        double mu = 0;
+        double skew = 0;
+        for (double alpha = -0.05; alpha < 0.05; alpha += 0.001) {
+            double angle = 180 * alpha / Math.PI;
+            int[] pros = projection(alpha);
+            // System.out.println(pros.length);
+            double s = ArrayMath.std(pros);
+            System.out.println(String.format("%.2f", angle)
+                    + " " + (int)Math.round(getWidth() * Math.tan(alpha))  
+                    + " " + String.format("%.1f", s));
+            if (s > mu) {
+                mu = s;
+                skew = alpha;
+            }
+        }
+        return skew;
     }
 
     /**
@@ -222,11 +241,11 @@ public class Projections extends Bimage {
         File ifile = new File(ifname);
         File ofile = new File(ofname);
         Projections p = new Projections(ifile);
+        System.out.println(p.skew());
         p.slice();
         //p.addLabel("(x,y)=(100,50)", 100, 50);
         p.write(ofile);
         System.err.println("Output image in " + ofname);
         Display.draw(p, 600, 900);
     }
-
 }
