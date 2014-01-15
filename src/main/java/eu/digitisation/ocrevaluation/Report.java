@@ -26,10 +26,10 @@ import eu.digitisation.distance.TokenArrayFactory;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
+import eu.digitisation.io.UnsupportedFormatException;
 import eu.digitisation.math.Pair;
 import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
-import java.io.InvalidObjectException;
 import org.w3c.dom.Element;
 
 /**
@@ -80,11 +80,11 @@ public class Report extends DocumentBuilder {
      * @param ocrfile the OCR file
      * @param ocrencoding the OCR file encoding (optional)
      * @param filter the Unicode equivalences file (CSV format)
-     * @throws java.io.InvalidObjectException
+     * @throws eu.digitisation.io.UnsupportedFormatException
      */
     public Report(File gtfile, String gtencoding,
             File ocrfile, String ocrencoding,
-            CharFilter filter) throws InvalidObjectException {
+            CharFilter filter) throws UnsupportedFormatException {
         super("html");
         init();
 
@@ -125,10 +125,10 @@ public class Report extends DocumentBuilder {
      * @param gtencoding the ground-truth file encoding
      * @param ocrencoding the OCR file encoding
      * @param filter Unicode character filter
-     * @throws java.io.IOException
+     * @throws eu.digitisation.io.UnsupportedFormatException
      */
     public Report(Batch batch, String gtencoding, String ocrencoding,
-            CharFilter filter) throws InvalidObjectException {
+            CharFilter filter) throws UnsupportedFormatException {
         super("html");
         init();
 

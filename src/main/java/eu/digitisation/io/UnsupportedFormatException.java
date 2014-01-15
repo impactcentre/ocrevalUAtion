@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Universidad de Alicante
+ * Copyright (C) 2014 Universidad  de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,28 +15,36 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation;
+package eu.digitisation.io;
 
-import eu.digitisation.io.CharFilter;
-import eu.digitisation.io.TextContent;
-import eu.digitisation.io.UnsupportedFormatException;
 import java.io.File;
 
 /**
  *
- * @author R.C.C
+ * @author R.C.C.
  */
-public class File2Text {
+public class UnsupportedFormatException extends Exception {
 
-    public static void main(String[] args) throws UnsupportedFormatException {
-        if (args.length > 0) {
-            File file = new File(args[0]);
-            CharFilter filter = null;
-            if (args.length > 1) {
-                filter = new CharFilter(new File(args[1]));
-            }
-            TextContent content = new TextContent(file, filter);
-            System.out.println(content.toString());
+    private static final long serialVersionUID = 1L;
+    File file;
+    FileType type;
+
+    public UnsupportedFormatException(String message) {
+        super(message);
+    }
+
+    public UnsupportedFormatException(File file, FileType type) {
+        this.file = file;
+        this.type = type;
+    }
+
+    @Override
+    public String getMessage() {
+        if (file == null) {
+            return super.getMessage();
+        } else {
+            return "Unsupported file format (" + type
+                    + " format) for file " + file.getName();
         }
     }
 }

@@ -17,9 +17,10 @@
  */
 package eu.digitisation.ngram;
 
-import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
+import eu.digitisation.io.UnsupportedFormatException;
+import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.ocrevaluation.ErrorMeasure;
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +31,8 @@ import java.io.IOException;
  */
 public class Experiment {
 
-    private static void compare(File f1, File f2, File f3, CharFilter filter) throws IOException {
+    private static void compare(File f1, File f2, File f3, CharFilter filter) 
+            throws UnsupportedFormatException, IOException {
         TextContent c1 = new TextContent(f1, filter);
         TextContent c2 = new TextContent(f2, filter);
         TextContent c3 = new TextContent(f3, filter);
@@ -69,7 +71,7 @@ public class Experiment {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, UnsupportedFormatException {
         File dir1 = new File(args[0]);
         File dir2 = new File(args[1]);
         File dir3 = new File("/tmp");
