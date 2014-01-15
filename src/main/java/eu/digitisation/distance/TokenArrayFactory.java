@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,14 +35,27 @@ import java.util.logging.Logger;
  */
 public class TokenArrayFactory {
 
-    HashMap<String, Integer> codes;
+    /**
+     * The codes used to encode the text into tokens
+     */
+    public final HashMap<String, Integer> codes;  // token->code mapping
+    public final List<String> dictionary;         // code->token mapping
     boolean caseSensitive;   // Case sensitive encoding
 
+    /**
+     * Create a new TokenArrayFactory
+     *
+     * @param caseSensitive true if the TokenArrays must be case sensitive
+     */
     public TokenArrayFactory(boolean caseSensitive) {
         codes = new HashMap<String, Integer>();
+        dictionary = new ArrayList<String>();
         this.caseSensitive = caseSensitive;
     }
 
+    /**
+     * Default constructor (case sensitive factory)
+     */
     public TokenArrayFactory() {
         this(true);
     }
@@ -49,7 +63,7 @@ public class TokenArrayFactory {
     /**
      *
      * @param word a word
-     * @return The integer code assigned to this word
+     * @return the integer code assigned to this word
      */
     private Integer getCode(String word) {
         Integer code;
@@ -60,15 +74,26 @@ public class TokenArrayFactory {
         } else {
             code = codes.size();
             codes.put(key, code);
+            dictionary.add(key);
         }
         return code;
     }
 
     /**
-     * Build a TokenArray form the file content
+     *
+     * @param code an integer code
+     * @return the string or word associated with this code
+     */
+    public String getWord(int code) {
+        return dictionary.get(code);
+    }
+
+    /**
+     * Build a TokenArray from the file content
      *
      * @param file the input file
      * @param encoding the text encoding folds uppercase into lowercase.
+     * @return a TokenArray representing the file content
      */
     public TokenArray newTokenArray(File file, String encoding) throws RuntimeException {
 
@@ -84,13 +109,14 @@ public class TokenArrayFactory {
         } catch (IOException ex) {
             Logger.getLogger(TokenArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return new TokenArray(codes, array);
+        return new TokenArray(this, array);
     }
 
     /**
      * Build a TokenArray from a String
      *
      * @param s the input string
+     * @return a TokenArray representing s
      */
     public TokenArray newTokenArray(String s) {
         ArrayList<Integer> array = new ArrayList<Integer>();
@@ -106,6 +132,6 @@ public class TokenArrayFactory {
             Logger.getLogger(TokenArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return new TokenArray(codes, array);
+        return new TokenArray(this, array);
     }
 }

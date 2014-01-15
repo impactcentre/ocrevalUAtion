@@ -26,6 +26,7 @@ package eu.digitisation.math;
 public class ArrayMath {
 
     /**
+     * @param array array of int
      * @return the sum of all ints in array
      */
     public static int sum(int[] array) {
@@ -38,6 +39,8 @@ public class ArrayMath {
     }
 
     /**
+     *
+     * @param array array of double
      * @return the sum of all doubles in array
      */
     public static double sum(double[] array) {
@@ -142,6 +145,7 @@ public class ArrayMath {
     }
 
     /**
+     * @param array int array
      * @return the max value in int array
      */
     public static int max(int[] array) {
@@ -154,6 +158,20 @@ public class ArrayMath {
     }
 
     /**
+     * @param array array of doubles
+     * @return the max value in this array
+     */
+    public static double max(double[] array) {
+        double mu = array[0];
+
+        for (int n = 1; n < array.length; ++n) {
+            mu = Math.max(mu, array[n]);
+        }
+        return mu;
+    }
+
+    /**
+     * @param array int array
      * @return the min value in int array
      */
     public static int min(int[] array) {
@@ -166,6 +184,21 @@ public class ArrayMath {
     }
 
     /**
+     * @param array array of doubles
+     * @return the min value in this array
+     */
+    public static double min(double[] array) {
+        double mu = array[0];
+
+        for (int n = 1; n < array.length; ++n) {
+            mu = Math.min(mu, array[n]);
+        }
+        return mu;
+    }
+    
+    /**
+     * @param X array of int
+     * @param Y another array of int
      * @return the covariance of two variables X and Y are expected to have same
      * length
      */
@@ -177,11 +210,15 @@ public class ArrayMath {
             sum += X[n] * (double) Y[n];
         }
 
-        return sum / (double) len - average(X) * average(Y);
+        return sum / len - average(X) * average(Y);
     }
 
     /**
      * Covariance of two variables
+     *
+     * @param X array of double
+     * @param Y another array of double
+     * @return Covariance of X and Y
      */
     public static double cov(double[] X, double[] Y) {
         int len = Math.min(X.length, Y.length);

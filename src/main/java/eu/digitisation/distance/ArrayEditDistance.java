@@ -24,6 +24,7 @@ package eu.digitisation.distance;
  * text is handled as a sequence of (Integer) word codes.
  *
  * @version 2011.03.10
+ * @param <Type> typoe of content
  */
 public class ArrayEditDistance<Type> {
 
@@ -99,6 +100,7 @@ public class ArrayEditDistance<Type> {
     }
 
     /**
+     * @param <Type>
      * @param first the first array.
      * @param second the second array.
      * @return the Damerau-Levenshtein distance between first and second.
@@ -142,6 +144,7 @@ public class ArrayEditDistance<Type> {
 
     /**
      *
+     * @param <Type>
      * @param first the first array.
      * @param second the second array.
      * @param type the type of distance to be computed

@@ -17,23 +17,38 @@
  */
 package eu.digitisation;
 
-import eu.digitisation.gui.HelpButton;
 import eu.digitisation.gui.Browser;
+import eu.digitisation.gui.HelpButton;
 import eu.digitisation.gui.InputFileSelector;
 import eu.digitisation.gui.JLink;
 import eu.digitisation.gui.OutputFileSelector;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
+import eu.digitisation.io.UnsupportedFormatException;
 import eu.digitisation.ocrevaluation.Report;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.File;
+import java.io.IOException;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+/**
+ * Public interface for ocrevaluation tool
+ */
 public class MainGUI extends JFrame implements ActionListener {
 
     static final long serialVersionUID = 1L;
@@ -150,53 +165,56 @@ public class MainGUI extends JFrame implements ActionListener {
      * @param text the text to be displayed
      */
     private void warning(String text) {
-        InputFileSelector ifs = (InputFileSelector) pane.getComponent(0);
-        ifs.setForeground(Color.RED);
-        ifs.shade(Color.decode("#fffacd"));
-        ifs.setText(text);
-        ifs.repaint();
+        JOptionPane.showMessageDialog(rootPane, text, "Error",
+                JOptionPane.ERROR_MESSAGE);
+        /*
+         InputFileSelector ifs = (InputFileSelector) basic.getComponent(0);
+         ifs.setForeground(Color.RED);
+         ifs.shade(Color.decode("#fffacd"));
+         ifs.setText(text);
+         ifs.repaint();
+         */
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == trigger) {
-            if (gtinput.ready() && ocrinput.ready()) {
-                File gtfile = gtinput.getFile();
-                File ocrfile = ocrinput.getFile();
-                File eqfile = eqinput.getFile();
-                File dir = ocrfile.getParentFile();
-                String name = ocrfile.getName().replaceAll("\\.\\w+", "")
-                        + "_report.html";
-                File preselected = new File(name);
-                OutputFileSelector selector = new OutputFileSelector();
-                File outfile = selector.choose(dir, preselected);
+            try {
+                if (gtinput.ready() && ocrinput.ready()) {
+                    File gtfile = gtinput.getFile();
+                    File ocrfile = ocrinput.getFile();
+                    File eqfile = eqinput.getFile();
+                    File dir = ocrfile.getParentFile();
+                    String name = ocrfile.getName().replaceAll("\\.\\w+", "")
+                            + "_report.html";
+                    File preselected = new File(name);
+                    OutputFileSelector selector = new OutputFileSelector();
+                    File outfile = selector.choose(dir, preselected);
 
-                if (outfile != null) {
-                    Report report;
-                    try {
-                        /*
-                         Report report = new Report(files[0], null,
-                         files[1], null,
-                         files[2]);
-                         */
-                        Batch batch = new Batch(gtfile, ocrfile);
-                        CharFilter filter = (eqfile == null)
-                                ? new CharFilter()
-                                : new CharFilter(eqfile);
-                        String url = "file://" + outfile.getCanonicalPath();
-                        filter.setCompatibility(compatibility.isSelected());
-                        report = new Report(batch, null, null, filter);
-                        report.write(outfile);
-                        Browser.open(url);
-                    } catch (InvalidObjectException ex) {
-                        warning(ex.getMessage());
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    if (outfile != null) {
+                        Report report;
+                        try {
+                            Batch batch = new Batch(gtfile, ocrfile);
+                            CharFilter filter = (eqfile == null)
+                                    ? new CharFilter()
+                                    : new CharFilter(eqfile);
+                            String url = "file://" + outfile.getCanonicalPath();
+                            filter.setCompatibility(compatibility.isSelected());
+                            report = new Report(batch, null, null, filter);
+                            report.write(outfile);
+                            Browser.open(url);
+                        } catch (UnsupportedFormatException ex) {
+                            warning(ex.getMessage());
+                        } catch (IOException ex) {
+                            warning("Input/Output Error");
+                        }
                     }
+                } else {
+                    gtinput.checkout();
+                    ocrinput.checkout();
                 }
-            } else {
-                gtinput.checkout();
-                ocrinput.checkout();
+            } catch (Exception ex) {
+                System.err.println(ex.getMessage());
             }
         } else if (e.getSource() == more) {
             boolean marked = more.isSelected();
@@ -207,8 +225,8 @@ public class MainGUI extends JFrame implements ActionListener {
             }
             advanced.setVisible(marked);
         } else if (e.getSource() == help) {
-            String s =
-                    "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence";
+            String s
+                    = "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence";
             Browser.open(s);
         }
     }

@@ -35,12 +35,17 @@ public class Batch {
     File[] files1;
     File[] files2;
 
+    /**
+     * Create a a batch of file pairs
+     * @param dir1 the first directory of files
+     * @param dir2 the second directory of files
+     * @throws InvalidObjectException 
+     */
     public Batch(File dir1, File dir2) throws InvalidObjectException {
         if (dir1.isDirectory()) {
             files1 = dir1.listFiles();
             java.util.Arrays.sort(files1);
         } else {
-            String[] a = {};
             files1 = new File[1];
             files1[0] = dir1;
         }

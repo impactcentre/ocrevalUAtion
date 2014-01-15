@@ -17,6 +17,7 @@
  */
 package eu.digitisation.io;
 
+import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.xml.DocumentParser;
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,6 +25,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.HashSet;
@@ -43,7 +46,7 @@ import org.w3c.dom.NodeList;
  *
  * @author R.C.C.
  */
-public final class TextContent {
+public class TextContent {
 
     StringBuilder builder;
     File file;
@@ -55,10 +58,11 @@ public final class TextContent {
     static {
         Properties props = new Properties();
         try {
-            InputStream in =
-                    TextContent.class.getResourceAsStream("/General.properties");
+            InputStream in
+                    = TextContent.class.getResourceAsStream("/General.properties");
 
             props.load(in);
+            in.close();
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -79,8 +83,10 @@ public final class TextContent {
      * @param file the input file
      * @param filter optional CharFilter (optional; can be null)
      * @param encoding the text encoding for text files (optional; can be null)
+     * @throws eu.digitisation.io.UnsupportedFormatException
      */
-    public TextContent(File file, CharFilter filter, String encoding) {
+    public TextContent(File file, CharFilter filter, String encoding)
+            throws UnsupportedFormatException {
 
         builder = new StringBuilder();
         this.file = file;
@@ -105,7 +111,7 @@ public final class TextContent {
                     readALTOfile(file);
                     break;
                 default:
-                    throw new IOException("Unsupported file format " + type + " in file " + file.getName());
+                    throw new UnsupportedFormatException(file, type);
             }
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
@@ -118,8 +124,10 @@ public final class TextContent {
      *
      * @param file the input file
      * @param filter optional CharFilter (optional; can be null)
+     * @throws eu.digitisation.io.UnsupportedFormatException
      */
-    public TextContent(File file, CharFilter filter) {
+    public TextContent(File file, CharFilter filter)
+            throws UnsupportedFormatException {
         this(file, filter, null);
     }
 
@@ -215,13 +223,13 @@ public final class TextContent {
      *
      * @param file the input text file
      */
-    protected void readTextFile(File file) {
+    private void readTextFile(File file) {
         // guess encoding if none is provided
         if (encoding == null) {
             encoding = Encoding.detect(file);
         }
         System.err.println("Text file " + file + " encoding is " + encoding);
-        
+
         // read content
         try {
             FileInputStream fis = new FileInputStream(file);
@@ -242,9 +250,10 @@ public final class TextContent {
      *
      * @param file the input XML file
      */
-    protected void readPageFile(File file) {
+    private void readPageFile(File file) throws IOException {
         Document doc = loadXMLFile(file);
-        NodeList regions = doc.getElementsByTagName("TextRegion");
+        Document sorted = SortPageXML.isSorted(doc) ? doc : SortPageXML.sorted(doc);
+        NodeList regions = sorted.getElementsByTagName("TextRegion");
 
         for (int r = 0; r < regions.getLength(); ++r) {
             Element region = (Element) regions.item(r);
@@ -268,7 +277,7 @@ public final class TextContent {
      *
      * @param file the input XML file
      */
-    protected void readFR10File(File file) {
+    private void readFR10File(File file) {
         Document doc = loadXMLFile(file);
         NodeList pars = doc.getElementsByTagName("par");
 
@@ -315,7 +324,7 @@ public final class TextContent {
                 encoding = htmlEncoding;
                 System.err.println("HTML file " + file
                         + " encoding is " + encoding);
-            } 
+            }
 
             for (org.jsoup.nodes.Element e
                     : doc.body().select("*[class=ocr_line")) {
@@ -332,7 +341,7 @@ public final class TextContent {
      *
      * @param file the input ALTO file
      */
-    protected void readALTOfile(File file) {
+    private void readALTOfile(File file) {
         Document doc = loadXMLFile(file);
         NodeList lines = doc.getElementsByTagName("TextLine");
 

@@ -26,6 +26,7 @@ import java.io.Serializable;
  * @version 1.1
  */
 public class Int implements Comparable<Int>, Serializable {
+    private static final long serialVersionUID = 1L;
 
     int n;       // The value.
 
@@ -138,13 +139,17 @@ public class Int implements Comparable<Int>, Serializable {
 
     /**
      * Tests if two Int objects store the same value.
+     * @param other another Int object
+     * @return true if values are identical
      */
-    public boolean equals(Int N) {
-        return n == N.n;
+    public boolean equals(Int other) {
+        return this.n == other.n;
     }
 
     /**
-     * Tests if two Int objects store the same value.
+     * Tests if this Int objects stores a given value.
+     * @param n an integer value
+     * @return true if his Int objects stores n
      */
     public boolean equals(int n) {
         return this.n == n;
@@ -154,7 +159,9 @@ public class Int implements Comparable<Int>, Serializable {
      * Compares this object to the specified object. The result is true if and
      * only if the argument is not null and is an Int object that contains the
      * same int value as this object.
+     * @param object another pair
      */
+    @Override
     public boolean equals(Object object) {
         if (object == null) {
             return false;
@@ -176,7 +183,9 @@ public class Int implements Comparable<Int>, Serializable {
 
     /**
      * Compares two Int objects numerically.
+     * @param N another Int object
      */
+    @Override
     public int compareTo(Int N) {
         if (n < N.n) {
             return -1;

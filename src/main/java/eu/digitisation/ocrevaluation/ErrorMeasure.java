@@ -17,10 +17,10 @@
  */
 package eu.digitisation.ocrevaluation;
 
-import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.distance.EditDistanceType;
+import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.TokenArray;
 import eu.digitisation.distance.TokenArrayFactory;
 
@@ -101,7 +101,7 @@ public class ErrorMeasure {
      * @param a2 second TokenArray
      * @return word recall (fraction of words in a1 also in a2)
      */
-    private static double wordRecall(TokenArray a1, TokenArray a2) {
+    public static double wordRecall(TokenArray a1, TokenArray a2) {
         int l1 = a1.length();
         int l2 = a2.length();
         double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
@@ -140,8 +140,7 @@ public class ErrorMeasure {
     public static double ber(String s1, String s2) {
         BagOfWords bow1 = new BagOfWords(s1);
         BagOfWords bow2 = new BagOfWords(s2);
-        int tot1 = bow1.total();
-        int tot2 = bow2.total();
+        
         return bow1.distance(bow2) / (double) bow1.total();
     }
 }

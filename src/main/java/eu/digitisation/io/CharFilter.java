@@ -17,9 +17,15 @@
  */
 package eu.digitisation.io;
 
-import java.io.*;
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,9 +43,21 @@ public class CharFilter extends HashMap<String, String> {
     private static final long serialVersionUID = 1L;
     boolean compatibility;  // Unicode compatibility mode
 
+    /**
+     * Default constructor
+     */
     public CharFilter() {
         super();
         this.compatibility = false;
+    }
+    
+ /**
+     * Default constructor
+     * @param compatibility the Unicode compatibility mode (true means activated)
+     */
+    public CharFilter(boolean compatibility) {
+        super();
+        this.compatibility = compatibility;
     }
 
     /**
@@ -61,7 +79,7 @@ public class CharFilter extends HashMap<String, String> {
      * @param file the CSV file (or directory with CSV files) with the
      * equivalent sequences
      */
-    public final void addFilter(File file) {
+    public void addFilter(File file) {
         if (file.isDirectory()) {
             String[] filenames = file.list(new ExtensionFilter(".csv"));
             for (String filename : filenames) {
@@ -92,6 +110,7 @@ public class CharFilter extends HashMap<String, String> {
                             + " at file " + file);
                 }
             }
+            reader.close();
         } catch (IOException ex) {
             Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -118,8 +137,8 @@ public class CharFilter extends HashMap<String, String> {
         String r = compatibility
                 ? StringNormalizer.compatible(s)
                 : StringNormalizer.canonical(s);
-        for (String pattern : keySet()) {
-            r = r.replaceAll(pattern, get(pattern));
+        for (Map.Entry<String, String> entry : entrySet()) {
+            r = r.replaceAll(entry.getKey(), entry.getValue());
         }
         return r;
     }
@@ -158,6 +177,7 @@ public class CharFilter extends HashMap<String, String> {
 
             writer.write(output);
             writer.flush();
+            writer.close();
         } catch (IOException ex) {
             Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -177,6 +197,7 @@ public class CharFilter extends HashMap<String, String> {
 
             writer.write(output);
             writer.flush();
+            writer.close();
         } catch (IOException ex) {
             Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
         }

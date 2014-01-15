@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  *
- * @author rafa
+ * @author R.C.C
  */
 public class WordScannerTest {
     

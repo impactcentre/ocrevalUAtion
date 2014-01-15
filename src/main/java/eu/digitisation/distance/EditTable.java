@@ -114,7 +114,7 @@ public class EditTable {
      * Store an edit operation at cell (i, j)
      * @param i x-coordinate
      * @param j y-coordinate
-     * @return op the edit operation to be stored at cell (i, j)
+     * @param op the edit operation to be stored
      */
     public void set(int i, int j, EdOp op) {
         int position = 2 * (i * height + j);

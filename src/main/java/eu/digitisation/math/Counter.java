@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 /**
  * Counts number of different objects, a map between objects and integers which
@@ -104,8 +104,21 @@ public class Counter<Type extends Comparable<Type>>
      * @return this Counter
      */
     public Counter<Type> add(Counter<Type> counter) {
-        for (Type object : counter.keySet()) {
-            add(object, counter.get(object));
+        for (Map.Entry<Type, Integer> entry : counter.entrySet()) {
+            add(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+
+    /**
+     * Increment counts for a an array of objects
+     *
+     * @param objects the array of objects
+     * @return this Counter
+     */
+    public Counter<Type> add(Type[] objects) {
+        for (Type object : objects) {
+            inc(object);
         }
         return this;
     }
@@ -118,6 +131,19 @@ public class Counter<Type extends Comparable<Type>>
     public int value(Type object) {
         Integer val = super.get(object);
         return (val == null) ? 0 : val;
+    }
+
+    /**
+     * Maximum value stored
+     *
+     * @return max stored value or 0 if no value is stored
+     */
+    public int maxValue() {
+        if (size() > 0) {
+            return java.util.Collections.max(values());
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -145,7 +171,7 @@ public class Counter<Type extends Comparable<Type>>
         ASCENDING, DESCENDING, ASCENDING_VALUE, DESCENDING_VALUE, LEXICOGRAPHIC;
     }
 
-    class KeyComparator implements Comparator<Type> {
+    private class KeyComparator implements Comparator<Type> {
 
         @Override
         public int compare(Type first, Type second) {
@@ -171,7 +197,7 @@ public class Counter<Type extends Comparable<Type>>
             Collections.sort(list, Collections.reverseOrder(new KeyComparator()));
         } else if (order == Order.LEXICOGRAPHIC
                 && list.size() > 0
-                && list.get(0).getClass().equals(String.class)) { 
+                && list.get(0).getClass().equals(String.class)) {
             Collator collator = Collator.getInstance();
             collator.setStrength(Collator.TERTIARY);
             collator.setDecomposition(Collator.FULL_DECOMPOSITION);
@@ -179,4 +205,19 @@ public class Counter<Type extends Comparable<Type>>
         }
         return list;
     }
+
+    /**
+     * A list key-value pairs
+     *
+     * @return a string containing one key and value per line
+     */
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder();
+        for (Type key : keySet()) {
+            b.append(key).append(" ").append(get(key)).append("\n");
+        }
+        return b.toString();
+    }
+
 }

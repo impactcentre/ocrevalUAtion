@@ -48,7 +48,14 @@ public class CharStatTable extends BiCounter<Character, EdOp> {
         super();
         add(StringEditDistance.operations(s1, s2));
     }
-
+ 
+    /**
+     * Separate statistics of errors for every character
+     * form a collection of texts
+     *
+     * @param array1 an array of reference texts
+     * @param array2 an array of fuzzy texts
+     */
     public CharStatTable(String[] array1, String[] array2) {
         if (array1.length == array2.length) {
             for (int n = 0; n < array1.length; ++n) {
@@ -112,14 +119,13 @@ public class CharStatTable extends BiCounter<Character, EdOp> {
     /**
      * Prints separate statistics of errors for every character
      *
-     * @param stats a BiCounter of edit operations
      * @param recordSeparator text between data records
      * @param fieldSeparator text between data fields
      * @return text with the statistics: every character separated by a record
      * separator and every type of edit operation separated by field separator.
      *
      */
-    private StringBuilder asCSV(String recordSeparator, String fieldSeparator) {
+    public StringBuilder asCSV(String recordSeparator, String fieldSeparator) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("Character")

@@ -17,7 +17,11 @@
  */
 package eu.digitisation.io;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +39,7 @@ public class UnicodeReader {
      *
      * @param codes the sequence of one or more Unicode hex values
      * @return the string represented by these codes
+     * @throws java.io.IOException
      */
     protected static String codepointsToString(String codes) throws IOException {
         StringBuilder builder = new StringBuilder();
@@ -122,6 +127,7 @@ public class UnicodeReader {
             String[] hexcodes = toHexCodepoints(line);
             System.out.println(java.util.Arrays.toString(hexcodes));
         }
+        reader.close();
     }
 
     /**
@@ -148,6 +154,8 @@ public class UnicodeReader {
                         writer.print("<p>" + StringNormalizer.encode(line) + "</p>");
                     }
                 }
+                reader.close();
+                writer.close();
             }
         } catch (IOException ex) {
             Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);

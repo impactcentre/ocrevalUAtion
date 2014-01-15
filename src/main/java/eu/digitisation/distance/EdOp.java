@@ -23,6 +23,7 @@ package eu.digitisation.distance;
  *
  * @author R.C.C.
  */
+@SuppressWarnings("javadoc")
 public enum EdOp {
 
     KEEP, INSERT, SUBSTITUTE, DELETE

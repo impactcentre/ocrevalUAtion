@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
 public class XMLPath {
 
     final static XPath xpath;
-    
+
     static {
         xpath = XPathFactory.newInstance().newXPath();
     }
@@ -45,10 +45,9 @@ public class XMLPath {
      * @param doc the container document
      * @param expression XPath expression
      * @return the list of nodes matching the query
-     *
      */
     public static NodeList evaluate(Document doc, String expression) {
-        try {            
+        try {
             return (NodeList) xpath.evaluate(expression, doc,
                     XPathConstants.NODESET);
         } catch (XPathExpressionException ex) {
@@ -57,9 +56,16 @@ public class XMLPath {
         return null;
     }
 
+    /**
+     * Evaluate XPath expression
+     *
+     * @param file the file containing the XML document
+     * @param expression XPath expression
+     * @return the list of nodes matching the query
+     */
     public static NodeList evaluate(File file, String expression) {
-         Document doc = DocumentParser.parse(file);
-          try {            
+        Document doc = DocumentParser.parse(file);
+        try {
             return (NodeList) xpath.evaluate(expression, doc,
                     XPathConstants.NODESET);
         } catch (XPathExpressionException ex) {
@@ -67,9 +73,15 @@ public class XMLPath {
         }
         return null;
     }
-    
+
+    /**
+     * 
+     * @param element an XML element
+     * @param expression an XPath expression
+     * @return the list of descendent nodes matching the query
+     */
     public static NodeList evaluate(Element element, String expression) {
-        try {            
+        try {
             return (NodeList) xpath.evaluate(expression, element,
                     XPathConstants.NODESET);
         } catch (XPathExpressionException ex) {
@@ -78,7 +90,10 @@ public class XMLPath {
         return null;
     }
 
-    // Sample main
+    /**
+     * Sample main
+     *
+     * @param args */
     public static void main(String[] args) {
         if (args.length != 2) {
             System.err.println("usage: XMLpath filename xpath");

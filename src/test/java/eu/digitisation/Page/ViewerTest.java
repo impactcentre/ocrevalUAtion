@@ -17,41 +17,19 @@
  */
 package eu.digitisation.Page;
 
+import eu.digitisation.layout.Viewer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
- * @author rafa
+ * @author R.C.C
  */
 public class ViewerTest {
-
-    public ViewerTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of main method, of class WordScanner.

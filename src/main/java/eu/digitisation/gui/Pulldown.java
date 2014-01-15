@@ -17,7 +17,6 @@
  */
 package eu.digitisation.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -41,6 +40,14 @@ public class Pulldown extends JPanel implements ActionListener {
     JLabel title;
     String choice;
 
+    /**
+     * A pulldown menu
+     * @param forecolor foreground color
+     * @param bgcolor background color
+     * @param border border
+     * @param helpText the text shown as help
+     * @param choices the options in the menu
+     */
     public Pulldown(Color forecolor, Color bgcolor,
             Border border, String helpText, String[] choices) {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));

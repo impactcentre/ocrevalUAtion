@@ -1,0 +1,23 @@
+document = documentData?, page*
+page = block*, pageSection*, pageStream*
+block = region?, text*, row*
+
+region : rectangles
+row : for tables if blockType attribute of block is Table
+
+pageSection = pageStream*
+pageStream: Running titles and artefacts
+pageStream = pageElement*
+pageElement = text?, table?, barcode?, picture?
+
+text = par*
+par = line*
+line = formating*
+formatting = (charParams|wordRecVariants|PCDATA)*
+
+wordRecVariants =  wordRecVariant*
+wordRecVariant = variantText, charParams*
+variantText = (PCDATA, charParams)*
+charParams  = (PCDATA, charRecVariant)*
+
+charRecVariant = PCDATA

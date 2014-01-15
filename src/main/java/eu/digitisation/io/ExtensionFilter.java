@@ -19,6 +19,7 @@ package eu.digitisation.io;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Locale;
 
 /**
  *
@@ -26,15 +27,19 @@ import java.io.FilenameFilter;
  */
 public class ExtensionFilter implements FilenameFilter {
 
-    String ext;
+    private final String ext;
 
+    /**
+     * Create filter for files with the given extension
+     * @param ext the extension required
+     */
     public ExtensionFilter(String ext) {
-        this.ext = ext.toLowerCase();
+        this.ext = ext.toLowerCase(Locale.ENGLISH);
     }
 
     @Override
     public boolean accept(File dir, String name) {
-        return name.toLowerCase().endsWith(ext);
+        return name.toLowerCase(Locale.ENGLISH).endsWith(ext);
     }
 
 }

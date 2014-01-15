@@ -37,6 +37,8 @@ public class Pair<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
 
     /**
      * Class constructor
+     * @param first first component
+     * @param second second component
      */
     public Pair(T1 first, T2 second) {
         this.first = first;
@@ -45,7 +47,7 @@ public class Pair<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
 
     /**
      * Comparator
-     * @param p a pair of objects
+     * @param other another pair
      */
     @Override
     public int compareTo(Pair<T1, T2> other) {

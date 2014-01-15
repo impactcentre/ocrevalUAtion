@@ -19,8 +19,8 @@ package eu.digitisation;
 
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
+import eu.digitisation.io.UnsupportedFormatException;
 import java.io.File;
-import java.io.IOException;
 
 /**
  *
@@ -28,7 +28,7 @@ import java.io.IOException;
  */
 public class File2Text {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws UnsupportedFormatException {
         if (args.length > 0) {
             File file = new File(args[0]);
             CharFilter filter = null;

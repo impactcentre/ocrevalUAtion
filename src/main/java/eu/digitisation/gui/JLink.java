@@ -28,9 +28,13 @@ import javax.swing.JLabel;
  * @author R.C.C
  */
 public class JLink extends JLabel {
-
+    private static final long serialVersionUID = 1L;
+    
     /**
      * Basic constructor
+     * @param title the text to be shown
+     * @param url the linked URL 
+     * @param color the color of the link
      */
     public JLink(final String title, final String url, Color color) {
         super();

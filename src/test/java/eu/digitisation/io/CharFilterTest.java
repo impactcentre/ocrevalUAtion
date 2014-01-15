@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author rafa
+ * @author R.C.C
  */
 public class CharFilterTest {
 

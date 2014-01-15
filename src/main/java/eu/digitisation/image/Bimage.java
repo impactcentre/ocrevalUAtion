@@ -19,13 +19,14 @@ package eu.digitisation.image;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.IOException;
+import java.util.List;
 import javax.media.jai.JAI;
 
 /**
@@ -47,8 +48,8 @@ public class Bimage extends BufferedImage {
     public Bimage(int width, int height, int imageType) {
         super(width, height, imageType);
     }
-    
-     /**
+
+    /**
      * Basic constructor
      *
      * @param width
@@ -59,8 +60,8 @@ public class Bimage extends BufferedImage {
     }
 
     /**
-     * Create a BufferedImage from another BufferedImage. Type set to
-     * default in case of TYPE_CUSTOM (not handled by BufferedImage) .
+     * Create a BufferedImage from another BufferedImage. Type set to default in
+     * case of TYPE_CUSTOM (not handled by BufferedImage) .
      *
      * @param image the source image
      */
@@ -69,6 +70,19 @@ public class Bimage extends BufferedImage {
                 image.getType() == BufferedImage.TYPE_CUSTOM
                 ? defaultImageType
                 : image.getType());
+        Graphics2D g = createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+    }
+
+    /**
+     * Create a BufferedImage of the given type from another BufferedImage.
+     *
+     * @param image the source image
+     * @param type the type of BufferedImage
+     */
+    public Bimage(BufferedImage image, int type) {
+        super(image.getWidth(null), image.getHeight(null), type);
         Graphics2D g = createGraphics();
         g.drawImage(image, 0, 0, null);
         g.dispose();
@@ -164,9 +178,9 @@ public class Bimage extends BufferedImage {
      *
      * @param p a polygon
      * @param color the color of the polygon
-     * @param stroke the line width
+     * @param stroke the line width in pixels
      */
-    public void add(Polygon p, Color color, int stroke) {
+    public void add(Polygon p, Color color, float stroke) {
         Graphics2D g = createGraphics();
         g.setColor(color);
         g.setStroke(new BasicStroke(stroke));
@@ -175,20 +189,70 @@ public class Bimage extends BufferedImage {
     }
 
     /**
+     * Add a dashed polygonal frontier to the image
+     *
+     * @param p a polygon
+     * @param color the color of the polygon
+     * @param stroke the line width in pixels
+     * @param pattern the dash pattern, for example, {4f,2f} draws dashes with
+     * length 4-units and separated 2 units
+     */
+    public void add(Polygon p, Color color, float stroke, float[] pattern) {
+        Graphics2D g = createGraphics();
+        BasicStroke bs = new BasicStroke(stroke, BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER, 1, pattern, 0.0f);
+        g.setColor(color);
+        g.setStroke(bs);
+        g.drawPolygon(p);
+        g.dispose();
+    }
+
+    /**
      * Add polygonal frontiers to the image
      *
-     * @param ploygons an array of polygonal regions
+     * @param polygons list of polygonal regions
      * @param color he color of the polygons
-     * @param stroke the line width
+     * @param stroke the line width in pixels
      */
-    public void add(Polygon[] polygons, Color color, int stroke) {
+    public void add(List<Polygon> polygons, Color color, float stroke) {
         for (Polygon p : polygons) {
             add(p, color, stroke);
         }
     }
 
     /**
+     * Add polygonal frontiers to the image
+     *
+     * @param polygons an array of polygonal regions
+     * @param color he color of the polygons
+     * @param stroke the line width in pixels
+     * @param pattern the dash pattern, for example, {4f,2f} draws dashes
+     * 4-pixels long separated by 2 pixels
+     */
+    public void add(Polygon[] polygons, Color color, float stroke, float[] pattern) {
+        for (Polygon p : polygons) {
+            add(p, color, stroke, pattern);
+        }
+    }
+
+    /**
+     * Add polygonal frontiers to the image
+     *
+     * @param polygons an array of polygonal regions
+     * @param color he color of the polygons
+     * @param stroke the line width in pixels
+     * @param pattern the dash pattern, for example, {4f,2f} draws dashes
+     * 4-pixels long separated by 2 pixels
+     */
+    public void add(List<Polygon> polygons, Color color, float stroke, float[] pattern) {
+        for (Polygon p : polygons) {
+            add(p, color, stroke, pattern);
+        }
+    }
+
+    /**
      * Write the image to a file
+     *
      * @param file the output file
      * @throws java.io.IOException
      */

@@ -17,6 +17,7 @@
  */
 package eu.digitisation.math;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,11 +29,15 @@ import java.util.Set;
  */
 public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
         extends Counter<Pair<T1, T2>> {
+
     private static final long serialVersionUID = 1L;
 
     Counter<T1> subtotal1;
     Counter<T2> subtotal2;
 
+    /**
+     * Default constructor
+     */
     public BiCounter() {
         super();
         subtotal1 = new Counter<T1>();
@@ -47,7 +52,7 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * @return this BiCounter
      */
     public BiCounter<T1, T2> add(T1 o1, T2 o2, int value) {
-        Pair<T1, T2> pair = new Pair<T1,T2>(o1, o2);
+        Pair<T1, T2> pair = new Pair<T1, T2>(o1, o2);
         super.add(pair, value);
         subtotal1.add(o1, value);
         subtotal2.add(o2, value);
@@ -64,7 +69,7 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * @return this BiCounter
      */
     public BiCounter<T1, T2> set(T1 o1, T2 o2, int value) {
-        Pair<T1, T2> pair = new Pair<T1,T2>(o1, o2);
+        Pair<T1, T2> pair = new Pair<T1, T2>(o1, o2);
         super.set(pair, value);
         subtotal1.set(o1, value);
         subtotal2.set(o2, value);
@@ -101,8 +106,10 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
      * @return this BiCounter
      */
     public BiCounter<T1, T2> add(BiCounter<T1, T2> counter) {
-        for (Pair<T1, T2> key : counter.keySet()) {
-            add(key.first, key.second, counter.get(key));
+        for (Map.Entry<Pair<T1, T2>, Integer> entry : counter.entrySet()) {
+            Pair<T1, T2> key = entry.getKey();
+            Integer value = entry.getValue();
+            add(key.first, key.second, value);
         }
         return this;
     }
@@ -118,7 +125,7 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
     public int value(T1 o1, T2 o2) {
         if (o1 == null) {
             return subtotal2.value(o2);
-        } else if (o2 == null) {       
+        } else if (o2 == null) {
             return subtotal1.value(o1);
         } else {
             Pair<T1, T2> pair = new Pair<T1, T2>(o1, o2);
@@ -151,4 +158,4 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
         subtotal1.clear();
         subtotal2.clear();
     }
-} 
+}

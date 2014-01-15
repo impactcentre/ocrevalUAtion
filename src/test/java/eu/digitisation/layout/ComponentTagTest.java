@@ -1,7 +1,5 @@
-package eu.digitisation.Page;
-
 /*
- * Copyright (C) 2013 Universidad de Alicante
+ * Copyright (C) 2014 IMPACT Centre of Competence
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,29 +16,28 @@ package eu.digitisation.Page;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+package eu.digitisation.layout;
 
-import java.awt.Polygon;
+import eu.digitisation.io.FileType;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
- * A TextRegion in a PAGE-XML document
  *
- * @author R.C.C.
+ * @author R.C.C
  */
-public class TextRegion extends Polygon {
-    private static final long serialVersionUID = 1L;
-
-    String id;
-    String type;
-
+public class ComponentTagTest {
+    
     /**
-     * Constructor
-     *
-     * @param id region identifier
-     * @param type region type (paragraph, TOC, etc)
-     * @param poly the polygon in the image containing the region
+     * Test of shortTag method, of class ComponentTag.
      */
-    public TextRegion(String id, String type, Polygon poly) {
-        super(poly.xpoints, poly.ypoints, poly.npoints);
-        this.type = type;
+    @Test
+    public void testShortTag() {
+        System.out.println("shortTag");
+        ComponentTag tag = ComponentTag.valueOf(FileType.PAGE, "TextRegion");
+        String expResult = "TextRegion";
+        String result = ComponentTag.shortTag(tag);
+        assertEquals(expResult, result);
     }
+    
 }

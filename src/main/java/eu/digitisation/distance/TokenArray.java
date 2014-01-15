@@ -18,40 +18,43 @@
 package eu.digitisation.distance;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * A TokenArray is a tokenized string: every word is internally stored as an
  * integer. The mapping between words and integer codes is shared by all
- * TokenArrays to allow for comparison.
+ * TokenArrays created with the same TokenArrayFactory to allow for comparison.
  *
  * @version 2013.12.10
  */
 public class TokenArray {
 
-    HashMap<String, Integer> codes;
-    Integer[] tokens;
+    TokenArrayFactory factory; // the creator factory
+    Integer[] tokens;  // tehe content 
 
     /**
      * Default constructor
-     * @param codes the dictionary of codes
+     *
+     * @param interpretation the dictionary of codes
      * @param tokens the integer representation
      */
-    public TokenArray(HashMap<String, Integer> codes, Integer[] tokens) {
-        this.codes = codes;
+    TokenArray(TokenArrayFactory factory, Integer[] tokens) {
+        this.factory = factory;
         this.tokens = tokens;
     }
-    
+
     /**
      * Default constructor
-     * @param codes the dictionary of codes
+     *
+     * @param interpretation the dictionary of codes
      * @param tokens the integer representation
+     *
      */
-    public TokenArray(HashMap<String, Integer> codes, ArrayList<Integer> tokens) {
-        this.codes = codes;
+    TokenArray(TokenArrayFactory factory, ArrayList<Integer> tokens) {
+        this.factory = factory;
         this.tokens = tokens.toArray(new Integer[tokens.size()]);
+
     }
-    
+
     /**
      * The length of the token array
      *
@@ -69,16 +72,32 @@ public class TokenArray {
         return tokens;
     }
 
+    /**
+     * Value of token at a given position
+     *
+     * @param pos a position in the array
+     * @return the value associated to this position
+     */
+    public int tokenAt(int pos) {
+        return tokens[pos];
+    }
+    
+    /**
+     * 
+     * @param pos a position in the array
+     * @return the word or string at this position in the array
+     */
+    public String wordAt(int pos) {
+        Integer token = tokens[pos];
+        return factory.getWord(token);
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        String[] dictionary = new String[codes.size()];
-       
-        for (String word : codes.keySet()) {
-            dictionary[codes.get(word)] = word;
-        }
+
         for (Integer token : tokens) {
-            builder.append(dictionary[token]).append(" ");
+            builder.append(factory.getWord(token)).append(" ");
         }
 
         return builder.toString().trim();
@@ -95,6 +114,11 @@ public class TokenArray {
         return ArrayEditDistance.distance(this.tokens, other.tokens, type);
     }
 
+    /**
+     * Return the TokenArray as array
+     *
+     * @return the array of tokens
+     */
     public String array() {
         return java.util.Arrays.toString(tokens);
     }
