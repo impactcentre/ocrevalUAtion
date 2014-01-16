@@ -18,10 +18,8 @@
 package eu.digitisation.layout;
 
 import eu.digitisation.image.Bimage;
-import eu.digitisation.image.Display;
 import eu.digitisation.io.FileType;
 import eu.digitisation.math.ArrayMath;
-import eu.digitisation.math.Plot;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
@@ -78,11 +76,26 @@ public class Projections extends Bimage {
 
     /**
      * @return gray level obtained by adding R, G and B components: 0 is minimum
-     * and 765 maximum.
+     * and 765 = 3 * 255 maximum.
      */
     private int darkness(int rgb) {
         Color c = new Color(rgb);
         return 765 - c.getRed() - c.getGreen() - c.getBlue();
+    }
+
+    /**
+     * The luminance (weighted average, see
+     * http://en.wikipedia.org/wiki/Luminance_(colorimetry)) of a pixel
+     *
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return the luminance of pixel at (x,y), as defined in colorimetry
+     */
+    private int luminance(int x, int y) {
+        Color c = new Color(getRGB(x, y));
+        return (int) (0.2126 * c.getRed()
+                + 0.7152 * c.getGreen()
+                + 0.0722 * c.getBlue());
     }
 
     /**
@@ -126,8 +139,7 @@ public class Projections extends Bimage {
         for (int y = 0; y < getHeight(); ++y) {
             int sum = 0;
             for (int x = 0; x < getWidth(); ++x) {
-                int rgb = getRGB(x, y);
-                sum += darkness(rgb);
+                sum += darkness(getRGB(x, y));//(255 - luminance(x, y));
             }
             values[y] = sum;
         }
@@ -136,8 +148,7 @@ public class Projections extends Bimage {
 
     /**
      *
-     * @param alpha the line angle with respect to the horizontal (alpha>0 if
-     * growing, alpha<0 if declining)
+     * @param alpha the line angle (alpha>0 if growing, alpha<0 if declining)
      *
      * @return the projection of darkness for every line y' = y + x * tan(alpha)
      */
@@ -150,9 +161,8 @@ public class Projections extends Bimage {
         int[] values = new int[ymax - ymin];
         for (int y = 0; y < getHeight(); ++y) {
             for (int x = 0; x < getWidth(); ++x) {
-                int rgb = getRGB(x, y);
                 int pos = (int) Math.round(y + slope * x);
-                values[pos - ymin] += darkness(rgb);
+                values[pos - ymin] += (255 - luminance(x, y));
             }
         }
         return values;
@@ -161,13 +171,15 @@ public class Projections extends Bimage {
     public double skew() {
         double mu = 0;
         double skew = 0;
-        for (double alpha = -0.05; alpha < 0.05; alpha += 0.001) {
-            double angle = 180 * alpha / Math.PI;
+
+        for (double zeta = -3; zeta < 3; zeta += 0.1) {
+            double alpha = Math.PI * zeta / 180;
             int[] pros = projection(alpha);
+            //new Histogram("zeta=" + String.format("%.1f", zeta), pros).show(400,400,40);
             // System.out.println(pros.length);
             double s = ArrayMath.std(pros);
-            System.out.println(String.format("%.2f", angle)
-                    + " " + (int)Math.round(getWidth() * Math.tan(alpha))  
+            System.out.println(String.format("%.2f", zeta)
+                    + " " + Math.round(getWidth() * Math.tan(alpha))
                     + " " + String.format("%.1f", s));
             if (s > mu) {
                 mu = s;
@@ -193,7 +205,7 @@ public class Projections extends Bimage {
 
         for (int y = 0; y < getHeight(); ++y) {
             double nval = (values[y] - B) / sigma; // normalized value
-            System.out.println(y + " " + nval);
+            //System.out.println(y + " " + nval);
             Y[y] = y;
             Z[y] = nval;
             if (inner) {
@@ -209,7 +221,7 @@ public class Projections extends Bimage {
             }
         }
         addBoxes(limits);
-        new Plot(Y, Z).show(400, 400, 40);
+        //new Plot(Y, Z).show(400, 400, 40);
     }
 
     /**
@@ -246,6 +258,6 @@ public class Projections extends Bimage {
         //p.addLabel("(x,y)=(100,50)", 100, 50);
         p.write(ofile);
         System.err.println("Output image in " + ofname);
-        Display.draw(p, 600, 900);
+        //Display.draw(p, 600, 900);
     }
 }
