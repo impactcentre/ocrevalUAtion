@@ -24,37 +24,14 @@ import eu.digitisation.io.TextContent;
 import eu.digitisation.math.BiCounter;
 import java.io.File;
 import java.net.URL;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author R.C.C
  */
 public class ErrorMeasureTest {
-
-    public ErrorMeasureTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of trim method, of class ErrorMeasure.
