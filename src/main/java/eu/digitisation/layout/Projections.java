@@ -18,6 +18,7 @@
 package eu.digitisation.layout;
 
 import eu.digitisation.image.Bimage;
+import eu.digitisation.image.Display;
 import eu.digitisation.io.FileType;
 import eu.digitisation.math.ArrayMath;
 import java.awt.Color;
@@ -253,11 +254,13 @@ public class Projections extends Bimage {
         File ifile = new File(ifname);
         File ofile = new File(ofname);
         Projections p = new Projections(ifile);
-        System.out.println(p.skew());
+        double alpha = p.skew();
+        System.out.println("Image rotation="+alpha);
         p.slice();
+        Bimage rotated = p.rotate(0.1);
         //p.addLabel("(x,y)=(100,50)", 100, 50);
         p.write(ofile);
         System.err.println("Output image in " + ofname);
-        //Display.draw(p, 600, 900);
+        Display.draw(rotated, 600, 900);
     }
 }
