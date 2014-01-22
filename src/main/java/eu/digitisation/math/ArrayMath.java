@@ -195,6 +195,36 @@ public class ArrayMath {
         }
         return mu;
     }
+
+    /**
+     * @param array int array
+     * @return first position containing the max value in int array
+     */
+    public static int argmax(int[] array) {
+        int pos = 0;
+
+        for (int n = 1; n < array.length; ++n) {
+            if (array[n] > array[pos]) {
+                pos = n;
+            }
+        }
+        return pos;
+    }
+    
+  /**
+     * @param array int array
+     * @return first position containing the min value in int array
+     */
+    public static int argmin(int[] array) {
+        int pos = 0;
+
+        for (int n = 1; n < array.length; ++n) {
+            if (array[n] < array[pos]) {
+                pos = n;
+            }
+        }
+        return pos;
+    }
     
     /**
      * @param X array of int

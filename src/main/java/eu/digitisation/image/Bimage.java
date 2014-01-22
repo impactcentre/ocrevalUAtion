@@ -17,12 +17,14 @@
  */
 package eu.digitisation.image;
 
+import eu.digitisation.math.Counter;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.color.ColorSpace;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.IOException;
@@ -121,20 +123,44 @@ public class Bimage extends BufferedImage {
     }
 
     /**
+     * Finds the background (statistical mode of the rgb value for pixels in the image)
+     *
+     * @return the mode of the color for pixels in this image
+     */
+    private Color background() {
+        Counter<Integer> colors = new Counter<Integer>();
+
+        for (int x = 0; x < getWidth(); ++x) {
+            for (int y = 0; y < getHeight(); ++y) {
+                colors.inc(getRGB(x,y));
+            }
+        }
+        
+        Integer mu = colors.maxValue();
+        for (Integer n : colors.keySet()) {
+            if (colors.get(n).equals(mu)) {
+                return new Color(n);
+            }
+        }
+        return null;
+    }
+
+    /**
      * Create a scaled image
      *
-     * @param img the source image
      * @param scale the scale factor
+     * @return a scaled image
      */
     public Bimage scale(double scale) {
         int w = (int) (scale * getWidth());
         int h = (int) (scale * getHeight());
-        Bimage scaled =
-                new Bimage(w, h, getType());
-        int hints = java.awt.Image.SCALE_SMOOTH; //scaling algorithm
-        Image img = getScaledInstance(w, h, hints);
+        Bimage scaled = new Bimage(w, h, getType());
+        //int hints = java.awt.Image.SCALE_SMOOTH; //scaling algorithm
+        //Image img = getScaledInstance(w, h, hints);
         Graphics2D g = scaled.createGraphics();
-        g.drawImage(img, 0, 0, null);
+        AffineTransform at = new AffineTransform();
+        at.scale(scale, scale);
+        g.drawImage(this, at, null);
         g.dispose();
         return scaled;
     }
@@ -142,8 +168,8 @@ public class Bimage extends BufferedImage {
     /**
      * Create a rotated image
      *
-     * @param img the source image
-     * @param alpha the rotation angle
+     * @param alpha the rotation angle (anticlockwise)
+     * @return the rotated image
      */
     public Bimage rotate(double alpha) {
         double cos = Math.cos(alpha);
@@ -152,10 +178,14 @@ public class Bimage extends BufferedImage {
         int h = (int) Math.floor(getHeight() * cos + getWidth() * sin);
         Bimage rotated = new Bimage(w, h, getType());
         Graphics2D g = (Graphics2D) rotated.getGraphics();
+        g.setBackground(background());
+        g.clearRect(0, 0, w, h);
+        g.translate(getHeight() * sin, 0);
         g.rotate(alpha);
-        g.drawImage(this, 0, 0, w, h, null);
+        g.drawImage(this, 0, 0, null);
         g.dispose();
         return rotated;
+
     }
 
     /**

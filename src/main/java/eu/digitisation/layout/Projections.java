@@ -257,10 +257,10 @@ public class Projections extends Bimage {
         double alpha = p.skew();
         System.out.println("Image rotation="+alpha);
         p.slice();
-        Bimage rotated = p.rotate(0.1);
+        Bimage output = p.rotate(0.5);
         //p.addLabel("(x,y)=(100,50)", 100, 50);
-        p.write(ofile);
+        output.write(ofile);
         System.err.println("Output image in " + ofname);
-        Display.draw(rotated, 600, 900);
+        Display.draw(output, 600, 900);
     }
 }

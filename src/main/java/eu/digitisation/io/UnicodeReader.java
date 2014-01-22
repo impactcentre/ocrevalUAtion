@@ -43,7 +43,7 @@ public class UnicodeReader {
      */
     protected static String codepointsToString(String codes) throws IOException {
         StringBuilder builder = new StringBuilder();
-        String[] tokens = codes.split("\\p{Space}+");
+        String[] tokens = codes.trim().split("\\p{Space}+");
 
         for (String token : tokens) {
             if (token.length() % 4 != 0) {

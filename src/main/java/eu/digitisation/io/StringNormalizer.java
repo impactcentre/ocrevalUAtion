@@ -50,16 +50,25 @@ public class StringNormalizer {
     public static String canonical(String s) {
         return java.text.Normalizer.normalize(s, composed);
     }
-    
- /**
+
+    /**
      * @param s a string
-     * @return the canonical representation of the string 
-     * with normalized compatible characters.
+     * @return the canonical representation of the string with normalized
+     * compatible characters.
      */
     public static String compatible(String s) {
         return java.text.Normalizer.normalize(s, compatible);
     }
-    
+
+    /**
+     * @param s a string
+     * @return the string with all diacritcs removed.
+     */
+    public static String removeDiacritics(String s) {
+        return java.text.Normalizer.normalize(s, decomposed)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+    }
+
     /**
      * @param s a string
      * @return the string with characters <, >, &, " escaped
