@@ -123,7 +123,8 @@ public class Bimage extends BufferedImage {
     }
 
     /**
-     * Finds the background (statistical mode of the rgb value for pixels in the image)
+     * Finds the background (statistical mode of the rgb value for pixels in the
+     * image)
      *
      * @return the mode of the color for pixels in this image
      */
@@ -132,10 +133,11 @@ public class Bimage extends BufferedImage {
 
         for (int x = 0; x < getWidth(); ++x) {
             for (int y = 0; y < getHeight(); ++y) {
-                colors.inc(getRGB(x,y));
+                int rgb = getRGB(x, y);
+                colors.inc(rgb);
             }
         }
-        
+
         Integer mu = colors.maxValue();
         for (Integer n : colors.keySet()) {
             if (colors.get(n).equals(mu)) {
@@ -173,15 +175,19 @@ public class Bimage extends BufferedImage {
      */
     public Bimage rotate(double alpha) {
         double cos = Math.cos(alpha);
-        double sin = Math.sin(alpha);
+        double sin = Math.abs(Math.sin(alpha));
         int w = (int) Math.floor(getWidth() * cos + getHeight() * sin);
         int h = (int) Math.floor(getHeight() * cos + getWidth() * sin);
         Bimage rotated = new Bimage(w, h, getType());
         Graphics2D g = (Graphics2D) rotated.getGraphics();
         g.setBackground(background());
         g.clearRect(0, 0, w, h);
-        g.translate(getHeight() * sin, 0);
-        g.rotate(alpha);
+        if (alpha < 0) {
+            g.translate(getHeight() * sin, 0);
+        } else {
+            g.translate(0, getWidth() * sin);
+        }
+        g.rotate(-alpha);
         g.drawImage(this, 0, 0, null);
         g.dispose();
         return rotated;
