@@ -97,7 +97,7 @@ public class TermFrequency extends Counter<String> {
             while ((word = scanner.nextWord()) != null) {
                 String filtered = (filter == null)
                         ? word : filter.translate(word);
-                inc(StringNormalizer.canonical(filtered));
+                inc(StringNormalizer.composed(filtered));
             }
         } catch (IOException ex) {
             Logger.getLogger(TermFrequency.class.getName()).log(Level.SEVERE, null, ex);

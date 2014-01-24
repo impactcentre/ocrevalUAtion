@@ -146,7 +146,7 @@ public class CharMap {
     }
 
     /**
-     * Normalize a character
+     * Normalize characters in a string
      *
      * @param s a string of characters
      * @return the normal form of s for string comparison
@@ -159,12 +159,10 @@ public class CharMap {
         }
         if (!options.get(Option.DIACRITICS_AWARE)) {
             result = StringNormalizer.removeDiacritics(result);
-            System.out.println("r=" + result);
         }
         if (!options.get(Option.PUNCTUATION_AWARE)) {
             // keep only letters, diacritic marks an numbers
             result = result.replaceAll("[^\\p{L}\\p{M}\\p{N}]", " ");
-            System.out.println("r=" + result);
         }
         if (!options.get(Option.UNICODE_COMPATIBILITY)) {
             result = StringNormalizer.compatible(result);

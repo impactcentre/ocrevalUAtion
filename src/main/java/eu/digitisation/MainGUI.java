@@ -30,7 +30,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,7 +58,7 @@ public class MainGUI extends JFrame implements ActionListener {
     static final int height = 250;
     Container pane;            // main panel
     JPanel basic;              // basic inputs
-    JPanel info;              // link to info
+    JPanel info;               // link to info
     JPanel advanced;           // more options panel
     JPanel actions;            // actions panel
     InputFileSelector gtinput; // GT file
@@ -71,9 +70,8 @@ public class MainGUI extends JFrame implements ActionListener {
     JCheckBox more;            // Checkbox for more options
 
     public MainGUI() {
-
+        // Main panel
         pane = getContentPane();
-        trigger = new JButton("Generate report");
 
         // JFrame attributes
         setTitle("ocrevalUAtion");
@@ -92,12 +90,14 @@ public class MainGUI extends JFrame implements ActionListener {
                 border, "ocr file");
         basic.add(gtinput);
         basic.add(ocrinput);
+
         // Link to on-line help
         info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.X_AXIS));
         info.add(new JLink("Info:",
                 "https://sites.google.com/site/textdigitisation/ocrevaluation",
                 forecolor));
+
         // Advanced options subpanel
         advanced = new JPanel();
         advanced.setLayout(new GridLayout(0, 1));
@@ -111,24 +111,15 @@ public class MainGUI extends JFrame implements ActionListener {
         compatibility.setForeground(forecolor);
         compatibility.setBackground(bgcolor);
         compatibility.setAlignmentX(Component.LEFT_ALIGNMENT);
-        help = new HelpButton();
-        help.setPreferredSize(new Dimension(10, 10));
-        help.setForeground(forecolor);
-        help.setBackground(bgcolor);
-        help.addActionListener(this);
+        help = new HelpButton(null,
+                "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence", forecolor, bgcolor);
         JPanel cpanel = new JPanel();
         cpanel.setLayout(new BoxLayout(cpanel, BoxLayout.X_AXIS));
         cpanel.add(compatibility);
         cpanel.add(help);
 
-        /*
-         String[] options = {"unknown", "utf8", "iso8859-1", "windows-1252"};
-         Pulldown encoding = new Pulldown(forecolor, bgcolor, null,
-         "Text encoding:", options);
-         */
         advanced.add(eqinput);
         advanced.add(cpanel);
-        //advanced.add(encoding);
         advanced.setVisible(false);
 
         // Actions subpanel
@@ -143,7 +134,8 @@ public class MainGUI extends JFrame implements ActionListener {
         actions.add(more, BorderLayout.WEST);
         // Space between checkbox and button
         actions.add(Box.createHorizontalGlue());
-        // Button with inverted colors
+        // Button with inverted colors 
+        trigger = new JButton("Generate report");
         trigger.setForeground(bgcolor);
         trigger.setBackground(forecolor);
         trigger.addActionListener(this);
@@ -224,10 +216,6 @@ public class MainGUI extends JFrame implements ActionListener {
                 setSize(width, height);
             }
             advanced.setVisible(marked);
-        } else if (e.getSource() == help) {
-            String s
-                    = "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence";
-            Browser.open(s);
         }
     }
 

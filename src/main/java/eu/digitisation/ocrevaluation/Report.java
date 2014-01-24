@@ -177,4 +177,13 @@ public class Report extends DocumentBuilder {
         addTextElement(body, "h2", "Error rate per character and type");
         addElement(body, stats.asTable());
     }
+    
+     public static void main(String[] args) {
+        if (args.length != 2) {
+            System.err.println("Usage: aligner file1 file2");
+        } else {
+            Element alitab = Aligner.alignmentMap("", "", args[0], args[1], null);
+        }
+    }
+    
 }

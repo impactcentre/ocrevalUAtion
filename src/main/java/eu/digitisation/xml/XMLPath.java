@@ -75,7 +75,7 @@ public class XMLPath {
     }
 
     /**
-     * 
+     *
      * @param element an XML element
      * @param expression an XPath expression
      * @return the list of descendent nodes matching the query
@@ -91,9 +91,27 @@ public class XMLPath {
     }
 
     /**
+     * Test if an element matches the given expression
+     *
+     * @param element an XML element
+     * @param expression an XPath expression with respect to the element it self
+     * (e.g., an element tag)
+     * @return true if the given element matches the query
+     */
+    public static boolean matches(Element element, String expression) {
+        try {
+            return (Boolean) xpath.evaluate("self::" + expression, element, XPathConstants.BOOLEAN);
+        } catch (XPathExpressionException ex) {
+            Logger.getLogger(XMLPath.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    /**
      * Sample main
      *
-     * @param args */
+     * @param args
+     */
     public static void main(String[] args) {
         if (args.length != 2) {
             System.err.println("usage: XMLpath filename xpath");

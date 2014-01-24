@@ -42,7 +42,7 @@ import javax.media.jai.JAI;
  */
 public class Projections extends Bimage {
 
-    double threshold; // the threshold applied for ine segmentation
+    double threshold; // the threshold applied for line segmentation
 
     /**
      *
@@ -57,10 +57,15 @@ public class Projections extends Bimage {
         readProperties();
     }
 
+    public Projections(Bimage bim) {
+        super(bim);
+        readProperties();
+    }
+
     private void readProperties() {
         Properties prop = new Properties();
         try {
-            InputStream in = FileType.class.getResourceAsStream("/General.properties");
+            InputStream in = FileType.class.getResourceAsStream("/Default.properties");
             prop.load(in);
             String s = prop.getProperty("line.threshold");
             if (s != null && s.length() > 0) {
@@ -253,12 +258,13 @@ public class Projections extends Bimage {
         String ofname = args[1];
         File ifile = new File(ifname);
         File ofile = new File(ofname);
-        Projections p = new Projections(ifile);
-        double alpha = p.skew();
-        System.out.println("Image rotation="+alpha);
-        p.slice();
-        Bimage output = p.rotate(0.5);
-        //p.addLabel("(x,y)=(100,50)", 100, 50);
+        Projections input = new Projections(ifile);
+        //Bimage input = new Bimage(ifile);
+
+        double alpha = input.skew();
+        System.out.println("Image rotation=" + alpha);
+        Projections output = new Projections(input.rotate(-alpha));
+        output.slice();
         output.write(ofile);
         System.err.println("Output image in " + ofname);
         Display.draw(output, 600, 900);

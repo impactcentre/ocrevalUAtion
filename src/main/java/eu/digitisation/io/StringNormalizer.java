@@ -47,7 +47,7 @@ public class StringNormalizer {
      * @param s a string
      * @return the canonical representation of the string.
      */
-    public static String canonical(String s) {
+    public static String composed(String s) {
         return java.text.Normalizer.normalize(s, composed);
     }
 
@@ -62,11 +62,29 @@ public class StringNormalizer {
 
     /**
      * @param s a string
-     * @return the string with all diacritcs removed.
+     * @return the string with all diacritics removed.
      */
     public static String removeDiacritics(String s) {
         return java.text.Normalizer.normalize(s, decomposed)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+    }
+
+    /**
+     * @param s a string
+     * @return the string with all punctuation symbols removed.
+     */
+    public static String removePunctuation(String s) {
+        return s.replaceAll("\\p{P}+", "");
+    }
+
+    /**
+     * Remove everything except for letters (with diacritics), numbers and spaces
+     *
+     * @param s a string
+     * @return the string with only letters, numbers, spaces and diacritics.
+     */
+    public static String strip(String s) {
+        return s.replaceAll("[^\\p{L}\\p{M}\\p{N}\\p{Space}]", "");
     }
 
     /**

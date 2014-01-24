@@ -19,16 +19,14 @@ package eu.digitisation.io;
 
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.xml.DocumentParser;
+import eu.digitisation.xml.XPathFilter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Document;
@@ -37,59 +35,52 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Creates a StringBuilder with the (normalized) textual content in a file.
- * Normalization collapses white-spaces and prefers composed form (see
- * java.text.Normalizer.Form) For PAGE XML files it selects only those elements
- * listed in a properties file.
+ * Extracts the text content in a file. Normalization collapses white-spaces and
+ * prefers composed form (see java.text.Normalizer.Form). For XML files,
+ * filtering options can be provided
  *
  * @author R.C.C.
  */
-public class TextContent {
+public class Text {
 
     StringBuilder builder;
-    File file;
-    CharFilter filter;
-    String encoding;
     static final int maxlen;
-    static final Set<String> types;
+
+    String encoding;
+    XPathFilter filter;
 
     static {
         Properties props = new Properties();
         try {
             InputStream in
-                    = TextContent.class.getResourceAsStream("/Default.properties");
+                    = Text.class.getResourceAsStream("/Default.properties");
 
             props.load(in);
             in.close();
         } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
-        types = new HashSet<String>();
 
-        String typesProp = props.getProperty("PAGE.TextRegionTypes");
-        String separator = ",\\p{Space}+";
-        if (typesProp != null) {
-            types.addAll(Arrays.asList(typesProp.trim().split(separator)));
-        }
     }
 
     /**
      * Create TextContent from file
      *
      * @param file the input file
-     * @param filter optional CharFilter (optional; can be null)
      * @param encoding the text encoding for text files (optional; can be null)
+     * @param filter XPAthFilter for XML files (extracts textual content from
+     * selected elements)
      * @throws eu.digitisation.io.UnsupportedFormatException
      */
-    public TextContent(File file, CharFilter filter, String encoding)
+    public Text(File file, String encoding, XPathFilter filter)
             throws UnsupportedFormatException {
 
         builder = new StringBuilder();
-        this.file = file;
         this.encoding = encoding;
         this.filter = filter;
+
         try {
             FileType type = FileType.valueOf(file);
             switch (type) {
@@ -106,40 +97,37 @@ public class TextContent {
                     readHOCRFile(file);
                     break;
                 case ALTO:
-                    readALTOfile(file);
+                    readALTOFile(file);
                     break;
                 default:
                     throw new UnsupportedFormatException(file, type);
             }
         } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
         }
         builder.trimToSize();
     }
 
     /**
-     * Create TextContent from file
+     * Create Text from file
      *
      * @param file the input file
-     * @param filter optional CharFilter (optional; can be null)
      * @throws eu.digitisation.io.UnsupportedFormatException
      */
-    public TextContent(File file, CharFilter filter)
+    public Text(File file)
             throws UnsupportedFormatException {
-        this(file, filter, null);
+        this(file, null, null);
     }
 
     /**
      * Constructor only for debugging purposes
      *
      * @param s
-     * @param filter
      */
-    public TextContent(String s, CharFilter filter) {
+    public Text(String s) {
         builder = new StringBuilder();
         encoding = "utf8";
-        this.filter = filter;
-        add(s, true);
+        add(s);
     }
 
     /**
@@ -162,18 +150,15 @@ public class TextContent {
     }
 
     /**
-     * Add content after normalization and filtering
+     * Add content after normalization of whitespace and composition of diacritics
      *
      * @param s input text
-     * @param pad true if space must be inserted between consecutive additions
      */
-    private void add(String s, boolean pad) {
-        String filtered = (filter == null)
-                ? s : filter.translate(s);
-        String reduced = StringNormalizer.reduceWS(filtered);
+    private void add(String s) {
+        String reduced = StringNormalizer.reduceWS(s);
         if (reduced.length() > 0) {
             String canonical = StringNormalizer.composed(reduced);
-            if (pad && builder.length() > 0) {
+            if (builder.length() > 0) {
                 builder.append(' ');
             }
             builder.append(canonical);
@@ -182,21 +167,6 @@ public class TextContent {
                         + maxlen + " characters");
             }
         }
-    }
-
-    /**
-     * Get the region type: if the attribute is not available then return
-     * unknown type
-     *
-     * @param region
-     * @return the region type as specified by the type attribute
-     */
-    private String getTextRegionType(Element region) {
-        String type = region.getAttribute("type");
-        if (type.isEmpty()) {
-            type = "unknown";
-        }
-        return type;
     }
 
     private Document loadXMLFile(File file) {
@@ -235,38 +205,73 @@ public class TextContent {
             BufferedReader reader = new BufferedReader(isr);
 
             while (reader.ready()) {
-                add(reader.readLine(), true);
+                add(reader.readLine().trim());
             }
         } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
-     * Reads textual content and collapse whitespace: contiguous spaces are
-     * considered a single one
+     * Reads textual content in a PAGE element of type TextRegion
+     *
+     * @param region the TextRegion element
+     */
+    private void readPageTextRegion(Element region) throws IOException {
+        NodeList nodes = region.getChildNodes();
+        for (int n = 0; n < nodes.getLength(); ++n) {
+            Node node = nodes.item(n);
+            if (node.getNodeName().equals("TextEquiv")) {
+                String text = node.getTextContent();
+                add(text);
+            }
+        }
+    }
+
+    /**
+     * Reads textual content in PAGE XML document. By default selects all
+     * TextREgion elements
      *
      * @param file the input XML file
      */
     private void readPageFile(File file) throws IOException {
         Document doc = loadXMLFile(file);
         Document sorted = SortPageXML.isSorted(doc) ? doc : SortPageXML.sorted(doc);
-        NodeList regions = sorted.getElementsByTagName("TextRegion");
+        NodeList regions = (filter == null)
+                ? sorted.getElementsByTagName("TextRegion")
+                : filter.selectElements(sorted);
 
         for (int r = 0; r < regions.getLength(); ++r) {
             Element region = (Element) regions.item(r);
-            String type = getTextRegionType(region);
-            if (type == null || types.isEmpty()
-                    || types.contains(type)) {
-                NodeList nodes = region.getChildNodes();
-                for (int n = 0; n < nodes.getLength(); ++n) {
-                    Node node = nodes.item(n);
-                    if (node.getNodeName().equals("TextEquiv")) {
-                        String text = node.getTextContent();
-                        add(text, true);
+            readPageTextRegion(region);
+        }
+    }
+
+    /**
+     * Reads textual content from FR10 XML paragraph
+     *
+     * @param oar the paragraph (par) element
+     */
+    private void readFR10Par(Element par) {
+        NodeList lines = par.getElementsByTagName("line");
+        for (int nline = 0; nline < lines.getLength(); ++nline) {
+            Element line = (Element) lines.item(nline);
+            StringBuilder text = new StringBuilder();
+            NodeList formattings = line.getElementsByTagName("formatting");
+            for (int nform = 0; nform < formattings.getLength(); ++nform) {
+                Element formatting = (Element) formattings.item(nform);
+                NodeList charParams = formatting.getElementsByTagName("charParams");
+                for (int nchar = 0; nchar < charParams.getLength(); ++nchar) {
+                    Element charParam = (Element) charParams.item(nchar);
+                    String content = charParam.getTextContent();
+                    if (content.length() > 0) {
+                        text.append(content);
+                    } else {
+                        text.append(' ');
                     }
                 }
             }
+            add(text.toString());
         }
     }
 
@@ -277,30 +282,14 @@ public class TextContent {
      */
     private void readFR10File(File file) {
         Document doc = loadXMLFile(file);
-        NodeList pars = doc.getElementsByTagName("par");
+
+        NodeList pars = (filter == null)
+                ? doc.getElementsByTagName("par")
+                : filter.selectElements(doc);
 
         for (int npar = 0; npar < pars.getLength(); ++npar) {
             Element par = (Element) pars.item(npar);
-            NodeList lines = par.getElementsByTagName("line");
-            for (int nline = 0; nline < lines.getLength(); ++nline) {
-                Element line = (Element) lines.item(nline);
-                StringBuilder text = new StringBuilder();
-                NodeList formattings = line.getElementsByTagName("formatting");
-                for (int nform = 0; nform < formattings.getLength(); ++nform) {
-                    Element formatting = (Element) formattings.item(nform);
-                    NodeList charParams = formatting.getElementsByTagName("charParams");
-                    for (int nchar = 0; nchar < charParams.getLength(); ++nchar) {
-                        Element charParam = (Element) charParams.item(nchar);
-                        String content = charParam.getTextContent();
-                        if (content.length() > 0) {
-                            text.append(content);
-                        } else {
-                            text.append(' ');
-                        }
-                    }
-                }
-                add(text.toString(), true);
-            }
+            readFR10Par(par);
         }
     }
 
@@ -327,11 +316,29 @@ public class TextContent {
             for (org.jsoup.nodes.Element e
                     : doc.body().select("*[class=ocr_line")) {
                 String text = e.text();
-                add(text, true);
+                add(text);
+
             }
         } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Text.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * Reads textual content in ALTO XML element of type TextLine
+     *
+     * @param file the input ALTO file
+     */
+    private void readALTOTextLine(Element line) {
+        NodeList strings = line.getElementsByTagName("String");
+        
+        for (int nstring = 0; nstring < strings.getLength(); ++nstring) {
+            Element string = (Element) strings.item(nstring);
+            String text = string.getAttribute("CONTENT");
+            add(text);
+        }
+
     }
 
     /**
@@ -339,17 +346,37 @@ public class TextContent {
      *
      * @param file the input ALTO file
      */
-    private void readALTOfile(File file) {
+    private void readALTOFile(File file) {
         Document doc = loadXMLFile(file);
         NodeList lines = doc.getElementsByTagName("TextLine");
 
         for (int nline = 0; nline < lines.getLength(); ++nline) {
             Element line = (Element) lines.item(nline);
-            NodeList strings = line.getElementsByTagName("String");
-            for (int nstring = 0; nstring < strings.getLength(); ++nstring) {
-                Element string = (Element) strings.item(nstring);
-                String text = string.getAttribute("CONTENT");
-                add(text, true);
+            readALTOTextLine(line);
+        }
+    }
+
+    /**
+     * Extract text content (under the filtered elements)
+     *
+     * @throws java.io.IOException
+     */
+    public static void main(String[] args) throws IOException {
+        if (args.length < 1 | args[0].equals("-h")) {
+            System.err.println("usage: Text xmlfile [xpathfile]");
+        } else {
+            try {
+                File xmlfile = new File(args[0]);
+                XPathFilter filter = (args.length < 2)
+                        ? null
+                        : new XPathFilter(new File(args[1]));
+
+                Text text = new Text(xmlfile, null, filter);
+                System.out.println(text);
+
+            } catch (UnsupportedFormatException ex) {
+                Logger.getLogger(Text.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

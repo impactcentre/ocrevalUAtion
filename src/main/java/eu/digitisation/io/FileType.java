@@ -41,12 +41,18 @@ public enum FileType {
     String schemaLocation;  // schema URL
 
     static {
-        Properties props = new Properties();
+        Properties defaultProps = new Properties();
+        Properties userProps = new Properties();
         try {
             InputStream in = 
-                    FileType.class.getResourceAsStream("/General.properties");         
-            props.load(in);
+                    FileType.class.getResourceAsStream("/Default.properties");         
+            defaultProps.load(in);
             in.close();
+            in = FileType.class.getResourceAsStream("/User.properties");  
+            if (in != null) {
+             System.err.println("Read user properties file");
+                userProps.load(in);
+            }
         } catch (IOException ex) {
             Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -54,13 +60,13 @@ public enum FileType {
         TEXT.schemaLocation = null; // no schema associated to this type
         PAGE.tag = "PcGts";
         PAGE.schemaLocation
-                = StringNormalizer.reduceWS(props.getProperty("schemaLocation.PAGE"));
+                = StringNormalizer.reduceWS(defaultProps.getProperty("schemaLocation.PAGE"));
         FR10.tag = "document";
         FR10.schemaLocation
-                = StringNormalizer.reduceWS(props.getProperty("schemaLocation.FR10"));
+                = StringNormalizer.reduceWS(defaultProps.getProperty("schemaLocation.FR10"));
         ALTO.tag = "alto";
         ALTO.schemaLocation
-                = StringNormalizer.reduceWS(props.getProperty("schemaLocation.ALTO"));
+                = StringNormalizer.reduceWS(defaultProps.getProperty("schemaLocation.ALTO"));
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
     }

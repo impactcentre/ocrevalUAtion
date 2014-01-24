@@ -17,10 +17,13 @@
  */
 package eu.digitisation.distance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A compact structure storing the table of edit operations obtained during the
  * computation of the edit distance between two sequences a1a2...am and
- * b1b2...bn: each cell (i,j)in the table contains the last edit operation in
+ * b1b2...bn: each cell (i,j) in the table contains the last edit operation in
  * the optimal sequence of editions transforming prefix a1a2...ai into prefix
  * b1b2...bj. This table supports the retrieval of the full optimal edit
  * sequence (equivalent to a shortest path problem).
@@ -87,7 +90,7 @@ public class EditTable {
 
     /**
      *
-     * @param i x-ccordinate
+     * @param i x-coordinate
      * @param j y-coordinate
      * @return the edit operation stored at cell (i,j)
      */
@@ -112,6 +115,7 @@ public class EditTable {
 
     /**
      * Store an edit operation at cell (i, j)
+     *
      * @param i x-coordinate
      * @param j y-coordinate
      * @param op the edit operation to be stored
@@ -147,7 +151,7 @@ public class EditTable {
     }
 
     /**
-     * 
+     *
      * @return a string representation of the EditTable
      */
     @Override
@@ -176,5 +180,36 @@ public class EditTable {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Build the sequence of edit operations in the path from a the cell at
+     * (row, column) to the cell at (0,0)
+     *
+     * @param row the starting row
+     * @param column the starting column
+     * @return the sequence of edit operations stored in this table which lead from 
+     * the cell at (row, column) to the cell at (0,0)
+     */
+    public List<EdOp> path(int row, int column) {
+        List<EdOp> operations = new ArrayList<EdOp>(Math.max(row, column));
+        int i = row;
+        int j = column;
+        while (i > 0 || j > 0) {
+            EdOp e = get(i, j);
+            switch (e) {
+                case INSERT:
+                    --i;
+                    break;
+                case DELETE:
+                    --j;
+                    break;
+                default:
+                    --i;
+                    --j;
+            }
+            operations.add(e);
+        }
+        return (i == 0 && j == 0) ? operations : null;
     }
 }

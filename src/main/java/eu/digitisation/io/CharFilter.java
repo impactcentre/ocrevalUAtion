@@ -136,7 +136,7 @@ public class CharFilter extends HashMap<String, String> {
     public String translate(String s) {
         String r = compatibility
                 ? StringNormalizer.compatible(s)
-                : StringNormalizer.canonical(s);
+                : StringNormalizer.composed(s);
         for (Map.Entry<String, String> entry : entrySet()) {
             r = r.replaceAll(entry.getKey(), entry.getValue());
         }

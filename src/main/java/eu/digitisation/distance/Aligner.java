@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.io.CharMap;
 import eu.digitisation.xml.DocumentBuilder;
 import org.w3c.dom.Element;
 
@@ -112,11 +113,14 @@ public class Aligner {
      * @param header2 second text title for table head
      * @param first the first text
      * @param second the second text
+     * @param map a CharMap for character equivalences
      * @return a table in XHTML format showing the alignments
      */
     public static Element alignmentMap(String header1, String header2,
-            String first, String second) {
-        EditTable B = align(first, second);
+            String first, String second, CharMap map) {
+        EditTable B = (map == null)
+                ? align(first, second)
+                : align(map.normalForm(first), map.normalForm(second));
         DocumentBuilder builder = new DocumentBuilder("table");
         Element table = builder.root();
         Element row;
@@ -235,5 +239,20 @@ public class Aligner {
                     .setAttribute("style", uStyle);
         }
         return builder.document().getDocumentElement();
+    }
+
+    /**
+     * Shows text alignment based on a pseudo-Levenshtein distance where
+     * white-spaces are not allowed to be replaced with text or vice-versa
+     *
+     * @param header1 first text title for table head
+     * @param header2 second text title for table head
+     * @param first the first text
+     * @param second the second text
+     * @return a table in XHTML format showing the alignments
+     */
+    public static Element alignmentMap(String header1, String header2,
+            String first, String second) {
+        return alignmentMap(header1, header2, first, second, null);
     }
 }
