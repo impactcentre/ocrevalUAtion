@@ -19,6 +19,8 @@ package eu.digitisation.io;
 
 import eu.digitisation.xml.DocumentParser;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
@@ -41,17 +43,24 @@ public enum FileType {
     String schemaLocation;  // schema URL
 
     static {
-        Properties defaultProps = new Properties();
-        Properties userProps = new Properties();
+        Properties props = new Properties();
+        InputStream in;
         try {
-            InputStream in = 
-                    FileType.class.getResourceAsStream("/Default.properties");         
-            defaultProps.load(in);
-            in.close();
-            in = FileType.class.getResourceAsStream("/User.properties");  
+            // Read defaults
+            Properties defaults = new Properties();
+            in = FileType.class.getResourceAsStream("/default.properties");
             if (in != null) {
-             System.err.println("Read user properties file");
-                userProps.load(in);
+                defaults.load(in);
+                in.close();
+                props = new Properties(defaults);
+            }
+            // Add user properties (may overwrite defaults)
+            try {
+            in = new FileInputStream(new File("user.properties"));
+                props.load(in);
+                in.close();
+            } catch(FileNotFoundException ex) {
+                // continue
             }
         } catch (IOException ex) {
             Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
@@ -59,14 +68,11 @@ public enum FileType {
         TEXT.tag = null;  // no tag for this type 
         TEXT.schemaLocation = null; // no schema associated to this type
         PAGE.tag = "PcGts";
-        PAGE.schemaLocation
-                = StringNormalizer.reduceWS(defaultProps.getProperty("schemaLocation.PAGE"));
+        PAGE.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.PAGE"));
         FR10.tag = "document";
-        FR10.schemaLocation
-                = StringNormalizer.reduceWS(defaultProps.getProperty("schemaLocation.FR10"));
+        FR10.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.FR10"));
         ALTO.tag = "alto";
-        ALTO.schemaLocation
-                = StringNormalizer.reduceWS(defaultProps.getProperty("schemaLocation.ALTO"));
+        ALTO.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.ALTO"));
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
     }
@@ -120,12 +126,19 @@ public enum FileType {
                 org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
                 if (!doc.head().select("meta[name=ocr-system").isEmpty()) {
                     return HOCR;
+
+
                 }
             } catch (IOException ex) {
-                Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FileType.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
         return UNKNOWN;
     }
 
+    public static void main(String[] args) {
+        File file = new File(args[0]);
+        System.out.println(FileType.valueOf(file));
+    }
 }
