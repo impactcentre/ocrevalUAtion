@@ -65,7 +65,7 @@ public class Projections extends Bimage {
     private void readProperties() {
         Properties prop = new Properties();
         try {
-            InputStream in = FileType.class.getResourceAsStream("/Default.properties");
+            InputStream in = FileType.class.getResourceAsStream("/default.properties");
             prop.load(in);
             String s = prop.getProperty("line.threshold");
             if (s != null && s.length() > 0) {

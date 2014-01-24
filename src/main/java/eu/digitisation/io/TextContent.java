@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -54,17 +53,7 @@ public class TextContent {
     static final Set<String> types;
 
     static {
-        Properties props = new Properties();
-        try {
-            InputStream in
-                    = TextContent.class.getResourceAsStream("/Default.properties");
-
-            props.load(in);
-            in.close();
-        } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        Properties props = StartUp.properties();
         maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
         types = new HashSet<String>();
 
@@ -81,10 +70,10 @@ public class TextContent {
      * @param file the input file
      * @param filter optional CharFilter (optional; can be null)
      * @param encoding the text encoding for text files (optional; can be null)
-     * @throws eu.digitisation.io.UnsupportedFormatException
+     * @throws eu.digitisation.io.WarningException
      */
     public TextContent(File file, CharFilter filter, String encoding)
-            throws UnsupportedFormatException {
+            throws WarningException {
 
         builder = new StringBuilder();
         this.file = file;
@@ -109,7 +98,9 @@ public class TextContent {
                     readALTOfile(file);
                     break;
                 default:
-                    throw new UnsupportedFormatException(file, type);
+                    throw new WarningException("Unsupported file format ("
+                            + type + " format) for file "
+                            + file.getName());
             }
         } catch (IOException ex) {
             Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
@@ -122,10 +113,10 @@ public class TextContent {
      *
      * @param file the input file
      * @param filter optional CharFilter (optional; can be null)
-     * @throws eu.digitisation.io.UnsupportedFormatException
+     * @throws eu.digitisation.io.WarningException
      */
     public TextContent(File file, CharFilter filter)
-            throws UnsupportedFormatException {
+            throws WarningException {
         this(file, filter, null);
     }
 
@@ -134,8 +125,9 @@ public class TextContent {
      *
      * @param s
      * @param filter
+     * @throws eu.digitisation.io.WarningException
      */
-    public TextContent(String s, CharFilter filter) {
+    public TextContent(String s, CharFilter filter) throws WarningException {
         builder = new StringBuilder();
         encoding = "utf8";
         this.filter = filter;
@@ -167,7 +159,7 @@ public class TextContent {
      * @param s input text
      * @param pad true if space must be inserted between consecutive additions
      */
-    private void add(String s, boolean pad) {
+    private void add(String s, boolean pad) throws WarningException {
         String filtered = (filter == null)
                 ? s : filter.translate(s);
         String reduced = StringNormalizer.reduceWS(filtered);
@@ -178,7 +170,7 @@ public class TextContent {
             }
             builder.append(canonical);
             if (builder.length() > maxlen) {
-                throw new RuntimeException("Text length limited to "
+                throw new WarningException("Text length limited to "
                         + maxlen + " characters");
             }
         }
@@ -221,7 +213,7 @@ public class TextContent {
      *
      * @param file the input text file
      */
-    private void readTextFile(File file) {
+    private void readTextFile(File file) throws WarningException {
         // guess encoding if none is provided
         if (encoding == null) {
             encoding = Encoding.detect(file);
@@ -248,7 +240,7 @@ public class TextContent {
      *
      * @param file the input XML file
      */
-    private void readPageFile(File file) throws IOException {
+    private void readPageFile(File file) throws IOException, WarningException {
         Document doc = loadXMLFile(file);
         Document sorted = SortPageXML.isSorted(doc) ? doc : SortPageXML.sorted(doc);
         NodeList regions = sorted.getElementsByTagName("TextRegion");
@@ -275,7 +267,7 @@ public class TextContent {
      *
      * @param file the input XML file
      */
-    private void readFR10File(File file) {
+    private void readFR10File(File file) throws WarningException {
         Document doc = loadXMLFile(file);
         NodeList pars = doc.getElementsByTagName("par");
 
@@ -309,7 +301,7 @@ public class TextContent {
      *
      * @param file the input HTML file
      */
-    private void readHOCRFile(File file) {
+    private void readHOCRFile(File file) throws WarningException {
         try {
             org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
             String htmlEncoding = doc.outputSettings().charset().toString();
@@ -339,7 +331,7 @@ public class TextContent {
      *
      * @param file the input ALTO file
      */
-    private void readALTOfile(File file) {
+    private void readALTOfile(File file) throws WarningException {
         Document doc = loadXMLFile(file);
         NodeList lines = doc.getElementsByTagName("TextLine");
 

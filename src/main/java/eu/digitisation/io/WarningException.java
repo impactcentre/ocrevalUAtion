@@ -17,34 +17,18 @@
  */
 package eu.digitisation.io;
 
-import java.io.File;
-
 /**
- *
+ * Exceptions which only generate a warning and waits for user reaction
  * @author R.C.C.
  */
-public class UnsupportedFormatException extends Exception {
-
+public class WarningException extends Exception {
     private static final long serialVersionUID = 1L;
-    File file;
-    FileType type;
 
-    public UnsupportedFormatException(String message) {
+    /**
+     * Default constructor
+     * @param message
+     */
+    public WarningException(String message) {
         super(message);
-    }
-
-    public UnsupportedFormatException(File file, FileType type) {
-        this.file = file;
-        this.type = type;
-    }
-
-    @Override
-    public String getMessage() {
-        if (file == null) {
-            return super.getMessage();
-        } else {
-            return "Unsupported file format (" + type
-                    + " format) for file " + file.getName();
-        }
     }
 }

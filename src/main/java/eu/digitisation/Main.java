@@ -2,7 +2,7 @@ package eu.digitisation;
 
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
-import eu.digitisation.io.UnsupportedFormatException;
+import eu.digitisation.io.WarningException;
 import eu.digitisation.ocrevaluation.Report;
 import java.io.File;
 import java.io.InvalidObjectException;
@@ -27,7 +27,7 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws UnsupportedFormatException {
+    public static void main(String[] args) throws WarningException {
 
         File repfile = null;     // char filter
         File gtfile = null;      // ground-truth

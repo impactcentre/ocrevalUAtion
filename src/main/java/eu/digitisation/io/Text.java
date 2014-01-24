@@ -24,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -50,19 +49,8 @@ public class Text {
     XPathFilter filter;
 
     static {
-        Properties props = new Properties();
-        try {
-            InputStream in
-                    = Text.class.getResourceAsStream("/Default.properties");
-
-            props.load(in);
-            in.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        Properties props = StartUp.properties();
         maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
-
     }
 
     /**
@@ -75,7 +63,7 @@ public class Text {
      * @throws eu.digitisation.io.UnsupportedFormatException
      */
     public Text(File file, String encoding, XPathFilter filter)
-            throws UnsupportedFormatException {
+            throws WarningException {
 
         builder = new StringBuilder();
         this.encoding = encoding;
@@ -100,7 +88,9 @@ public class Text {
                     readALTOFile(file);
                     break;
                 default:
-                    throw new UnsupportedFormatException(file, type);
+                    throw new WarningException("Unsupported file format ("
+                            + type + " format) for file "
+                            + file.getName());
             }
         } catch (IOException ex) {
             Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
@@ -115,7 +105,7 @@ public class Text {
      * @throws eu.digitisation.io.UnsupportedFormatException
      */
     public Text(File file)
-            throws UnsupportedFormatException {
+            throws WarningException {
         this(file, null, null);
     }
 
@@ -124,7 +114,7 @@ public class Text {
      *
      * @param s
      */
-    public Text(String s) {
+    public Text(String s) throws WarningException {
         builder = new StringBuilder();
         encoding = "utf8";
         add(s);
@@ -150,11 +140,12 @@ public class Text {
     }
 
     /**
-     * Add content after normalization of whitespace and composition of diacritics
+     * Add content after normalization of whitespace and composition of
+     * diacritics
      *
      * @param s input text
      */
-    private void add(String s) {
+    private void add(String s) throws WarningException {
         String reduced = StringNormalizer.reduceWS(s);
         if (reduced.length() > 0) {
             String canonical = StringNormalizer.composed(reduced);
@@ -163,7 +154,7 @@ public class Text {
             }
             builder.append(canonical);
             if (builder.length() > maxlen) {
-                throw new RuntimeException("Text length limited to "
+                throw new WarningException("Text length limited to "
                         + maxlen + " characters");
             }
         }
@@ -191,7 +182,7 @@ public class Text {
      *
      * @param file the input text file
      */
-    private void readTextFile(File file) {
+    private void readTextFile(File file) throws WarningException {
         // guess encoding if none is provided
         if (encoding == null) {
             encoding = Encoding.detect(file);
@@ -217,7 +208,7 @@ public class Text {
      *
      * @param region the TextRegion element
      */
-    private void readPageTextRegion(Element region) throws IOException {
+    private void readPageTextRegion(Element region) throws IOException, WarningException {
         NodeList nodes = region.getChildNodes();
         for (int n = 0; n < nodes.getLength(); ++n) {
             Node node = nodes.item(n);
@@ -234,7 +225,7 @@ public class Text {
      *
      * @param file the input XML file
      */
-    private void readPageFile(File file) throws IOException {
+    private void readPageFile(File file) throws IOException, WarningException {
         Document doc = loadXMLFile(file);
         Document sorted = SortPageXML.isSorted(doc) ? doc : SortPageXML.sorted(doc);
         NodeList regions = (filter == null)
@@ -252,7 +243,7 @@ public class Text {
      *
      * @param oar the paragraph (par) element
      */
-    private void readFR10Par(Element par) {
+    private void readFR10Par(Element par) throws WarningException {
         NodeList lines = par.getElementsByTagName("line");
         for (int nline = 0; nline < lines.getLength(); ++nline) {
             Element line = (Element) lines.item(nline);
@@ -280,7 +271,7 @@ public class Text {
      *
      * @param file the input XML file
      */
-    private void readFR10File(File file) {
+    private void readFR10File(File file) throws WarningException {
         Document doc = loadXMLFile(file);
 
         NodeList pars = (filter == null)
@@ -298,7 +289,7 @@ public class Text {
      *
      * @param file the input HTML file
      */
-    private void readHOCRFile(File file) {
+    private void readHOCRFile(File file) throws WarningException {
         try {
             org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
             String htmlEncoding = doc.outputSettings().charset().toString();
@@ -330,9 +321,9 @@ public class Text {
      *
      * @param file the input ALTO file
      */
-    private void readALTOTextLine(Element line) {
+    private void readALTOTextLine(Element line) throws WarningException {
         NodeList strings = line.getElementsByTagName("String");
-        
+
         for (int nstring = 0; nstring < strings.getLength(); ++nstring) {
             Element string = (Element) strings.item(nstring);
             String text = string.getAttribute("CONTENT");
@@ -346,7 +337,7 @@ public class Text {
      *
      * @param file the input ALTO file
      */
-    private void readALTOFile(File file) {
+    private void readALTOFile(File file) throws WarningException {
         Document doc = loadXMLFile(file);
         NodeList lines = doc.getElementsByTagName("TextLine");
 
@@ -361,23 +352,17 @@ public class Text {
      *
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, WarningException {
         if (args.length < 1 | args[0].equals("-h")) {
             System.err.println("usage: Text xmlfile [xpathfile]");
         } else {
-            try {
-                File xmlfile = new File(args[0]);
-                XPathFilter filter = (args.length < 2)
-                        ? null
-                        : new XPathFilter(new File(args[1]));
+            File xmlfile = new File(args[0]);
+            XPathFilter filter = (args.length < 2)
+                    ? null
+                    : new XPathFilter(new File(args[1]));
 
-                Text text = new Text(xmlfile, null, filter);
-                System.out.println(text);
-
-            } catch (UnsupportedFormatException ex) {
-                Logger.getLogger(Text.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
+            Text text = new Text(xmlfile, null, filter);
+            System.out.println(text);
         }
     }
 }

@@ -20,7 +20,7 @@ package eu.digitisation.langutils;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.StringNormalizer;
 import eu.digitisation.io.TextContent;
-import eu.digitisation.io.UnsupportedFormatException;
+import eu.digitisation.io.WarningException;
 import eu.digitisation.io.WordScanner;
 import eu.digitisation.math.Counter;
 import java.io.File;
@@ -75,7 +75,7 @@ public class TermFrequency extends Counter<String> {
      *
      * @param dir the input file or directory
      */
-    public void add(File dir) throws UnsupportedFormatException {
+    public void add(File dir) throws WarningException {
         if (dir.isDirectory()) {
             addFiles(dir.listFiles());
         } else {
@@ -89,7 +89,7 @@ public class TermFrequency extends Counter<String> {
      *
      * @param file an input files
      */
-    public void addFile(File file) throws UnsupportedFormatException {
+    public void addFile(File file) throws WarningException {
         try {
             TextContent content = new TextContent(file, filter);
             WordScanner scanner = new WordScanner(content.toString());
@@ -110,7 +110,7 @@ public class TermFrequency extends Counter<String> {
      *
      * @param files an array of input files
      */
-    private void addFiles(File[] files) throws UnsupportedFormatException {
+    private void addFiles(File[] files) throws WarningException {
         for (File file : files) {
             addFile(file);
         }
@@ -180,7 +180,7 @@ public class TermFrequency extends Counter<String> {
      *
      * @param args see help
      */
-    public static void main(String[] args) throws UnsupportedFormatException {
+    public static void main(String[] args) throws Exception {
         if (args.length < 1) {
             System.err.println("Usage: TermFrequency [-e equivalences_file] [-c] input_files_or_directories");
         } else {

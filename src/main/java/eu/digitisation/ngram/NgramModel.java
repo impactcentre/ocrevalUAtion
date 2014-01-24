@@ -419,7 +419,7 @@ public class NgramModel implements Serializable {
      */
     public void showDiff(NgramModel other) {
         if (this.order != other.order) {
-            throw new IllegalArgumentException("Illega comparison "
+            throw new IllegalArgumentException("Illegal comparison "
                     + "of n-gram models with different n");
         }
         for (String s : this.occur.keySet()) {

@@ -19,10 +19,7 @@ package eu.digitisation.io;
 
 import eu.digitisation.xml.DocumentParser;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -43,28 +40,7 @@ public enum FileType {
     String schemaLocation;  // schema URL
 
     static {
-        Properties props = new Properties();
-        InputStream in;
-        try {
-            // Read defaults
-            Properties defaults = new Properties();
-            in = FileType.class.getResourceAsStream("/default.properties");
-            if (in != null) {
-                defaults.load(in);
-                in.close();
-                props = new Properties(defaults);
-            }
-            // Add user properties (may overwrite defaults)
-            try {
-            in = new FileInputStream(new File("user.properties"));
-                props.load(in);
-                in.close();
-            } catch(FileNotFoundException ex) {
-                // continue
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Properties props = StartUp.properties();
         TEXT.tag = null;  // no tag for this type 
         TEXT.schemaLocation = null; // no schema associated to this type
         PAGE.tag = "PcGts";
@@ -137,8 +113,4 @@ public enum FileType {
         return UNKNOWN;
     }
 
-    public static void main(String[] args) {
-        File file = new File(args[0]);
-        System.out.println(FileType.valueOf(file));
-    }
 }

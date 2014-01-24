@@ -20,11 +20,7 @@ package eu.digitisation.io;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -36,29 +32,16 @@ public class TextContentTest {
     public TextContentTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
+  
 
     /**
      * Test of toString method, of class TextContent.
      *
      * @throws java.net.URISyntaxException
+     * @throws eu.digitisation.io.WarningException
      */
     @Test
-    public void testToString() throws URISyntaxException {
+    public void testToString() throws URISyntaxException, WarningException {
         System.out.println("toString");
         URL resourceUrl = getClass().getResource("/UnicodeCharEquivalences.txt");
         File file = new File(resourceUrl.toURI());

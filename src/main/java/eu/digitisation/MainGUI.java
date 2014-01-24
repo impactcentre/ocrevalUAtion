@@ -24,7 +24,7 @@ import eu.digitisation.gui.JLink;
 import eu.digitisation.gui.OutputFileSelector;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
-import eu.digitisation.io.UnsupportedFormatException;
+import eu.digitisation.io.WarningException;
 import eu.digitisation.ocrevaluation.Report;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -195,7 +195,7 @@ public class MainGUI extends JFrame implements ActionListener {
                             report = new Report(batch, null, null, filter);
                             report.write(outfile);
                             Browser.open(url);
-                        } catch (UnsupportedFormatException ex) {
+                        } catch (WarningException ex) {
                             warning(ex.getMessage());
                         } catch (IOException ex) {
                             warning("Input/Output Error");
