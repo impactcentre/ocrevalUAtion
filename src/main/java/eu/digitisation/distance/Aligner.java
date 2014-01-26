@@ -18,7 +18,10 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.io.CharMap;
+import eu.digitisation.io.Text;
+import eu.digitisation.io.WarningException;
 import eu.digitisation.xml.DocumentBuilder;
+import java.io.File;
 import org.w3c.dom.Element;
 
 /**
@@ -267,5 +270,149 @@ public class Aligner {
     public static Element alignmentMap(String header1, String header2,
             String first, String second) {
         return alignmentMap(header1, header2, first, second, null);
+    }
+
+    /**
+     * Shows text alignment based on a pseudo-Levenshtein distance where
+     * white-spaces are not allowed to be replaced with text or vice-versa
+     *
+     * @param header1 first text title for table head
+     * @param header2 second text title for table head
+     * @param first the first text
+     * @param second the second text
+     * @param map a CharMap for character equivalences
+     * @return a table in XHTML format showing the alignments
+     */
+    public static Element bitext(String header1, String header2,
+            String first, String second, CharMap map) {
+
+        EditSequence edition = (map == null)
+                ? new EditSequence(first, second)
+                : new EditSequence(map.normalForm(first), map.normalForm(second));
+        DocumentBuilder builder = new DocumentBuilder("table");
+        Element table = builder.root();
+        Element row;
+        Element cell1;
+        Element cell2;
+        int l1;
+        int l2;
+        int len;
+        int i;
+        int j;
+        String s1;
+        String s2;
+
+        // features
+        table.setAttribute("border", "1");
+        // content 
+        row = builder.addElement("tr");
+        cell1 = builder.addElement(row, "td");
+        cell2 = builder.addElement(row, "td");
+        cell1.setAttribute("width", "50%");
+        cell2.setAttribute("width", "50%");
+        cell1.setAttribute("align", "center");
+        cell2.setAttribute("align", "center");
+        builder.addTextElement(cell1, "h3", header1);
+        builder.addTextElement(cell2, "h3", header2);
+        row = builder.addElement("tr");
+        cell1 = builder.addElement(row, "td");
+        cell2 = builder.addElement(row, "td");
+
+        l1 = first.length();
+        l2 = second.length();
+        i = 0;
+        j = 0;
+        len = 0;
+        for (int n = 0; n < edition.size(); n += len) {
+            EdOp op = edition.get(n);
+            switch (op) {
+                case KEEP:
+                    len = 1;
+                    while (i + len < l1 && j + len < l2
+                            && edition.get(n + len) == EdOp.KEEP) {
+                        ++len;
+                    }
+                    s1 = first.substring(i, i + len);
+                    s2 = second.substring(j, j + len);
+                    builder.addText(cell1, s1);
+                    builder.addText(cell2, s2);
+                    i += len;
+                    j += len;
+                    break;
+                case DELETE:
+                    len = 1;
+                    while (i + len < l1 && edition.get(n + len) == EdOp.DELETE) {
+                        ++len;
+                    }
+                    s1 = first.substring(i, i + len);
+                    builder.addTextElement(cell1, "font", s1)
+                            .setAttribute("style", uStyle);
+                    i += len;
+                    break;
+                case INSERT:
+                    len = 1;
+                    while (j + len < l2 && edition.get(n + len) == EdOp.INSERT) {
+                        ++len;
+                    }
+                    s2 = second.substring(j, j + len);
+                    builder.addTextElement(cell2, "font", s2)
+                            .setAttribute("style", uStyle);
+                    j += len;
+                    break;
+                case SUBSTITUTE:
+                    len = 1;
+                    while (i + len < l1 && j + len < l2
+                            && edition.get(n + len) == EdOp.SUBSTITUTE) {
+                        ++len;
+                    }
+                    s1 = first.substring(i, i + len);
+                    s2 = second.substring(j, j + len);
+                    Element span1 = builder.addElement(cell1, "span");
+                    Element span2 = builder.addElement(cell2, "span");
+                    String id1 = "l" + i + "." + j;
+                    String id2 = "r" + i + "." + j;
+                    span1.setAttribute("title", s2);
+                    span2.setAttribute("title", s1);
+                    span1.setAttribute("id", id1);
+                    span2.setAttribute("id", id2);
+                    span1.setAttribute("onmouseover",
+                            "document.getElementById('"
+                            + id2 + "').style.background='greenyellow'");
+                    span2.setAttribute("onmouseover",
+                            "document.getElementById('"
+                            + id1 + "').style.background='greenyellow'");
+                    span1.setAttribute("onmouseout",
+                            "document.getElementById('"
+                            + id2 + "').style.background='none'");
+                    span2.setAttribute("onmouseout",
+                            "document.getElementById('"
+                            + id1 + "').style.background='none'");
+                    builder.addTextElement(span1, "font", s1)
+                            .setAttribute("color", "red");
+                    builder.addTextElement(span2, "font", s2)
+                            .setAttribute("color", "red");
+                    i += len;
+                    j += len;
+                    break;
+            }
+        }
+        return builder.document().getDocumentElement();
+    }
+
+    public static void main(String[] args) throws WarningException {
+        
+         File f1 = new File(args[0]);
+         File f2 = new File(args[1]);
+         String s1 = new Text(f1).toString();
+         String s2 = new Text(f2).toString();
+        
+        File ofile = new File("/tmp/out.html");
+        //String s1 = "patatapatata";
+        //String s2 = "gastapasta";
+        DocumentBuilder builder = new DocumentBuilder("html");
+        Element body = builder.addElement("body");
+        Element alitab = Aligner.bitext("s1", "s2", s1, s2, null);
+        builder.addElement(body, alitab);
+        builder.write(ofile);
     }
 }

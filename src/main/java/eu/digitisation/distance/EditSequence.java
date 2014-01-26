@@ -52,6 +52,16 @@ public class EditSequence {
     }
 
     /**
+     *
+     * @param pos a position in the sequence
+     * @return the basic edit operation in the sequence which is at the
+     * specified position
+     */
+    public EdOp get(int pos) {
+        return ops.get(pos);
+    }
+
+    /**
      * Add an operation to the sequence
      *
      * @param op an edit operation
@@ -245,7 +255,7 @@ public class EditSequence {
         }
     }
 
-      /**
+    /**
      * Build the EditTable for a pair of TokenArrays
      *
      * @param first the first TokenArray
@@ -324,7 +334,7 @@ public class EditSequence {
             Collections.reverse(ops);
         }
     }
-    
+
     /**
      * Extract alignment statistics
      *
