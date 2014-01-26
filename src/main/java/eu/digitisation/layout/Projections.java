@@ -20,7 +20,7 @@ package eu.digitisation.layout;
 import eu.digitisation.image.Bimage;
 import eu.digitisation.image.Display;
 import eu.digitisation.io.FileType;
-import eu.digitisation.math.ArrayMath;
+import eu.digitisation.math.Arrays;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
@@ -183,7 +183,7 @@ public class Projections extends Bimage {
             int[] pros = projection(alpha);
             //new Histogram("zeta=" + String.format("%.1f", zeta), pros).show(400,400,40);
             // System.out.println(pros.length);
-            double s = ArrayMath.std(pros);
+            double s = Arrays.std(pros);
             System.out.println(String.format("%.2f", zeta)
                     + " " + Math.round(getWidth() * Math.tan(alpha))
                     + " " + String.format("%.1f", s));
@@ -201,9 +201,9 @@ public class Projections extends Bimage {
     public void slice() {
         int[] values = yprojection();
         ArrayList<Integer> limits = new ArrayList<Integer>();
-        double B = ArrayMath.average(values);
+        double B = Arrays.average(values);
         //double A = Math.max(Stat.max(values) - B, B - Stat.min(values));
-        double sigma = ArrayMath.std(values);
+        double sigma = Arrays.std(values);
         int upper = 0;
         boolean inner = false;
         double[] Y = new double[values.length];

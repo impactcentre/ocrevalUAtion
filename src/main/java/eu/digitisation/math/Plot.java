@@ -68,10 +68,10 @@ public class Plot {
                         height + 2 * margin,
                         BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = bim.createGraphics();
-        double xhigh = ArrayMath.max(X);
-        double xlow = ArrayMath.min(X);
+        double xhigh = Arrays.max(X);
+        double xlow = Arrays.min(X);
         double xrange = xhigh - xlow;
-        double yhigh = ArrayMath.max(Y);
+        double yhigh = Arrays.max(Y);
         double ylow = 0; //ArrayMath.min(Y);
         double yrange = yhigh - ylow;
 

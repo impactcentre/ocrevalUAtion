@@ -23,7 +23,7 @@ package eu.digitisation.math;
  * @author R.C.C.
  * @version 20131110
  */
-public class ArrayMath {
+public class Arrays {
 
     /**
      * @param array array of int

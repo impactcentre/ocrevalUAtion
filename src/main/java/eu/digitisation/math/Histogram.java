@@ -103,10 +103,10 @@ public class Histogram {
                         height + 2 * margin,
                         BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = bim.createGraphics();
-        int xhigh = ArrayMath.max(X);
-        int xlow = ArrayMath.min(X);
+        int xhigh = Arrays.max(X);
+        int xlow = Arrays.min(X);
         int xrange = xhigh - xlow;
-        int yhigh = ArrayMath.max(Y);
+        int yhigh = Arrays.max(Y);
         int ylow = 0; //ArrayMath.min(Y);
         int yrange = yhigh - ylow;
 

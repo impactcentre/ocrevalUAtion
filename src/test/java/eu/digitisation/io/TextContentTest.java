@@ -32,8 +32,6 @@ public class TextContentTest {
     public TextContentTest() {
     }
 
-  
-
     /**
      * Test of toString method, of class TextContent.
      *

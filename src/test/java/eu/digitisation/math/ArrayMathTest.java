@@ -34,7 +34,7 @@ public class ArrayMathTest {
         System.out.println("sum");
         int[] array = {1, 2, 3, 0, -1};
         int expResult = 5;
-        int result = ArrayMath.sum(array);
+        int result = Arrays.sum(array);
         assertEquals(expResult, result);
     }
 
@@ -46,7 +46,7 @@ public class ArrayMathTest {
         System.out.println("sum");
         double[] array = {1, 2, 3, 0, -1};
         double expResult = 5;
-        double result = ArrayMath.sum(array);
+        double result = Arrays.sum(array);
         assertEquals(expResult, result, 0.01);
     }
 
@@ -58,7 +58,7 @@ public class ArrayMathTest {
         System.out.println("average");
         int[] array = {1, 2, 3, -2};
         double expResult = 1.0;
-        double result = ArrayMath.average(array);
+        double result = Arrays.average(array);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -70,7 +70,7 @@ public class ArrayMathTest {
         System.out.println("average");
         double[] array = {1, 2, 3, -2};
         double expResult = 1.0;
-        double result = ArrayMath.average(array);
+        double result = Arrays.average(array);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -82,7 +82,7 @@ public class ArrayMathTest {
         System.out.println("logaverage");
         int[] array = {10, 100, 1000};
         double expResult = 100.0;
-        double result = ArrayMath.logaverage(array);
+        double result = Arrays.logaverage(array);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -94,7 +94,7 @@ public class ArrayMathTest {
         System.out.println("logaverage");
         double[] array = {10, 100, 1000};
         double expResult = 100.0;
-        double result = ArrayMath.logaverage(array);
+        double result = Arrays.logaverage(array);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -107,7 +107,7 @@ public class ArrayMathTest {
         double[] x = {1, 2, 3};
         double[] y = {1, 2, 3};
         double expResult = 14.0;
-        double result = ArrayMath.scalar(x, y);
+        double result = Arrays.scalar(x, y);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -119,7 +119,7 @@ public class ArrayMathTest {
         System.out.println("max");
         int[] array = {-5, 2, 3};
         int expResult = 3;
-        int result = ArrayMath.max(array);
+        int result = Arrays.max(array);
         assertEquals(expResult, result);
     }
 
@@ -131,7 +131,7 @@ public class ArrayMathTest {
         System.out.println("max");
         double[] array = {-5, 2, 3};
         double expResult = 3;
-        double result = ArrayMath.max(array);
+        double result = Arrays.max(array);
         assertEquals(expResult, result, 0.0);
     }
 
@@ -143,7 +143,7 @@ public class ArrayMathTest {
         System.out.println("min");
         int[] array = {2, -1};
         int expResult = -1;
-        int result = ArrayMath.min(array);
+        int result = Arrays.min(array);
         assertEquals(expResult, result);
     }
 
@@ -155,7 +155,7 @@ public class ArrayMathTest {
         System.out.println("min");
         double[] array = {2, 0, -1};
         double expResult = -1.0;
-        double result = ArrayMath.min(array);
+        double result = Arrays.min(array);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -168,7 +168,7 @@ public class ArrayMathTest {
         int[] X = {1, 2, 3};
         int[] Y = {1, 2, 3};
         double expResult = 2.0/3;
-        double result = ArrayMath.cov(X, Y);
+        double result = Arrays.cov(X, Y);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -181,7 +181,7 @@ public class ArrayMathTest {
         double[] X = {1, 2, 3};
         double[] Y = {1, 2, 3};
         double expResult = 2.0/3;
-        double result = ArrayMath.cov(X, Y);
+        double result = Arrays.cov(X, Y);
         assertEquals(expResult, result, 0.001);
     }
 
@@ -193,7 +193,7 @@ public class ArrayMathTest {
         System.out.println("std");
         int[] X = {1, 2, 2, 3};
         double expResult = Math.sqrt(0.5);
-        double result = ArrayMath.std(X);
+        double result = Arrays.std(X);
         assertEquals(expResult, result, 0.0001);
     }
 
@@ -205,7 +205,7 @@ public class ArrayMathTest {
         System.out.println("std");
         double[] X = {1, 2, 2, 3};
         double expResult = Math.sqrt(0.5);
-        double result = ArrayMath.std(X);
+        double result = Arrays.std(X);
         assertEquals(expResult, result, 0.0001);
     }
 

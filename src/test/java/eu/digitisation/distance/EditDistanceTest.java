@@ -18,6 +18,11 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.io.StringNormalizer;
+import eu.digitisation.io.Text;
+import eu.digitisation.io.WarningException;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -34,7 +39,7 @@ public class EditDistanceTest {
      * Test of charDistance method, of class EditDistance.
      */
     @Test
-    public void testCharDistance() {
+    public void testCharDistance() throws URISyntaxException, WarningException {
         System.out.println("charDistance");
 
         String s1 = "patata";
@@ -57,6 +62,22 @@ public class EditDistanceTest {
         s2 = "luevert";
         expResult = StringEditDistance.levenshtein(s1, s2);
         result = EditDistance.charDistance(s1, s2, 5);
+        assertEquals(expResult, result);
+
+        s1 = "patatapatata";
+        s2 = "gastapasta";
+        expResult = 5;//StringEditDistance.levenshtein(s1, s2);  
+        result = EditDistance.charDistance(s1, s2, 50);
+        assertEquals(expResult, result);
+
+        URL gtUrl = getClass().getResource("/OfTheSciences_gt_TXT.txt");
+        File gtfile = new File(gtUrl.toURI());
+        String gts = new Text(gtfile).toString();
+        URL ocrUrl = getClass().getResource("/OfTheSciences_ocr_PAGE.xml");
+        File ocrfile = new File(ocrUrl.toURI());
+        String ocrs = new Text(ocrfile).toString();
+        expResult = StringEditDistance.levenshtein(gts, ocrs);
+        result = EditDistance.charDistance(gts, ocrs, 1000);
         assertEquals(expResult, result);
     }
 
