@@ -26,5 +26,21 @@ package eu.digitisation.distance;
 @SuppressWarnings("javadoc")
 public enum EdOp {
 
-    KEEP, INSERT, SUBSTITUTE, DELETE
-};
+    KEEP, INSERT, SUBSTITUTE, DELETE;
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case KEEP:
+                return "K";
+            case INSERT:
+                return "I";
+            case SUBSTITUTE:
+                return "S";
+            case DELETE:
+                return "D";
+            default:
+                return null;
+        }
+    }
+}

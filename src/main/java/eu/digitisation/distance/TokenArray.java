@@ -17,19 +17,20 @@
  */
 package eu.digitisation.distance;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A TokenArray is a tokenized string: every word is internally stored as an
  * integer. The mapping between words and integer codes is shared by all
- * TokenArrays created with the same TokenArrayFactory to allow for comparison.
+ * TokenArrays created with the same MinimalPerfectHash.
  *
  * @version 2013.12.10
  */
 public class TokenArray {
 
-    TokenArrayFactory factory; // the creator factory
-    Integer[] tokens;  // tehe content 
+    MinimalPerfectHash mph; // the creator mph
+    Integer[] tokens;  // the content 
 
     /**
      * Default constructor
@@ -37,8 +38,8 @@ public class TokenArray {
      * @param interpretation the dictionary of codes
      * @param tokens the integer representation
      */
-    TokenArray(TokenArrayFactory factory, Integer[] tokens) {
-        this.factory = factory;
+    TokenArray(MinimalPerfectHash mph, Integer[] tokens) {
+        this.mph = mph;
         this.tokens = tokens;
     }
 
@@ -49,10 +50,19 @@ public class TokenArray {
      * @param tokens the integer representation
      *
      */
-    TokenArray(TokenArrayFactory factory, ArrayList<Integer> tokens) {
-        this.factory = factory;
+    TokenArray(MinimalPerfectHash mph, List<Integer> tokens) {
+        this.mph = mph;
         this.tokens = tokens.toArray(new Integer[tokens.size()]);
 
+    }
+    
+    /**
+     * 
+     * @param mph the hashing scheme
+     * @param s the input string to be tokenized
+     */
+    public TokenArray(MinimalPerfectHash mph, String s) {
+        this(mph, mph.hashCodes(s));
     }
 
     /**
@@ -89,15 +99,26 @@ public class TokenArray {
      */
     public String wordAt(int pos) {
         Integer token = tokens[pos];
-        return factory.getWord(token);
+        return mph.decode(token);
     }
 
+    /**
+     * Create a TokenArray with a range of another TokenArray
+     * @param fromIndex low endpoint (inclusive) of the subArray
+     * @param toIndex high endpoint (exclusive) of the subArray
+     * @return 
+     */
+    public TokenArray subArray(int fromIndex, int toIndex) {
+        List<Integer> sublist = Arrays.asList(tokens).subList(fromIndex, toIndex);
+        return new TokenArray(mph, sublist);
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
         for (Integer token : tokens) {
-            builder.append(factory.getWord(token)).append(" ");
+            builder.append(mph.decode(token)).append(" ");
         }
 
         return builder.toString().trim();

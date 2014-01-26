@@ -18,10 +18,6 @@
 package eu.digitisation.distance;
 
 import static junit.framework.TestCase.assertEquals;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -33,21 +29,7 @@ public class TokenArrayTest {
     public TokenArrayTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
+ 
 
     /**
      * Test of encode method, of class TextFileEncoder.
@@ -59,8 +41,8 @@ public class TokenArrayTest {
                 + "mesa-camilla java4you i.b.m. i+d Dª María 3+100%";
         String expOutput = "hola&amigo 2 3.14 mi casa todos los días"
                 + " mesa-camilla java 4 you i.b.m i+d Dª María 3 100%";
-        TokenArrayFactory f = new TokenArrayFactory(true);
-        TokenArray array = f.newTokenArray(input);
+        MinimalPerfectHash f = new MinimalPerfectHash(true);
+        TokenArray array = new TokenArray(f, input);
         String output = array.toString();
         assertEquals(expOutput, output);
 

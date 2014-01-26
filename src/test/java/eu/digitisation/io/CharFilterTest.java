@@ -20,9 +20,8 @@ package eu.digitisation.io;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

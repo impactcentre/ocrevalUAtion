@@ -27,27 +27,28 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A TokenArrayFactory guarantees consistency between TokenArrays since the
- * mapping between words and integer codes is shared by all TokenArrays created
- * by the same factory and this allows for the comparison of TokenArrays.
+ * Mapping between strings and integers A MinimalPerfectHash guarantees
+ * consistency between TokenArrays since the mapping between words and integer
+ * codes is shared by all TokenArrays created by the same factory and this
+ * allows for the comparison of TokenArrays.
  *
  * @version 2013.12.10
  */
-public class TokenArrayFactory {
+public class MinimalPerfectHash {
 
     /**
-     * The codes used to encode the text into tokens
+     * The codes assigned to strings (tokens)
      */
     public final HashMap<String, Integer> codes;  // token->code mapping
     public final List<String> dictionary;         // code->token mapping
     boolean caseSensitive;   // Case sensitive encoding
 
     /**
-     * Create a new TokenArrayFactory
+     * Create a new MinimalPerfectHash
      *
      * @param caseSensitive true if the TokenArrays must be case sensitive
      */
-    public TokenArrayFactory(boolean caseSensitive) {
+    public MinimalPerfectHash(boolean caseSensitive) {
         codes = new HashMap<String, Integer>();
         dictionary = new ArrayList<String>();
         this.caseSensitive = caseSensitive;
@@ -56,7 +57,7 @@ public class TokenArrayFactory {
     /**
      * Default constructor (case sensitive factory)
      */
-    public TokenArrayFactory() {
+    public MinimalPerfectHash() {
         this(true);
     }
 
@@ -65,7 +66,7 @@ public class TokenArrayFactory {
      * @param word a word
      * @return the integer code assigned to this word
      */
-    private Integer getCode(String word) {
+    private Integer hashCode(String word) {
         Integer code;
         String key = caseSensitive ? word : word.toLowerCase();
 
@@ -84,54 +85,54 @@ public class TokenArrayFactory {
      * @param code an integer code
      * @return the string or word associated with this code
      */
-    public String getWord(int code) {
+    public String decode(int code) {
         return dictionary.get(code);
     }
 
     /**
-     * Build a TokenArray from the file content
+     * Build an array of hash codes from the file content
      *
      * @param file the input file
-     * @param encoding the text encoding folds uppercase into lowercase.
-     * @return a TokenArray representing the file content
+     * @param encoding the text encoding.
+     * @return the list of hash codes representing the file content
      */
-    public TokenArray newTokenArray(File file, String encoding) throws RuntimeException {
+    public List<Integer> hashCodes(File file, String encoding) throws RuntimeException {
 
-        ArrayList<Integer> array = new ArrayList<Integer>();
-        WordScanner scanner;
-        String word;
+        ArrayList<Integer> list = new ArrayList<Integer>();
 
         try {
-            scanner = new WordScanner(file, encoding);
+            WordScanner scanner = new WordScanner(file, encoding);
+            String word;
+
             while ((word = scanner.nextWord()) != null) {
-                array.add(getCode(word));
+                list.add(hashCode(word));
             }
         } catch (IOException ex) {
-            Logger.getLogger(TokenArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MinimalPerfectHash.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return new TokenArray(this, array);
+        return list;
     }
 
     /**
      * Build a TokenArray from a String
      *
      * @param s the input string
-     * @return a TokenArray representing s
+     * @return the list of hash codes representing the file content
      */
-    public TokenArray newTokenArray(String s) {
-        ArrayList<Integer> array = new ArrayList<Integer>();
+    public List<Integer> hashCodes(String s) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
 
         try {
             WordScanner scanner = new WordScanner(s);
             String word;
 
             while ((word = scanner.nextWord()) != null) {
-                array.add(getCode(word));
+                list.add(hashCode(word));
             }
         } catch (IOException ex) {
-            Logger.getLogger(TokenArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MinimalPerfectHash.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return new TokenArray(this, array);
+        return list;
     }
 }

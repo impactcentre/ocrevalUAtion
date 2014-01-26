@@ -20,10 +20,6 @@ package eu.digitisation.distance;
 import eu.digitisation.io.StringNormalizer;
 import eu.digitisation.math.BiCounter;
 import static junit.framework.TestCase.assertEquals;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -33,22 +29,6 @@ import org.junit.Test;
 public class StringEditDistanceTest {
 
     public StringEditDistanceTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
