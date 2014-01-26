@@ -49,7 +49,7 @@ public class Aligner {
      * @return the table of minimal basic edit operations needed to transform
      * first into second
      */
-    private static EditTable align(String first, String second) {
+    private static EditTable alignTab(String first, String second) {
         int l1;      // length of first 
         int l2;      // length of second
         int[][] A;   // distance table
@@ -106,6 +106,19 @@ public class Aligner {
     }
 
     /**
+     * A minimal sequence of edit operations transforming the first string into
+     * the second
+     *
+     * @param first the first string
+     * @param second the second string
+     * @return a minimal sequence of edit operations transforming the first
+     * string into the second
+     */
+    public static EditSequence path(String first, String second) {
+        return alignTab(first, second).path();
+    }
+
+    /**
      * Shows text alignment based on a pseudo-Levenshtein distance where
      * white-spaces are not allowed to be replaced with text or vice-versa
      *
@@ -119,8 +132,8 @@ public class Aligner {
     public static Element alignmentMap(String header1, String header2,
             String first, String second, CharMap map) {
         EditTable B = (map == null)
-                ? align(first, second)
-                : align(map.normalForm(first), map.normalForm(second));
+                ? alignTab(first, second)
+                : alignTab(map.normalForm(first), map.normalForm(second));
         DocumentBuilder builder = new DocumentBuilder("table");
         Element table = builder.root();
         Element row;

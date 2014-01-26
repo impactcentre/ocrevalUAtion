@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Universidad de Alicante
+ * Copyright (C) 2014 Uni. de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,13 +15,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+
 package eu.digitisation.distance;
 
-/**
- * Basic edit distance variants 
- * @author R.C.C
- */
-public enum EditDistanceType {
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
-    INDEL, LEVENSHTEIN, DAMERAU_LEVENSHTEIN, CHAR_BASED, WORD_BASED;
+/**
+ *
+ * @author rafa
+ */
+public class EditDistanceTest {
+    
+    public EditDistanceTest() {
+    }
+
+    /**
+     * Test of levenshtein method, of class AproxStringEditDistance.
+     */
+    @Test
+    public void testLevenshtein() {
+        System.out.println("levenshtein");
+        String s1 = "bluevelvet";
+        String s2 = "luevert";
+        int expResult = StringEditDistance.levenshtein(s1, s2);
+        int result = EditDistance.charDistance(s1, s2, 5);
+        assertEquals(expResult, result);
+    }
+
+ 
+    
 }

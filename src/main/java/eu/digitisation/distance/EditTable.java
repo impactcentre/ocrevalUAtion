@@ -17,9 +17,6 @@
  */
 package eu.digitisation.distance;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A compact structure storing the table of edit operations obtained during the
  * computation of the edit distance between two sequences a1a2...am and
@@ -32,8 +29,8 @@ import java.util.List;
  */
 public class EditTable {
 
-    int width;  // table width
-    int height;  // table height
+    int width;     // table width
+    int height;    // table height
     byte[] bytes;  // table content
 
     public EditTable(int width, int height) {
@@ -188,28 +185,42 @@ public class EditTable {
      *
      * @param row the starting row
      * @param column the starting column
-     * @return the sequence of edit operations stored in this table which lead from 
-     * the cell at (row, column) to the cell at (0,0)
+     * @return the sequence of edit operations stored in this table which lead
+     * from the cell at (row, column) to the cell at (0,0)
      */
-    public List<EdOp> path(int row, int column) {
-        List<EdOp> operations = new ArrayList<EdOp>(Math.max(row, column));
+    private EditSequence path(int row, int column) {
+        EditSequence operations = new EditSequence(Math.max(row, column));
         int i = row;
         int j = column;
+
         while (i > 0 || j > 0) {
             EdOp e = get(i, j);
             switch (e) {
                 case INSERT:
-                    --i;
+                    --j;
                     break;
                 case DELETE:
-                    --j;
+                    --i;
                     break;
                 default:
                     --i;
                     --j;
+                    break;
             }
             operations.add(e);
         }
         return (i == 0 && j == 0) ? operations : null;
+    }
+
+    /**
+     * Build the sequence of edit operations in the path from a the cell at
+     * (width, height) to the cell at (0,0)
+     *
+     * @return the sequence of edit operations stored in this table which lead
+     * from the cell at (width - 1, height - 1) to the cell at (0,0)
+     * @depecated Use new EditSequence(EditTeble) instead
+     */
+    public EditSequence path() {
+        return path(width - 1, height - 1);
     }
 }

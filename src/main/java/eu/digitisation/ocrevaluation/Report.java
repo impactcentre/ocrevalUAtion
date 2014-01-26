@@ -21,8 +21,8 @@ import eu.digitisation.distance.Aligner;
 import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.distance.EditDistanceType;
+import eu.digitisation.distance.MinimalPerfectHash;
 import eu.digitisation.distance.TokenArray;
-import eu.digitisation.distance.TokenArrayFactory;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
 import eu.digitisation.io.TextContent;
@@ -148,9 +148,9 @@ public class Report extends DocumentBuilder {
             TextContent ocr = new TextContent(input.second, filter, ocrencoding);
             String gts = gt.toString();
             String ocrs = ocr.toString();
-            TokenArrayFactory factory = new TokenArrayFactory(false);
-            TokenArray gtarray = factory.newTokenArray(gts);
-            TokenArray ocrarray = factory.newTokenArray(ocrs);
+            MinimalPerfectHash factory = new MinimalPerfectHash(false);
+            TokenArray gtarray = new TokenArray(factory, gts);
+            TokenArray ocrarray = new TokenArray(factory, ocrs);
             BagOfWords gtbag = new BagOfWords(gts);
             BagOfWords ocrbag = new BagOfWords(ocrs);
             Element alitab = Aligner.alignmentMap(input.first.getName(),
@@ -177,13 +177,13 @@ public class Report extends DocumentBuilder {
         addTextElement(body, "h2", "Error rate per character and type");
         addElement(body, stats.asTable());
     }
-    
-     public static void main(String[] args) {
+
+    public static void main(String[] args) {
         if (args.length != 2) {
             System.err.println("Usage: aligner file1 file2");
         } else {
             Element alitab = Aligner.alignmentMap("", "", args[0], args[1], null);
         }
     }
-    
+
 }

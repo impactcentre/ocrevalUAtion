@@ -24,7 +24,7 @@ package eu.digitisation.distance;
  * text is handled as a sequence of (Integer) word codes.
  *
  * @version 2011.03.10
- * @param <Type> typoe of content
+ * @param <Type> type of content
  */
 public class ArrayEditDistance<Type> {
 

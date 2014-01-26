@@ -27,12 +27,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Start-up actions: load default and user properties
+ * Start-up actions: load default and user properties (user-defined values
+ * overwrite defaults).
  *
  * @author R.C.C.
  */
 public class StartUp {
+
     private static Properties props = new Properties();
+
     static {
         InputStream in;
         try {
@@ -43,7 +46,7 @@ public class StartUp {
                 defaults.load(in);
                 in.close();
                 props = new Properties(defaults);
-            } 
+            }
             // Add user properties (may overwrite defaults)
             try {
                 in = new FileInputStream(new File("user.properties"));
@@ -56,8 +59,25 @@ public class StartUp {
             Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    /**
+     *
+     *
+     * @return the properties defined at startup (user-defined overwrite
+     * defaults).
+     */
     public static Properties properties() {
         return props;
+    }
+
+    /**
+     *
+     * @param key a property name
+     * @return the property with the specified key as defined by the user, and
+     * otherwise, its default value ( (if the default is not defined, then the
+     * method returns null).
+     */
+    public static String property(String key) {
+        return props.getProperty(key);
     }
 }

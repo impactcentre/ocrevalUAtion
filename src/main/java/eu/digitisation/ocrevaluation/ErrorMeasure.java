@@ -20,9 +20,9 @@ package eu.digitisation.ocrevaluation;
 import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.distance.EditDistanceType;
+import eu.digitisation.distance.MinimalPerfectHash;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.TokenArray;
-import eu.digitisation.distance.TokenArrayFactory;
 
 /**
  * Computes character and word error rates by comparing two texts
@@ -124,9 +124,9 @@ public class ErrorMeasure {
      * @return word error rate with respect to first file
      */
     public static double wer(String s1, String s2) {
-        TokenArrayFactory factory = new TokenArrayFactory(false); // case unsensitive  
-        TokenArray a1 = factory.newTokenArray(s1);
-        TokenArray a2 = factory.newTokenArray(s2);
+        MinimalPerfectHash mph = new MinimalPerfectHash(false); // case unsensitive  
+        TokenArray a1 = new TokenArray(mph, s1);
+        TokenArray a2 = new TokenArray(mph, s2);
        
         return wer(a1, a2);
     }
