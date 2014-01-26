@@ -52,6 +52,12 @@ public class EditDistanceTest {
         s2 = StringNormalizer.reduceWS("mi en  hora  buena");
         result = EditDistance.charDistance(s1, s2, 10);
         assertEquals(3, result);
+
+        s1 = "bluevelvet";
+        s2 = "luevert";
+        expResult = StringEditDistance.levenshtein(s1, s2);
+        result = EditDistance.charDistance(s1, s2, 5);
+        assertEquals(expResult, result);
     }
 
     /**
