@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.math.MinimalPerfectHash;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.Test;
 

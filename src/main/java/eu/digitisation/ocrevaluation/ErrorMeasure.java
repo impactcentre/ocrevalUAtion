@@ -20,7 +20,7 @@ package eu.digitisation.ocrevaluation;
 import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.distance.EditDistanceType;
-import eu.digitisation.distance.MinimalPerfectHash;
+import eu.digitisation.math.MinimalPerfectHash;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.distance.TokenArray;
 

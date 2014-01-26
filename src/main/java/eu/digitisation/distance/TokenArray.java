@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.math.MinimalPerfectHash;
 import java.util.Arrays;
 import java.util.List;
 

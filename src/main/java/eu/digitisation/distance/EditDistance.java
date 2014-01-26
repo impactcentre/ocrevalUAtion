@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.math.MinimalPerfectHash;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.io.WarningException;
 import java.io.File;

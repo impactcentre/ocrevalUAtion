@@ -17,6 +17,8 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.math.MinimalPerfectHash;
+
 /**
  * Word alignments between 2 texts (output in text format)
  *
