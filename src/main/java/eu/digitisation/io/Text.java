@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -60,7 +61,7 @@ public class Text {
      * @param encoding the text encoding for text files (optional; can be null)
      * @param filter XPAthFilter for XML files (extracts textual content from
      * selected elements)
-     * @throws eu.digitisation.io.UnsupportedFormatException
+     * @throws eu.digitisation.io.WarningException
      */
     public Text(File file, String encoding, XPathFilter filter)
             throws WarningException {
@@ -102,7 +103,7 @@ public class Text {
      * Create Text from file
      *
      * @param file the input file
-     * @throws eu.digitisation.io.UnsupportedFormatException
+     * @throws eu.digitisation.io.WarningException
      */
     public Text(File file)
             throws WarningException {
@@ -113,6 +114,7 @@ public class Text {
      * Constructor only for debugging purposes
      *
      * @param s
+     * @throws eu.digitisation.io.WarningException
      */
     public Text(String s) throws WarningException {
         builder = new StringBuilder();
@@ -352,14 +354,16 @@ public class Text {
      *
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException, WarningException {
+    public static void main(String[] args) throws IOException, WarningException, XPathExpressionException {
         if (args.length < 1 | args[0].equals("-h")) {
-            System.err.println("usage: Text xmlfile [xpathfile]");
+            System.err.println("usage: Text xmlfile [xpathfile] [xpathfile]");
         } else {
             File xmlfile = new File(args[0]);
-            XPathFilter filter = (args.length < 2)
+            File inclusions = args.length > 1 ? new File(args[1]) : null;
+            File exclusions = args.length > 2 ? new File(args[2]) : null;
+            XPathFilter filter = (inclusions == null)
                     ? null
-                    : new XPathFilter(new File(args[1]));
+                    : new XPathFilter(inclusions, exclusions);
 
             Text text = new Text(xmlfile, null, filter);
             System.out.println(text);

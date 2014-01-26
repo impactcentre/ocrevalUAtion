@@ -1,0 +1,296 @@
+[TextRegion[@type='paragraph'], TextRegion[@type='credit'], TextRegion[@type='header'], TextRegion[@type='page-number'], par]
+Node=PcGts
+PcGts id= 0 TextRegion[@type='paragraph'] false
+PcGts id= 1 TextRegion[@type='credit'] false
+PcGts id= 2 TextRegion[@type='header'] false
+PcGts id= 3 TextRegion[@type='page-number'] false
+PcGts id= 4 par false
+Node=Metadata
+Metadata id= 0 TextRegion[@type='paragraph'] false
+Metadata id= 1 TextRegion[@type='credit'] false
+Metadata id= 2 TextRegion[@type='header'] false
+Metadata id= 3 TextRegion[@type='page-number'] false
+Metadata id= 4 par false
+Node=Creator
+Creator id= 0 TextRegion[@type='paragraph'] false
+Creator id= 1 TextRegion[@type='credit'] false
+Creator id= 2 TextRegion[@type='header'] false
+Creator id= 3 TextRegion[@type='page-number'] false
+Creator id= 4 par false
+Node=Created
+Created id= 0 TextRegion[@type='paragraph'] false
+Created id= 1 TextRegion[@type='credit'] false
+Created id= 2 TextRegion[@type='header'] false
+Created id= 3 TextRegion[@type='page-number'] false
+Created id= 4 par false
+Node=LastChange
+LastChange id= 0 TextRegion[@type='paragraph'] false
+LastChange id= 1 TextRegion[@type='credit'] false
+LastChange id= 2 TextRegion[@type='header'] false
+LastChange id= 3 TextRegion[@type='page-number'] false
+LastChange id= 4 par false
+Node=Page
+Page id= 0 TextRegion[@type='paragraph'] false
+Page id= 1 TextRegion[@type='credit'] false
+Page id= 2 TextRegion[@type='header'] false
+Page id= 3 TextRegion[@type='page-number'] false
+Page id= 4 par false
+Node=ReadingOrder
+ReadingOrder id= 0 TextRegion[@type='paragraph'] false
+ReadingOrder id= 1 TextRegion[@type='credit'] false
+ReadingOrder id= 2 TextRegion[@type='header'] false
+ReadingOrder id= 3 TextRegion[@type='page-number'] false
+ReadingOrder id= 4 par false
+Node=OrderedGroup
+OrderedGroup id=ro357564684568544579089 0 TextRegion[@type='paragraph'] false
+OrderedGroup id=ro357564684568544579089 1 TextRegion[@type='credit'] false
+OrderedGroup id=ro357564684568544579089 2 TextRegion[@type='header'] false
+OrderedGroup id=ro357564684568544579089 3 TextRegion[@type='page-number'] false
+OrderedGroup id=ro357564684568544579089 4 par false
+Node=RegionRefIndexed
+RegionRefIndexed id= 0 TextRegion[@type='paragraph'] false
+RegionRefIndexed id= 1 TextRegion[@type='credit'] false
+RegionRefIndexed id= 2 TextRegion[@type='header'] false
+RegionRefIndexed id= 3 TextRegion[@type='page-number'] false
+RegionRefIndexed id= 4 par false
+Node=RegionRefIndexed
+RegionRefIndexed id= 0 TextRegion[@type='paragraph'] false
+RegionRefIndexed id= 1 TextRegion[@type='credit'] false
+RegionRefIndexed id= 2 TextRegion[@type='header'] false
+RegionRefIndexed id= 3 TextRegion[@type='page-number'] false
+RegionRefIndexed id= 4 par false
+Node=TextRegion
+TextRegion id=r1 0 TextRegion[@type='paragraph'] false
+TextRegion id=r1 1 TextRegion[@type='credit'] false
+TextRegion id=r1 2 TextRegion[@type='header'] true
+Node=Coords
+Coords id= 0 TextRegion[@type='paragraph'] false
+Coords id= 1 TextRegion[@type='credit'] false
+Coords id= 2 TextRegion[@type='header'] false
+Coords id= 3 TextRegion[@type='page-number'] false
+Coords id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=TextEquiv
+TextEquiv id= 0 TextRegion[@type='paragraph'] false
+TextEquiv id= 1 TextRegion[@type='credit'] false
+TextEquiv id= 2 TextRegion[@type='header'] false
+TextEquiv id= 3 TextRegion[@type='page-number'] false
+TextEquiv id= 4 par false
+Node=PlainText
+PlainText id= 0 TextRegion[@type='paragraph'] false
+PlainText id= 1 TextRegion[@type='credit'] false
+PlainText id= 2 TextRegion[@type='header'] false
+PlainText id= 3 TextRegion[@type='page-number'] false
+PlainText id= 4 par false
+Node=Unicode
+Unicode id= 0 TextRegion[@type='paragraph'] false
+Unicode id= 1 TextRegion[@type='credit'] false
+Unicode id= 2 TextRegion[@type='header'] false
+Unicode id= 3 TextRegion[@type='page-number'] false
+Unicode id= 4 par false
+Node=TextRegion
+TextRegion id=r3 0 TextRegion[@type='paragraph'] false
+TextRegion id=r3 1 TextRegion[@type='credit'] false
+TextRegion id=r3 2 TextRegion[@type='header'] false
+TextRegion id=r3 3 TextRegion[@type='page-number'] false
+TextRegion id=r3 4 par false
+Node=Coords
+Coords id= 0 TextRegion[@type='paragraph'] false
+Coords id= 1 TextRegion[@type='credit'] false
+Coords id= 2 TextRegion[@type='header'] false
+Coords id= 3 TextRegion[@type='page-number'] false
+Coords id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=TextEquiv
+TextEquiv id= 0 TextRegion[@type='paragraph'] false
+TextEquiv id= 1 TextRegion[@type='credit'] false
+TextEquiv id= 2 TextRegion[@type='header'] false
+TextEquiv id= 3 TextRegion[@type='page-number'] false
+TextEquiv id= 4 par false
+Node=PlainText
+PlainText id= 0 TextRegion[@type='paragraph'] false
+PlainText id= 1 TextRegion[@type='credit'] false
+PlainText id= 2 TextRegion[@type='header'] false
+PlainText id= 3 TextRegion[@type='page-number'] false
+PlainText id= 4 par false
+Node=Unicode
+Unicode id= 0 TextRegion[@type='paragraph'] false
+Unicode id= 1 TextRegion[@type='credit'] false
+Unicode id= 2 TextRegion[@type='header'] false
+Unicode id= 3 TextRegion[@type='page-number'] false
+Unicode id= 4 par false
+Node=TextRegion
+TextRegion id=r4 0 TextRegion[@type='paragraph'] false
+TextRegion id=r4 1 TextRegion[@type='credit'] true
+Node=Coords
+Coords id= 0 TextRegion[@type='paragraph'] false
+Coords id= 1 TextRegion[@type='credit'] false
+Coords id= 2 TextRegion[@type='header'] false
+Coords id= 3 TextRegion[@type='page-number'] false
+Coords id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=Point
+Point id= 0 TextRegion[@type='paragraph'] false
+Point id= 1 TextRegion[@type='credit'] false
+Point id= 2 TextRegion[@type='header'] false
+Point id= 3 TextRegion[@type='page-number'] false
+Point id= 4 par false
+Node=TextEquiv
+TextEquiv id= 0 TextRegion[@type='paragraph'] false
+TextEquiv id= 1 TextRegion[@type='credit'] false
+TextEquiv id= 2 TextRegion[@type='header'] false
+TextEquiv id= 3 TextRegion[@type='page-number'] false
+TextEquiv id= 4 par false
+Node=PlainText
+PlainText id= 0 TextRegion[@type='paragraph'] false
+PlainText id= 1 TextRegion[@type='credit'] false
+PlainText id= 2 TextRegion[@type='header'] false
+PlainText id= 3 TextRegion[@type='page-number'] false
+PlainText id= 4 par false
+Node=Unicode
+Unicode id= 0 TextRegion[@type='paragraph'] false
+Unicode id= 1 TextRegion[@type='credit'] false
+Unicode id= 2 TextRegion[@type='header'] false
+Unicode id= 3 TextRegion[@type='page-number'] false
+Unicode id= 4 par false
+Node=TextRegion
+TextRegion id=r6 0 TextRegion[@type='paragraph'] false
+TextRegion id=r6 1 TextRegion[@type='credit'] false
+TextRegion id=r6 2 TextRegion[@type='header'] false
+TextRegion id=r6 3 TextRegion[@type='page-number'] true
+PARTE I. LIB. I. CAP. I. © Biblioteca Nacional de España 9

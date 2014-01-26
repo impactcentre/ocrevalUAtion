@@ -1,0 +1,5 @@
+TextRegion[@type='paragraph']
+TextRegion[@type='credit']
+TextRegion[@type='header']
+TextRegion[@type='page-number']
+par

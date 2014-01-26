@@ -34,67 +34,147 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Test elements against XPath expressions
+ * Test elements against XPath expressions and include or exclude the elements
  *
  * @author R.C.C.
  */
 public class XPathFilter {
 
     static XPath xpath = XPathFactory.newInstance().newXPath();
-    List<XPathExpression> expressions; // a list of valid XPath expressions
+    List<String> inexpr;  // the inclussion expressions
+    List<String> exexpr;  // the exclussion expressions
+    List<XPathExpression> inclusions; // XPath expressions of included elements
+    List<XPathExpression> exclusions; // XPath expressions of excluded elements
 
-    private void add(String expression) throws XPathExpressionException {
-        expressions.add(xpath.compile("self::" + expression));
+    private void include(String expression) throws XPathExpressionException {
+        inexpr.add(expression);
+        inclusions.add(xpath.compile("self::" + expression));
     }
 
-    private void addAll(String[] array) throws XPathExpressionException {
+    private void includeAll(String[] array) throws XPathExpressionException {
         for (String s : array) {
-            add(s);
+            include(s);
+        }
+    }
+
+    private void exclude(String expression) throws XPathExpressionException {
+        exexpr.add(expression);
+        exclusions.add(xpath.compile("self::" + expression));
+    }
+
+    private void excludeAll(String[] array) throws XPathExpressionException {
+        for (String s : array) {
+            exclude(s);
         }
     }
 
     /**
-     * Create an ElementFilter from an array of XPath expressions
+     * Default constructor
+     */
+    public XPathFilter() {
+        inexpr = new ArrayList<String>();
+        exexpr = new ArrayList<String>();
+        inclusions = new ArrayList<XPathExpression>();
+        exclusions = new ArrayList<XPathExpression>();
+    }
+
+    /**
+     * Create an XPathFilter from two arrays of XPath expressions
      *
-     * @param array an array of XPath expressions
+     * @param inclusions an array of XPath inclusion expressions (possibly null)
+     * @param exclusions array of XPath exclusion expressions (possibly null)
      * @throws javax.xml.xpath.XPathExpressionException
      */
-    public XPathFilter(String[] array) throws XPathExpressionException {
-        expressions = new ArrayList<XPathExpression>();
-        addAll(array);
+    public XPathFilter(String[] inclusions, String[] exclusions)
+            throws XPathExpressionException {
+        this();
+        includeAll(inclusions);
+        excludeAll(exclusions);
+    }
+
+    /**
+     * Read file into lines
+     *
+     * @param file the input file
+     * @return the content as a list of strings, each one with the content in
+     * one file line, excluding those starting with the character #
+     * @throws IOException
+     */
+    private String[] lines(File file) throws IOException {
+        List<String> list = new ArrayList<String>();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        while (reader.ready()) {
+            String line = reader.readLine().trim();
+            if (!line.startsWith("#")) {
+                list.add(line);
+            }
+        }
+        System.out.println(list);
+        return list.toArray(new String[list.size()]);
     }
 
     /**
      * Create an ElementFilter from the XPath expressions in a file (one per
      * line)
      *
-     * @param file a file containing XPath expressions (one per line)
+     * @param infile a file containing XPath inclusion expressions (one per
+     * line)
+     * @param exfile a file containing XPath exclusion expressions (one per
+     * line)
      * @throws java.io.IOException
+     * @throws javax.xml.xpath.XPathExpressionException
      */
-    public XPathFilter(File file) throws IOException {
-        expressions = new ArrayList<XPathExpression>();
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-
-        while (reader.ready()) {
-            String line = reader.readLine().trim();
-            try {
-                add(line);
-            } catch (XPathExpressionException ex) {
-                throw new IOException(ex.getMessage());
-            }
+    public XPathFilter(File infile, File exfile)
+            throws IOException, XPathExpressionException {
+        this();
+        if (infile != null) {
+            includeAll(lines(infile));
+        }
+        if (exfile != null) {
+            excludeAll(lines(exfile));
         }
     }
 
     /**
-     * Check if the element matches any valid expression
+     * Check if the element matches any valid inclusion expression
      *
-     * @param element
-     * @return true if the element matches any of the valid XPAth expressions
+     * @param element an XML element
+     * @return true if the element matches any of the XPath inclusion
+     * expressions
      */
-    public boolean accepts(Element element) {
-        for (XPathExpression expression : expressions) {
+    public boolean included(Element element) {
+
+        for (int n = 0; n < inclusions.size(); ++n) {
+            XPathExpression expression = inclusions.get(n);
             try {
-                Boolean match = (Boolean) expression.evaluate(element, XPathConstants.BOOLEAN);
+                Boolean match = (Boolean) expression.evaluate(element,
+                        XPathConstants.BOOLEAN);
+                System.out.println(element.getNodeName() + " id="
+                        + element.getAttribute("id") + " "
+                        + n + " " + inexpr.get(n) + " " + match);
+                if (match) {
+                    return true;
+                }
+            } catch (XPathExpressionException ex) {
+                System.out.println(ex);
+                // not a valid match
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the element matches any valid inclusion expression
+     *
+     * @param element an XML element
+     * @return true if the element matches any of the XPAth exclusion
+     * expressions
+     */
+    public boolean excluded(Element element) {
+        for (XPathExpression expression : exclusions) {
+            try {
+                Boolean match = (Boolean) expression.evaluate(element,
+                        XPathConstants.BOOLEAN);
                 if (match) {
                     return true;
                 }
@@ -106,6 +186,16 @@ public class XPathFilter {
     }
 
     /**
+     *
+     * @param element an XML element
+     * @return true if the element matches any of the XPAth inclusion
+     * expressions and none of the exclusion expressions
+     */
+    private boolean accepted(Element element) {
+        return included(element) && !excluded(element);
+    }
+
+    /**
      * Select elements matching the XPath valid expression
      *
      * @param element a parent element
@@ -114,14 +204,15 @@ public class XPathFilter {
      */
     public NodeList selectElements(Element element) {
         //NodeList nodeList = document.getElementsByTagName("*");
-        Node elements = element.getOwnerDocument().createElement("void");
         NodeList nodeList = element.getElementsByTagName("*");
+        Node elements = element.getOwnerDocument().createElement("void");
 
         for (int n = 0; n < nodeList.getLength(); n++) {
             Node node = nodeList.item(n);
+            System.out.println("Node=" + node.getNodeName());
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element e = (Element) node;
-                if (accepts(e)) {
+                if (accepted(e)) {
                     elements.appendChild(node);
                 }
             }
@@ -137,7 +228,22 @@ public class XPathFilter {
      * expressions in this filter
      */
     public NodeList selectElements(Document doc) {
-        return selectElements(doc.getDocumentElement());
+        NodeList nodeList = doc.getElementsByTagName("*");
+        Node elements = doc.createElement("void"); // beware creted after list is extracted!
+
+        for (int n = 0; n < nodeList.getLength(); n++) {
+            Node node = nodeList.item(n);
+            System.out.println("Node=" + node.getNodeName());
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element e = (Element) node;
+                if (accepted(e)) {
+                    elements.appendChild(node);
+                }
+            }
+        }
+        return elements.getChildNodes();
+
+//        return selectElements(doc.getDocumentElement());
     }
 
     /**
@@ -145,14 +251,16 @@ public class XPathFilter {
      *
      * @param args
      * @throws java.io.IOException
+     * @throws javax.xml.xpath.XPathExpressionException
      */
-    public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
-            System.err.println("usage: ElementFilter xmlfile xpathfile");
+    public static void main(String[] args) throws IOException, XPathExpressionException {
+        if (args.length < 2) {
+            System.err.println("usage: XPathFilter xmlfile xpathfile xpathfile");
         } else {
             File xmlfile = new File(args[0]);
-            File xpathfile = new File(args[1]);
-            XPathFilter filter = new XPathFilter(xpathfile);
+            File xpathinfile = new File(args[1]);
+            File xpathexfile = new File(args[2]);
+            XPathFilter filter = new XPathFilter(xpathinfile, xpathexfile);
             NodeList nodes = filter.selectElements(DocumentParser.parse(xmlfile));
             for (int n = 0; n < nodes.getLength(); ++n) {
                 System.out.println(nodes.item(n).getNodeName());
@@ -160,4 +268,3 @@ public class XPathFilter {
         }
     }
 }
-
