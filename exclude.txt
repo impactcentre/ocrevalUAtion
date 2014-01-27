@@ -1,1 +1,1 @@
-TextRegion[@type='page-number']
+TextRegion[@type='paragraph']

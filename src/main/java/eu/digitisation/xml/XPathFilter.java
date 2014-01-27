@@ -105,11 +105,10 @@ public class XPathFilter {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         while (reader.ready()) {
             String line = reader.readLine().trim();
-            if (!line.startsWith("#")) {
+            if (line.length() > 0  && !line.startsWith("#")) {
                 list.add(line);
             }
         }
-        System.out.println(list);
         return list.toArray(new String[list.size()]);
     }
 
@@ -149,14 +148,10 @@ public class XPathFilter {
             try {
                 Boolean match = (Boolean) expression.evaluate(element,
                         XPathConstants.BOOLEAN);
-                System.out.println(element.getNodeName() + " id="
-                        + element.getAttribute("id") + " "
-                        + n + " " + inexpr.get(n) + " " + match);
                 if (match) {
                     return true;
                 }
             } catch (XPathExpressionException ex) {
-                System.out.println(ex);
                 // not a valid match
             }
         }
@@ -202,22 +197,20 @@ public class XPathFilter {
      * @return all descendent elements matching at least one of the XPath
      * expressions in this filter
      */
-    public NodeList selectElements(Element element) {
-        //NodeList nodeList = document.getElementsByTagName("*");
+    public List<Element> selectElements(Element element) {
         NodeList nodeList = element.getElementsByTagName("*");
-        Node elements = element.getOwnerDocument().createElement("void");
+        List<Element> selection = new ArrayList<Element>();
 
         for (int n = 0; n < nodeList.getLength(); n++) {
             Node node = nodeList.item(n);
-            System.out.println("Node=" + node.getNodeName());
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element e = (Element) node;
                 if (accepted(e)) {
-                    elements.appendChild(node);
+                    selection.add(e);
                 }
             }
         }
-        return elements.getChildNodes();
+        return selection;
     }
 
     /**
@@ -227,22 +220,20 @@ public class XPathFilter {
      * @return all elements in the document matching at least one of the XPath
      * expressions in this filter
      */
-    public NodeList selectElements(Document doc) {
+    public List<Element> selectElements(Document doc) {
         NodeList nodeList = doc.getElementsByTagName("*");
-        Node elements = doc.createElement("void"); // beware creted after list is extracted!
+        List<Element> selection = new ArrayList<Element>();
 
         for (int n = 0; n < nodeList.getLength(); n++) {
             Node node = nodeList.item(n);
-            System.out.println("Node=" + node.getNodeName());
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element e = (Element) node;
                 if (accepted(e)) {
-                    elements.appendChild(node);
+                    selection.add(e);
                 }
             }
         }
-        return elements.getChildNodes();
-
+        return selection;
 //        return selectElements(doc.getDocumentElement());
     }
 
@@ -261,9 +252,9 @@ public class XPathFilter {
             File xpathinfile = new File(args[1]);
             File xpathexfile = new File(args[2]);
             XPathFilter filter = new XPathFilter(xpathinfile, xpathexfile);
-            NodeList nodes = filter.selectElements(DocumentParser.parse(xmlfile));
-            for (int n = 0; n < nodes.getLength(); ++n) {
-                System.out.println(nodes.item(n).getNodeName());
+            List<Element> selected = filter.selectElements(DocumentParser.parse(xmlfile));
+            for (Element e : selected) {
+                System.out.println(e.getNodeName());
             }
         }
     }
