@@ -19,12 +19,14 @@ package eu.digitisation.io;
 
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.xml.DocumentParser;
+import eu.digitisation.xml.ElementList;
 import eu.digitisation.xml.XPathFilter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +47,6 @@ public class Text {
 
     StringBuilder builder;
     static final int maxlen;
-
     String encoding;
     XPathFilter filter;
 
@@ -230,12 +231,12 @@ public class Text {
     private void readPageFile(File file) throws IOException, WarningException {
         Document doc = loadXMLFile(file);
         Document sorted = SortPageXML.isSorted(doc) ? doc : SortPageXML.sorted(doc);
-        NodeList regions = (filter == null)
-                ? sorted.getElementsByTagName("TextRegion")
+        List<Element> regions = (filter == null)
+                ? new ElementList(sorted.getElementsByTagName("TextRegion"))
                 : filter.selectElements(sorted);
 
-        for (int r = 0; r < regions.getLength(); ++r) {
-            Element region = (Element) regions.item(r);
+        for (int r = 0; r < regions.size(); ++r) {
+            Element region = regions.get(r);
             readPageTextRegion(region);
         }
     }
@@ -276,12 +277,12 @@ public class Text {
     private void readFR10File(File file) throws WarningException {
         Document doc = loadXMLFile(file);
 
-        NodeList pars = (filter == null)
-                ? doc.getElementsByTagName("par")
+        List<Element> pars = (filter == null)
+                ? new ElementList(doc.getElementsByTagName("par"))
                 : filter.selectElements(doc);
 
-        for (int npar = 0; npar < pars.getLength(); ++npar) {
-            Element par = (Element) pars.item(npar);
+        for (int npar = 0; npar < pars.size(); ++npar) {
+            Element par = pars.get(npar);
             readFR10Par(par);
         }
     }
