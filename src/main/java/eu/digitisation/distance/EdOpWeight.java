@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Universidad de Alicante
+ * Copyright (C) 2014 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,13 +15,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+
 package eu.digitisation.distance;
 
 /**
- * Basic edit distance variants.
- * @author R.C.C
+ * Integer weights for basic edit operations.
+ * @author R.C.C.
  */
-public enum EditDistanceType {
-
-    INDEL, LEVENSHTEIN, DAMERAU_LEVENSHTEIN, OCR_CHAR, OCR_WORD;
+public interface EdOpWeight {
+    public int sub(char c1, char c2);
+    public int ins(char c);
+    public int del(char c);
 }

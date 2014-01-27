@@ -170,8 +170,9 @@ public class EditSequence {
      *
      * @param first the first string
      * @param second the second string
+     * @param w the weights applied to basic edit operations
      */
-    public EditSequence(String first, String second) {
+    public EditSequence(String first, String second, EdOpWeight w) {
         int l1;      // length of first 
         int l2;      // length of second
         int[][] A;   // distance table
@@ -186,14 +187,15 @@ public class EditSequence {
         A[0][0] = 0;
         B.set(0, 0, EdOp.KEEP);
         for (int j = 1; j <= second.length(); ++j) {
-            A[0][j] = A[0][j - 1] + 1;
+            char c2 = second.charAt(j - 1);
+            A[0][j] = A[0][j - 1] + w.ins(c2);
             B.set(0, j, EdOp.INSERT);
         }
 
         // Compute other rows
         for (int i = 1; i <= first.length(); ++i) {
             char c1 = first.charAt(i - 1);
-            A[i % 2][0] = A[(i - 1) % 2][0] + 1;
+            A[i % 2][0] = A[(i - 1) % 2][0] + w.del(c1);
             B.set(i, 0, EdOp.DELETE);
             for (int j = 1; j <= second.length(); ++j) {
                 char c2 = second.charAt(j - 1);
@@ -201,29 +203,20 @@ public class EditSequence {
                 if (c1 == c2) {
                     A[i % 2][j] = A[(i - 1) % 2][j - 1];
                     B.set(i, j, EdOp.KEEP);
-                } else if (Character.isSpaceChar(c1) ^ Character.isSpaceChar(c2)) {
-                    // No alignment between blank and not-blank
-                    if (A[(i - 1) % 2][j] < A[i % 2][j - 1]) {
-                        A[i % 2][j] = A[(i - 1) % 2][j] + 1;
-                        B.set(i, j, EdOp.DELETE);
-                    } else {
-                        A[i % 2][j] = A[i % 2][j - 1] + 1;
-                        B.set(i, j, EdOp.INSERT);
-                    }
                 } else {
-                    A[i % 2][j] = Math.min(A[(i - 1) % 2][j] + 1,
-                            Math.min(A[i % 2][j - 1] + 1,
-                                    A[(i - 1) % 2][j - 1] + 1));
-                    if (A[i % 2][j] == A[(i - 1) % 2][j] + 1) {
-                        B.set(i, j, EdOp.DELETE);
-                    } else if (A[i % 2][j] == A[i % 2][j - 1] + 1) {
+                    A[i % 2][j] = Math.min(A[(i - 1) % 2][j - 1] + w.sub(c1, c2),
+                            Math.min(A[i % 2][j - 1] + w.ins(c2),
+                                    A[(i - 1) % 2][j] + w.del(c1)));
+
+                    if (A[i % 2][j] == A[i % 2][j - 1] + w.ins(c2)) {
                         B.set(i, j, EdOp.INSERT);
+                    } else if (A[i % 2][j] == A[(i - 1) % 2][j] + w.del(c1)) {
+                        B.set(i, j, EdOp.DELETE);
                     } else {
                         B.set(i, j, EdOp.SUBSTITUTE);
                     }
                 }
             }
-
         }
 
         // extract sequence of edit operations
