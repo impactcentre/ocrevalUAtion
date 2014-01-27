@@ -32,42 +32,53 @@ import org.junit.Test;
  */
 public class EditDistanceTest {
 
-    public EditDistanceTest() {
+    @Test
+    public void testWeights() {
+        System.out.println("Weighted distance");
+        EdOpWeight w = new OcrOpWeight();
+        String s1 = "a b";
+        String s2 = "acb";
+        int expResult = 2;
+        int result = EditDistance.charDistance(s1, s2, w, 50);
+        assertEquals(expResult, result);
     }
 
     /**
      * Test of charDistance method, of class EditDistance.
+     *
+     * @throws java.net.URISyntaxException
+     * @throws eu.digitisation.io.WarningException
      */
     @Test
     public void testCharDistance() throws URISyntaxException, WarningException {
         System.out.println("charDistance");
-
+        EdOpWeight w = new OcrOpWeight();
         String s1 = "patata";
         String s2 = "apta";
         int expResult = 3;
-        int result = EditDistance.charDistance(s1, s2, 10);
+        int result = EditDistance.charDistance(s1, s2, w, 10);
         assertEquals(expResult, result);
         // A second test
         s1 = "holanda";
         s2 = "wordland";
-        result = EditDistance.charDistance(s1, s2, 10);
+        result = EditDistance.charDistance(s1, s2, w, 10);
         assertEquals(4, result);
         // Test with normalization
         s1 = StringNormalizer.reduceWS("Mi enhorabuena");
         s2 = StringNormalizer.reduceWS("mi en  hora  buena");
-        result = EditDistance.charDistance(s1, s2, 10);
+        result = EditDistance.charDistance(s1, s2, w, 10);
         assertEquals(3, result);
 
         s1 = "bluevelvet";
         s2 = "luevert";
         expResult = StringEditDistance.levenshtein(s1, s2);
-        result = EditDistance.charDistance(s1, s2, 5);
+        result = EditDistance.charDistance(s1, s2, w, 5);
         assertEquals(expResult, result);
 
         s1 = "patatapatata";
         s2 = "gastapasta";
         expResult = 5;//StringEditDistance.levenshtein(s1, s2);  
-        result = EditDistance.charDistance(s1, s2, 50);
+        result = EditDistance.charDistance(s1, s2, w, 50);
         assertEquals(expResult, result);
 
         URL gtUrl = getClass().getResource("/OfTheSciences_gt_TXT.txt");
@@ -77,7 +88,7 @@ public class EditDistanceTest {
         File ocrfile = new File(ocrUrl.toURI());
         String ocrs = new Text(ocrfile).toString();
         expResult = StringEditDistance.levenshtein(gts, ocrs);
-        result = EditDistance.charDistance(gts, ocrs, 1000);
+        result = EditDistance.charDistance(gts, ocrs, w, 1000);
         assertEquals(expResult, result);
     }
 

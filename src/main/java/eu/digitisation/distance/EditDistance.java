@@ -17,9 +17,9 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.math.MinimalPerfectHash;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.io.WarningException;
+import eu.digitisation.math.MinimalPerfectHash;
 import java.io.File;
 
 /**
@@ -33,34 +33,34 @@ public class EditDistance {
     /**
      * @param s1 the first string.
      * @param s2 the second string.
+     * @param w weights for basic edit operations
      * @param chunkLen the length of the chunks analyzed at every step (must be
      * strictly greater than 1)
      * @return the approximate (linear time) Levenshtein distance between first
      * and second.
      */
-    public static int charDistance(String s1, String s2, int chunkLen) {
-        EditSequence path = new EditSequence();
+    public static int charDistance(String s1, String s2, EdOpWeight w, int chunkLen) {
+        EditSequence seq = new EditSequence();
         int len1 = s1.length();
         int len2 = s2.length();
 
         if (chunkLen < 2) {
             throw new IllegalArgumentException("chunkLen mut be greater than 1");
         }
-        while (path.shift1() < len1 || path.shift2() < len2) {
-            int high1 = Math.min(path.shift1() + chunkLen, len1);
-            int high2 = Math.min(path.shift2() + chunkLen, len2);
-            String sub1 = s1.substring(path.shift1(), high1);
-            String sub2 = s2.substring(path.shift2(), high2);
-            EditSequence subpath = new EditSequence(sub1, sub2);
-
+        while (seq.shift1() < len1 || seq.shift2() < len2) {
+            int high1 = Math.min(seq.shift1() + chunkLen, len1);
+            int high2 = Math.min(seq.shift2() + chunkLen, len2);
+            String sub1 = s1.substring(seq.shift1(), high1);
+            String sub2 = s2.substring(seq.shift2(), high2);
+            EditSequence subseq = new EditSequence(sub1, sub2, w);
             EditSequence head = (high1 < len1 || high2 < len2)
-                    ? subpath.head(subpath.size() / 2)
-                    : subpath;
+                    ? subseq.head(subseq.size() / 2)
+                    : subseq;
 
-            path.append(head);
+            seq.append(head);
         }
 
-        return path.cost();
+        return seq.cost();
     }
     
        /**
@@ -72,7 +72,7 @@ public class EditDistance {
      * and second.
      */
     public static int wordDistance(String s1, String s2, int chunkLen) {
-        EditSequence path = new EditSequence();
+        EditSequence seq = new EditSequence();
         MinimalPerfectHash mph = new MinimalPerfectHash(true); // case sensitive
         TokenArray a1 = new TokenArray(mph, s1);
         TokenArray a2 = new TokenArray(mph, s2);
@@ -82,21 +82,21 @@ public class EditDistance {
         if (chunkLen < 2) {
             throw new IllegalArgumentException("chunkLen mut be greater than 1");
         }
-        while (path.shift1() < len1 || path.shift2() < len2) {
-            int high1 = Math.min(path.shift1() + chunkLen, len1);
-            int high2 = Math.min(path.shift2() + chunkLen, len2);
-            TokenArray sub1 = a1.subArray(path.shift1(), high1);
-            TokenArray sub2 = a2.subArray(path.shift2(), high2);
-            EditSequence subpath = new EditSequence(sub1, sub2);
+        while (seq.shift1() < len1 || seq.shift2() < len2) {
+            int high1 = Math.min(seq.shift1() + chunkLen, len1);
+            int high2 = Math.min(seq.shift2() + chunkLen, len2);
+            TokenArray sub1 = a1.subArray(seq.shift1(), high1);
+            TokenArray sub2 = a2.subArray(seq.shift2(), high2);
+            EditSequence subseq = new EditSequence(sub1, sub2);
 
             EditSequence head = (high1 < len1 || high2 < len2)
-                    ? subpath.head(subpath.size() / 2)
-                    : subpath;
+                    ? subseq.head(subseq.size() / 2)
+                    : subseq;
 
-            path.append(head);
+            seq.append(head);
         }
 
-        return path.cost();
+        return seq.cost();
     }
 
     /**
@@ -110,9 +110,10 @@ public class EditDistance {
      */
     public static int distance(String first, String second, int chunkLen, EditDistanceType type) throws NoSuchMethodException {
         switch (type) {
-            case CHAR_BASED:
-                return charDistance(first, second, chunkLen);
-            case WORD_BASED:
+            case OCR_CHAR:
+                EdOpWeight w =new OcrOpWeight();
+                return charDistance(first, second, w, chunkLen);
+            case OCR_WORD:
                 return wordDistance(first, second, chunkLen);             
             default:
                 throw new java.lang.NoSuchMethodException(type + " distance still to be implemented");
@@ -126,9 +127,9 @@ public class EditDistance {
         int len = Integer.parseInt(args[2]);
         String s1 = new TextContent(f1, null, null).toString();
         String s2 = new TextContent(f2, null, null).toString();
-        int d = EditDistance.distance(s1, s2, len, EditDistanceType.CHAR_BASED);
+        int d = EditDistance.distance(s1, s2, len, EditDistanceType.OCR_CHAR);
         System.out.println(d);
-        d = EditDistance.distance(s1, s2, len, EditDistanceType.WORD_BASED);
+        d = EditDistance.distance(s1, s2, len, EditDistanceType.OCR_WORD);
         System.out.println(d);
     }
 

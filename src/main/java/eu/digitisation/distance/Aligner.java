@@ -280,15 +280,12 @@ public class Aligner {
      * @param header2 second text title for table head
      * @param first the first text
      * @param second the second text
-     * @param map a CharMap for character equivalences
+     * @param w the weighs associated to basic edit operations
      * @return a table in XHTML format showing the alignments
      */
     public static Element bitext(String header1, String header2,
-            String first, String second, CharMap map) {
-
-        EditSequence edition = (map == null)
-                ? new EditSequence(first, second)
-                : new EditSequence(map.normalForm(first), map.normalForm(second));
+            String first, String second, EdOpWeight w) {
+        EditSequence edition = new EditSequence(first, second, w);
         DocumentBuilder builder = new DocumentBuilder("table");
         Element table = builder.root();
         Element row;
@@ -400,15 +397,14 @@ public class Aligner {
     }
 
     public static void main(String[] args) throws WarningException {
-        
-         File f1 = new File(args[0]);
-         File f2 = new File(args[1]);
-         String s1 = new Text(f1).toString();
-         String s2 = new Text(f2).toString();
-        
+
+        File f1 = new File(args[0]);
+        File f2 = new File(args[1]);
         File ofile = new File("/tmp/out.html");
-        //String s1 = "patatapatata";
-        //String s2 = "gastapasta";
+         
+        String s1 = new Text(f1).toString();
+        String s2 = new Text(f2).toString();
+
         DocumentBuilder builder = new DocumentBuilder("html");
         Element body = builder.addElement("body");
         Element alitab = Aligner.bitext("s1", "s2", s1, s2, null);
