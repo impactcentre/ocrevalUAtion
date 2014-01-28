@@ -17,15 +17,26 @@
  */
 package eu.digitisation.input;
 
+import java.awt.Color;
+import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 
 /**
  *
  * @author R.C.C
  */
-interface OptionSelector {
+public abstract class OptionSelector extends JPanel implements ActionListener {
 
-    public Option getOption();
+    Option option;
 
-    public JPanel getPanel();
+    public OptionSelector(Option option, Color forecolor, Color backcolor) {
+        this.option = option;
+        setForeground(forecolor);
+        setBackground(backcolor);
+    }
+
+    public Option getOption() {
+        return option;
+    }
+
 }

@@ -19,8 +19,11 @@ package eu.digitisation.input;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.io.File;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
 
 /**
  *
@@ -28,22 +31,39 @@ import javax.swing.JPanel;
  */
 public class GUI extends JFrame {
 
+    public final void init(String title, int width, int height) {
+        setTitle(title);
+        setSize(width, height);
+        setForeground(Color.decode("#4C501E"));
+        setBackground(Color.decode("#FAFAFA"));
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        setLocationRelativeTo(null);
+    }
+
     public GUI() {
+        // initialization seetings
+        init("ocrevaluation", 400, 300);
+
+        // Add content
         Container pane = getContentPane();
 
-        setTitle("ocrevalUAtion");
-        setBackground(Color.BLUE);
-        setSize(200,200);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-     //   setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        setLocationRelativeTo(null);
-        
-        Option op = new Option<Boolean>("Primera");
-        OptionSelector selector = new BooleanOptionSelector(op);
-        JPanel panel = selector.getPanel();
-        pane.add(panel);
+        Option op = new Option<Boolean>("Primera", "http:www.ua.es");
+        OptionSelector selector =
+                new BooleanOptionSelector(op, getForeground(), getBackground());
+        pane.add(selector);
+
+        op = new Option<File>("GT", "ayuda");
+        selector = new FileOptionSelector(op, getForeground(), getBackground());
+        pane.add(selector);
+
+        op = new Option<File>("OCR", "ayuda");
+        selector = new FileOptionSelector(op, getForeground(), getBackground());
+        pane.add(selector);
+        // Show
         setVisible(true);
     }
+
     public static void main(String[] args) {
         new GUI();
     }

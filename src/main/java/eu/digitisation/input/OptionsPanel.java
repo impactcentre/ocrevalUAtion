@@ -42,10 +42,9 @@ public class OptionsPanel extends JPanel {
         OptionSelector selector = null;
         Class type = op.getType();
         if (type == Boolean.class) {
-            selector = new BooleanOptionSelector(op);
-
+            selector = new BooleanOptionSelector(op, getForeground(), getBackground());
         } else if (type == File.class) {
-            selector = new FileOptionSelector(op);
+            selector = new FileOptionSelector(op, getForeground(), getBackground());
         }
          selectors.add(selector);
     }

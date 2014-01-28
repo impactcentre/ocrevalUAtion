@@ -33,19 +33,7 @@ public class Option<Type> {
 
     String name;
     Type value;
-    String text;
-    URL url;
-
-    /**
-     * Crete an Option with the given name and value
-     *
-     * @param name the option's name
-     * @param value the option's value
-     */
-    Option(String name, Type value) {
-        this.name = name;
-        this.value = value;
-    }
+    String help;  // text help or URL
 
     /**
      * Crete an Option with the given name (and null value)
@@ -53,7 +41,18 @@ public class Option<Type> {
      * @param name the option's name
      */
     Option(String name) {
-        this(name, null);
+        this.name = name;
+    }
+
+    /**
+     * Create Option with the given name and set this option's help text and URL
+     * with additional help
+     *
+     * @param help help text or URL for this option
+     */
+    Option(String name, String help) {
+        this.name = name;
+        this.help = help;
     }
 
     /**
@@ -76,42 +75,27 @@ public class Option<Type> {
 
     /**
      * Get the option value type (Boolean, File, Integer,...)
-     * @return 
+     *
+     * @return
      */
     public Class getType() {
         return value.getClass();
     }
 
     /**
-     * Set this option's help text and URL with additional help
-     *
-     * @param helpText help text for this option
-     * @param helpURL URL address with additional information
-     */
-    public void setHelp(String helpText, String helpURL) {
-        this.text = helpText;
-        if (helpURL != null) {
-            try {
-                this.url = new URL(helpURL);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(Option.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    /**
      *
      * @return the help text for this option
      */
-    public String getHelpText() {
-        return text;
+    public String getHelp() {
+        return help;
     }
 
     /**
-     *
-     * @return the URL address with additional information
+     * 
+     * @return a string name:value
      */
-    public URL getHelpURL() {
-        return url;
+    @Override
+    public String toString() {
+        return name + ":" + value;
     }
 }

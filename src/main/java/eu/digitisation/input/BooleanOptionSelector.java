@@ -17,32 +17,32 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.gui.HelpButton;
 import java.awt.Color;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 
 /**
  *
  * @author R.C.C
  */
-class BooleanOptionSelector implements OptionSelector {
+class BooleanOptionSelector extends OptionSelector {
 
-    Option option;
+    JCheckBox box;
 
-    public BooleanOptionSelector(Option op) {
-        option = op;
+    public BooleanOptionSelector(Option<Boolean> op, Color forecolor, Color bgcolor) {
+        super(op, forecolor, bgcolor);
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        box = new JCheckBox(op.name);
+        add(box);
+        if (op.help != null) {
+            add(new Help(op.help, forecolor, bgcolor));
+        }
     }
 
     @Override
-    public Option getOption() {
-        return option;
-    }
-
-    @Override
-    public JPanel getPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.RED);
-        panel.add(new JButton()); //test
-        return panel;
+    public void actionPerformed(ActionEvent e) {
+        option.setValue(box.isSelected());
     }
 }
