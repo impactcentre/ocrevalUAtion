@@ -35,12 +35,12 @@ import javax.swing.JPanel;
  *
  * @author R.C.C.
  */
-public class OptionSelector extends JPanel implements ActionListener {
+public class BooleanOptionSelector extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
     EnumMap<Option, JCheckBox> boxes = new EnumMap<Option, JCheckBox>(Option.class);
 
-    public OptionSelector(Color forecolor, Color bgcolor) {
+    public BooleanOptionSelector(Color forecolor, Color bgcolor) {
         setLayout(new GridLayout(0, 1));
         setAlignmentX(Component.LEFT_ALIGNMENT);
         for (Option op : Option.values()) {
@@ -82,7 +82,7 @@ public class OptionSelector extends JPanel implements ActionListener {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         Container pane = frame.getContentPane();
-        OptionSelector selector = new OptionSelector(Color.GRAY, Color.WHITE);
+        BooleanOptionSelector selector = new BooleanOptionSelector(Color.GRAY, Color.WHITE);
 
         frame.setTitle("ocrevalUAtion");
 

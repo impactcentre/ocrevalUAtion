@@ -15,8 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.gui;
+package eu.digitisation.input;
 
+import eu.digitisation.gui.*;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -31,67 +32,47 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 /**
+ * Help text or URL for additional information (URL must start with http:)
  *
  * @author R.C.C.
  */
-public class HelpButton extends JButton {
+public class Help extends JButton {
 
     private static final long serialVersionUID = 1L;
     String text;  // help text
-    URI uri;      // URI with extended help
 
     /**
      * Default constructor
      *
-     * @param helpText the help text
-     * @param helpUri the address with further information
+     * @param helpText the help text or URL
      * @param forecolor foreground color
      * @param bgcolor background color
      */
-    public HelpButton(String helpText, String helpUri, Color forecolor, Color bgcolor) {
+    public Help(String helpText, Color forecolor, Color bgcolor) {
         super("?");
         setPreferredSize(new Dimension(10, 10));
-        setContentAreaFilled(false);
         setForeground(forecolor);
         setBackground(bgcolor);
+        setContentAreaFilled(false);
 
         this.text = helpText;
-        if (helpUri != null) {
-            try {
-                this.uri = new URI(helpUri);
-            } catch (URISyntaxException ex) {
-                this.uri = null;
-            }
-        }
 
         addActionListener(new ActionListener() {
             Container container = getParent();
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (text != null) {
-                    JOptionPane.showMessageDialog(container, text);
-                }
-                if (uri != null) {
-                    Browser.open(uri);
+                if (text.startsWith("http:")) {
+                    Browser.open(text);
+                } else {
+                    JOptionPane.showMessageDialog(getParent(), text);
                 }
             }
         });
     }
 
-    /**
-     * Default constructor
-     *
-     * @param help the help text or address with further information
-     * @param forecolor foreground color
-     * @param bgcolor background color
-     */
-    public HelpButton(String help, Color forecolor, Color bgcolor) {
-        this(help.startsWith("http") ? null : help,
-                help.startsWith("http") ? help : null,
-                forecolor, bgcolor);
-    }
-
+    
+    // Artwork
     @Override
     protected void paintComponent(Graphics g) {
         if (getModel().isArmed()) {
