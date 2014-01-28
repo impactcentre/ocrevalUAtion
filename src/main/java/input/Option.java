@@ -66,6 +66,14 @@ public class Option<Type> {
     }
 
     /**
+     * 
+     * @return true if the option has a defined value
+     */
+    public boolean isDefined() {
+        return value != null;
+    }
+    
+    /**
      * Get this option's value
      *
      * @return the option's value

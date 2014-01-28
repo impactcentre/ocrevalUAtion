@@ -15,41 +15,48 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.gui;
+package eu.digitisation.input;
 
+
+import eu.digitisation.gui.Browser;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
  * @author R.C.C
  */
-public class JLink extends JLabel {
+public class Link extends JPanel {
     private static final long serialVersionUID = 1L;
-    
+    JLabel link;
     /**
      * Basic constructor
      * @param title the text to be shown
      * @param url the linked URL 
      * @param color the color of the link
      */
-    public JLink(final String title, final String url, Color color) {
-        super();
-        setPreferredSize(new Dimension(400,10));
-        setText("<html><body>" + title
+    public Link(final String title, final String url, Color color) {
+        setPreferredSize(new Dimension(600,30));  
+        link = new JLabel();
+        link.setFont(new Font("Verdana", Font.PLAIN, 12));
+        link.setAlignmentX(LEFT_ALIGNMENT);
+        link.setText("<html><body>" + title
                 + "<a style=\"color:#4c501E\" href=\""
                 + url + "\">" + url
                 + "</a></body></html>");
-        setCursor(new Cursor(Cursor.HAND_CURSOR));
-        addMouseListener(new MouseAdapter() {
+        link.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        link.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Browser.open(url);
             }
         });
+        add(link);
     }
 }

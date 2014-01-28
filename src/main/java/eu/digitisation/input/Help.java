@@ -17,7 +17,7 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.gui.*;
+import eu.digitisation.gui.Browser;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -26,8 +26,6 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 

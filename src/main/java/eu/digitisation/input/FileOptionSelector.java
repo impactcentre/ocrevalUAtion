@@ -30,6 +30,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -46,10 +47,9 @@ import javax.swing.JTextPane;
  *
  * @author R.C.C
  */
-class FileOptionSelector extends OptionSelector {
+public class FileOptionSelector extends OptionSelector<File> {
 
     static final long serialVersionUID = 1L;
-    static final Color approved = Color.decode("#B5CC9E");
     static File dir; // directory opened by default
     JTextPane area;  // The area to display the filename
     JButton choose;  // Optional file chooser
@@ -57,16 +57,37 @@ class FileOptionSelector extends OptionSelector {
     public FileOptionSelector(Option<File> op, Color forecolor, Color bgcolor) {
         super(op, forecolor, bgcolor);
 
-        setPreferredSize(new Dimension(100, 100));
+        setPreferredSize(new Dimension(600, 70));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBorder(BorderFactory.createLineBorder(forecolor, 2));
+        
+        // Drop area
         area = new JTextPane();
-        //    area.setFont(new Font("Verdana", Font.PLAIN, 12));
+        area.setFont(new Font("Verdana", Font.PLAIN, 12));
         area.setText("Drop here your " + option.name);
+        area.setForeground(forecolor);
+        area.setBackground(bgcolor);
         enableDragAndDrop(area);
 
+        // File chooser
         choose = new JButton("Or select the file");
         choose.setFont(new Font("Verdana", Font.PLAIN, 10));
+        choose.setForeground(forecolor);
+        choose.setBackground(bgcolor);
+        choose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File file = choose("input_file");
+                if (file != null) {
+                    option.setValue(file);
+                    area.setText(file.getName());
+                    dir = file.getParentFile();
+                    shade(Color.decode("#B5CC9E")); // green
+                }
+            }
+        });
+        
+        // Put everything togetehr
         add(area);
         add(choose, BorderLayout.EAST);
     }
@@ -87,7 +108,7 @@ class FileOptionSelector extends OptionSelector {
      */
     public void checkout() {
         if (!ready()) {
-            shade(Color.decode("#fffacd"));
+            shade(Color.decode("#fffacd")); // yellow
         }
     }
 
@@ -105,7 +126,7 @@ class FileOptionSelector extends OptionSelector {
      * @return the selected input file
      */
     public File getFile() {
-        return (File)option.getValue();
+        return option.getValue();
     }
 
     /**
@@ -117,9 +138,14 @@ class FileOptionSelector extends OptionSelector {
         return file != null && file.exists();
     }
 
+    /**
+     * The drag&drop function
+     * @param area 
+     */
     private void enableDragAndDrop(final JTextPane area) {
         DropTarget target;
         target = new DropTarget(area, new DropTargetListener() {
+
             @Override
             public void dragEnter(DropTargetDragEvent e) {
             }
@@ -165,25 +191,11 @@ class FileOptionSelector extends OptionSelector {
             }
         });
     }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JButton pressed = (JButton) e.getSource();
-        if (pressed == choose) {
-            File file = choose("input_file");
-            option.setValue(file);
-            if (file != null) {
-                area.setText(file.getName());
-                dir = file.getParentFile();
-                shade(approved);
-            }
-        }
-    }
-
+    
     /**
      * Select file with a file selector (menu)
      *
-     * @param defaultName
+     * @param defaultName the default name for the chosen file
      * @return
      */
     private File choose(String defaultName) {
@@ -201,5 +213,4 @@ class FileOptionSelector extends OptionSelector {
         }
     }
 
-  
 }

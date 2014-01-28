@@ -18,24 +18,25 @@
 package eu.digitisation.input;
 
 import java.awt.Color;
-import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 
 /**
  *
  * @author R.C.C
+ * @param <Type> the type of option (Boolean, File, ...)
  */
-public abstract class OptionSelector extends JPanel implements ActionListener {
+public abstract class OptionSelector<Type> extends JPanel {
+    private static final long serialVersionUID = 1L;
 
-    Option option;
+    Option<Type> option;
 
-    public OptionSelector(Option option, Color forecolor, Color backcolor) {
+    public OptionSelector(Option<Type> option, Color forecolor, Color backcolor) {
         this.option = option;
         setForeground(forecolor);
         setBackground(backcolor);
     }
 
-    public Option getOption() {
+    public Option<Type> getOption() {
         return option;
     }
 

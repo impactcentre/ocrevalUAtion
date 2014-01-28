@@ -17,11 +17,6 @@
  */
 package eu.digitisation.input;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A program option with a name and value and,optionally. help text and help
  * URL.
@@ -47,11 +42,13 @@ public class Option<Type> {
     /**
      * Create Option with the given name and set this option's help text and URL
      * with additional help
-     *
+     * @param name the option's name
+     * @param value this option's value
      * @param help help text or URL for this option
      */
-    Option(String name, String help) {
+    Option(String name, Type value, String help) {
         this.name = name;
+        this.value = value;
         this.help = help;
     }
 
@@ -78,7 +75,7 @@ public class Option<Type> {
      *
      * @return
      */
-    public Class getType() {
+    public Class<?> getType() {
         return value.getClass();
     }
 
