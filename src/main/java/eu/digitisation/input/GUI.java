@@ -24,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -74,30 +73,16 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
 
         // Define program parameters: input files 
-        Parameter<File> gtfile = new Parameter<File>("ground-truth file");
-        Parameter<File> ocrfile = new Parameter<File>("OCR file");
-        Parameter<File> eqfile = new Parameter<File>("Unicode equivalences file");
-        // Define program parameters: boolean options 
-        Parameter<Boolean> ignoreCase = new Parameter<Boolean>("Ignore case", false, "");
-        Parameter<Boolean> ignoreDiacritics = new Parameter<Boolean>("Ignore diacritics", false, "");
-        Parameter<Boolean> ignorePunctuation = new Parameter<Boolean>("Ignore punctuation", false, "");
-        Parameter<Boolean> compatiblity
-                = new Parameter<Boolean>("Unicode compatibilty of characters", false,
-                        "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence");
+        Parameters pars = new Parameters();
 
         // Define content 
-        gtselector = new FileSelector(gtfile, getForeground(), white);
-        ocrselector = new FileSelector(ocrfile, getForeground(), white);
-        
-//        advanced = advancedOptionsPanel(ignoreCase, ignoreDiacritics, 
-//                ignorePunctuation, compatibilty, eqfile);
-        advanced = new JPanel(new GridLayout(0,1));
-//        advanced.add();
-        advanced.add(new FileSelector(eqfile, getForeground(), white));
+        gtselector = new FileSelector(pars.gtfile, getForeground(), white);
+        ocrselector = new FileSelector(pars.ocrfile, getForeground(), white);
+        advanced = advancedOptionsPanel(pars);
         info = new Link("Info:",
                 "https://sites.google.com/site/textdigitisation/ocrevaluation",
                 getForeground());
-        actions = actionsPanel(this);
+        actions = actionsPanel(this, pars);
 
         // Put all content together
         pane.add(gtselector);
@@ -115,34 +100,32 @@ public class GUI extends JFrame {
 
     /**
      * Build advanced options panel
+     *
      * @param ignoreCase
      * @param ignoreDiacritics
      * @param ignorePunctuation
      * @param compatibilty
      * @param eqfile
-     * @return 
+     * @return
      */
-    private JPanel advancedOptionsPanel(Parameter<Boolean> ignoreCase,
-            Parameter<Boolean> ignoreDiacritics, 
-            Parameter<Boolean> ignorePunctuation, 
-            Parameter<Boolean> compatibility, Parameter<File> eqfile) {
+    private JPanel advancedOptionsPanel(Parameters pars) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
         JPanel subpanel = new JPanel(new GridLayout(0, 2));
+        Color fg = getForeground();
+        Color bg = getBackground();
 
-        panel.setForeground(getForeground());
-        panel.setBackground(getBackground());
+        subpanel.setForeground(fg);
+        subpanel.setBackground(bg);
+        subpanel.add(new BooleanSelector(pars.ignoreCase, fg, bg));
+        subpanel.add(new BooleanSelector(pars.ignoreDiacritics, fg, bg));
+        subpanel.add(new BooleanSelector(pars.ignorePunctuation, fg, bg));
+        subpanel.add(new BooleanSelector(pars.compatibility, fg, bg));
+
+        panel.setForeground(fg);
+        panel.setBackground(bg);
         panel.setVisible(false);
-        subpanel.setForeground(getForeground());
-        subpanel.setBackground(getBackground());
-        //subpanel.setVisible(false);
-
-        subpanel.add(new BooleanSelector(ignoreCase, getForeground(), getBackground()));
-        subpanel.add(new BooleanSelector(ignoreDiacritics, getForeground(), getBackground()));
-        subpanel.add(new BooleanSelector(ignorePunctuation, getForeground(), getBackground()));
-        subpanel.add(new BooleanSelector(compatibility, getForeground(), getBackground()));
-
         panel.add(subpanel);
-
+        panel.add(new FileSelector(pars.eqfile, fg, bg));
         return panel;
     }
 
@@ -153,7 +136,7 @@ public class GUI extends JFrame {
      * @param gui
      * @return
      */
-    private JPanel actionsPanel(final GUI gui) {
+    private JPanel actionsPanel(final GUI gui, final Parameters pars) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         final JCheckBox more = new JCheckBox("Show advanced options");
@@ -163,11 +146,12 @@ public class GUI extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Dimension d = gui.getSize();
+                Dimension dframe = gui.getSize();
+                Dimension dadvanced = gui.advanced.getPreferredSize();
                 if (more.isSelected()) {
-                    gui.setSize(new Dimension(d.width, d.height + 150));
+                    gui.setSize(new Dimension(dframe.width, dframe.height + dadvanced.height));
                 } else {
-                    gui.setSize(new Dimension(d.width, d.height - 150));
+                    gui.setSize(new Dimension(dframe.width, dframe.height - dadvanced.height));
                 }
                 gui.advanced.setVisible(more.isSelected());
             }
@@ -180,9 +164,9 @@ public class GUI extends JFrame {
         trigger.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //  System.out.println(gui.gtfile.getValue().getName());
-                //  System.out.println(gui.ocrfile.getValue().getName());
-                //  System.out.println(gui.ignoreCase.getValue());
+                System.out.println(pars.gtfile.value);
+                System.out.println(pars.ocrfile.value);
+                System.out.println(pars.ignoreCase.getValue());
             }
         });
 
