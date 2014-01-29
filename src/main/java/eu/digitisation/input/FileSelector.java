@@ -47,14 +47,14 @@ import javax.swing.JTextPane;
  *
  * @author R.C.C
  */
-public class FileOptionSelector extends OptionSelector<File> {
+public class FileSelector extends ParameterSelector<File> {
 
     static final long serialVersionUID = 1L;
     static File dir; // directory opened by default
     JTextPane area;  // The area to display the filename
     JButton choose;  // Optional file chooser
 
-    public FileOptionSelector(Option<File> op, Color forecolor, Color bgcolor) {
+    public FileSelector(Parameter<File> op, Color forecolor, Color bgcolor) {
         super(op, forecolor, bgcolor);
 
         setPreferredSize(new Dimension(600, 70));
@@ -64,7 +64,7 @@ public class FileOptionSelector extends OptionSelector<File> {
         // Drop area
         area = new JTextPane();
         area.setFont(new Font("Verdana", Font.PLAIN, 12));
-        area.setText("Drop here your " + option.name);
+        area.setText("Drop here your " + param.name);
         area.setForeground(forecolor);
         area.setBackground(bgcolor);
         enableDragAndDrop(area);
@@ -79,7 +79,7 @@ public class FileOptionSelector extends OptionSelector<File> {
             public void actionPerformed(ActionEvent e) {
                 File file = choose("input_file");
                 if (file != null) {
-                    option.setValue(file);
+                    param.setValue(file);
                     area.setText(file.getName());
                     dir = file.getParentFile();
                     shade(Color.decode("#B5CC9E")); // green
@@ -126,7 +126,7 @@ public class FileOptionSelector extends OptionSelector<File> {
      * @return the selected input file
      */
     public File getFile() {
-        return option.getValue();
+        return param.getValue();
     }
 
     /**
@@ -172,21 +172,21 @@ public class FileOptionSelector extends OptionSelector<File> {
                         java.util.List<File> list;
                         list = (java.util.List<File>) e.getTransferable()
                                 .getTransferData(DataFlavor.javaFileListFlavor);
-                        option.setValue(list.get(0));
+                        param.setValue(list.get(0));
                     } else if (e.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                         String name = (String) e.getTransferable()
                                 .getTransferData(DataFlavor.stringFlavor);
-                        option.setValue(new File(new URI(name.trim())));
+                        param.setValue(new File(new URI(name.trim())));
                     }
                     area.setText(getFile().getName());
                     dir = getFile().getParentFile();
                     shade(Color.decode("#B5CC9E"));
                 } catch (URISyntaxException ex) {
-                    Logger.getLogger(FileOptionSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
-                    Logger.getLogger(FileOptionSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedFlavorException ex) {
-                    Logger.getLogger(FileOptionSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FileSelector.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -205,7 +205,7 @@ public class FileOptionSelector extends OptionSelector<File> {
         chooser.setDialogTitle("Select input file");
         chooser.setCurrentDirectory(dir);
         chooser.setSelectedFile(new File(defaultName));
-        int returnVal = chooser.showOpenDialog(FileOptionSelector.this);
+        int returnVal = chooser.showOpenDialog(FileSelector.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             return chooser.getSelectedFile();
         } else {

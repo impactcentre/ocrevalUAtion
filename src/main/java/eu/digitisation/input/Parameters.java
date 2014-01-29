@@ -15,29 +15,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+
 package eu.digitisation.input;
 
-import java.awt.Color;
-import javax.swing.JPanel;
+import java.util.HashMap;
 
 /**
- *
- * @author R.C.C
- * @param <Type> the type of option (Boolean, File, ...)
+ * Stores the list of program parameters 
+ * @author R.C.C.
  */
-public abstract class OptionSelector<Type> extends JPanel {
+public class Parameters extends HashMap<String, Parameter>{
     private static final long serialVersionUID = 1L;
-
-    Option<Type> option;
-
-    public OptionSelector(Option<Type> option, Color forecolor, Color backcolor) {
-        this.option = option;
-        setForeground(forecolor);
-        setBackground(backcolor);
-    }
-
-    public Option<Type> getOption() {
-        return option;
-    }
-
+    
 }

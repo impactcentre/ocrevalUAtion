@@ -45,8 +45,9 @@ public class GUI extends JFrame {
     private static final Color white = Color.decode("#FAFAFA");
     private static final Color gray = Color.decode("#EEEEEE");
 
-    FileOptionSelector gtselector;
-    FileOptionSelector ocrselector;
+    // Frame components
+    FileSelector gtselector;
+    FileSelector ocrselector;
     JPanel advanced;
     Link info;
     JPanel actions;
@@ -57,29 +58,42 @@ public class GUI extends JFrame {
      * @param text the text to be displayed
      */
     public void warn(String text) {
-        JOptionPane.showMessageDialog(this.getRootPane(), text, "Error",
+        JOptionPane.showMessageDialog(super.getRootPane(), text, "Error",
                 JOptionPane.ERROR_MESSAGE);
     }
 
     // The unique constructor
     public GUI() {
-        // initialization seetings
+        // Main container
         Container pane = getContentPane();
+        // Initialization settings
         setForeground(green);
         setBackground(gray);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         setLocationRelativeTo(null);
 
-        // Define file input options 
-        Option<File> gtfile = new Option<File>("ground-truth file");
-        Option<File> ocrfile = new Option<File>("OCR file");
-        //Option<File> eqfile = new Option<File>("Unicode equivalences file");
+        // Define program parameters: input files 
+        Parameter<File> gtfile = new Parameter<File>("ground-truth file");
+        Parameter<File> ocrfile = new Parameter<File>("OCR file");
+        Parameter<File> eqfile = new Parameter<File>("Unicode equivalences file");
+        // Define program parameters: boolean options 
+        Parameter<Boolean> ignoreCase = new Parameter<Boolean>("Ignore case", false, "");
+        Parameter<Boolean> ignoreDiacritics = new Parameter<Boolean>("Ignore diacritics", false, "");
+        Parameter<Boolean> ignorePunctuation = new Parameter<Boolean>("Ignore punctuation", false, "");
+        Parameter<Boolean> compatiblity
+                = new Parameter<Boolean>("Unicode compatibilty of characters", false,
+                        "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence");
 
         // Define content 
-        gtselector = new FileOptionSelector(gtfile, getForeground(), white);
-        ocrselector = new FileOptionSelector(ocrfile, getForeground(), white);
-        advanced = advancedOptionsPanel();
+        gtselector = new FileSelector(gtfile, getForeground(), white);
+        ocrselector = new FileSelector(ocrfile, getForeground(), white);
+        
+//        advanced = advancedOptionsPanel(ignoreCase, ignoreDiacritics, 
+//                ignorePunctuation, compatibilty, eqfile);
+        advanced = new JPanel(new GridLayout(0,1));
+//        advanced.add();
+        advanced.add(new FileSelector(eqfile, getForeground(), white));
         info = new Link("Info:",
                 "https://sites.google.com/site/textdigitisation/ocrevaluation",
                 getForeground());
@@ -99,7 +113,19 @@ public class GUI extends JFrame {
         setVisible(true);
     }
 
-    private JPanel advancedOptionsPanel() {
+    /**
+     * Build advanced options panel
+     * @param ignoreCase
+     * @param ignoreDiacritics
+     * @param ignorePunctuation
+     * @param compatibilty
+     * @param eqfile
+     * @return 
+     */
+    private JPanel advancedOptionsPanel(Parameter<Boolean> ignoreCase,
+            Parameter<Boolean> ignoreDiacritics, 
+            Parameter<Boolean> ignorePunctuation, 
+            Parameter<Boolean> compatibility, Parameter<File> eqfile) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
         JPanel subpanel = new JPanel(new GridLayout(0, 2));
 
@@ -110,24 +136,13 @@ public class GUI extends JFrame {
         subpanel.setBackground(getBackground());
         //subpanel.setVisible(false);
 
-        //  boolean options 
-        Option<Boolean> ignoreCase = new Option<Boolean>("Ignore case", false, "");
-        Option<Boolean> ignoreDiacritics = new Option<Boolean>("Ignore diacritics", false, "");
-        Option<Boolean> ignorePunctuation = new Option<Boolean>("Ignore punctuation", false, "");
-        Option<Boolean> compatiblity
-                = new Option<Boolean>("Unicode compatibilty of characters", false,
-                        "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence");
-
-        subpanel.add(new BooleanOptionSelector(ignoreCase, getForeground(), getBackground()));
-        subpanel.add(new BooleanOptionSelector(ignoreDiacritics, getForeground(), getBackground()));
-        subpanel.add(new BooleanOptionSelector(ignorePunctuation, getForeground(), getBackground()));
-        subpanel.add(new BooleanOptionSelector(compatiblity, getForeground(), getBackground()));
+        subpanel.add(new BooleanSelector(ignoreCase, getForeground(), getBackground()));
+        subpanel.add(new BooleanSelector(ignoreDiacritics, getForeground(), getBackground()));
+        subpanel.add(new BooleanSelector(ignorePunctuation, getForeground(), getBackground()));
+        subpanel.add(new BooleanSelector(compatibility, getForeground(), getBackground()));
 
         panel.add(subpanel);
 
-        // File input options
-        Option<File> eqfile = new Option<File>("Unicode equivalences file");
-        panel.add(new FileOptionSelector(eqfile, getForeground(), white));
         return panel;
     }
 

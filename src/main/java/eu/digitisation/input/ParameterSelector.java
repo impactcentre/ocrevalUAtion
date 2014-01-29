@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 IMPACT Centre of Competence
+ * Copyright (C) 2014 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,34 +18,26 @@
 package eu.digitisation.input;
 
 import java.awt.Color;
-import java.io.File;
-import java.util.List;
 import javax.swing.JPanel;
 
 /**
  *
- * @author R.C.C.
+ * @author R.C.C
+ * @param <Type> the type of parameter (Boolean, File, ...)
  */
-public class OptionsPanel extends JPanel {
-
-    List<Option> options;
-    List<OptionSelector> selectors;
+public abstract class ParameterSelector<Type> extends JPanel {
     private static final long serialVersionUID = 1L;
 
-    public OptionsPanel(Color forecolor, Color bgcolor, boolean visible) {
-        super.setForeground(forecolor);
-        super.setBackground(bgcolor);
-        super.setVisible(visible);
+    Parameter<Type> param;
+
+    public ParameterSelector(Parameter<Type> param, Color forecolor, Color backcolor) {
+        this.param = param;
+        setForeground(forecolor);
+        setBackground(backcolor);
     }
 
-    public void addOption(Option op) {
-        OptionSelector selector = null;
-        Class type = op.getType();
-        if (type == Boolean.class) {
-            selector = new BooleanOptionSelector(op, getForeground(), getBackground());
-        } else if (type == File.class) {
-            selector = new FileOptionSelector(op, getForeground(), getBackground());
-        }
-         selectors.add(selector);
+    public Parameter<Type> getOption() {
+        return param;
     }
+
 }

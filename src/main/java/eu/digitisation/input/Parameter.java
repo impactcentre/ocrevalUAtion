@@ -18,60 +18,61 @@
 package eu.digitisation.input;
 
 /**
- * A program option with a name and value and,optionally. help text and help
- * URL.
+ * A program parameter with a value, a name (a short description) and,
+ * optionally, a help text or URL providing a longer description.
  *
  * @author R.C.C.
- * @param <Type> the type op option (Boolean, File)
+ * @param <Type> the type of parameter (Boolean, File)
  */
-public class Option<Type> {
+public class Parameter<Type> {
 
     String name;
     Type value;
     String help;  // text help or URL
 
     /**
-     * Crete an Option with the given name (and null value)
+     * Crete a Parameter with the given name (and null value)
      *
-     * @param name the option's name
+     * @param name the parameter's name
      */
-    Option(String name) {
+    Parameter(String name) {
         this.name = name;
     }
 
     /**
-     * Create Option with the given name and set this option's help text and URL
-     * with additional help
-     * @param name the option's name
-     * @param value this option's value
-     * @param help help text or URL for this option
+     * Create Parameter with the given name and set this parameter's help text
+     * and URL with additional help
+     *
+     * @param name the parameter's name
+     * @param value this parameter's value
+     * @param help help text or URL for this parameter
      */
-    Option(String name, Type value, String help) {
+    Parameter(String name, Type value, String help) {
         this.name = name;
         this.value = value;
         this.help = help;
     }
 
     /**
-     * Set this option's value
+     * Set this parameter's value
      *
-     * @param value the option's value
+     * @param value the parameter's value
      */
     public void setValue(Type value) {
         this.value = value;
     }
 
     /**
-     * Get this option's value
+     * Get this parameter's value
      *
-     * @return the option's value
+     * @return the parameter's value
      */
     public Type getValue() {
         return value;
     }
 
     /**
-     * Get the option value type (Boolean, File, Integer,...)
+     * Get the parameter value type (Boolean, File, Integer,...)
      *
      * @return
      */
@@ -79,16 +80,24 @@ public class Option<Type> {
         return value.getClass();
     }
 
+     /**
+     *
+     * @returna short description of the parameter
+     */
+    public String getName() {
+        return name;
+    }
+    
     /**
      *
-     * @return the help text for this option
+     * @return the help text for this parameter
      */
     public String getHelp() {
         return help;
     }
 
     /**
-     * 
+     *
      * @return a string name:value
      */
     @Override

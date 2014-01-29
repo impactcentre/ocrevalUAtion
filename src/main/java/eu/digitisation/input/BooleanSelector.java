@@ -4,7 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * of the License, or (at your param) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,13 +28,13 @@ import javax.swing.JCheckBox;
  *
  * @author R.C.C
  */
-public class BooleanOptionSelector extends OptionSelector<Boolean> {
+public class BooleanSelector extends ParameterSelector<Boolean> {
 
     private static final long serialVersionUID = 1L;
 
     JCheckBox box;
 
-    public BooleanOptionSelector(Option<Boolean> op, Color forecolor, Color bgcolor) {
+    public BooleanSelector(Parameter<Boolean> op, Color forecolor, Color bgcolor) {
         super(op, forecolor, bgcolor);
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setPreferredSize(new Dimension(100, 30));
@@ -44,7 +44,7 @@ public class BooleanOptionSelector extends OptionSelector<Boolean> {
         box.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                option.value = box.isSelected();
+                param.value = box.isSelected();
             }
         });
         add(box);
