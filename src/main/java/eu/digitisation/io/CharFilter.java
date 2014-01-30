@@ -50,10 +50,26 @@ public class CharFilter extends HashMap<String, String> {
         super();
         this.compatibility = false;
     }
-    
- /**
+
+    /**
      * Default constructor
-     * @param compatibility the Unicode compatibility mode (true means activated)
+     *
+     * @param compatibility the Unicode compatibility mode (true means
+     * activated)
+     * @param file a CSV file with one transformation per line, each line contains
+     * two Unicode hex sequences (and comments) separated with commas
+     */
+    public CharFilter(boolean compatibility, File file) {
+        super();
+        this.compatibility = compatibility;
+        addFilter(file);
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param compatibility the Unicode compatibility mode (true means
+     * activated)
      */
     public CharFilter(boolean compatibility) {
         super();
@@ -79,7 +95,7 @@ public class CharFilter extends HashMap<String, String> {
      * @param file the CSV file (or directory with CSV files) with the
      * equivalent sequences
      */
-    public void addFilter(File file) {
+    public final void addFilter(File file) {
         if (file.isDirectory()) {
             String[] filenames = file.list(new ExtensionFilter(".csv"));
             for (String filename : filenames) {

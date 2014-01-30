@@ -53,6 +53,18 @@ public class Text {
     static {
         Properties props = StartUp.properties();
         maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
+
+        try {
+            File inclusions = new File("inclusions.txt");
+            File exclusions = new File("exclusions.txt");
+            XPathFilter filter = inclusions.exists()
+                    ? new XPathFilter(inclusions, exclusions)
+                    : null;
+        } catch (IOException ex) {
+            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (XPathExpressionException ex) {
+            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -140,6 +152,17 @@ public class Text {
     @Override
     public String toString() {
         return builder.toString();
+    }
+
+    /**
+     * The content as a string
+     * @param filter a CharFilter
+     * @return the text after the application of the filter
+     */
+    public String toString(CharFilter filter) {
+        return filter == null 
+                ? builder.toString()
+                : filter.translate(builder.toString());
     }
 
     /**

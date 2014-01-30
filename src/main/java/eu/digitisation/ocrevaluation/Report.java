@@ -23,8 +23,10 @@ import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.distance.EditDistanceType;
 import eu.digitisation.math.MinimalPerfectHash;
 import eu.digitisation.distance.TokenArray;
+import eu.digitisation.input.Parameters;
 import eu.digitisation.io.Batch;
 import eu.digitisation.io.CharFilter;
+import eu.digitisation.io.Text;
 import eu.digitisation.io.TextContent;
 import eu.digitisation.io.WarningException;
 import eu.digitisation.math.Pair;
@@ -148,6 +150,65 @@ public class Report extends DocumentBuilder {
             TextContent ocr = new TextContent(input.second, filter, ocrencoding);
             String gts = gt.toString();
             String ocrs = ocr.toString();
+            MinimalPerfectHash factory = new MinimalPerfectHash(false);
+            TokenArray gtarray = new TokenArray(factory, gts);
+            TokenArray ocrarray = new TokenArray(factory, ocrs);
+            BagOfWords gtbag = new BagOfWords(gts);
+            BagOfWords ocrbag = new BagOfWords(ocrs);
+            Element alitab = Aligner.alignmentMap(input.first.getName(),
+                    input.second.getName(), gts, ocrs);
+            stats.add(gts, ocrs);
+            addTextElement(body, "div", " ");
+            addElement(body, alitab);
+            numwords += gtarray.length();
+            wdist += ArrayEditDistance.distance(gtarray.tokens(), ocrarray.tokens(),
+                    EditDistanceType.LEVENSHTEIN);
+            bdist += gtbag.distance(ocrbag);
+        }
+        //Summary table
+        double cer = stats.cer();
+        double wer = wdist / (double) numwords;
+        double ber = bdist / (double) numwords;
+        String[][] summaryContent = {{"CER", String.format("%.2f", cer * 100)},
+        //   {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+        {"WER", String.format("%.2f", wer * 100)},
+        {"WER (order independent)", String.format("%.2f", ber * 100)}
+        };
+        addTable(summaryTab, summaryContent);
+        // CharStatTable
+        addTextElement(body, "h2", "Error rate per character and type");
+        addElement(body, stats.asTable());
+    }
+    
+      /**
+     *
+     * @param batch a batch of file pairs
+     * @param gtencoding the ground-truth file encoding
+     * @param ocrencoding the OCR file encoding
+     * @param filter Unicode character filter
+     * @throws eu.digitisation.io.WarningException
+     */
+    public Report(Batch batch, Parameters pars) throws WarningException {
+        super("html");
+        init();
+
+        CharStatTable stats = new CharStatTable();
+        Element summaryTab;
+        int numwords = 0;   // number of words in GT
+        int wdist = 0;      // word distances
+        int bdist = 0;      //bag-of-words distanbces
+
+        addTextElement(body, "h2", "General results");
+        summaryTab = addElement(body, "div");
+        addTextElement(body, "h2", "Difference spotting");
+
+        for (int n = 0; n < batch.size(); ++n) {
+            Pair<File, File> input = batch.pair(n);
+            Text gt = new Text(input.first);
+            Text ocr = new Text(input.second);
+            CharFilter filter = new CharFilter(pars.compatibility.getValue());
+            String gts = gt.toString(filter);
+            String ocrs = ocr.toString(filter);
             MinimalPerfectHash factory = new MinimalPerfectHash(false);
             TokenArray gtarray = new TokenArray(factory, gts);
             TokenArray ocrarray = new TokenArray(factory, ocrs);

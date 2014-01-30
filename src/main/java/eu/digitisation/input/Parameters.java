@@ -27,20 +27,23 @@ import java.io.File;
 public class Parameters {
 
     private static final long serialVersionUID = 1L;
+    
     // Define program parameters: input files 
-    final Parameter<File> gtfile;
-    final Parameter<File> ocrfile;
-    final Parameter<File> eqfile;
+    public final Parameter<File> gtfile;
+    public final Parameter<File> ocrfile;
+    public final Parameter<File> eqfile;
+    public final Parameter<File> outfile;
     // Define program parameters: boolean options 
-    final Parameter<Boolean> ignoreCase;
-    final Parameter<Boolean> ignoreDiacritics;
-    final Parameter<Boolean> ignorePunctuation;
-    final Parameter<Boolean> compatibility;
+    public final Parameter<Boolean> ignoreCase;
+    public final Parameter<Boolean> ignoreDiacritics;
+    public final Parameter<Boolean> ignorePunctuation;
+    public final Parameter<Boolean> compatibility;
 
     public Parameters() {
         this.gtfile = new Parameter<File>("ground-truth file");
         this.ocrfile = new Parameter<File>("OCR file");
         this.eqfile = new Parameter<File>("Unicode equivalences file");
+        this.outfile = new Parameter<File>("Output file");
         this.ignoreCase = new Parameter<Boolean>("Ignore case", false, "");
         this.ignoreDiacritics = new Parameter<Boolean>("Ignore diacritics", false, "");
         this.ignorePunctuation = new Parameter<Boolean>("Ignore punctuation", false, "");

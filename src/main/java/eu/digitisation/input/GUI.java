@@ -17,6 +17,10 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.gui.Browser;
+import eu.digitisation.gui.OutputFileSelector;
+import eu.digitisation.io.Batch;
+import eu.digitisation.ocrevaluation.Report;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -24,12 +28,13 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -164,9 +169,7 @@ public class GUI extends JFrame {
         trigger.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(pars.gtfile.value);
-                System.out.println(pars.ocrfile.value);
-                System.out.println(pars.ignoreCase.getValue());
+                launch(pars);
             }
         });
 
@@ -176,6 +179,39 @@ public class GUI extends JFrame {
         return panel;
     }
 
+    
+    public void launch(Parameters pars) {
+            try {
+                if (gtselector.ready() && ocrselector.ready()) {
+                    String name = pars.ocrfile.getName().replaceAll("\\.\\w+", "")
+                            + "_report.html";
+                    File dir = pars.ocrfile.value.getParentFile();
+                    File preselected = new File(name);
+                    OutputFileSelector selector = new OutputFileSelector();
+                    File outfile = selector.choose(dir, preselected);
+                    pars.outfile.setValue(outfile);
+
+                    if (outfile != null) {
+                        try {
+                            Batch batch = 
+                                    new Batch(pars.gtfile.value, pars.ocrfile.value);
+                            Report report = new Report(batch,pars);
+                            report.write(outfile);
+                            Browser.open("file://" + outfile.getCanonicalPath());
+                        } catch (IOException ex) {
+                            warn("Input/Output Error");
+                        }
+                    }
+                } else {
+                    gtselector.checkout();
+                    ocrselector.checkout();
+                }
+            } catch (Exception ex) {
+                System.err.println(ex.getMessage());
+            }
+    }
+    
+    
     public static void main(String[] args) {
         new GUI();
     }
