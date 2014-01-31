@@ -1,3 +1,0 @@
-*managemnnt of inclusions and exclusions based in XPath (almost ready)
-*management of list of stopwords  
-*activate options: IGNORE_CASE, IGNORE_DIACRITICS, IGNORE_PUNCTUATION

@@ -285,7 +285,7 @@ public class Aligner {
      */
     public static Element bitext(String header1, String header2,
             String first, String second, EdOpWeight w) {
-        EditSequence edition = new EditSequence(first, second, w, 10000);
+        EditSequence edition = new EditSequence(first, second, w, 1000);
         DocumentBuilder builder = new DocumentBuilder("table");
         Element table = builder.root();
         Element row;
@@ -324,16 +324,20 @@ public class Aligner {
             EdOp op = edition.get(n);
             // free passes
             if (op == EdOp.DELETE && w.del(first.charAt(i)) == 0) {
-                builder.addText(cell2, second.substring(i, i + 1));
+                builder.addText(cell1, first.substring(i, i + 1));
                 ++i;
+                len = 1;
             } else if (op == EdOp.INSERT && w.ins(second.charAt(j)) == 0) {
-                builder.addText(cell1, first.substring(j, j + 1));
+                builder.addText(cell2, second.substring(j, j + 1));
+                //System.out.println("Miss:"+second.substring(j,j+));
                 ++j;
+                len = 1;
             } else if (op == EdOp.SUBSTITUTE && w.sub(first.charAt(i), second.charAt(j)) == 0) {
                 builder.addText(cell1, first.substring(i, i + 1));
                 builder.addText(cell2, second.substring(j, j + 1));
                 ++i;
                 ++j;
+                len = 1;
             } else {
                 switch (op) {
                     case KEEP:

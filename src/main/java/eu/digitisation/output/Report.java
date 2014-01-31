@@ -216,13 +216,11 @@ public class Report extends DocumentBuilder {
             String gts = gt.toString(filter);
             String ocrs = ocr.toString(filter);
             EditSequence eds = new EditSequence(gts, ocrs, w);
-              
             TermFrequencyVector gtv = new TermFrequencyVector(gts);
             TermFrequencyVector ocrv = new TermFrequencyVector(ocrs);
             Element alitab = Aligner.bitext(input.first.getName(),
-                    input.second.getName(), gts, ocrs, w);
-          
-            int[] wd = EditDistance.wordDistance(gts, ocrs, 10000);
+                    input.second.getName(), gts, ocrs, w);    
+            int[] wd = EditDistance.wordDistance(gts, ocrs, 1000);
     
             stats.add(eds.stats(gts, ocrs, w));
             addTextElement(body, "div", " ");
