@@ -17,7 +17,7 @@
  */
 package eu.digitisation.ngram;
 
-import eu.digitisation.io.WordScanner;
+import eu.digitisation.text.WordScanner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -19,7 +19,7 @@ package eu.digitisation.layout;
 
 import eu.digitisation.image.Bimage;
 import eu.digitisation.image.Display;
-import eu.digitisation.io.FileType;
+import eu.digitisation.input.FileType;
 import eu.digitisation.math.Arrays;
 import java.awt.Color;
 import java.awt.Polygon;

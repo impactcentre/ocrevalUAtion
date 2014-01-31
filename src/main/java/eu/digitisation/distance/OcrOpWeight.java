@@ -17,7 +17,8 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.io.StringNormalizer;
+import eu.digitisation.input.Parameters;
+import eu.digitisation.text.StringNormalizer;
 
 /**
  * Integer weights for basic edit operations.
@@ -44,6 +45,12 @@ public class OcrOpWeight implements EdOpWeight {
         this.ignorePunctuation = ignorePunctuation;
     }
 
+    public OcrOpWeight(Parameters pars) {
+        this(pars.ignoreCase.getValue(),
+                pars.ignoreDiacritics.getValue(),
+                pars.ignorePunctuation.getValue());
+    }
+
     /**
      * Default constructor creates weights which are case-sensitive,
      * diacritics-aware and punctuation-aware.
@@ -57,8 +64,8 @@ public class OcrOpWeight implements EdOpWeight {
      * @param c1 the character found in text
      * @param c2 the replacing character
      * @return the cost of substituting character c1 with c2 Note: whitespace
-     * must not substitute character which are rather deleted; therefore, such cases
-     * return a value greater than 2 (standard insertion+deletion)
+     * must not substitute character which are rather deleted; therefore, such
+     * cases return a value greater than 2 (standard insertion+deletion)
      */
     @Override
     public int sub(char c1, char c2) {

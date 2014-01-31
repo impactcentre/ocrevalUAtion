@@ -17,9 +17,10 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.io.TextContent;
-import eu.digitisation.io.WarningException;
+import eu.digitisation.document.TokenArray;
+import eu.digitisation.input.WarningException;
 import eu.digitisation.math.MinimalPerfectHash;
+import eu.digitisation.text.TextContent;
 import java.io.File;
 
 /**
@@ -40,63 +41,25 @@ public class EditDistance {
      * and second.
      */
     public static int charDistance(String s1, String s2, EdOpWeight w, int chunkLen) {
-        EditSequence seq = new EditSequence();
-        int len1 = s1.length();
-        int len2 = s2.length();
-
-        if (chunkLen < 2) {
-            throw new IllegalArgumentException("chunkLen mut be greater than 1");
-        }
-        while (seq.shift1() < len1 || seq.shift2() < len2) {
-            int high1 = Math.min(seq.shift1() + chunkLen, len1);
-            int high2 = Math.min(seq.shift2() + chunkLen, len2);
-            String sub1 = s1.substring(seq.shift1(), high1);
-            String sub2 = s2.substring(seq.shift2(), high2);
-            EditSequence subseq = new EditSequence(sub1, sub2, w);
-            EditSequence head = (high1 < len1 || high2 < len2)
-                    ? subseq.head(subseq.size() / 2)
-                    : subseq;
-
-            seq.append(head);
-        }
-
-        return seq.cost();
+        EditSequence seq = new EditSequence(s1, s2, w, chunkLen);
+        return seq.cost(s1, s2, w);
     }
-    
-       /**
+
+    /**
      * @param s1 the first string.
      * @param s2 the second string.
      * @param chunkLen the length of the chunks analyzed at every step (must be
      * strictly greater than 1)
-     * @return the approximate (linear time) Levenshtein distance between first
-     * and second.
+     * @return the length (number of words) of first, the length (number of
+     * words) of second, and the approximate (linear time) word-based
+     * Levenshtein distance between first and second.
      */
-    public static int wordDistance(String s1, String s2, int chunkLen) {
-        EditSequence seq = new EditSequence();
+    public static int[] wordDistance(String s1, String s2, int chunkLen) {
         MinimalPerfectHash mph = new MinimalPerfectHash(true); // case sensitive
         TokenArray a1 = new TokenArray(mph, s1);
         TokenArray a2 = new TokenArray(mph, s2);
-        int len1 = a1.length();
-        int len2 = a2.length();
-
-        if (chunkLen < 2) {
-            throw new IllegalArgumentException("chunkLen mut be greater than 1");
-        }
-        while (seq.shift1() < len1 || seq.shift2() < len2) {
-            int high1 = Math.min(seq.shift1() + chunkLen, len1);
-            int high2 = Math.min(seq.shift2() + chunkLen, len2);
-            TokenArray sub1 = a1.subArray(seq.shift1(), high1);
-            TokenArray sub2 = a2.subArray(seq.shift2(), high2);
-            EditSequence subseq = new EditSequence(sub1, sub2);
-
-            EditSequence head = (high1 < len1 || high2 < len2)
-                    ? subseq.head(subseq.size() / 2)
-                    : subseq;
-
-            seq.append(head);
-        }
-
-        return seq.cost();
+        EditSequence seq = new EditSequence(a1, a2, chunkLen);
+        return new int[]{a1.length(), a2.length(), seq.length()};
     }
 
     /**
@@ -108,20 +71,23 @@ public class EditDistance {
      * @return the distance between first and second (defaults to Levenshtein)
      * @throws java.lang.NoSuchMethodException
      */
-    public static int distance(String first, String second, int chunkLen, EditDistanceType type) throws NoSuchMethodException {
+    public static int distance(String first, String second,
+            int chunkLen, EditDistanceType type)
+            throws NoSuchMethodException {
         switch (type) {
             case OCR_CHAR:
-                EdOpWeight w =new OcrOpWeight();
+                EdOpWeight w = new OcrOpWeight();
                 return charDistance(first, second, w, chunkLen);
             case OCR_WORD:
-                return wordDistance(first, second, chunkLen);             
+                return wordDistance(first, second, chunkLen)[2];
             default:
                 throw new java.lang.NoSuchMethodException(type + " distance still to be implemented");
 
         }
     }
 
-    public static void main(String[] args) throws WarningException, NoSuchMethodException {
+    public static void main(String[] args)
+            throws WarningException, NoSuchMethodException {
         File f1 = new File(args[0]);
         File f2 = new File(args[1]);
         int len = Integer.parseInt(args[2]);

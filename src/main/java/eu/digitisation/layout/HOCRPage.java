@@ -17,7 +17,7 @@
  */
 package eu.digitisation.layout;
 
-import eu.digitisation.io.FileType;
+import eu.digitisation.input.FileType;
 import java.awt.Polygon;
 import java.io.File;
 import java.io.IOException;

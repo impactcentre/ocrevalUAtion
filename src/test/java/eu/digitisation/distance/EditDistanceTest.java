@@ -17,9 +17,9 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.io.StringNormalizer;
-import eu.digitisation.io.Text;
-import eu.digitisation.io.WarningException;
+import eu.digitisation.input.WarningException;
+import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.text.Text;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -47,7 +47,7 @@ public class EditDistanceTest {
      * Test of charDistance method, of class EditDistance.
      *
      * @throws java.net.URISyntaxException
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     @Test
     public void testCharDistance() throws URISyntaxException, WarningException {
@@ -101,9 +101,26 @@ public class EditDistanceTest {
         String s1 = "p a t a t a";
         String s2 = "a p t a";
         int expResult = 3;
-        int result = EditDistance.wordDistance(s1, s2, 10);
-        assertEquals(expResult, result);
+        int[] result = EditDistance.wordDistance(s1, s2, 10);
+        assertEquals(expResult, result[2]);
+    }
 
+    @Test
+    public void testWeightedDistance() {
+        String s1 = "ÁÁÁÁ";
+        String s2 = "ÁAáa";
+
+        OcrOpWeight W1 = new OcrOpWeight(); // fully-sensitive
+        assertEquals(3, EditDistance.charDistance(s1, s2, W1, 1000));
+
+        OcrOpWeight W2 = new OcrOpWeight(true, true, true); //ignore everything
+        assertEquals(0, EditDistance.charDistance(s1, s2, W2, 1000));
+
+        OcrOpWeight W3 = new OcrOpWeight(false, true, true); //ignore diacritics
+        assertEquals(2, EditDistance.charDistance(s1, s2, W3, 1000));
+
+        OcrOpWeight W4 = new OcrOpWeight(true, false, true); //ignore case
+        assertEquals(2, EditDistance.charDistance(s1, s2, W4, 1000));
     }
 
 }

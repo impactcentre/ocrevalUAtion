@@ -19,6 +19,7 @@ package eu.digitisation.input;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
@@ -41,6 +42,7 @@ public class BooleanSelector extends ParameterSelector<Boolean> {
         setBackground(bgcolor);
 
         box = new JCheckBox(op.name);
+        box.setFont(new Font("Verdana", Font.BOLD, 12));
         box.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

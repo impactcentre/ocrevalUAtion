@@ -17,11 +17,11 @@
  */
 package eu.digitisation.langutils;
 
-import eu.digitisation.io.CharFilter;
-import eu.digitisation.io.StringNormalizer;
-import eu.digitisation.io.TextContent;
-import eu.digitisation.io.WarningException;
-import eu.digitisation.io.WordScanner;
+import eu.digitisation.text.CharFilter;
+import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.text.TextContent;
+import eu.digitisation.input.WarningException;
+import eu.digitisation.text.WordScanner;
 import eu.digitisation.math.Counter;
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +74,7 @@ public class TermFrequency extends Counter<String> {
      * Extract words from a file
      *
      * @param dir the input file or directory
+     * @throws eu.digitisation.io.WarningException
      */
     public void add(File dir) throws WarningException {
         if (dir.isDirectory()) {
@@ -88,6 +89,7 @@ public class TermFrequency extends Counter<String> {
      * Extract words from a file
      *
      * @param file an input files
+     * @throws eu.digitisation.io.WarningException
      */
     public void addFile(File file) throws WarningException {
         try {
@@ -148,7 +150,6 @@ public class TermFrequency extends Counter<String> {
     public double recall(TermFrequency other) {
         int total = 0;
         int matched = 0;
-       
 
         for (Map.Entry<String, Integer> entry : other.entrySet()) {
             total += entry.getValue();
@@ -157,7 +158,38 @@ public class TermFrequency extends Counter<String> {
             }
         }
 
-        return matched / (double)total;
+        return matched / (double) total;
+    }
+
+    /**
+     * Compute the order-independent edit-distance between two documents
+     * (equivalent to a bags of words model).
+     *
+     * @param other another TermFrequency
+     * @return the number of differences between this and the other bag of words
+     */
+    public int editDistance(TermFrequency other) {
+        int dplus = 0;    // excess
+        int dminus = 0;   // fault
+        for (String word : this.keySet()) {
+            int delta = this.value(word) - other.value(word);
+            if (delta > 0) {
+                dplus += delta;
+            } else {
+                dminus += delta;
+            }
+        }
+        for (String word : other.keySet()) {
+            if (!this.containsKey(word)) {
+                int delta = this.value(word) - other.value(word);
+                if (delta > 0) {
+                    dplus += delta;
+                } else {
+                    dminus += delta;
+                }
+            }
+        }
+        return Math.max(dplus, dminus);
     }
 
     /**

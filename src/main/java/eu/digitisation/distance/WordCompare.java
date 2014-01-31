@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.document.TokenArray;
 import eu.digitisation.math.MinimalPerfectHash;
 
 /**

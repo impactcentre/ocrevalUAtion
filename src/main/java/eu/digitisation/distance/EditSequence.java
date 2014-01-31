@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.document.TokenArray;
 import eu.digitisation.math.BiCounter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,7 @@ import java.util.List;
 
 /**
  * An arbitrary length sequence of basic edit operations (keep, insert,
- * substitute, delete)
+ * substitute, delete).
  *
  * @author R.C.C.
  */
@@ -66,7 +67,7 @@ public class EditSequence {
      *
      * @param op an edit operation
      */
-    public void add(EdOp op) {
+    public final void add(EdOp op) {
         ops.add(op);
         switch (op) {
             case KEEP:
@@ -94,7 +95,7 @@ public class EditSequence {
      *
      * @param other another sequence of edit operations
      */
-    public void append(EditSequence other) {
+    public final void append(EditSequence other) {
         for (EdOp op : other.ops) {
             this.add(op);
         }
@@ -127,7 +128,7 @@ public class EditSequence {
      *
      * @return the number of non-trivial (KEEP) edit operations in this sequence
      */
-    public int cost() {
+    public int length() {
         return numOps;
     }
 
@@ -137,7 +138,7 @@ public class EditSequence {
      * @return the number of edit operations in the sequence involving the first
      * string (all but DELETE)
      */
-    public int shift1() {
+    public final int shift1() {
         return shift1;
     }
 
@@ -147,7 +148,7 @@ public class EditSequence {
      * @return the number of edit operations in the sequence involving the
      * second string (all but INSERT)
      */
-    public int shift2() {
+    public final int shift2() {
         return shift2;
     }
 
@@ -166,7 +167,7 @@ public class EditSequence {
     }
 
     /**
-     * Build the EditTable for a pair of strings
+     * Build the EditSequence for a pair of strings
      *
      * @param first the first string
      * @param second the second string
@@ -249,7 +250,41 @@ public class EditSequence {
     }
 
     /**
-     * Build the EditTable for a pair of TokenArrays
+     * Linear-time approximation to the construction of the EditSequence for a
+     * pair of strings. The complexity gets reduced by splitting the strings
+     * into smaller, overlapping, chunks.
+     *
+     * @param s1 the first string
+     * @param s2 the second string
+     * @param w the weights applied to basic edit operations
+     * @param chunkLen the length of the chunks in which the strings are split
+     *
+     */
+    public EditSequence(String s1, String s2, EdOpWeight w, int chunkLen) {
+        int len1 = s1.length();
+        int len2 = s2.length();
+
+        if (chunkLen < 2) {
+            throw new IllegalArgumentException("chunkLen mut be greater than 1");
+        }
+
+        ops = new ArrayList<EdOp>();
+        while (shift1() < len1 || shift2() < len2) {
+            int high1 = Math.min(shift1() + chunkLen, len1);
+            int high2 = Math.min(shift2() + chunkLen, len2);
+            String sub1 = s1.substring(shift1(), high1);
+            String sub2 = s2.substring(shift2(), high2);
+            EditSequence subseq = new EditSequence(sub1, sub2, w);
+            EditSequence head = (high1 < len1 || high2 < len2)
+                    ? subseq.head(subseq.size() / 2)
+                    : subseq;
+
+            append(head);
+        }
+    }
+
+    /**
+     * Build the EditSequence for a pair of TokenArrays
      *
      * @param first the first TokenArray
      * @param second the second TokenArray
@@ -329,6 +364,40 @@ public class EditSequence {
     }
 
     /**
+     * Linear-time approximation to the construction of the EditSequence for a
+     * pair of TokenArrays. The complexity gets reduced by splitting the arrays
+     * into smaller, overlapping, chunks.
+     *
+     * @param a1 the first TokenArray
+     * @param a2 the second TokenArray
+     * @param chunkLen the length of the chunks in which the arrays are split
+     *
+     */
+    public EditSequence(TokenArray a1, TokenArray a2, int chunkLen) {
+        int len1 = a1.length();
+        int len2 = a2.length();
+
+        if (chunkLen < 2) {
+            throw new IllegalArgumentException("chunkLen mut be greater than 1");
+        }
+
+        ops = new ArrayList<EdOp>();
+        while (shift1() < len1 || shift2() < len2) {
+            int high1 = Math.min(shift1() + chunkLen, len1);
+            int high2 = Math.min(shift2() + chunkLen, len2);
+            TokenArray sub1 = a1.subArray(shift1(), high1);
+            TokenArray sub2 = a2.subArray(shift2(), high2);
+            EditSequence subseq = new EditSequence(sub1, sub2);
+
+            EditSequence head = (high1 < len1 || high2 < len2)
+                    ? subseq.head(subseq.size() / 2)
+                    : subseq;
+
+            append(head);
+        }
+    }
+
+    /**
      * Extract alignment statistics
      *
      * @param s1 the source string
@@ -341,17 +410,100 @@ public class EditSequence {
         int n1 = 0;
         int n2 = 0;
         for (EdOp op : ops) {
-            Character c1 = s1.charAt(n1);
-            Character c2 = s2.charAt(n2);
-            stats.inc(c1, op);
             if (op != EdOp.INSERT) {
+                stats.inc(s1.charAt(n1), op);
                 ++n1;
+            } else {
+                stats.inc(s2.charAt(n2), EdOp.INSERT);
             }
             if (op != EdOp.DELETE) {
                 ++n2;
             }
         }
         return stats;
+    }
+
+    /**
+     * Extract alignment statistics
+     *
+     * @param s1 the source string
+     * @param s2 the target string
+     * @param w weights of basic edit operations
+     * @return the statistics on the number of edit operations (per character
+     * and type of operation)
+     */
+    public BiCounter<Character, EdOp> stats(String s1, String s2, EdOpWeight w) {
+        BiCounter<Character, EdOp> stats = new BiCounter<Character, EdOp>();
+        int n1 = 0;
+        int n2 = 0;
+        for (EdOp op : ops) {
+            switch (op) {
+                case INSERT:
+                    if (w.ins(s2.charAt(n2)) > 0) {
+                        stats.inc(s2.charAt(n2), op);
+                    } // costless insertion is equivalent to neglegible character
+                    ++n2;
+                    break;
+                case SUBSTITUTE:
+                    if (w.sub(s1.charAt(n1), s2.charAt(n2)) > 0) {
+                        stats.inc(s1.charAt(n1), op);
+                    } else {  // costless SUBSTITUTE is equivalent to KEEP
+                        stats.inc(s1.charAt(n1), EdOp.KEEP);
+                    }
+                    ++n1;
+                    ++n2;
+                    break;
+                case DELETE:
+                    if (w.del(s1.charAt(n2)) > 0) {
+                        stats.inc(s1.charAt(n2), op);
+                    } // costless deletion is equivalent to neglegible character
+                    ++n1;
+                    break;
+                case KEEP:
+                    stats.inc(s2.charAt(n2), op);
+                    ++n1;
+                    ++n2;
+                    break;
+            }
+        }
+        return stats;
+    }
+
+    /**
+     * Compute cost of the transformation
+     *
+     * @param s1 the source string
+     * @param s2 the target string
+     * @param w the cost of basic edit operations
+     * @return the added cost of the edit operations (not identical to length
+     * because some operation may be free)
+     */
+    public int cost(String s1, String s2, EdOpWeight w) {
+        int added = 0;
+        int n1 = 0;
+        int n2 = 0;
+        for (EdOp op : ops) {
+            switch (op) {
+                case INSERT:
+                    added += w.ins(s2.charAt(n2));
+                    ++n2;
+                    break;
+                case SUBSTITUTE:
+                    added += w.sub(s1.charAt(n1), s2.charAt(n2));
+                    ++n1;
+                    ++n2;
+                    break;
+                case DELETE:
+                    added += w.del(s1.charAt(n1));
+                    ++n1;
+                    break;
+                case KEEP:
+                    ++n1;
+                    ++n2;
+                    break;
+            }
+        }
+        return added;
     }
 
 }

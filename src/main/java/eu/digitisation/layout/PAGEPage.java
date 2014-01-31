@@ -17,7 +17,7 @@
  */
 package eu.digitisation.layout;
 
-import eu.digitisation.io.FileType;
+import eu.digitisation.input.FileType;
 import eu.digitisation.xml.DocumentParser;
 import java.awt.Polygon;
 import java.io.File;

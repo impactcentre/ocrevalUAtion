@@ -17,9 +17,9 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.io.CharMap;
-import eu.digitisation.io.Text;
-import eu.digitisation.io.WarningException;
+import eu.digitisation.input.WarningException;
+import eu.digitisation.text.CharMap;
+import eu.digitisation.text.Text;
 import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
 import org.w3c.dom.Element;
@@ -285,7 +285,7 @@ public class Aligner {
      */
     public static Element bitext(String header1, String header2,
             String first, String second, EdOpWeight w) {
-        EditSequence edition = new EditSequence(first, second, w);
+        EditSequence edition = new EditSequence(first, second, w, 10000);
         DocumentBuilder builder = new DocumentBuilder("table");
         Element table = builder.root();
         Element row;
@@ -322,75 +322,94 @@ public class Aligner {
         len = 0;
         for (int n = 0; n < edition.size(); n += len) {
             EdOp op = edition.get(n);
-            switch (op) {
-                case KEEP:
-                    len = 1;
-                    while (i + len < l1 && j + len < l2
-                            && edition.get(n + len) == EdOp.KEEP) {
-                        ++len;
-                    }
-                    s1 = first.substring(i, i + len);
-                    s2 = second.substring(j, j + len);
-                    builder.addText(cell1, s1);
-                    builder.addText(cell2, s2);
-                    i += len;
-                    j += len;
-                    break;
-                case DELETE:
-                    len = 1;
-                    while (i + len < l1 && edition.get(n + len) == EdOp.DELETE) {
-                        ++len;
-                    }
-                    s1 = first.substring(i, i + len);
-                    builder.addTextElement(cell1, "font", s1)
-                            .setAttribute("style", uStyle);
-                    i += len;
-                    break;
-                case INSERT:
-                    len = 1;
-                    while (j + len < l2 && edition.get(n + len) == EdOp.INSERT) {
-                        ++len;
-                    }
-                    s2 = second.substring(j, j + len);
-                    builder.addTextElement(cell2, "font", s2)
-                            .setAttribute("style", uStyle);
-                    j += len;
-                    break;
-                case SUBSTITUTE:
-                    len = 1;
-                    while (i + len < l1 && j + len < l2
-                            && edition.get(n + len) == EdOp.SUBSTITUTE) {
-                        ++len;
-                    }
-                    s1 = first.substring(i, i + len);
-                    s2 = second.substring(j, j + len);
-                    Element span1 = builder.addElement(cell1, "span");
-                    Element span2 = builder.addElement(cell2, "span");
-                    String id1 = "l" + i + "." + j;
-                    String id2 = "r" + i + "." + j;
-                    span1.setAttribute("title", s2);
-                    span2.setAttribute("title", s1);
-                    span1.setAttribute("id", id1);
-                    span2.setAttribute("id", id2);
-                    span1.setAttribute("onmouseover",
-                            "document.getElementById('"
-                            + id2 + "').style.background='greenyellow'");
-                    span2.setAttribute("onmouseover",
-                            "document.getElementById('"
-                            + id1 + "').style.background='greenyellow'");
-                    span1.setAttribute("onmouseout",
-                            "document.getElementById('"
-                            + id2 + "').style.background='none'");
-                    span2.setAttribute("onmouseout",
-                            "document.getElementById('"
-                            + id1 + "').style.background='none'");
-                    builder.addTextElement(span1, "font", s1)
-                            .setAttribute("color", "red");
-                    builder.addTextElement(span2, "font", s2)
-                            .setAttribute("color", "red");
-                    i += len;
-                    j += len;
-                    break;
+            // free passes
+            if (op == EdOp.DELETE && w.del(second.charAt(j)) == 0) {
+                builder.addText(cell2, second.substring(j, j + 1));
+                ++j;
+            } else if (op == EdOp.INSERT && w.ins(first.charAt(i)) == 0) {
+                builder.addText(cell1, first.substring(i, i + 1));
+                ++i;
+            } else if (op == EdOp.SUBSTITUTE && w.sub(first.charAt(i), second.charAt(j)) == 0) {
+                builder.addText(cell1, first.substring(i, i + 1));
+                builder.addText(cell2, second.substring(j, j + 1));
+                ++i;
+                ++j;
+            } else {
+                switch (op) {
+                    case KEEP:
+                        len = 1;
+                        while (i + len < l1 && j + len < l2
+                                && edition.get(n + len) == EdOp.KEEP) {
+                            ++len;
+                        }
+                        s1 = first.substring(i, i + len);
+                        s2 = second.substring(j, j + len);
+                        builder.addText(cell1, s1);
+                        builder.addText(cell2, s2);
+                        i += len;
+                        j += len;
+                        break;
+                    case DELETE:
+                        len = 1;
+                        while (i + len < l1
+                                && edition.get(n + len) == EdOp.DELETE
+                                && w.del(second.charAt(j + len)) > 0) {
+                            ++len;
+                        }
+                        s1 = first.substring(i, i + len);
+                        builder.addTextElement(cell1, "font", s1)
+                                .setAttribute("style", uStyle);
+                        i += len;
+                        break;
+                    case INSERT:
+                        len = 1;
+                        while (j + len < l2
+                                && edition.get(n + len) == EdOp.INSERT
+                                && w.ins(first.charAt(i + len)) > 0) {
+                            ++len;
+                        }
+                        s2 = second.substring(j, j + len);
+                        builder.addTextElement(cell2, "font", s2)
+                                .setAttribute("style", uStyle);
+                        j += len;
+                        break;
+                    case SUBSTITUTE:
+                        len = 1;
+                        while (i + len < l1 && j + len < l2
+                                && edition.get(n + len) == EdOp.SUBSTITUTE
+                                && w.sub(first.charAt(i + len), second.charAt(j + len)) > 0) {
+                            ++len;
+                        }
+                        s1 = first.substring(i, i + len);
+                        s2 = second.substring(j, j + len);
+                        Element span1 = builder.addElement(cell1, "span");
+                        Element span2 = builder.addElement(cell2, "span");
+                        String id1 = "l" + i + "." + j;
+                        String id2 = "r" + i + "." + j;
+                        span1.setAttribute("title", s2);
+                        span2.setAttribute("title", s1);
+                        span1.setAttribute("id", id1);
+                        span2.setAttribute("id", id2);
+                        span1.setAttribute("onmouseover",
+                                "document.getElementById('"
+                                + id2 + "').style.background='greenyellow'");
+                        span2.setAttribute("onmouseover",
+                                "document.getElementById('"
+                                + id1 + "').style.background='greenyellow'");
+                        span1.setAttribute("onmouseout",
+                                "document.getElementById('"
+                                + id2 + "').style.background='none'");
+                        span2.setAttribute("onmouseout",
+                                "document.getElementById('"
+                                + id1 + "').style.background='none'");
+                        builder.addTextElement(span1, "font", s1)
+                                .setAttribute("color", "red");
+                        builder.addTextElement(span2, "font", s2)
+                                .setAttribute("color", "red");
+                        i += len;
+                        j += len;
+                        break;
+                }
             }
         }
         return builder.document().getDocumentElement();
@@ -401,7 +420,7 @@ public class Aligner {
         File f1 = new File(args[0]);
         File f2 = new File(args[1]);
         File ofile = new File("/tmp/out.html");
-         
+
         String s1 = new Text(f1).toString();
         String s2 = new Text(f2).toString();
 

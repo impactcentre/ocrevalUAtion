@@ -17,9 +17,9 @@
  */
 package eu.digitisation;
 
-import eu.digitisation.io.CharFilter;
-import eu.digitisation.io.TextContent;
-import eu.digitisation.io.WarningException;
+import eu.digitisation.text.CharFilter;
+import eu.digitisation.text.TextContent;
+import eu.digitisation.input.WarningException;
 import java.io.File;
 
 /**

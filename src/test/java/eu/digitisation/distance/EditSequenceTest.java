@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.math.BiCounter;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -34,21 +35,39 @@ public class EditSequenceTest {
         System.out.println("cost");
         EditSequence instance = new EditSequence("acb", "a b", new OcrOpWeight());
         int expResult = 2;
-        int result = instance.cost();
+        int result = instance.length();
         assertEquals(expResult, result);
     }
 
     /**
      * Test of shift1 method, of class EditSequence.
      */
-    //@Test
+    @Test
     public void testShift1() {
         System.out.println("shift1");
         EditSequence instance = new EditSequence("acb", "a b", new OcrOpWeight());
-        int expResult = 1;
+        int expResult = 3;
         int result = instance.shift1();
         assertEquals(expResult, result);
+    }
 
+    @Test
+    public void testStats() {
+        System.out.println("stats");
+        String s1 = "acb";
+        String s2 = "abs";
+        EditSequence instance = new EditSequence(s1, s2, new OcrOpWeight());
+        BiCounter<Character, EdOp> result = instance.stats(s1, s2);
+        BiCounter<Character, EdOp> expResult = new BiCounter<Character, EdOp>();
+        expResult.add('a', EdOp.KEEP, 1);
+        expResult.add('b', EdOp.KEEP, 1);
+        expResult.add('c', EdOp.DELETE, 1);
+        expResult.add('s', EdOp.INSERT, 1);
+        assertEquals(expResult, result);
+
+        EdOpWeight w = new OcrOpWeight();
+        result = instance.stats(s1, s2, w);
+        assertEquals(expResult, result);
     }
 
 }

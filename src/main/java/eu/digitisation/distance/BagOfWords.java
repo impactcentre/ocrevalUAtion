@@ -17,7 +17,7 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.io.WordScanner;
+import eu.digitisation.text.WordScanner;
 import eu.digitisation.math.Counter;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -27,6 +27,7 @@ import java.util.logging.Logger;
  * A bag of words is a text where the ordering of words is irrelevant.
  *
  * @author R.C.C.
+ * @deprecated
  */
 public class BagOfWords {
 

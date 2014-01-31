@@ -17,7 +17,7 @@
  */
 package eu.digitisation.layout;
 
-import eu.digitisation.io.FileType;
+import eu.digitisation.input.FileType;
 
 /**
  * The tag of a text component in a document
