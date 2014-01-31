@@ -323,12 +323,12 @@ public class Aligner {
         for (int n = 0; n < edition.size(); n += len) {
             EdOp op = edition.get(n);
             // free passes
-            if (op == EdOp.DELETE && w.del(second.charAt(j)) == 0) {
-                builder.addText(cell2, second.substring(j, j + 1));
-                ++j;
-            } else if (op == EdOp.INSERT && w.ins(first.charAt(i)) == 0) {
-                builder.addText(cell1, first.substring(i, i + 1));
+            if (op == EdOp.DELETE && w.del(first.charAt(i)) == 0) {
+                builder.addText(cell2, second.substring(i, i + 1));
                 ++i;
+            } else if (op == EdOp.INSERT && w.ins(second.charAt(j)) == 0) {
+                builder.addText(cell1, first.substring(j, j + 1));
+                ++j;
             } else if (op == EdOp.SUBSTITUTE && w.sub(first.charAt(i), second.charAt(j)) == 0) {
                 builder.addText(cell1, first.substring(i, i + 1));
                 builder.addText(cell2, second.substring(j, j + 1));
@@ -353,7 +353,7 @@ public class Aligner {
                         len = 1;
                         while (i + len < l1
                                 && edition.get(n + len) == EdOp.DELETE
-                                && w.del(second.charAt(j + len)) > 0) {
+                                && w.del(first.charAt(i + len)) > 0) {
                             ++len;
                         }
                         s1 = first.substring(i, i + len);
@@ -365,7 +365,7 @@ public class Aligner {
                         len = 1;
                         while (j + len < l2
                                 && edition.get(n + len) == EdOp.INSERT
-                                && w.ins(first.charAt(i + len)) > 0) {
+                                && w.ins(second.charAt(j + len)) > 0) {
                             ++len;
                         }
                         s2 = second.substring(j, j + len);

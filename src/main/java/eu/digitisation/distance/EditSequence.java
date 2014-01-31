@@ -454,13 +454,13 @@ public class EditSequence {
                     ++n2;
                     break;
                 case DELETE:
-                    if (w.del(s1.charAt(n2)) > 0) {
-                        stats.inc(s1.charAt(n2), op);
+                    if (w.del(s1.charAt(n1)) > 0) {
+                        stats.inc(s1.charAt(n1), op);
                     } // costless deletion is equivalent to neglegible character
                     ++n1;
                     break;
                 case KEEP:
-                    stats.inc(s2.charAt(n2), op);
+                    stats.inc(s1.charAt(n1), op);
                     ++n1;
                     ++n2;
                     break;
