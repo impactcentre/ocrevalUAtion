@@ -87,7 +87,6 @@ public class Report extends DocumentBuilder {
      * @param ocrfile the OCR file
      * @param ocrencoding the OCR file encoding (optional)
      * @param filter the Unicode equivalences file (CSV format)
-     * @throws eu.digitisation.io.WarningException
      * @deprecated
      */
     public Report(File gtfile, String gtencoding,
@@ -133,7 +132,7 @@ public class Report extends DocumentBuilder {
      * @param gtencoding the ground-truth file encoding
      * @param ocrencoding the OCR file encoding
      * @param filter Unicode character filter
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      * @deprecated
      */
     public Report(Batch batch, String gtencoding, String ocrencoding,
@@ -215,7 +214,7 @@ public class Report extends DocumentBuilder {
             CharFilter filter = new CharFilter(pars.compatibility.getValue());
             String gts = gt.toString(filter);
             String ocrs = ocr.toString(filter);
-            EditSequence eds = new EditSequence(gts, ocrs, w);
+            EditSequence eds = new EditSequence(gts, ocrs, w, 2000);
             TermFrequencyVector gtv = new TermFrequencyVector(gts);
             TermFrequencyVector ocrv = new TermFrequencyVector(ocrs);
             Element alitab = Aligner.bitext(input.first.getName(),

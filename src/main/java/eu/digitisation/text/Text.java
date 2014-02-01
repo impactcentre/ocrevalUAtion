@@ -18,8 +18,8 @@
 package eu.digitisation.text;
 
 import eu.digitisation.input.FileType;
-import eu.digitisation.input.WarningException;
 import eu.digitisation.input.StartUp;
+import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.ElementList;
@@ -194,7 +194,7 @@ public class Text {
         String xmlEncoding = doc.getXmlEncoding();
         if (xmlEncoding != null) {
             encoding = xmlEncoding;
-            System.err.println("XML file " + file + " encoding is " + encoding);
+            System.err.println("XML file " + file.getName() + " encoding is " + encoding);
         } else {
             if (encoding == null) {
                 encoding = Encoding.detect(file);
@@ -216,7 +216,7 @@ public class Text {
         if (encoding == null) {
             encoding = Encoding.detect(file);
         }
-        System.err.println("Text file " + file + " encoding is " + encoding);
+        System.err.println("Text file " + file.getName() + " encoding is " + encoding);
 
         // read content
         try {

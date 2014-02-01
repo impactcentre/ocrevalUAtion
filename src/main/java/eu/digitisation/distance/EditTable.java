@@ -29,14 +29,33 @@ package eu.digitisation.distance;
  */
 public class EditTable {
 
-    int width;     // table width
-    int height;    // table height
+    int width;     // table width = max i-value (exclusive)
+    int height;    // table height = max j-value (exclusive)
     byte[] bytes;  // table content
 
+    /**
+     * 
+     * @param w the table width
+     * @param h the table height
+     * @return the length of the byte array (overflow safe computation)
+     */
+    private int len(int w, int h) {
+        int wm = w/4;  // modulus
+        int hm = h/4;
+        int wr = w % 4; // reminder
+        int hr = h % 4;
+        return 4 * wm * hm + wm * hr + wr * hm + (3 + wr * hr) / 4;
+    }
+    
+    /**
+     * Create an EditTable with width rows and height columns
+     * @param width
+     * @param height 
+     */
     public EditTable(int width, int height) {
         this.width = width;
         this.height = height;
-        bytes = new byte[1 + (width * height) / 4];  // two bits per operation 
+        bytes = new byte[len(width, height)];  // two bits per operation 
     }
 
     /**
@@ -46,7 +65,7 @@ public class EditTable {
      * @param position the bit position
      * @return the byte with that bit set to the specified value
      */
-    public static boolean getBit(byte b, int position) {
+    private static boolean getBit(byte b, int position) {
         return ((b >> position) & 1) == 1;
     }
 
@@ -58,7 +77,7 @@ public class EditTable {
      * @param value the value for that bit
      * @return a new byte with that bit set to the specified value
      */
-    public static byte setBit(byte b, int position, boolean value) {
+    private static byte setBit(byte b, int position, boolean value) {
         if (value) {
             return b |= 1 << position;
         } else {
@@ -90,23 +109,34 @@ public class EditTable {
      * @param i x-coordinate
      * @param j y-coordinate
      * @return the edit operation stored at cell (i,j)
+     * @throws IllegalArgumentException
      */
     public EdOp get(int i, int j) {
-        int position = 2 * (i * height + j);
-        boolean low = getBit(position);
-        boolean high = getBit(position + 1);
-        if (low) {
-            if (high) {
-                return EdOp.SUBSTITUTE;
+        int hm = height / 4;
+        int hr = height % 4;
+        int r = (i * hr + j) % 4;
+        int m = i * hm + (i * hr + j) / 4;
+//        long position = 2 * (i * height + j);
+        try {
+            boolean low = getBit(bytes[m], r);//getBit(position);
+            boolean high = getBit(bytes[m], r + 1);//getBit(position + 1);
+            if (low) {
+                if (high) {
+                    return EdOp.SUBSTITUTE;
+                } else {
+                    return EdOp.DELETE;
+                }
             } else {
-                return EdOp.DELETE;
+                if (high) {
+                    return EdOp.INSERT;
+                } else {
+                    return EdOp.KEEP;
+                }
             }
-        } else {
-            if (high) {
-                return EdOp.INSERT;
-            } else {
-                return EdOp.KEEP;
-            }
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new IllegalArgumentException("Forbiden acces to "
+                    + "cell (" + i + "," + j
+                    + ") in EditTable of size (" + width + "," + height + ")");
         }
     }
 
@@ -118,7 +148,11 @@ public class EditTable {
      * @param op the edit operation to be stored
      */
     public void set(int i, int j, EdOp op) {
-        int position = 2 * (i * height + j);
+  //      long position = 2 * (i * (long)height + j);
+        int hm = height / 4;
+        int hr = height % 4;
+        int r = (i * hr + j) % 4;
+        int m = i * hm + (i * hr + j) / 4;
         boolean low;
         boolean high;
 
@@ -143,8 +177,14 @@ public class EditTable {
                 low = false;
                 high = false;
         }
-        setBit(position, low);
-        setBit(position + 1, high);
+        try {
+            setBit(bytes[m], r, low);//setBit(position, low);
+            setBit(bytes[m], r+1, high);//setBit(position + 1, high);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new IllegalArgumentException("Forbiden acces to "
+                    + "cell (" + i + "," + j
+                    + ") in EditTable of size (" + width + "," + height + ")");
+        }
     }
 
     /**

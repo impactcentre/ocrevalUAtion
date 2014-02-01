@@ -28,7 +28,7 @@ public class EditTableTest {
 
     public EditTableTest() {
     }
-
+/*
     @Test
     public void testSet() {
         System.out.println("set");
@@ -38,7 +38,7 @@ public class EditTableTest {
         assertEquals(1, result);
         assertEquals(true, EditTable.getBit(result,0));
     }
-
+*/
     /**
      * Test of get method, of class EditTable.
      */

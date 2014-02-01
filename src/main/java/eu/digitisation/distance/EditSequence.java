@@ -18,7 +18,10 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.document.TokenArray;
+import eu.digitisation.input.WarningException;
 import eu.digitisation.math.BiCounter;
+import eu.digitisation.text.Text;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -506,4 +509,13 @@ public class EditSequence {
         return added;
     }
 
+    public static void main(String[] args) throws WarningException {
+        File gtfile = new File(args[0]);
+        File ocrfile = new File(args[1]);
+        String gts = new Text(gtfile).toString();
+        String ocrs = new Text(ocrfile).toString();
+        EdOpWeight w = new OcrOpWeight();
+        EditSequence eds = new EditSequence(gts, ocrs, w, 2000);
+        System.out.println(eds);
+    }
 }
