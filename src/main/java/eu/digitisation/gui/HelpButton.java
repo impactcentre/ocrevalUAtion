@@ -18,29 +18,78 @@
 package eu.digitisation.gui;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author R.C.C.
  */
 public class HelpButton extends JButton {
+
     private static final long serialVersionUID = 1L;
+    String text;  // help text
+    URI uri;      // URI with extended help
 
     /**
      * Default constructor
+     *
+     * @param helpText the help text
+     * @param helpUri the address with further information
+     * @param forecolor foreground color
+     * @param bgcolor background color
      */
-    public HelpButton() {
+    public HelpButton(String helpText, String helpUri, Color forecolor, Color bgcolor) {
         super("?");
-        Dimension size = getPreferredSize();
-        size.width = size.height = Math.max(size.width, size.height);
-        setPreferredSize(size);
-
+        setPreferredSize(new Dimension(10, 10));
         setContentAreaFilled(false);
+        setForeground(forecolor);
+        setBackground(bgcolor);
+
+        this.text = helpText;
+        if (helpUri != null) {
+            try {
+                this.uri = new URI(helpUri);
+            } catch (URISyntaxException ex) {
+                this.uri = null;
+            }
+        }
+
+        addActionListener(new ActionListener() {
+            Container container = getParent();
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (text != null) {
+                    JOptionPane.showMessageDialog(container, text);
+                }
+                if (uri != null) {
+                    Browser.open(uri);
+                }
+            }
+        });
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param help the help text or address with further information
+     * @param forecolor foreground color
+     * @param bgcolor background color
+     */
+    public HelpButton(String help, Color forecolor, Color bgcolor) {
+        this(help.startsWith("http") ? null : help,
+                help.startsWith("http") ? help : null,
+                forecolor, bgcolor);
     }
 
     @Override
@@ -60,7 +109,6 @@ public class HelpButton extends JButton {
         g.setColor(getForeground());
         g.drawOval(7, 0, getSize().width - 16, getSize().height - 1);
     }
-
     Shape shape;
 
     @Override

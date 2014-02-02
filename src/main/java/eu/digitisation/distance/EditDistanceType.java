@@ -18,10 +18,10 @@
 package eu.digitisation.distance;
 
 /**
- * Basic edit distance variants (only implemented ones)
+ * Basic edit distance variants.
  * @author R.C.C
  */
 public enum EditDistanceType {
 
-    INDEL, LEVENSHTEIN, DAMERAU_LEVENSHTEIN;
+    INDEL, LEVENSHTEIN, DAMERAU_LEVENSHTEIN, OCR_CHAR, OCR_WORD;
 }

@@ -17,11 +17,11 @@
  */
 package eu.digitisation.langutils;
 
-import eu.digitisation.io.CharFilter;
-import eu.digitisation.io.StringNormalizer;
-import eu.digitisation.io.TextContent;
-import eu.digitisation.io.UnsupportedFormatException;
-import eu.digitisation.io.WordScanner;
+import eu.digitisation.text.CharFilter;
+import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.text.TextContent;
+import eu.digitisation.input.WarningException;
+import eu.digitisation.text.WordScanner;
 import eu.digitisation.math.Counter;
 import java.io.File;
 import java.io.IOException;
@@ -74,8 +74,9 @@ public class TermFrequency extends Counter<String> {
      * Extract words from a file
      *
      * @param dir the input file or directory
+     * @throws eu.digitisation.io.WarningException
      */
-    public void add(File dir) throws UnsupportedFormatException {
+    public void add(File dir) throws WarningException {
         if (dir.isDirectory()) {
             addFiles(dir.listFiles());
         } else {
@@ -88,8 +89,9 @@ public class TermFrequency extends Counter<String> {
      * Extract words from a file
      *
      * @param file an input files
+     * @throws eu.digitisation.io.WarningException
      */
-    public void addFile(File file) throws UnsupportedFormatException {
+    public void addFile(File file) throws WarningException {
         try {
             TextContent content = new TextContent(file, filter);
             WordScanner scanner = new WordScanner(content.toString());
@@ -97,7 +99,7 @@ public class TermFrequency extends Counter<String> {
             while ((word = scanner.nextWord()) != null) {
                 String filtered = (filter == null)
                         ? word : filter.translate(word);
-                inc(StringNormalizer.canonical(filtered));
+                inc(StringNormalizer.composed(filtered));
             }
         } catch (IOException ex) {
             Logger.getLogger(TermFrequency.class.getName()).log(Level.SEVERE, null, ex);
@@ -110,7 +112,7 @@ public class TermFrequency extends Counter<String> {
      *
      * @param files an array of input files
      */
-    private void addFiles(File[] files) throws UnsupportedFormatException {
+    private void addFiles(File[] files) throws WarningException {
         for (File file : files) {
             addFile(file);
         }
@@ -148,7 +150,6 @@ public class TermFrequency extends Counter<String> {
     public double recall(TermFrequency other) {
         int total = 0;
         int matched = 0;
-       
 
         for (Map.Entry<String, Integer> entry : other.entrySet()) {
             total += entry.getValue();
@@ -157,7 +158,38 @@ public class TermFrequency extends Counter<String> {
             }
         }
 
-        return matched / (double)total;
+        return matched / (double) total;
+    }
+
+    /**
+     * Compute the order-independent edit-distance between two documents
+     * (equivalent to a bags of words model).
+     *
+     * @param other another TermFrequency
+     * @return the number of differences between this and the other bag of words
+     */
+    public int editDistance(TermFrequency other) {
+        int dplus = 0;    // excess
+        int dminus = 0;   // fault
+        for (String word : this.keySet()) {
+            int delta = this.value(word) - other.value(word);
+            if (delta > 0) {
+                dplus += delta;
+            } else {
+                dminus += delta;
+            }
+        }
+        for (String word : other.keySet()) {
+            if (!this.containsKey(word)) {
+                int delta = this.value(word) - other.value(word);
+                if (delta > 0) {
+                    dplus += delta;
+                } else {
+                    dminus += delta;
+                }
+            }
+        }
+        return Math.max(dplus, dminus);
     }
 
     /**
@@ -180,7 +212,7 @@ public class TermFrequency extends Counter<String> {
      *
      * @param args see help
      */
-    public static void main(String[] args) throws UnsupportedFormatException {
+    public static void main(String[] args) throws Exception {
         if (args.length < 1) {
             System.err.println("Usage: TermFrequency [-e equivalences_file] [-c] input_files_or_directories");
         } else {

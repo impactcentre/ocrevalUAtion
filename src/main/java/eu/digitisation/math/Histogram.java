@@ -29,34 +29,49 @@ import java.awt.image.BufferedImage;
 public class Histogram {
 
     private static final long serialVersionUID = 1L;
+    String title;
     int[] X;
     int[] Y;
-   
 
     /**
      * Create points for plot (one point per bar, equally spaced).
      *
      * @param <Type>
-     * @param counter  a Counter
+     * @param title the title for this histogram
+     * @param counter a Counter
      */
-    public <Type extends Comparable<Type>> Histogram (Counter<Type> counter) {
-        int[][] points = new int[2][counter.size()];
+    public <Type extends Comparable<Type>> Histogram(String title, Counter<Type> counter) {
         int n = 0;
 
         for (Type key : counter.keySet()) {
             Object obj = key;
             if (obj instanceof Integer) {
-               Integer iobj = (Integer)obj;
-               X[n] = iobj.intValue();
+                Integer iobj = (Integer) obj;
+                X[n] = iobj.intValue();
             } else {
-               X[n] =  n;
+                X[n] = n;
             }
             Y[n] = counter.get(key);
             ++n;
         }
     }
 
- /**
+    /**
+     * Create points for plot (one point per bar, equally spaced).
+     *
+     * @param title the title for this histogram
+     * @param Y an array of integer values
+     */
+    public Histogram(String title, int[] Y) {
+        this.title = title;
+        this.Y = Y;
+        X = new int[Y.length];
+        for (int n = 0; n < Y.length; ++n) {
+            X[n] = n;
+        }
+    }
+
+    /**
      * Integer exponentiation (for axis)
      *
      * @param base base
@@ -88,10 +103,10 @@ public class Histogram {
                         height + 2 * margin,
                         BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = bim.createGraphics();
-        int xhigh = ArrayMath.max(X);
-        int xlow = ArrayMath.min(X);
+        int xhigh = Arrays.max(X);
+        int xlow = Arrays.min(X);
         int xrange = xhigh - xlow;
-        int yhigh = ArrayMath.max(Y);
+        int yhigh = Arrays.max(Y);
         int ylow = 0; //ArrayMath.min(Y);
         int yrange = yhigh - ylow;
 
@@ -101,6 +116,12 @@ public class Histogram {
             int xpos = (width * (X[n] - xlow)) / xrange;
             int ypos = (height * (Y[n] - ylow)) / yrange;
             g.fillRect(margin + xpos - 1, height + margin - ypos, 3, ypos);
+        }
+
+        // draw title
+        g.setColor(Color.DARK_GRAY);
+        if (title != null) {
+            g.drawString(title, margin, margin / 2);
         }
 
         // draw X and Y axes
@@ -120,7 +141,7 @@ public class Histogram {
         int xstep = (e > 0) ? pow(10, e) : 1;
         for (int x = xlow - xlow % xstep; x <= xhigh; x += xstep) {
             int xpos = (width * (x - xlow)) / xrange;
-            g.drawString(String.valueOf(x) , margin + xpos - 6 * e, height + margin + 12);
+            g.drawString(String.valueOf(x), margin + xpos - 6 * e, height + margin + 12);
             g.drawLine(margin + xpos, height + margin,
                     margin + xpos, height + margin - 5);
         }

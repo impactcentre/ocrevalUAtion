@@ -19,6 +19,7 @@ package eu.digitisation.gui;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
@@ -38,9 +39,9 @@ public class JLink extends JLabel {
      */
     public JLink(final String title, final String url, Color color) {
         super();
-        String linkColor = "#4C501E";
+        setPreferredSize(new Dimension(400,10));
         setText("<html><body>" + title
-                + "<a style=\"color:" + linkColor + "\" href=\""
+                + "<a style=\"color:#4c501E\" href=\""
                 + url + "\">" + url
                 + "</a></body></html>");
         setCursor(new Cursor(Cursor.HAND_CURSOR));

@@ -17,6 +17,9 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.document.TokenArray;
+import eu.digitisation.math.MinimalPerfectHash;
+
 /**
  * Word alignments between 2 texts (output in text format)
  *
@@ -94,9 +97,9 @@ public class WordCompare {
      * @return a report on the differences between files
      */
     public static String wdiff(String first, String second) {
-        TokenArrayFactory factory = new TokenArrayFactory(false); // case unsensitive  
-        TokenArray a1 = factory.newTokenArray(first);
-        TokenArray a2 = factory.newTokenArray(second);
+        MinimalPerfectHash mph = new MinimalPerfectHash(false); // case unsensitive  
+        TokenArray a1 = new TokenArray(mph, first);
+        TokenArray a2 = new TokenArray(mph, second);
         EditTable B = align(a1, a2);
         StringBuilder builder = new StringBuilder();
 

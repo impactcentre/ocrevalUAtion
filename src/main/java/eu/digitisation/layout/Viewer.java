@@ -18,7 +18,7 @@
 package eu.digitisation.layout;
 
 import eu.digitisation.image.Bimage;
-import eu.digitisation.io.FileType;
+import eu.digitisation.input.FileType;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.io.File;

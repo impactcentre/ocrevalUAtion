@@ -1,9 +1,9 @@
 package eu.digitisation;
 
-import eu.digitisation.io.Batch;
-import eu.digitisation.io.CharFilter;
-import eu.digitisation.io.UnsupportedFormatException;
-import eu.digitisation.ocrevaluation.Report;
+import eu.digitisation.input.Batch;
+import eu.digitisation.text.CharFilter;
+import eu.digitisation.input.WarningException;
+import eu.digitisation.output.Report;
 import java.io.File;
 import java.io.InvalidObjectException;
 import java.util.logging.Level;
@@ -27,7 +27,7 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws UnsupportedFormatException {
+    public static void main(String[] args) throws WarningException {
 
         File repfile = null;     // char filter
         File gtfile = null;      // ground-truth

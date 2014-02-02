@@ -18,7 +18,7 @@
 
 package eu.digitisation.layout;
 
-import eu.digitisation.io.FileType;
+import eu.digitisation.input.FileType;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

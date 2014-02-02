@@ -17,12 +17,8 @@
  */
 package eu.digitisation.distance;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -32,23 +28,7 @@ public class EditTableTest {
 
     public EditTableTest() {
     }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
+/*
     @Test
     public void testSet() {
         System.out.println("set");
@@ -58,7 +38,7 @@ public class EditTableTest {
         assertEquals(1, result);
         assertEquals(true, EditTable.getBit(result,0));
     }
-
+*/
     /**
      * Test of get method, of class EditTable.
      */
@@ -84,7 +64,6 @@ public class EditTableTest {
                 }
             }
         }
-
     }
 
 }
