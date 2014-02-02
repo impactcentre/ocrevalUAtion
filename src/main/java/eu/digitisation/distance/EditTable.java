@@ -34,23 +34,24 @@ public class EditTable {
     byte[] bytes;  // table content
 
     /**
-     * 
+     *
      * @param w the table width
      * @param h the table height
      * @return the length of the byte array (overflow safe computation)
      */
     private int len(int w, int h) {
-        int wm = w/4;  // modulus
-        int hm = h/4;
+        int wm = w / 4;  // modulus
+        int hm = h / 4;
         int wr = w % 4; // reminder
         int hr = h % 4;
         return 4 * wm * hm + wm * hr + wr * hm + (3 + wr * hr) / 4;
     }
-    
+
     /**
      * Create an EditTable with width rows and height columns
+     *
      * @param width
-     * @param height 
+     * @param height
      */
     public EditTable(int width, int height) {
         this.width = width;
@@ -112,14 +113,17 @@ public class EditTable {
      * @throws IllegalArgumentException
      */
     public EdOp get(int i, int j) {
+        int position = 2 * (i * height + j);
         int hm = height / 4;
         int hr = height % 4;
         int r = (i * hr + j) % 4;
         int m = i * hm + (i * hr + j) / 4;
-//        long position = 2 * (i * height + j);
+
         try {
-            boolean low = getBit(bytes[m], r);//getBit(position);
-            boolean high = getBit(bytes[m], r + 1);//getBit(position + 1);
+            //boolean low = getBit(bytes[m], r);
+            boolean low = getBit(position);
+            //      boolean high = getBit(bytes[m], r + 1);
+            boolean high = getBit(position + 1);
             if (low) {
                 if (high) {
                     return EdOp.SUBSTITUTE;
@@ -148,11 +152,12 @@ public class EditTable {
      * @param op the edit operation to be stored
      */
     public void set(int i, int j, EdOp op) {
-  //      long position = 2 * (i * (long)height + j);
+        int position = 2 * (i * height + j);
         int hm = height / 4;
         int hr = height % 4;
-        int r = (i * hr + j) % 4;
         int m = i * hm + (i * hr + j) / 4;
+        int r = (i * hr + j) % 4;
+
         boolean low;
         boolean high;
 
@@ -178,8 +183,10 @@ public class EditTable {
                 high = false;
         }
         try {
-            setBit(bytes[m], r, low);//setBit(position, low);
-            setBit(bytes[m], r+1, high);//setBit(position + 1, high);
+            //setBit(bytes[m], r, low);
+            setBit(position, low);
+            //setBit(bytes[m], r + 1, high);
+            setBit(position + 1, high);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new IllegalArgumentException("Forbiden acces to "
                     + "cell (" + i + "," + j
@@ -213,7 +220,7 @@ public class EditTable {
                         break;
                 }
             }
-            builder.append('\n');
+            builder.append('\n' + i + "=");
         }
 
         return builder.toString();

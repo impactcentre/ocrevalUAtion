@@ -33,6 +33,7 @@ import eu.digitisation.input.WarningException;
 import eu.digitisation.math.MinimalPerfectHash;
 import eu.digitisation.math.Pair;
 import eu.digitisation.text.CharFilter;
+import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.Text;
 import eu.digitisation.text.TextContent;
 import eu.digitisation.xml.DocumentBuilder;
@@ -112,9 +113,9 @@ public class Report extends DocumentBuilder {
 
         // General info
         String[][] summary = {{"CER", String.format("%.2f", cer * 100)},
-        {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
-        {"WER", String.format("%.2f", wer * 100)},
-        {"WER (order independent)", String.format("%.2f", ber * 100)}
+            {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+            {"WER", String.format("%.2f", wer * 100)},
+            {"WER (order independent)", String.format("%.2f", ber * 100)}
         };
         addTextElement(body, "h2", "General results");
         addTable(body, summary);
@@ -176,9 +177,9 @@ public class Report extends DocumentBuilder {
         double wer = wdist / (double) numwords;
         double ber = bdist / (double) numwords;
         String[][] summaryContent = {{"CER", String.format("%.2f", cer * 100)},
-        //   {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
-        {"WER", String.format("%.2f", wer * 100)},
-        {"WER (order independent)", String.format("%.2f", ber * 100)}
+            //   {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+            {"WER", String.format("%.2f", wer * 100)},
+            {"WER (order independent)", String.format("%.2f", ber * 100)}
         };
         addTable(summaryTab, summaryContent);
         // CharStatTable
@@ -195,9 +196,10 @@ public class Report extends DocumentBuilder {
     public Report(Batch batch, Parameters pars) throws WarningException {
         super("html");
         init();
-        
+
         EdOpWeight w = new OcrOpWeight(pars);
         CharStatTable stats = new CharStatTable();
+        CharFilter filter = new CharFilter(pars.compatibility.getValue());
         Element summaryTab;
         int numwords = 0;   // number of words in GT
         int wdist = 0;      // word distances
@@ -211,17 +213,24 @@ public class Report extends DocumentBuilder {
             Pair<File, File> input = batch.pair(n);
             Text gt = new Text(input.first);
             Text ocr = new Text(input.second);
-            CharFilter filter = new CharFilter(pars.compatibility.getValue());
-            String gts = gt.toString(filter);
-            String ocrs = ocr.toString(filter);
+            String gtref = gt.toString(filter);
+            String ocrref = ocr.toString(filter);
+            String gts = StringNormalizer.canonical(gtref, 
+                    pars.ignoreCase.getValue(), 
+                    pars.ignoreDiacritics.getValue(), 
+                    false);
+            String ocrs = StringNormalizer.canonical(ocrref, 
+                    pars.ignoreCase.getValue(), 
+                    pars.ignoreDiacritics.getValue(),
+                    false);
             EditSequence eds = new EditSequence(gts, ocrs, w, 2000);
             TermFrequencyVector gtv = new TermFrequencyVector(gts);
             TermFrequencyVector ocrv = new TermFrequencyVector(ocrs);
             Element alitab = Aligner.bitext(input.first.getName(),
-                    input.second.getName(), gts, ocrs, w);    
+                    input.second.getName(), gtref, ocrref, w, eds);
             int[] wd = EditDistance.wordDistance(gts, ocrs, 1000);
-    
-            stats.add(eds.stats(gts, ocrs, w));
+
+            stats.add(eds.stats(gtref, ocrref, w));
             addTextElement(body, "div", " ");
             addElement(body, alitab);
             numwords += wd[0]; // length (words) in gts
@@ -233,9 +242,9 @@ public class Report extends DocumentBuilder {
         double wer = wdist / (double) numwords;
         double ber = bdist / (double) numwords;
         String[][] summaryContent = {{"CER", String.format("%.2f", cer * 100)},
-        //   {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
-        {"WER", String.format("%.2f", wer * 100)},
-        {"WER (order independent)", String.format("%.2f", ber * 100)}
+            //   {"CER (with swaps)", String.format("%.2f", cerDL * 100)},
+            {"WER", String.format("%.2f", wer * 100)},
+            {"WER (order independent)", String.format("%.2f", ber * 100)}
         };
         addTable(summaryTab, summaryContent);
         // CharStatTable
@@ -250,5 +259,4 @@ public class Report extends DocumentBuilder {
             Element alitab = Aligner.alignmentMap("", "", args[0], args[1], null);
         }
     }
-
 }

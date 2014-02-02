@@ -230,7 +230,13 @@ public class EditSequence {
         ops = new ArrayList<EdOp>();
 
         while (i > 0 || j > 0) {
-            EdOp e = B.get(i, j);
+            EdOp e = null;
+            try {
+                e = B.get(i, j);
+            } catch (Exception ex) {
+                System.out.println(i+","+j);
+                 System.out.println(B);
+            }
             switch (e) {
                 case INSERT:
                     --j;
@@ -273,6 +279,7 @@ public class EditSequence {
 
         ops = new ArrayList<EdOp>();
         while (shift1() < len1 || shift2() < len2) {
+            System.out.println((100*shift1)/len1+"% of file processed");
             int high1 = Math.min(shift1() + chunkLen, len1);
             int high2 = Math.min(shift2() + chunkLen, len2);
             String sub1 = s1.substring(shift1(), high1);
@@ -334,7 +341,6 @@ public class EditSequence {
                     }
                 }
             }
-
         }
 
         // extract sequence of edit operations

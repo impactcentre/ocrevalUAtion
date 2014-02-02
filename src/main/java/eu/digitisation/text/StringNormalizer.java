@@ -25,12 +25,9 @@ package eu.digitisation.text;
  */
 public class StringNormalizer {
 
-    final static java.text.Normalizer.Form decomposed
-            = java.text.Normalizer.Form.NFD;
-    final static java.text.Normalizer.Form composed
-            = java.text.Normalizer.Form.NFC;
-    static final java.text.Normalizer.Form compatible
-            = java.text.Normalizer.Form.NFKC;
+    final static java.text.Normalizer.Form decomposed = java.text.Normalizer.Form.NFD;
+    final static java.text.Normalizer.Form composed = java.text.Normalizer.Form.NFC;
+    static final java.text.Normalizer.Form compatible = java.text.Normalizer.Form.NFKC;
 
     /**
      * Reduce whitespace (including line and paragraph separators)
@@ -78,7 +75,35 @@ public class StringNormalizer {
     }
 
     /**
-     * Remove everything except for letters (with diacritics), numbers and spaces
+     *
+     * @param s the input string
+     * @param ignoreCase true if case is irrelevant
+     * @param ignoreDiacritics true if diacritics are irrelevant
+     * @param ignorePunctuation true if punctuation is irrelevant
+     * @return the canonical representation for comparison
+     */
+    public static String canonical(String s,
+            boolean ignoreCase,
+            boolean ignoreDiacritics,
+            boolean ignorePunctuation) {
+
+        String res = (ignorePunctuation) ? removePunctuation(s) : s;
+        if (ignoreCase) {
+            if (ignoreDiacritics) {
+                return StringNormalizer.removeDiacritics(res).toLowerCase();
+            } else {
+                return res.toLowerCase();
+            }
+        } else if (ignoreDiacritics) {
+            return StringNormalizer.removeDiacritics(res);
+        } else {
+            return res;
+        }
+    }
+
+    /**
+     * Remove everything except for letters (with diacritics), numbers and
+     * spaces
      *
      * @param s a string
      * @return the string with only letters, numbers, spaces and diacritics.

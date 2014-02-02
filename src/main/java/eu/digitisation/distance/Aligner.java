@@ -284,8 +284,8 @@ public class Aligner {
      * @return a table in XHTML format showing the alignments
      */
     public static Element bitext(String header1, String header2,
-            String first, String second, EdOpWeight w) {
-        EditSequence edition = new EditSequence(first, second, w, 1000);
+            String first, String second, EdOpWeight w, EditSequence edition) {
+//        EditSequence edition = new EditSequence(first, second, w, 1000);
         DocumentBuilder builder = new DocumentBuilder("table");
         Element table = builder.root();
         Element row;
@@ -427,10 +427,11 @@ public class Aligner {
 
         String s1 = new Text(f1).toString();
         String s2 = new Text(f2).toString();
-
+        EdOpWeight w = new OcrOpWeight();
+        EditSequence eds = new EditSequence(s1, s2, w);
         DocumentBuilder builder = new DocumentBuilder("html");
         Element body = builder.addElement("body");
-        Element alitab = Aligner.bitext("s1", "s2", s1, s2, null);
+        Element alitab = Aligner.bitext("s1", "s2", s1, s2, w, eds);
         builder.addElement(body, alitab);
         builder.write(ofile);
     }

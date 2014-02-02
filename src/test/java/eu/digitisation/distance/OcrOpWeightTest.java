@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.text.StringNormalizer;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -34,26 +35,38 @@ public class OcrOpWeightTest {
         System.out.println("sub");
         char[] c1 = {'Á', 'Á', 'Á', 'Á', 'Á'};
         char[] c2 = {'Á', 'A', 'á', 'a', ' '};
-        int[] w1 = {0, 1, 1, 1, 4};
+        int[] w1 = {0, 1, 1, 1, 2};
         OcrOpWeight W1 = new OcrOpWeight(); // fully-sensitive
         for (int n = 0; n < w1.length; ++n) {
-            assertEquals(w1[n], W1.sub(c1[n], c2[n]));
+            String s1 = StringNormalizer.canonical(String.valueOf(c1[n]), false, false, false);
+            String s2 = StringNormalizer.canonical(String.valueOf(c2[n]), false, false, false);
+            int d = EditDistance.charDistance(s1, s2, W1, 10);
+            assertEquals(w1[n], d);
         }
         OcrOpWeight W2 = new OcrOpWeight(true, true, true); //ignore everything
-        int[] w2 = {0, 0, 0, 0, 4};
+        int[] w2 = {0, 0, 0, 0, 2};
         for (int n = 0; n < w2.length; ++n) {
-            assertEquals(w2[n], W2.sub(c1[n], c2[n]));
+            String s1 = StringNormalizer.canonical(String.valueOf(c1[n]), true, true, true);
+            String s2 = StringNormalizer.canonical(String.valueOf(c2[n]), true, true, true);
+            int d = EditDistance.charDistance(s1, s2, W2, 10);
+            assertEquals(w2[n], d);
         }
         OcrOpWeight W3 = new OcrOpWeight(false, true, true); //ignore diacritics
-        int[] w3 = {0, 0, 1, 1, 4};
+        int[] w3 = {0, 0, 1, 1, 2};
         for (int n = 0; n < w3.length; ++n) {
-            assertEquals(w3[n], W3.sub(c1[n], c2[n]));
+            String s1 = StringNormalizer.canonical(String.valueOf(c1[n]), false, true, true);
+            String s2 = StringNormalizer.canonical(String.valueOf(c2[n]), false, true, true);
+            int d = EditDistance.charDistance(s1, s2, W3, 10);
+            assertEquals(w3[n], d);
         }
-        
+
         OcrOpWeight W4 = new OcrOpWeight(true, false, true); //ignore case
-        int[] w4 = {0, 1, 0, 1, 4};
+        int[] w4 = {0, 1, 0, 1, 2};
         for (int n = 0; n < w4.length; ++n) {
-            assertEquals(w4[n], W4.sub(c1[n], c2[n]));
+            String s1 = StringNormalizer.canonical(String.valueOf(c1[n]), true, false, true);
+            String s2 = StringNormalizer.canonical(String.valueOf(c2[n]), true, false, true);
+            int d = EditDistance.charDistance(s1, s2, W4, 10);
+            assertEquals(w4[n], d);
         }
     }
 
@@ -73,5 +86,4 @@ public class OcrOpWeightTest {
         assertEquals(1, W.ins('+'));
 
     }
-
 }

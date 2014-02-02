@@ -63,32 +63,36 @@ public class OcrOpWeight implements EdOpWeight {
      *
      * @param c1 the character found in text
      * @param c2 the replacing character
-     * @return the cost of substituting character c1 with c2 Note: whitespace
+     * @return the cost of substituting character c1 with c2. Note: whitespace
      * must not substitute character which are rather deleted; therefore, such
-     * cases return a value greater than 2 (standard insertion+deletion)
+     * cases return a value greater than 2 (standard insertion+deletion).
+     * Diacritics and case cannot be compared here due to efficiency reasons
+     * (too slow).
      */
     @Override
     public int sub(char c1, char c2) {
-        if (Character.isSpaceChar(c1) ^ Character.isSpaceChar(c2)) {
-            return 4;  // replacing whitespace with character is not recommended
-        } else if (ignoreCase) {
-            if (ignoreDiacritics) {
-                String s1 = StringNormalizer.removeDiacritics(String.valueOf(c1));
-                String s2 = StringNormalizer.removeDiacritics(String.valueOf(c2));
-                return (s1.toLowerCase().equals(s2.toLowerCase())) ? 0 : 1;
-            } else {
-                return (Character.toLowerCase(c1) == Character.toLowerCase(c2))
-                        ? 0 : 1;
-            }
+        return (Character.isSpaceChar(c1) ^ Character.isSpaceChar(c2)) ? 4 : 1;
+        /*
+         if (Character.isSpaceChar(c1) ^ Character.isSpaceChar(c2)) {
+         return 4;  // replacing whitespace with character is not recommended
+         } else if (ignoreCase) {
+         if (ignoreDiacritics) {
+         String s1 = StringNormalizer.removeDiacritics(String.valueOf(c1));
+         String s2 = StringNormalizer.removeDiacritics(String.valueOf(c2));
+         return (s1.toLowerCase().equals(s2.toLowerCase())) ? 0 : 1;
+         } else {
+         return (Character.toLowerCase(c1) == Character.toLowerCase(c2))
+         ? 0 : 1;
+         }
 
-        } else if (ignoreDiacritics) {  // case matters
-            String s1 = StringNormalizer.removeDiacritics(String.valueOf(c1));
-            String s2 = StringNormalizer.removeDiacritics(String.valueOf(c2));
-            return (s1.equals(s2)) ? 0 : 1;
-        } else {
-            return c1 == c2 ? 0 : 1;
-        }
-
+         } else if (ignoreDiacritics) {  // case matters
+         String s1 = StringNormalizer.removeDiacritics(String.valueOf(c1));
+         String s2 = StringNormalizer.removeDiacritics(String.valueOf(c2));
+         return (s1.equals(s2)) ? 0 : 1;
+         } else {
+         return c1 == c2 ? 0 : 1;
+         }
+         */
     }
 
     /**

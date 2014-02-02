@@ -110,17 +110,24 @@ public class EditDistanceTest {
         String s1 = "ÁÁÁÁ";
         String s2 = "ÁAáa";
 
-        OcrOpWeight W1 = new OcrOpWeight(); // fully-sensitive
-        assertEquals(3, EditDistance.charDistance(s1, s2, W1, 1000));
+        OcrOpWeight W = new OcrOpWeight(); // fully-sensitive
+        String r1 = StringNormalizer.canonical(s1, false, false, false);
+        String r2 = StringNormalizer.canonical(s2, false, false, false);
+        assertEquals(3, EditDistance.charDistance(r1, r2, W, 1000));
 
-        OcrOpWeight W2 = new OcrOpWeight(true, true, true); //ignore everything
-        assertEquals(0, EditDistance.charDistance(s1, s2, W2, 1000));
+        W = new OcrOpWeight(true, true, true); //ignore everything
+        r1 = StringNormalizer.canonical(s1, true, true, true);
+        r2 = StringNormalizer.canonical(s2, true, true, true);
+        assertEquals(0, EditDistance.charDistance(r1, r2, W, 1000));
 
-        OcrOpWeight W3 = new OcrOpWeight(false, true, true); //ignore diacritics
-        assertEquals(2, EditDistance.charDistance(s1, s2, W3, 1000));
+        W = new OcrOpWeight(false, true, true); //ignore diacritics
+        r1 = StringNormalizer.canonical(s1, false, true, true);
+        r2 = StringNormalizer.canonical(s2, false, true, true);
+        assertEquals(2, EditDistance.charDistance(r1, r2, W, 1000));
 
-        OcrOpWeight W4 = new OcrOpWeight(true, false, true); //ignore case
-        assertEquals(2, EditDistance.charDistance(s1, s2, W4, 1000));
+        W = new OcrOpWeight(true, false, true); //ignore case
+        r1 = StringNormalizer.canonical(s1, true, false, true);
+        r2 = StringNormalizer.canonical(s2, true, false, true);
+        assertEquals(2, EditDistance.charDistance(r1, r2, W, 1000));
     }
-
 }
