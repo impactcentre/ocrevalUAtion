@@ -20,7 +20,7 @@ package eu.digitisation.distance;
 import eu.digitisation.document.TokenArray;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.math.MinimalPerfectHash;
-import eu.digitisation.deprecated.TextContent;
+import eu.digitisation.text.Text;
 import eu.digitisation.text.WordSet;
 import java.io.File;
 
@@ -66,11 +66,15 @@ public class EditDistance {
     /**
      * @param s1 the first string.
      * @param s2 the second string.
+     * @param stopwords a set of stop-words
      * @param chunkLen the length of the chunks analyzed at every step (must be
      * strictly greater than 1)
      * @return the length (number of words) of first, the length (number of
      * words) of second, and the approximate (linear time) word-based
-     * Levenshtein distance between first and second.
+     * Levenshtein distance between first and second. Whenever a stop-word in
+     * the first string is aligned (substituted) with a different target word in
+     * the second string or with no string at all (deleted), this difference
+     * does not contribute to the distance
      */
     public static int[] wordDistance(String s1, String s2,
             WordSet stopwords, int chunkLen) {
@@ -83,7 +87,6 @@ public class EditDistance {
         int n2 = 0;
         for (EdOp op : seq.ops) {
             String word = a1.wordAt(n1);
-
             if (op != EdOp.KEEP && !stopwords.contains(word)) {
                 ++d;
             }
@@ -116,7 +119,8 @@ public class EditDistance {
             case OCR_WORD:
                 return wordDistance(first, second, chunkLen)[2];
             default:
-                throw new java.lang.NoSuchMethodException(type + " distance still to be implemented");
+                throw new java.lang.NoSuchMethodException(type 
+                        + " distance still to be implemented");
 
         }
     }
@@ -126,8 +130,8 @@ public class EditDistance {
         File f1 = new File(args[0]);
         File f2 = new File(args[1]);
         int len = Integer.parseInt(args[2]);
-        String s1 = new TextContent(f1, null, null).toString();
-        String s2 = new TextContent(f2, null, null).toString();
+        String s1 = new Text(f1).toString();
+        String s2 = new Text(f2).toString();
         int d = EditDistance.distance(s1, s2, len, EditDistanceType.OCR_CHAR);
         System.out.println(d);
         d = EditDistance.distance(s1, s2, len, EditDistanceType.OCR_WORD);
