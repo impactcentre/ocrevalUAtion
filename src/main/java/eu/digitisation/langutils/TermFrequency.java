@@ -19,7 +19,7 @@ package eu.digitisation.langutils;
 
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.StringNormalizer;
-import eu.digitisation.text.TextContent;
+import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.text.WordScanner;
 import eu.digitisation.math.Counter;

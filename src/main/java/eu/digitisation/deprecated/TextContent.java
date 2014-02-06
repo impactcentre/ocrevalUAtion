@@ -15,12 +15,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.text;
+package eu.digitisation.deprecated;
 
 import eu.digitisation.input.FileType;
-import eu.digitisation.input.WarningException;
 import eu.digitisation.input.StartUp;
+import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
+import eu.digitisation.text.CharFilter;
+import eu.digitisation.text.Encoding;
+import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.xml.DocumentParser;
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,8 +34,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Document;
@@ -45,8 +46,9 @@ import org.w3c.dom.NodeList;
  * Normalization collapses white-spaces and prefers composed form (see
  * java.text.Normalizer.Form) For PAGE XML files it selects only those elements
  * listed in a properties file.
- *
+ * 
  * @author R.C.C.
+ * @deprecated
  */
 public class TextContent {
 

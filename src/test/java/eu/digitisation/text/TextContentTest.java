@@ -18,7 +18,7 @@
 package eu.digitisation.text;
 
 import eu.digitisation.text.CharFilter;
-import eu.digitisation.text.TextContent;
+import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.input.WarningException;
 import java.io.File;
 import java.net.URISyntaxException;

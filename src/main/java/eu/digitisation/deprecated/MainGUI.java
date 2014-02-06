@@ -1,3 +1,5 @@
+package eu.digitisation.deprecated;
+
 /*
  * Copyright (C) 2013 Universidad de Alicante
  *
@@ -15,12 +17,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation;
 
-import eu.digitisation.gui.Browser;
-import eu.digitisation.gui.HelpButton;
-import eu.digitisation.gui.InputFileSelector;
-import eu.digitisation.gui.JLink;
+
+import eu.digitisation.output.Browser;
 import eu.digitisation.output.OutputFileSelector;
 import eu.digitisation.input.Batch;
 import eu.digitisation.text.CharFilter;

@@ -35,7 +35,7 @@ import eu.digitisation.math.Pair;
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.Text;
-import eu.digitisation.text.TextContent;
+import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.text.WordSet;
 import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;

@@ -20,7 +20,7 @@ package eu.digitisation.distance;
 import eu.digitisation.document.TokenArray;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.math.MinimalPerfectHash;
-import eu.digitisation.text.TextContent;
+import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.text.WordSet;
 import java.io.File;
 

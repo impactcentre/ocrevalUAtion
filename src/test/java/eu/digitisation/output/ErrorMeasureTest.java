@@ -21,7 +21,7 @@ import eu.digitisation.output.ErrorMeasure;
 import eu.digitisation.distance.EdOp;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.text.StringNormalizer;
-import eu.digitisation.text.TextContent;
+import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.math.BiCounter;
 import java.io.File;
 import java.net.URL;

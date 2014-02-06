@@ -17,7 +17,7 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.gui.Browser;
+import eu.digitisation.output.Browser;
 import eu.digitisation.output.OutputFileSelector;
 import eu.digitisation.output.Report;
 import java.awt.BorderLayout;
@@ -136,10 +136,12 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 pars.clear();
-                gui.removeAll();
-                //new GUI();         
-                gui.createRootPane();
-                gui.pack();
+                gui.remove(gtselector);
+                gui.remove(ocrselector);
+                gui.remove(info);
+                gui.remove(advanced);
+                gui.remove(actions);
+                gui.repaint();
                 gui.setVisible(true);
                 gui.init();
             }
