@@ -36,6 +36,7 @@ import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.Text;
 import eu.digitisation.text.TextContent;
+import eu.digitisation.text.WordSet;
 import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;
 import org.w3c.dom.Element;
@@ -197,6 +198,7 @@ public class Report extends DocumentBuilder {
         super("html");
         init();
 
+        File swfile = pars.swfile.getValue();
         EdOpWeight w = new OcrOpWeight(pars);
         CharStatTable stats = new CharStatTable();
         CharFilter filter = new CharFilter(pars.compatibility.getValue());
@@ -215,12 +217,12 @@ public class Report extends DocumentBuilder {
             Text ocr = new Text(input.second);
             String gtref = gt.toString(filter);
             String ocrref = ocr.toString(filter);
-            String gts = StringNormalizer.canonical(gtref, 
-                    pars.ignoreCase.getValue(), 
-                    pars.ignoreDiacritics.getValue(), 
+            String gts = StringNormalizer.canonical(gtref,
+                    pars.ignoreCase.getValue(),
+                    pars.ignoreDiacritics.getValue(),
                     false);
-            String ocrs = StringNormalizer.canonical(ocrref, 
-                    pars.ignoreCase.getValue(), 
+            String ocrs = StringNormalizer.canonical(ocrref,
+                    pars.ignoreCase.getValue(),
                     pars.ignoreDiacritics.getValue(),
                     false);
             EditSequence eds = new EditSequence(gts, ocrs, w, 2000);
@@ -228,7 +230,9 @@ public class Report extends DocumentBuilder {
             TermFrequencyVector ocrv = new TermFrequencyVector(ocrs);
             Element alitab = Aligner.bitext(input.first.getName(),
                     input.second.getName(), gtref, ocrref, w, eds);
-            int[] wd = EditDistance.wordDistance(gts, ocrs, 1000);
+            int[] wd = (swfile == null)
+                    ? EditDistance.wordDistance(gts, ocrs, 1000)
+                    : EditDistance.wordDistance(gts, ocrs, new WordSet(swfile), 1000);
 
             stats.add(eds.stats(gtref, ocrref, w));
             addTextElement(body, "div", " ");
@@ -256,7 +260,8 @@ public class Report extends DocumentBuilder {
         if (args.length != 2) {
             System.err.println("Usage: aligner file1 file2");
         } else {
-            Element alitab = Aligner.alignmentMap("", "", args[0], args[1], null);
+            Element alitab =
+                    Aligner.alignmentMap("", "", args[0], args[1], null);
         }
     }
 }

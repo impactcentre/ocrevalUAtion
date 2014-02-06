@@ -18,7 +18,6 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.input.Parameters;
-import eu.digitisation.text.StringNormalizer;
 
 /**
  * Integer weights for basic edit operations.
@@ -27,8 +26,8 @@ import eu.digitisation.text.StringNormalizer;
  */
 public class OcrOpWeight implements EdOpWeight {
 
-    boolean ignoreCase;
-    boolean ignoreDiacritics;
+    //    boolean ignoreCase;
+    //    boolean ignoreDiacritics;
     boolean ignorePunctuation;
 
     /**
@@ -37,18 +36,14 @@ public class OcrOpWeight implements EdOpWeight {
      * @param ignoreDiacritics true if diacritics must be ignored
      * @param ignorePunctuation true if punctuation must be ignored
      */
-    public OcrOpWeight(boolean ignoreCase,
-            boolean ignoreDiacritics,
-            boolean ignorePunctuation) {
-        this.ignoreCase = ignoreCase;
-        this.ignoreDiacritics = ignoreDiacritics;
+    public OcrOpWeight(boolean ignorePunctuation) {
+        //      this.ignoreCase = ignoreCase;
+        //      this.ignoreDiacritics = ignoreDiacritics;
         this.ignorePunctuation = ignorePunctuation;
     }
 
     public OcrOpWeight(Parameters pars) {
-        this(pars.ignoreCase.getValue(),
-                pars.ignoreDiacritics.getValue(),
-                pars.ignorePunctuation.getValue());
+        this(pars.ignorePunctuation.getValue());
     }
 
     /**
@@ -56,7 +51,7 @@ public class OcrOpWeight implements EdOpWeight {
      * diacritics-aware and punctuation-aware.
      */
     public OcrOpWeight() {
-        this(false, false, false);
+        this(false);
     }
 
     /**

@@ -27,11 +27,11 @@ import java.io.File;
 public class Parameters {
 
     private static final long serialVersionUID = 1L;
-    
     // Define program parameters: input files 
     public final Parameter<File> gtfile;
     public final Parameter<File> ocrfile;
-    public final Parameter<File> eqfile;
+    public final Parameter<File> eqfile;   // equivalences
+    public final Parameter<File> swfile;   // stop words
     public final Parameter<File> outfile;
     // Define program parameters: boolean options 
     public final Parameter<Boolean> ignoreCase;
@@ -40,14 +40,27 @@ public class Parameters {
     public final Parameter<Boolean> compatibility;
 
     public Parameters() {
-        this.gtfile = new Parameter<File>("ground-truth file");
-        this.ocrfile = new Parameter<File>("OCR file");
-        this.eqfile = new Parameter<File>("Unicode equivalences file");
-        this.outfile = new Parameter<File>("Output file");
-        this.ignoreCase = new Parameter<Boolean>("Ignore case", false, "");
-        this.ignoreDiacritics = new Parameter<Boolean>("Ignore diacritics", false, "");
-        this.ignorePunctuation = new Parameter<Boolean>("Ignore punctuation", false, "");
-        this.compatibility = new Parameter<Boolean>("Unicode compatibilty of characters", false,
+        gtfile = new Parameter<File>("ground-truth file");
+        ocrfile = new Parameter<File>("OCR file");
+        eqfile = new Parameter<File>("Unicode equivalences file");
+        swfile = new Parameter<File>("stop-words file");
+        outfile = new Parameter<File>("output file");
+        ignoreCase = new Parameter<Boolean>("Ignore case", false, "");
+        ignoreDiacritics = new Parameter<Boolean>("Ignore diacritics", false, "");
+        ignorePunctuation = new Parameter<Boolean>("Ignore punctuation", false, "");
+        compatibility = new Parameter<Boolean>("Unicode compatibilty of characters", false,
                 "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence");
+    }
+
+    public void clear() {
+        gtfile.setValue(null);
+        ocrfile.setValue(null);
+        eqfile.setValue(null);
+        swfile.setValue(null);
+        outfile.setValue(null);
+        ignoreCase.setValue(null);
+        ignoreDiacritics.setValue(null);
+        ignorePunctuation.setValue(null);
+        compatibility.setValue(null);
     }
 }

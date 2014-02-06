@@ -34,6 +34,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -47,7 +48,6 @@ public class GUI extends JFrame {
     private static final Color green = Color.decode("#4C501E");
     private static final Color white = Color.decode("#FAFAFA");
     private static final Color gray = Color.decode("#EEEEEE");
-    
     // Frame components
     FileSelector gtselector;
     FileSelector ocrselector;
@@ -67,39 +67,7 @@ public class GUI extends JFrame {
 
     // The unique constructor
     public GUI() {
-        // Main container
-        Container pane = getContentPane();
-        // Initialization settings
-        setForeground(green);
-        setBackground(gray);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        setLocationRelativeTo(null);
-
-        // Define program parameters: input files 
-        Parameters pars = new Parameters();
-
-        // Define content 
-        gtselector = new FileSelector(pars.gtfile, getForeground(), white);
-        ocrselector = new FileSelector(pars.ocrfile, getForeground(), white);
-        advanced = advancedOptionsPanel(pars);
-        info = new Link("Info:",
-                "https://sites.google.com/site/textdigitisation/ocrevaluation",
-                getForeground());
-        actions = actionsPanel(this, pars);
-
-        // Put all content together
-        pane.add(gtselector);
-        pane.add(ocrselector);
-        pane.add(advanced);
-        //pane.add(Box.createVerticalStrut(8));
-        pane.add(info);
-
-        pane.add(actions);
-
-        // Show
-        pack();
-        setVisible(true);
+        init();
     }
 
     /**
@@ -129,6 +97,7 @@ public class GUI extends JFrame {
         panel.setBackground(bg);
         panel.setVisible(false);
         panel.add(subpanel);
+        panel.add(new FileSelector(pars.swfile, fg, bg));
         panel.add(new FileSelector(pars.eqfile, fg, bg));
         return panel;
     }
@@ -147,7 +116,6 @@ public class GUI extends JFrame {
         more.setForeground(getForeground());
         more.setBackground(Color.LIGHT_GRAY);
         more.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Dimension dframe = gui.getSize();
@@ -158,6 +126,22 @@ public class GUI extends JFrame {
                     gui.setSize(new Dimension(dframe.width, dframe.height - dadvanced.height));
                 }
                 gui.advanced.setVisible(more.isSelected());
+            }
+        });
+
+        JButton reset = new JButton("Reset");
+        reset.setForeground(getForeground());
+        reset.setBackground(getBackground());
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pars.clear();
+                gui.removeAll();
+                //new GUI();         
+                gui.createRootPane();
+                gui.pack();
+                gui.setVisible(true);
+                gui.init();
             }
         });
 
@@ -174,6 +158,8 @@ public class GUI extends JFrame {
 
         panel.add(more, BorderLayout.WEST);
         panel.add(Box.createHorizontalGlue());
+        panel.add(reset, BorderLayout.CENTER);
+        panel.add(Box.createHorizontalGlue());
         panel.add(trigger, BorderLayout.EAST);
         return panel;
     }
@@ -181,7 +167,7 @@ public class GUI extends JFrame {
     public void launch(Parameters pars) {
         try {
             if (gtselector.ready() && ocrselector.ready()) {
-                File ocrfile= pars.ocrfile.getValue();
+                File ocrfile = pars.ocrfile.getValue();
                 String name = ocrfile.getName().replaceAll("\\.\\w+", "")
                         + "_report.html";
                 File dir = ocrfile.getParentFile();
@@ -192,8 +178,7 @@ public class GUI extends JFrame {
 
                 if (outfile != null) {
                     try {
-                        Batch batch
-                                = new Batch(pars.gtfile.value, pars.ocrfile.value);
+                        Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
                         Report report = new Report(batch, pars);
                         report.write(outfile);
                         Browser.open("file://" + outfile.getCanonicalPath());
@@ -210,8 +195,41 @@ public class GUI extends JFrame {
         }
     }
 
+    public final void init() {
+        // Main container
+        Container pane = getContentPane();
+        // Initialization settings
+        setForeground(green);
+        setBackground(gray);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+        setLocationRelativeTo(null);
+
+        // Define program parameters: input files 
+        Parameters pars = new Parameters();
+
+        // Define content 
+        gtselector = new FileSelector(pars.gtfile, getForeground(), white);
+        ocrselector = new FileSelector(pars.ocrfile, getForeground(), white);
+        advanced = advancedOptionsPanel(pars);
+        info = new Link("Info:",
+                "https://sites.google.com/site/textdigitisation/ocrevaluation",
+                getForeground());
+        actions = actionsPanel(this, pars);
+
+        // Put all content together
+        pane.add(gtselector);
+        pane.add(ocrselector);
+        pane.add(advanced);
+        pane.add(info);
+        pane.add(actions);
+
+        // Show
+        pack();
+        setVisible(true);
+    }
+
     public static void main(String[] args) {
         new GUI();
     }
-
 }

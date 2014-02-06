@@ -34,29 +34,22 @@ public class EditTable {
     byte[] bytes;  // table content
 
     /**
-     *
-     * @param w the table width
-     * @param h the table height
-     * @return the length of the byte array (overflow safe computation)
-     */
-    private int len(int w, int h) {
-        int wm = w / 4;  // modulus
-        int hm = h / 4;
-        int wr = w % 4; // reminder
-        int hr = h % 4;
-        return 4 * wm * hm + wm * hr + wr * hm + (3 + wr * hr) / 4;
-    }
-
-    /**
      * Create an EditTable with width rows and height columns
      *
      * @param width
      * @param height
      */
     public EditTable(int width, int height) {
-        this.width = width;
-        this.height = height;
-        bytes = new byte[len(width, height)];  // two bits per operation 
+        if (Integer.MAX_VALUE / width / height < 4) {
+            throw new IllegalArgumentException("EditTable is too large");
+        } else {
+            int len = (width / 4) * height
+                    + (width % 4) * (height / 4)
+                    + ((width % 4) * (height % 4)) + 1; // ceiling
+            this.width = width;
+            this.height = height;
+            bytes = new byte[len];  // two bits per operation 
+        }
     }
 
     /**
@@ -113,17 +106,16 @@ public class EditTable {
      * @throws IllegalArgumentException
      */
     public EdOp get(int i, int j) {
-        int position = 2 * (i * height + j);
-        int hm = height / 4;
-        int hr = height % 4;
-        int r = (i * hr + j) % 4;
-        int m = i * hm + (i * hr + j) / 4;
+        int bytenum = (i / 4) * height + (i % 4) * (height / 4) + (j / 4)
+                + ((i % 4) * (height % 4) + (j % 4)) / 4;
+        int offset = (2 * ((i % 8) * (height % 8) + (j % 8))) % 8;
+//        int position = 2 * (i * height + j);
 
         try {
-            //boolean low = getBit(bytes[m], r);
-            boolean low = getBit(position);
-            //      boolean high = getBit(bytes[m], r + 1);
-            boolean high = getBit(position + 1);
+            boolean low = getBit(bytes[bytenum], offset);
+            //boolean low = getBit(position);
+            boolean high = getBit(bytes[bytenum], offset + 1);
+            //boolean high = getBit(position + 1);
             if (low) {
                 if (high) {
                     return EdOp.SUBSTITUTE;
@@ -152,12 +144,11 @@ public class EditTable {
      * @param op the edit operation to be stored
      */
     public void set(int i, int j, EdOp op) {
-        int position = 2 * (i * height + j);
-        int hm = height / 4;
-        int hr = height % 4;
-        int m = i * hm + (i * hr + j) / 4;
-        int r = (i * hr + j) % 4;
-
+        //int position = 2 * (i * height + j);
+        int bytenum = (i / 4) * height + (i % 4) * (height / 4) + (j / 4)
+                + ((i % 4) * (height % 4) + (j % 4)) / 4;
+        int offset = (2 * ((i % 8) * (height % 8) + (j % 8))) % 8;
+        
         boolean low;
         boolean high;
 
@@ -183,10 +174,10 @@ public class EditTable {
                 high = false;
         }
         try {
-            //setBit(bytes[m], r, low);
-            setBit(position, low);
-            //setBit(bytes[m], r + 1, high);
-            setBit(position + 1, high);
+            bytes[bytenum] = setBit(bytes[bytenum], offset, low);
+            //setBit(position, low);
+            bytes[bytenum] = setBit(bytes[bytenum], offset + 1, high);
+            //setBit(position + 1, high);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new IllegalArgumentException("Forbiden acces to "
                     + "cell (" + i + "," + j
@@ -220,7 +211,7 @@ public class EditTable {
                         break;
                 }
             }
-            builder.append('\n' + i + "=");
+            builder.append("\n ");
         }
 
         return builder.toString();

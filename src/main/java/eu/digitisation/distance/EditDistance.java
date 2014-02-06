@@ -21,6 +21,7 @@ import eu.digitisation.document.TokenArray;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.math.MinimalPerfectHash;
 import eu.digitisation.text.TextContent;
+import eu.digitisation.text.WordSet;
 import java.io.File;
 
 /**
@@ -63,6 +64,40 @@ public class EditDistance {
     }
 
     /**
+     * @param s1 the first string.
+     * @param s2 the second string.
+     * @param chunkLen the length of the chunks analyzed at every step (must be
+     * strictly greater than 1)
+     * @return the length (number of words) of first, the length (number of
+     * words) of second, and the approximate (linear time) word-based
+     * Levenshtein distance between first and second.
+     */
+    public static int[] wordDistance(String s1, String s2,
+            WordSet stopwords, int chunkLen) {
+        MinimalPerfectHash mph = new MinimalPerfectHash(true); // case sensitive
+        TokenArray a1 = new TokenArray(mph, s1);
+        TokenArray a2 = new TokenArray(mph, s2);
+        EditSequence seq = new EditSequence(a1, a2, chunkLen);
+        int d = 0;
+        int n1 = 0;
+        int n2 = 0;
+        for (EdOp op : seq.ops) {
+            String word = a1.wordAt(n1);
+
+            if (op != EdOp.KEEP && !stopwords.contains(word)) {
+                ++d;
+            }
+            if (op != EdOp.INSERT) {
+                ++n1;
+            }
+            if (op != EdOp.DELETE) {
+                ++n2;
+            }
+        }
+        return new int[]{a1.length(), a2.length(), d};
+    }
+
+    /**
      *
      * @param first the first string.
      * @param second the second string.
@@ -98,5 +133,4 @@ public class EditDistance {
         d = EditDistance.distance(s1, s2, len, EditDistanceType.OCR_WORD);
         System.out.println(d);
     }
-
 }

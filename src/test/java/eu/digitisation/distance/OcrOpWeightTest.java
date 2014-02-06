@@ -43,7 +43,7 @@ public class OcrOpWeightTest {
             int d = EditDistance.charDistance(s1, s2, W1, 10);
             assertEquals(w1[n], d);
         }
-        OcrOpWeight W2 = new OcrOpWeight(true, true, true); //ignore everything
+        OcrOpWeight W2 = new OcrOpWeight(true); //ignore everything
         int[] w2 = {0, 0, 0, 0, 2};
         for (int n = 0; n < w2.length; ++n) {
             String s1 = StringNormalizer.canonical(String.valueOf(c1[n]), true, true, true);
@@ -51,7 +51,7 @@ public class OcrOpWeightTest {
             int d = EditDistance.charDistance(s1, s2, W2, 10);
             assertEquals(w2[n], d);
         }
-        OcrOpWeight W3 = new OcrOpWeight(false, true, true); //ignore diacritics
+        OcrOpWeight W3 = new OcrOpWeight(false); //ignore diacritics
         int[] w3 = {0, 0, 1, 1, 2};
         for (int n = 0; n < w3.length; ++n) {
             String s1 = StringNormalizer.canonical(String.valueOf(c1[n]), false, true, true);
@@ -60,7 +60,7 @@ public class OcrOpWeightTest {
             assertEquals(w3[n], d);
         }
 
-        OcrOpWeight W4 = new OcrOpWeight(true, false, true); //ignore case
+        OcrOpWeight W4 = new OcrOpWeight(true); //ignore case
         int[] w4 = {0, 1, 0, 1, 2};
         for (int n = 0; n < w4.length; ++n) {
             String s1 = StringNormalizer.canonical(String.valueOf(c1[n]), true, false, true);
@@ -76,7 +76,7 @@ public class OcrOpWeightTest {
     @Test
     public void testIns() {
         System.out.println("ins");
-        OcrOpWeight W = new OcrOpWeight(false, false, true); //ignore punct
+        OcrOpWeight W = new OcrOpWeight(true); //ignore punct
         assertEquals(1, W.ins('a'));
         assertEquals(0, W.ins('@'));
         assertEquals(0, W.ins('+'));

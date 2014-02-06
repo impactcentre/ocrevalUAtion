@@ -17,6 +17,7 @@
  */
 package eu.digitisation.text;
 
+import eu.digitisation.input.WarningException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -27,7 +28,7 @@ import java.util.HashSet;
  *
  * @author R.C.C.
  */
-public class StopWords extends HashSet<String> {
+public class WordSet extends HashSet<String> {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +39,8 @@ public class StopWords extends HashSet<String> {
      * blanks or newlines)
      * @throws IOException
      */
-    public StopWords(File file) throws IOException {
+    public WordSet(File file) throws WarningException {
+        try {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         while (reader.ready()) {
             String line = reader.readLine().trim();
@@ -47,6 +49,10 @@ public class StopWords extends HashSet<String> {
                     add(word);
                 }
             }
+        }
+        } catch (IOException ex) {
+            throw new WarningException("File " + file 
+                    + " is not a valid stop word file");
         }
     }
 }

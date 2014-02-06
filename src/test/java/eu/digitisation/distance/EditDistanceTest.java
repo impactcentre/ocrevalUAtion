@@ -115,17 +115,17 @@ public class EditDistanceTest {
         String r2 = StringNormalizer.canonical(s2, false, false, false);
         assertEquals(3, EditDistance.charDistance(r1, r2, W, 1000));
 
-        W = new OcrOpWeight(true, true, true); //ignore everything
+        W = new OcrOpWeight(true); //ignore everything
         r1 = StringNormalizer.canonical(s1, true, true, true);
         r2 = StringNormalizer.canonical(s2, true, true, true);
         assertEquals(0, EditDistance.charDistance(r1, r2, W, 1000));
 
-        W = new OcrOpWeight(false, true, true); //ignore diacritics
+        W = new OcrOpWeight(true); //ignore diacritics
         r1 = StringNormalizer.canonical(s1, false, true, true);
         r2 = StringNormalizer.canonical(s2, false, true, true);
         assertEquals(2, EditDistance.charDistance(r1, r2, W, 1000));
 
-        W = new OcrOpWeight(true, false, true); //ignore case
+        W = new OcrOpWeight(true); //ignore case
         r1 = StringNormalizer.canonical(s1, true, false, true);
         r2 = StringNormalizer.canonical(s2, true, false, true);
         assertEquals(2, EditDistance.charDistance(r1, r2, W, 1000));
