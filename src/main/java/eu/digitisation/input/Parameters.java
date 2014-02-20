@@ -38,7 +38,9 @@ public class Parameters {
     public final Parameter<Boolean> ignoreDiacritics;
     public final Parameter<Boolean> ignorePunctuation;
     public final Parameter<Boolean> compatibility;
-
+    //  Define program parameters: String options 
+    public final Parameter<String> encoding;
+    
     public Parameters() {
         gtfile = new Parameter<File>("ground-truth file");
         ocrfile = new Parameter<File>("OCR file");
@@ -50,6 +52,7 @@ public class Parameters {
         ignorePunctuation = new Parameter<Boolean>("Ignore punctuation", false, "");
         compatibility = new Parameter<Boolean>("Unicode compatibilty of characters", false,
                 "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence");
+        encoding = new Parameter<String>("Text file encoding");
     }
 
     public void clear() {
@@ -62,5 +65,6 @@ public class Parameters {
         ignoreDiacritics.setValue(null);
         ignorePunctuation.setValue(null);
         compatibility.setValue(null);
+        encoding.setValue(null);
     }
 }
