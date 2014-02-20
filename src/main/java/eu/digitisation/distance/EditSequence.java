@@ -210,7 +210,7 @@ public class EditSequence {
                 } else {
                     A[i % 2][j] = Math.min(A[(i - 1) % 2][j - 1] + w.sub(c1, c2),
                             Math.min(A[i % 2][j - 1] + w.ins(c2),
-                                    A[(i - 1) % 2][j] + w.del(c1)));
+                            A[(i - 1) % 2][j] + w.del(c1)));
 
                     if (A[i % 2][j] == A[i % 2][j - 1] + w.ins(c2)) {
                         B.set(i, j, EdOp.INSERT);
@@ -234,8 +234,8 @@ public class EditSequence {
             try {
                 e = B.get(i, j);
             } catch (Exception ex) {
-                System.out.println(i+","+j);
-                 System.out.println(B);
+                System.out.println(i + "," + j);
+                System.out.println(B);
             }
             switch (e) {
                 case INSERT:
@@ -279,7 +279,6 @@ public class EditSequence {
 
         ops = new ArrayList<EdOp>();
         while (shift1() < len1 || shift2() < len2) {
-            System.out.println((100*shift1)/len1+"% of file processed");
             int high1 = Math.min(shift1() + chunkLen, len1);
             int high2 = Math.min(shift2() + chunkLen, len2);
             String sub1 = s1.substring(shift1(), high1);
@@ -290,6 +289,9 @@ public class EditSequence {
                     : subseq;
 
             append(head);
+            if (len1 > 0) {
+                System.out.println((100 * shift1) / len1 + "% of file processed");
+            }
         }
     }
 
@@ -331,7 +333,7 @@ public class EditSequence {
                 } else {
                     A[i % 2][j] = Math.min(A[(i - 1) % 2][j] + 1,
                             Math.min(A[i % 2][j - 1] + 1,
-                                    A[(i - 1) % 2][j - 1] + 1));
+                            A[(i - 1) % 2][j - 1] + 1));
                     if (A[i % 2][j] == A[(i - 1) % 2][j] + 1) {
                         B.set(i, j, EdOp.DELETE);
                     } else if (A[i % 2][j] == A[i % 2][j - 1] + 1) {

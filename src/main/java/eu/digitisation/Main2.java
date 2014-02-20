@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 /**
  * Main class for ocrevalUAtion: version 0.92
  */
-public class Main {
+public class Main2 {
 
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1 [encoding] "
