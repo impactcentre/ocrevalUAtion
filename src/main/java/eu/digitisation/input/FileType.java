@@ -17,7 +17,6 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.input.StartUp;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.xml.DocumentParser;
 import java.io.File;
@@ -37,20 +36,31 @@ import org.w3c.dom.Element;
 @SuppressWarnings("javadoc")
 public enum FileType {
 
-    TEXT, PAGE, FR10, HOCR, ALTO, UNKNOWN;
+    TEXT, PAGE2013, PAGE2010, FR10, HOCR, ALTO, UNKNOWN;
     String tag;
     String schemaLocation;  // schema URL
 
     static {
         Properties props = StartUp.properties();
+        String location;
         TEXT.tag = null;  // no tag for this type 
         TEXT.schemaLocation = null; // no schema associated to this type
-        PAGE.tag = "PcGts";
-        PAGE.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.PAGE"));
+        PAGE2013.tag = "PcGts";
+        location = props.getProperty("schemaLocation.PAGE.2013");
+        PAGE2013.schemaLocation = location == null ? ""
+                : StringNormalizer.reduceWS(location);
+        PAGE2010.tag = "PcGts";
+        location = props.getProperty("schemaLocation.PAGE.2010");
+        PAGE2010.schemaLocation = location == null ? ""
+                : StringNormalizer.reduceWS(location);
         FR10.tag = "document";
-        FR10.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.FR10"));
+        location = props.getProperty("schemaLocation.FR10");
+        FR10.schemaLocation = location == null ? ""
+                : StringNormalizer.reduceWS(location);
         ALTO.tag = "alto";
-        ALTO.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.ALTO"));
+        location = props.getProperty("schemaLocation.ALTO");
+        ALTO.schemaLocation = location == null ? "" 
+                : StringNormalizer.reduceWS(location);
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
     }
@@ -89,9 +99,12 @@ public enum FileType {
             String location = StringNormalizer
                     .reduceWS(root.getAttribute("xsi:schemaLocation"));
 
-            if (doctype.equals(PAGE.tag)
-                    && sameLocation(location, PAGE.schemaLocation)) {
-                return PAGE;
+            if (doctype.equals(PAGE2013.tag)
+                    && sameLocation(location, PAGE2013.schemaLocation)) {
+                return PAGE2013;
+            } else if (doctype.equals(PAGE2010.tag)
+                    && sameLocation(location, PAGE2010.schemaLocation)) {
+                return PAGE2010;
             } else if (doctype.equals(FR10.tag)
                     && sameLocation(location, FR10.schemaLocation)) {
                 return FR10;
@@ -104,7 +117,6 @@ public enum FileType {
                 org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
                 if (!doc.head().select("meta[name=ocr-system").isEmpty()) {
                     return HOCR;
-
 
                 }
             } catch (IOException ex) {

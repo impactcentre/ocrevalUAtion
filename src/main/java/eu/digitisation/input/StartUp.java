@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,5 +81,22 @@ public class StartUp {
      */
     public static String property(String key) {
         return props.getProperty(key);
+    }
+
+    /**
+     * Return all values for keys matching the given prefix
+     *
+     * @param prefix a property name prefix
+     * @return the list of values of properties with a name starting with this
+     * prefix
+     */
+    public static List<String> propertiesWithPrefix(String prefix) {
+        List<String> list = new ArrayList<String>();
+        for (String name : props.stringPropertyNames()) {
+            if (name.startsWith(prefix)) {
+                list.add(props.getProperty(name));
+            }
+        }
+        return list;
     }
 }

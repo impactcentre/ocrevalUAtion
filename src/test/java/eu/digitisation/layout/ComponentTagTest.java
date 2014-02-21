@@ -34,7 +34,7 @@ public class ComponentTagTest {
     @Test
     public void testShortTag() {
         System.out.println("shortTag");
-        ComponentTag tag = ComponentTag.valueOf(FileType.PAGE, "TextRegion");
+        ComponentTag tag = ComponentTag.valueOf(FileType.PAGE2010, "TextRegion");
         String expResult = "TextRegion";
         String result = ComponentTag.shortTag(tag);
         assertEquals(expResult, result);

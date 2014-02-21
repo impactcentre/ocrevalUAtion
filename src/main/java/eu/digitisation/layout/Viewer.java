@@ -88,7 +88,8 @@ public class Viewer {
         }
         if (xmlfile.exists()) {
             switch (ftype) {
-                case PAGE:
+                case PAGE2010:
+                case PAGE2013: 
                     gt = new PAGEPage(xmlfile);
                     break;
                 case HOCR:

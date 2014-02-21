@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PcGts xmlns="http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19 http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19/pagecontent.xsd">
+	<Metadata>
+	<Creator></Creator>
+	<Created>2013-11-26T10:14:00</Created>
+	<LastChange>2013-11-26T11:35:24</LastChange></Metadata>
+	<Page imageFilename="001_1.tif" imageWidth="963" imageHeight="1602">
+	<TextRegion id="r1" type="header">
+	<Coords>
+	<Point x="120" y="24"/>
+	<Point x="123" y="67"/>
+	<Point x="161" y="68"/>
+	<Point x="246" y="70"/>
+	<Point x="833" y="64"/>
+	<Point x="821" y="21"/>
+	<Point x="735" y="21"/>
+	<Point x="120" y="25"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>S W I T S E R L A N D.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r2" type="drop-capital">
+	<Coords>
+	<Point x="11" y="79"/>
+	<Point x="14" y="155"/>
+	<Point x="76" y="150"/>
+	<Point x="76" y="78"/>
+	<Point x="12" y="79"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>B</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r4" type="paragraph">
+	<Coords>
+	<Point x="950" y="67"/>
+	<Point x="951" y="67"/>
+	<Point x="951" y="104"/>
+	<Point x="954" y="104"/>
+	<Point x="954" y="597"/>
+	<Point x="953" y="597"/>
+	<Point x="953" y="1090"/>
+	<Point x="952" y="1090"/>
+	<Point x="952" y="1584"/>
+	<Point x="951" y="1584"/>
+	<Point x="951" y="1585"/>
+	<Point x="915" y="1585"/>
+	<Point x="915" y="1586"/>
+	<Point x="878" y="1586"/>
+	<Point x="878" y="1587"/>
+	<Point x="841" y="1587"/>
+	<Point x="841" y="1588"/>
+	<Point x="804" y="1588"/>
+	<Point x="804" y="1589"/>
+	<Point x="767" y="1589"/>
+	<Point x="767" y="1590"/>
+	<Point x="730" y="1590"/>
+	<Point x="730" y="1591"/>
+	<Point x="694" y="1591"/>
+	<Point x="694" y="1592"/>
+	<Point x="657" y="1592"/>
+	<Point x="657" y="1593"/>
+	<Point x="620" y="1593"/>
+	<Point x="620" y="1594"/>
+	<Point x="583" y="1594"/>
+	<Point x="583" y="1595"/>
+	<Point x="546" y="1595"/>
+	<Point x="546" y="1596"/>
+	<Point x="500" y="1596"/>
+	<Point x="500" y="1597"/>
+	<Point x="295" y="1597"/>
+	<Point x="295" y="1598"/>
+	<Point x="74" y="1598"/>
+	<Point x="74" y="1597"/>
+	<Point x="57" y="1597"/>
+	<Point x="57" y="1596"/>
+	<Point x="40" y="1596"/>
+	<Point x="40" y="1595"/>
+	<Point x="23" y="1595"/>
+	<Point x="23" y="1594"/>
+	<Point x="6" y="1594"/>
+	<Point x="6" y="169"/>
+	<Point x="7" y="169"/>
+	<Point x="7" y="168"/>
+	<Point x="13" y="168"/>
+	<Point x="13" y="167"/>
+	<Point x="19" y="167"/>
+	<Point x="19" y="166"/>
+	<Point x="25" y="166"/>
+	<Point x="25" y="165"/>
+	<Point x="31" y="165"/>
+	<Point x="31" y="164"/>
+	<Point x="37" y="164"/>
+	<Point x="37" y="163"/>
+	<Point x="43" y="163"/>
+	<Point x="43" y="162"/>
+	<Point x="49" y="162"/>
+	<Point x="49" y="161"/>
+	<Point x="55" y="161"/>
+	<Point x="55" y="160"/>
+	<Point x="61" y="160"/>
+	<Point x="61" y="159"/>
+	<Point x="67" y="159"/>
+	<Point x="67" y="158"/>
+	<Point x="73" y="158"/>
+	<Point x="73" y="157"/>
+	<Point x="74" y="157"/>
+	<Point x="74" y="155"/>
+	<Point x="75" y="155"/>
+	<Point x="75" y="154"/>
+	<Point x="76" y="154"/>
+	<Point x="76" y="152"/>
+	<Point x="77" y="152"/>
+	<Point x="77" y="151"/>
+	<Point x="78" y="151"/>
+	<Point x="78" y="73"/>
+	<Point x="84" y="73"/>
+	<Point x="84" y="72"/>
+	<Point x="88" y="72"/>
+	<Point x="88" y="74"/>
+	<Point x="202" y="74"/>
+	<Point x="202" y="75"/>
+	<Point x="433" y="75"/>
+	<Point x="433" y="74"/>
+	<Point x="546" y="74"/>
+	<Point x="546" y="73"/>
+	<Point x="553" y="73"/>
+	<Point x="553" y="72"/>
+	<Point x="559" y="72"/>
+	<Point x="559" y="71"/>
+	<Point x="565" y="71"/>
+	<Point x="565" y="70"/>
+	<Point x="693" y="70"/>
+	<Point x="693" y="69"/>
+	<Point x="822" y="69"/>
+	<Point x="822" y="68"/>
+	<Point x="950" y="68"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>Aſel den 25 Oober. Het huys van ſeker Edelman, uyt der Elſas
+uer gekomen, is wel ter waerde van 2000 piolerten beoolen,
+en om deſelve wederom te bekomen, doen de nabuurige Kapucy-
+ners neerig Miee ter eere van St. Anthoni. Hier is een booſwigt ge-
+vangen, die voor 14 dagen in het dorp Creutzac, een myl van hier,
+een oud man vermoord, en jn huys berooft heeft, 't welk met ver-
+ſchey de getuygen beweeſen word, maer die niet tegenaende alle de
+fwaere pynigingen alles ontkent en (dat te verwonderen is) die ſoo
+dra als hem de beul aenraekt begint te ſlapen en eﬀeiveelyk ſlaep ſoo
+lang als de pyniging duurt ; men heeft gemeend dat hy als in ſwym
+was , maer het contrarie is gebleeken, om dat hy ganſch niet van
+koleur verandern: Men heeft hem ook brandende ſwaveloekken on-
+der de neus gehouden , om hem te doen wakker worden , maer te ver-
+geefs. Nu zyn alle de be�� van hier ontrent vergaderd, om te beraed-
+ſlagen op wat wyſe zy deſ�� booſwigt ſullen doen bekennen, en zy heb-
+ben een nieuw inſtrument doen maken, om te en of zy hen die ſlaep
+overmorgen konnen verdryven. Men veraet dat deſe booſwigt is een
+van die berugte bende van Zell. Gieren heeft men hier de proef geno-
+men van de buskruyd ſakken, voor deſen gemeld, achtervolgens het
+voorſchrift van den Venetiaenſen Pater Coronelli: Men begroef een
+van de gemelde ſakken in een quintael van't ſelve buskruyd, en deed
+deſelve met het kruyd in de lucht vliegen, waer na die onbeſchadigd
+weder neder viel, daer na ſchoot men die uyt een mortier, geladen
+met 15 pond buskruyd, maer doenmaels bareſe in de lucht; dog een
+andere ſak, uyt deſelve mortier geſchooten zynde, bleefgeheel. Daer
+na wierd de ſak met buskruyd door den Pater Coronelli herwaerds ge-
+ſonden , die reeds de proef van her vuur en water heeft uytgeaen, ge-
+ſchooten uyt deſe mortier, dewelke doenmaels met 18 pond buskruyd
+geladen was , en quam de ſak de niertegenſtaende geheel en onbeſcha-
+digt weder op de grond. Nu ſal men het voorſchrift van den gemelden
+Pater naukeuriger gaen examineeren, eu ſich daer na reguleeren. De
+Baron de Neveu, Ambaadeur van den Keyſer, heeft een Expreen
+van Weenen ontfangen, met nieuwe inruien en ordres om jne in-
+antien tot vernietiging van de vryheyd der Tollen te vernieuwen, die
+by de Switſerſe Cantons ganſch niet aengenaem ſullen zyn. Tuchen
+die van Neufchatel en den afgeſetten Predikant Girard was een accom-
+modement getroﬀen, dat hy nog tweemael in jn voorihe Kerk ſoude
+mogen prediken , en dan buyten de adt een prebende hebben : maer
+des anderendaegs liet hy aen de Heeren van Neufchatel op een bitſe en
+hoogmoedige �yſe weten, dat her voorgeſlagen accommodement geen
+voortgang konde hebben, dewyl de ſaek buyten jn macht was , en dat
+hy t'wwnmael mo volgen de intentie van den Koning van Vrankryk;
+doch even voor't afgaen van de Po komt tyding dat het gemelde ver-
+ſchill door de intercee van den Koning van Groot Brittannien is afge-
+daen, 't welk echter confirmatie vereyſcht.
+</Unicode></TextEquiv></TextRegion></Page></PcGts>

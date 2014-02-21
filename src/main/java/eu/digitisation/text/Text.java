@@ -77,7 +77,7 @@ public class Text {
      * @param encoding the text encoding for text files (optional; can be null)
      * @param filter XPAthFilter for XML files (extracts textual content from
      * selected elements)
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public Text(File file, String encoding, XPathFilter filter)
             throws WarningException {
@@ -89,7 +89,8 @@ public class Text {
         try {
             FileType type = FileType.valueOf(file);
             switch (type) {
-                case PAGE:
+                case PAGE2013:
+                case PAGE2010:
                     readPageFile(file);
                     break;
                 case TEXT:

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PcGts xmlns="http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19 http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19/pagecontent.xsd">
+	<Metadata>
+	<Creator></Creator>
+	<Created>2013-11-26T09:54:49</Created>
+	<LastChange>2013-11-26T09:55:41</LastChange></Metadata>
+	<Page imageFilename="002_2.tif" imageWidth="993" imageHeight="804">
+	<Border>
+	<Coords>
+	<Point x="15" y="9"/>
+	<Point x="15" y="49"/>
+	<Point x="911" y="49"/>
+	<Point x="911" y="9"/></Coords></Border>
+	<TextRegion id="r1" type="heading">
+	<Coords>
+	<Point x="83" y="6"/>
+	<Point x="83" y="52"/>
+	<Point x="910" y="52"/>
+	<Point x="910" y="6"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>POOLEN PRUYSSEN, &amp;c.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r3" type="paragraph">
+	<Coords>
+	<Point x="32" y="60"/>
+	<Point x="36" y="504"/>
+	<Point x="527" y="494"/>
+	<Point x="980" y="482"/>
+	<Point x="983" y="46"/>
+	<Point x="823" y="52"/>
+	<Point x="661" y="54"/>
+	<Point x="436" y="56"/>
+	<Point x="43" y="57"/>
+	<Point x="33" y="59"/>
+	<Point x="31" y="59"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>Kaminiek den 27 September. Na dat de Poolen poee van deſe ad
+genomen hadden, ſou heeft de Suﬀragan van Chelm, Adminirator
+des Kaminiekſche Biſdoms, Woenſdag de Parochie Kerken ingewyd,
+en de graven van de Turkſche lyken geſuyverd; Donderdag bragt hy
+nog met het wyen toe; en Vrydag wierd de eere Mie in de Drie-
+vuldigheyds Kerk gedaen; waer op een procee geſchiedde, na welks
+eyndiging het Te Deum geſongen, door de Infantery ſalvo geſchoo-
+ten,en't geſchut van de wallen los gebran wierd. Dien avond wierd
+in de Kerk de Relations Landdag begonnenm, en wierd tot Commia-
+ren; voorts wierd tot Gedeputeerde aen den Koning en den Kardinael 
+Primaer genomineerd, de Krakauſche Catellan, waer na de Commia-
+rien en andere Heeren ſcheyden.</Unicode></TextEquiv></TextRegion>
+	<TextRegion id="r4" type="paragraph">
+	<Coords>
+	<Point x="31" y="510"/>
+	<Point x="34" y="799"/>
+	<Point x="311" y="801"/>
+	<Point x="527" y="800"/>
+	<Point x="980" y="794"/>
+	<Point x="978" y="487"/>
+	<Point x="625" y="493"/>
+	<Point x="531" y="497"/>
+	<Point x="399" y="499"/>
+	<Point x="291" y="498"/>
+	<Point x="81" y="503"/>
+	<Point x="31" y="509"/></Coords>
+	<TextEquiv>
+	<PlainText></PlainText>
+	<Unicode>Dantzik den 24 October. Uyt Poolen heeft men, dat de onlu in
+Kaminiek toe nam, dewyl men die van de Griekſche Godsdien hare
+Kerken niet wilde laten behouden, maer deſelve tot den naeen
+Ryksdag toe verzegeld had; waer over zy aen den Wallachiſche Way-
+wode geklaed, en deſwege na Moſcow geſonden hadden. De ko-
+ninglyke troupen, die te Polangen zyn geland, ſullen op de Radzi-
+vielſche Nieuwburgſeche landen, en te Schavelle geinquartierd worden.
+Drie ſchepen, welke de militie aldaer hebben overgevoerd, zyn ge-
+rand, maer de Soldaten geborgen.</Unicode></TextEquiv></TextRegion></Page></PcGts>
