@@ -36,30 +36,31 @@ import org.w3c.dom.Element;
 @SuppressWarnings("javadoc")
 public enum FileType {
 
-    TEXT, PAGE2013, PAGE2010, FR10, HOCR, ALTO, UNKNOWN;
+    TEXT, PAGE, FR10, HOCR, ALTO, UNKNOWN;
     String tag;
     String schemaLocation;  // schema URL
 
     static {
         Properties props = StartUp.properties();
-        String location;
+        StringBuilder locations = new StringBuilder();
+
+
         TEXT.tag = null;  // no tag for this type 
         TEXT.schemaLocation = null; // no schema associated to this type
-        PAGE2013.tag = "PcGts";
-        location = props.getProperty("schemaLocation.PAGE.2013");
-        PAGE2013.schemaLocation = location == null ? ""
-                : StringNormalizer.reduceWS(location);
-        PAGE2010.tag = "PcGts";
-        location = props.getProperty("schemaLocation.PAGE.2010");
-        PAGE2010.schemaLocation = location == null ? ""
-                : StringNormalizer.reduceWS(location);
+
+        PAGE.tag = "PcGts";
+        for (String location : StartUp.propertiesWithPrefix("schemaLocation.PAGE")) {
+            locations.append(location);
+        }
+        PAGE.schemaLocation = StringNormalizer.reduceWS(locations.toString());
+
         FR10.tag = "document";
-        location = props.getProperty("schemaLocation.FR10");
+        String location = props.getProperty("schemaLocation.FR10");
         FR10.schemaLocation = location == null ? ""
                 : StringNormalizer.reduceWS(location);
         ALTO.tag = "alto";
         location = props.getProperty("schemaLocation.ALTO");
-        ALTO.schemaLocation = location == null ? "" 
+        ALTO.schemaLocation = location == null ? ""
                 : StringNormalizer.reduceWS(location);
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
@@ -99,12 +100,9 @@ public enum FileType {
             String location = StringNormalizer
                     .reduceWS(root.getAttribute("xsi:schemaLocation"));
 
-            if (doctype.equals(PAGE2013.tag)
-                    && sameLocation(location, PAGE2013.schemaLocation)) {
-                return PAGE2013;
-            } else if (doctype.equals(PAGE2010.tag)
-                    && sameLocation(location, PAGE2010.schemaLocation)) {
-                return PAGE2010;
+            if (doctype.equals(PAGE.tag)
+                    && sameLocation(location, PAGE.schemaLocation)) {
+                return PAGE;
             } else if (doctype.equals(FR10.tag)
                     && sameLocation(location, FR10.schemaLocation)) {
                 return FR10;
@@ -126,5 +124,4 @@ public enum FileType {
         }
         return UNKNOWN;
     }
-
 }
