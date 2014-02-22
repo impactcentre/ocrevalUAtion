@@ -237,7 +237,7 @@ abstract class Page {
         File file = new File(args[0]);
         FileType ftype = FileType.valueOf(file);
 
-        if (ftype == FileType.PAGE2010 || ftype == FileType.PAGE2013) {
+        if (ftype == FileType.PAGE) {
             Page page = new PAGEPage(file);
             System.out.println("<page>");
             for (TextComponent component : page.getComponents()) {

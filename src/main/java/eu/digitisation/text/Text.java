@@ -55,8 +55,8 @@ public class Text {
 
     static {
         Properties props = StartUp.properties();
-        maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
-
+        maxlen = Integer.parseInt(props.getProperty("maxlen", "10000").trim());
+        System.out.println("max length of text set to " + maxlen);
         try {
             File inclusions = new File("inclusions.txt");
             File exclusions = new File("exclusions.txt");
@@ -89,8 +89,7 @@ public class Text {
         try {
             FileType type = FileType.valueOf(file);
             switch (type) {
-                case PAGE2013:
-                case PAGE2010:
+                case PAGE:
                     readPageFile(file);
                     break;
                 case TEXT:

@@ -42,26 +42,25 @@ public enum FileType {
 
     static {
         Properties props = StartUp.properties();
-        StringBuilder locations = new StringBuilder();
-
+        String location;
 
         TEXT.tag = null;  // no tag for this type 
         TEXT.schemaLocation = null; // no schema associated to this type
 
         PAGE.tag = "PcGts";
-        for (String location : StartUp.propertiesWithPrefix("schemaLocation.PAGE")) {
-            locations.append(location);
-        }
-        PAGE.schemaLocation = StringNormalizer.reduceWS(locations.toString());
+        location = props.getProperty("schemaLocation.PAGE");
+        PAGE.schemaLocation = location == null ? ""
+                : StringNormalizer.reduceWS(location);
 
         FR10.tag = "document";
-        String location = props.getProperty("schemaLocation.FR10");
+        location = props.getProperty("schemaLocation.FR10");
         FR10.schemaLocation = location == null ? ""
                 : StringNormalizer.reduceWS(location);
         ALTO.tag = "alto";
         location = props.getProperty("schemaLocation.ALTO");
         ALTO.schemaLocation = location == null ? ""
                 : StringNormalizer.reduceWS(location);
+        
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
     }
