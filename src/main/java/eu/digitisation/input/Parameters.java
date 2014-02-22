@@ -50,7 +50,7 @@ public class Parameters {
         ignoreCase = new Parameter<Boolean>("Ignore case", false, "");
         ignoreDiacritics = new Parameter<Boolean>("Ignore diacritics", false, "");
         ignorePunctuation = new Parameter<Boolean>("Ignore punctuation", false, "");
-        compatibility = new Parameter<Boolean>("Unicode compatibilty of characters", false,
+        compatibility = new Parameter<Boolean>("Unicode compatibility charactrers", false,
                 "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence");
         encoding = new Parameter<String>("Text file encoding");
     }
