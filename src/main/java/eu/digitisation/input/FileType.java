@@ -17,7 +17,6 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.input.StartUp;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.xml.DocumentParser;
 import java.io.File;
@@ -43,14 +42,25 @@ public enum FileType {
 
     static {
         Properties props = StartUp.properties();
+        String location;
+
         TEXT.tag = null;  // no tag for this type 
         TEXT.schemaLocation = null; // no schema associated to this type
+
         PAGE.tag = "PcGts";
-        PAGE.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.PAGE"));
+        location = props.getProperty("schemaLocation.PAGE");
+        PAGE.schemaLocation = location == null ? ""
+                : StringNormalizer.reduceWS(location);
+
         FR10.tag = "document";
-        FR10.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.FR10"));
+        location = props.getProperty("schemaLocation.FR10");
+        FR10.schemaLocation = location == null ? ""
+                : StringNormalizer.reduceWS(location);
         ALTO.tag = "alto";
-        ALTO.schemaLocation = StringNormalizer.reduceWS(props.getProperty("schemaLocation.ALTO"));
+        location = props.getProperty("schemaLocation.ALTO");
+        ALTO.schemaLocation = location == null ? ""
+                : StringNormalizer.reduceWS(location);
+        
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
     }
@@ -105,7 +115,6 @@ public enum FileType {
                 if (!doc.head().select("meta[name=ocr-system").isEmpty()) {
                     return HOCR;
 
-
                 }
             } catch (IOException ex) {
                 Logger.getLogger(FileType.class
@@ -114,5 +123,4 @@ public enum FileType {
         }
         return UNKNOWN;
     }
-
 }

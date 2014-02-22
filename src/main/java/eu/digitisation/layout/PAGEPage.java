@@ -70,7 +70,8 @@ public class PAGEPage extends Page {
      */
     TextComponent parse(Element element) {
         String id = element.getAttribute("id");
-        ComponentType type = ComponentType.valueOf(FileType.PAGE, element.getTagName());
+        ComponentType type = 
+                ComponentType.valueOf(FileType.PAGE, element.getTagName());
         String subtype = element.getAttribute("type");
         String content = null;
         Polygon frontier = new Polygon();

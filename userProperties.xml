@@ -1,0 +1,10 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties> 
+   <entry key="schemaLocation.ALTO">
+   http://bibnum.bnf.fr/ns/alto_prod
+   http://bibnum.bnf.fr/ns/alto_prod.xsd
+   </entry>
+   <entry key="maxlen">
+     40000
+   </entry>
+</properties>

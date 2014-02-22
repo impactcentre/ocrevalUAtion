@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -184,6 +185,8 @@ public class GUI extends JFrame {
                         Report report = new Report(batch, pars);
                         report.write(outfile);
                         Browser.open("file://" + outfile.getCanonicalPath());
+                    } catch(InvalidObjectException ex) {
+                        warn(ex.getMessage());
                     } catch (IOException ex) {
                         warn("Input/Output Error");
                     }

@@ -41,17 +41,21 @@ public class StartUp {
         try {
             // Read defaults
             Properties defaults = new Properties();
-            in = FileType.class.getResourceAsStream("/default.properties");
+            in = FileType.class.getResourceAsStream("/defaultProperties.xml");
             if (in != null) {
-                defaults.load(in);
+                defaults.loadFromXML(in);
                 in.close();
                 props = new Properties(defaults);
             }
             // Add user properties (may overwrite defaults)
             try {
-                in = new FileInputStream(new File("user.properties"));
-                props.load(in);
-                in.close();
+                File file = new File("userProperties.xml");
+                if (file.exists()) {
+                    in = new FileInputStream(file);
+                    props.loadFromXML(in);
+                    System.out.println("Read properties from " + file);
+                    in.close();
+                }
             } catch (FileNotFoundException ex) {
                 // continue
             }

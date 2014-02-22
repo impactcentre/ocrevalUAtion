@@ -55,8 +55,8 @@ public class Text {
 
     static {
         Properties props = StartUp.properties();
-        maxlen = Integer.parseInt(props.getProperty("maxlen", "10000"));
-
+        maxlen = Integer.parseInt(props.getProperty("maxlen", "10000").trim());
+        System.out.println("max length of text set to " + maxlen);
         try {
             File inclusions = new File("inclusions.txt");
             File exclusions = new File("exclusions.txt");
@@ -77,7 +77,7 @@ public class Text {
      * @param encoding the text encoding for text files (optional; can be null)
      * @param filter XPAthFilter for XML files (extracts textual content from
      * selected elements)
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public Text(File file, String encoding, XPathFilter filter)
             throws WarningException {
