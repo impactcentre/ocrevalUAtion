@@ -77,7 +77,7 @@ public class TextContent {
      * @param file the input file
      * @param filter optional CharFilter (optional; can be null)
      * @param encoding the text encoding for text files (optional; can be null)
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public TextContent(File file, CharFilter filter, String encoding)
             throws WarningException {
@@ -120,7 +120,7 @@ public class TextContent {
      *
      * @param file the input file
      * @param filter optional CharFilter (optional; can be null)
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public TextContent(File file, CharFilter filter)
             throws WarningException {
@@ -132,7 +132,7 @@ public class TextContent {
      *
      * @param s
      * @param filter
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public TextContent(String s, CharFilter filter) throws WarningException {
         builder = new StringBuilder();

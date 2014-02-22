@@ -17,12 +17,11 @@
  */
 package eu.digitisation.output;
 
-import eu.digitisation.output.ErrorMeasure;
 import eu.digitisation.distance.EdOp;
 import eu.digitisation.distance.StringEditDistance;
-import eu.digitisation.text.StringNormalizer;
-import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.math.BiCounter;
+import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.text.Text;
 import java.io.File;
 import java.net.URL;
 import static org.junit.Assert.assertEquals;
@@ -46,7 +45,7 @@ public class ErrorMeasureTest {
         File file = new File(resourceUrl.toURI());
         String encoding = "utf8";
         String expResult = "mi en hora buena";
-        String result = new TextContent(file, null, encoding).toString();
+        String result = new Text(file).toString();
         assertEquals(expResult, result);
     }
 
@@ -64,8 +63,8 @@ public class ErrorMeasureTest {
         URL resourceUrl2 = getClass().getResource("/text2.txt");
         File file2 = new File(resourceUrl2.toURI());
         //String encoding2 = "utf8";
-        TextContent c1 = new TextContent(file1, null, null);
-        TextContent c2 = new TextContent(file2, null, null);
+        Text c1 = new Text(file1);
+        Text c2 = new Text(file2);
         String s1 = StringNormalizer.reduceWS(c1.toString());
         String s2 = StringNormalizer.reduceWS(c2.toString());
         double expResult = 3.0 / 14;
@@ -88,8 +87,8 @@ public class ErrorMeasureTest {
         URL resourceUrl2 = getClass().getResource("/text2.txt");
         File file2 = new File(resourceUrl2.toURI());
         //String encoding2 = "utf8";
-        TextContent c1 = new TextContent(file1, null);
-        TextContent c2 = new TextContent(file2, null);
+        Text c1= new Text(file1);
+        Text c2 = new Text(file2);
         double expResult = 1.5;
         double result = ErrorMeasure.wer(c1.toString(), c2.toString());
         assertEquals(expResult, result, 0.001);
