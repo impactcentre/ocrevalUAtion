@@ -89,7 +89,7 @@ public class TextContent {
         try {
             FileType type = FileType.valueOf(file);
             switch (type) {
-                case PAGE2010:
+                case PAGE:
                     readPageFile(file);
                     break;
                 case TEXT:

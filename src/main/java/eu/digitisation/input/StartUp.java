@@ -22,8 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,17 +41,21 @@ public class StartUp {
         try {
             // Read defaults
             Properties defaults = new Properties();
-            in = FileType.class.getResourceAsStream("/default.properties");
+            in = FileType.class.getResourceAsStream("/defaultProperties.xml");
             if (in != null) {
-                defaults.load(in);
+                defaults.loadFromXML(in);
                 in.close();
                 props = new Properties(defaults);
             }
             // Add user properties (may overwrite defaults)
             try {
-                in = new FileInputStream(new File("user.properties"));
-                props.load(in);
-                in.close();
+                File file = new File("userProperties.xml");
+                if (file.exists()) {
+                    in = new FileInputStream(file);
+                    props.loadFromXML(in);
+                    System.out.println("Read properties from " + file);
+                    in.close();
+                }
             } catch (FileNotFoundException ex) {
                 // continue
             }
@@ -81,22 +83,5 @@ public class StartUp {
      */
     public static String property(String key) {
         return props.getProperty(key);
-    }
-
-    /**
-     * Return all values for keys matching the given prefix
-     *
-     * @param prefix a property name prefix
-     * @return the list of values of properties with a name starting with this
-     * prefix
-     */
-    public static List<String> propertiesWithPrefix(String prefix) {
-        List<String> list = new ArrayList<String>();
-        for (String name : props.stringPropertyNames()) {
-            if (name.startsWith(prefix)) {
-                list.add(props.getProperty(name));
-            }
-        }
-        return list;
     }
 }
