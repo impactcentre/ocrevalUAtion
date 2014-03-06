@@ -17,9 +17,8 @@
  */
 package eu.digitisation.xml;
 
+import eu.digitisation.output.Messages;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -39,7 +38,7 @@ public class DocumentParser {
             docBuilder = javax.xml.parsers.DocumentBuilderFactory
                     .newInstance().newDocumentBuilder();
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(DocumentParser.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(DocumentParser.class.getName() + ": " + ex);
         }
     }
 
@@ -53,11 +52,9 @@ public class DocumentParser {
         try {
             return docBuilder.parse(file);
         } catch (SAXException ex) {
-            Logger.getLogger(DocumentParser.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            Messages.info(DocumentParser.class.getName() + ": " + ex);
         } catch (IOException ex) {
-            Logger.getLogger(DocumentParser.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            Messages.info(DocumentParser.class.getName() + ": " + ex);
         }
         return null;
     }
@@ -72,11 +69,9 @@ public class DocumentParser {
         try {
             return docBuilder.parse(is);
         } catch (SAXException ex) {
-            Logger.getLogger(DocumentParser.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            Messages.info(DocumentParser.class.getName() + ": " + ex);
         } catch (IOException ex) {
-            Logger.getLogger(DocumentParser.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            Messages.info(DocumentParser.class.getName() + ": " + ex);
         }
 
         return null;

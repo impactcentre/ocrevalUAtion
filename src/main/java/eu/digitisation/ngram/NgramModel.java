@@ -17,6 +17,7 @@
  */
 package eu.digitisation.ngram;
 
+import eu.digitisation.output.Messages;
 import eu.digitisation.text.WordScanner;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,8 +27,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -103,7 +102,7 @@ public class NgramModel implements Serializable {
             out.writeObject(this);
             out.close();
         } catch (IOException ex) {
-            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(NgramModel.class.getName() + ": " + ex);
         }
     }
 
@@ -123,9 +122,9 @@ public class NgramModel implements Serializable {
             this.occur = ngram.occur;
             this.lambda = ngram.lambda;
         } catch (IOException ex) {
-            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(NgramModel.class.getName() + ": " + ex);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(NgramModel.class.getName() + ": " + ex);
         }
     }
 
@@ -338,7 +337,7 @@ public class NgramModel implements Serializable {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(NgramModel.class.getName() + ": " + ex);
         }
 
     }
@@ -398,7 +397,7 @@ public class NgramModel implements Serializable {
 
             return result / numWords / Math.log(2);
         } catch (IOException ex) {
-            Logger.getLogger(NgramModel.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(NgramModel.class.getName() + ": " + ex);
         }
         return Double.POSITIVE_INFINITY;
     }

@@ -17,13 +17,12 @@
  */
 package eu.digitisation.xml;
 
+import eu.digitisation.output.Messages;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
@@ -71,9 +70,9 @@ public class XML2text extends DefaultHandler {
             reader.setContentHandler(this);
 
         } catch (SAXException ex) {
-            Logger.getLogger(XML2text.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(XML2text.class.getName() + ": " + ex);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(XML2text.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(XML2text.class.getName() + ": " + ex);
         }
         return reader;
     }
@@ -90,9 +89,9 @@ public class XML2text extends DefaultHandler {
         try {
             reader.parse(fileName);
         } catch (IOException ex) {
-            Logger.getLogger(XML2text.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(XML2text.class.getName() + ": " + ex);
         } catch (SAXException ex) {
-            Logger.getLogger(XML2text.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(XML2text.class.getName() + ": " + ex);
         }
         return buffer.toString();
     }

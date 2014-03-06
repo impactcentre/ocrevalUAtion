@@ -17,9 +17,8 @@
  */
 package eu.digitisation.xml;
 
+import eu.digitisation.output.Messages;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -51,7 +50,7 @@ public class XMLPath {
             return (NodeList) xpath.evaluate(expression, doc,
                     XPathConstants.NODESET);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(XMLPath.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(XMLPath.class.getName() + ": " + ex);
         }
         return null;
     }
@@ -69,7 +68,7 @@ public class XMLPath {
             return (NodeList) xpath.evaluate(expression, doc,
                     XPathConstants.NODESET);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(XMLPath.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(XMLPath.class.getName() + ": " + ex);
         }
         return null;
     }
@@ -85,7 +84,7 @@ public class XMLPath {
             return (NodeList) xpath.evaluate(expression, element,
                     XPathConstants.NODESET);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(XMLPath.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(XMLPath.class.getName() + ": " + ex);
         }
         return null;
     }
@@ -102,7 +101,7 @@ public class XMLPath {
         try {
             return (Boolean) xpath.evaluate("self::" + expression, element, XPathConstants.BOOLEAN);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(XMLPath.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(XMLPath.class.getName() + ": " + ex);
         }
         return false;
     }

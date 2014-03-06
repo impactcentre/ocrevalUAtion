@@ -18,6 +18,7 @@
 package eu.digitisation.input;
 
 import eu.digitisation.output.Browser;
+import eu.digitisation.output.Messages;
 import eu.digitisation.output.OutputFileSelector;
 import eu.digitisation.output.Report;
 import java.awt.BorderLayout;
@@ -174,6 +175,7 @@ public class GUI extends JFrame {
                 String name = ocrfile.getName().replaceAll("\\.\\w+", "")
                         + "_report.html";
                 File dir = ocrfile.getParentFile();
+                Messages.addFile(dir + "/" + "ocrevaluation.log");
                 File preselected = new File(name);
                 OutputFileSelector selector = new OutputFileSelector();
                 File outfile = selector.choose(dir, preselected);
@@ -185,7 +187,7 @@ public class GUI extends JFrame {
                         Report report = new Report(batch, pars);
                         report.write(outfile);
                         Browser.open("file://" + outfile.getCanonicalPath());
-                    } catch(InvalidObjectException ex) {
+                    } catch (InvalidObjectException ex) {
                         warn(ex.getMessage());
                     } catch (IOException ex) {
                         warn("Input/Output Error");

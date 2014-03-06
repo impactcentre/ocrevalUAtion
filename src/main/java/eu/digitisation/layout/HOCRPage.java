@@ -18,13 +18,13 @@
 package eu.digitisation.layout;
 
 import eu.digitisation.input.FileType;
+import eu.digitisation.output.Messages;
 import java.awt.Polygon;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -41,7 +41,7 @@ public class HOCRPage extends Page {
         try {
             parse(file);
         } catch (IOException ex) {
-            Logger.getLogger(HOCRPage.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(HOCRPage.class.getName() + ": " + ex);
         }
     }
 

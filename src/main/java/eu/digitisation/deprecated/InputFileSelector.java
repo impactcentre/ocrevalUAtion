@@ -17,6 +17,7 @@
  */
 package eu.digitisation.deprecated;
 
+import eu.digitisation.output.Messages;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,8 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -165,11 +164,11 @@ public class InputFileSelector extends JPanel implements ActionListener {
                     dir = file.getParentFile();
                     shade(approved);
                 } catch (URISyntaxException ex) {
-                    Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Messages.severe(InputFileSelector.class.getName() + ": " + ex);
                 } catch (IOException ex) {
-                    Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Messages.severe(InputFileSelector.class.getName() + ": " + ex);
                 } catch (UnsupportedFlavorException ex) {
-                    Logger.getLogger(InputFileSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Messages.severe(InputFileSelector.class.getName() + ": " + ex);
                 }
             }
         });

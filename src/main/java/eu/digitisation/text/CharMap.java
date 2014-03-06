@@ -18,6 +18,7 @@
 package eu.digitisation.text;
 
 import eu.digitisation.input.ExtensionFilter;
+import eu.digitisation.output.Messages;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -26,8 +27,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Compares characters and strings according to a mapping between equivalent
@@ -142,7 +142,7 @@ public class CharMap {
             }
             reader.close();
         } catch (IOException ex) {
-            Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(CharFilter.class.getName() + ": " + ex);
         }
     }
 

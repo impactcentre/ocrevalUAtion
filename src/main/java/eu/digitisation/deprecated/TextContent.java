@@ -21,6 +21,7 @@ import eu.digitisation.input.FileType;
 import eu.digitisation.input.StartUp;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
+import eu.digitisation.output.Messages;
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.Encoding;
 import eu.digitisation.text.StringNormalizer;
@@ -34,8 +35,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -110,7 +109,7 @@ public class TextContent {
                             + file.getName());
             }
         } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(TextContent.class.getName() + ": " + ex);
         }
         builder.trimToSize();
     }
@@ -237,7 +236,7 @@ public class TextContent {
                 add(reader.readLine(), true);
             }
         } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(TextContent.class.getName() + ": " + ex);
         }
     }
 
@@ -329,7 +328,7 @@ public class TextContent {
                 add(text, true);
             }
         } catch (IOException ex) {
-            Logger.getLogger(TextContent.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(TextContent.class.getName() + ": " + ex);
         }
     }
 

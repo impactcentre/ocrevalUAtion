@@ -17,12 +17,11 @@
  */
 package eu.digitisation.text;
 
+import eu.digitisation.output.Messages;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.parser.txt.CharsetDetector;
 
@@ -45,7 +44,7 @@ public class Encoding {
             detector.setText(is);
             return detector.detect().getName();
         } catch (IOException ex) {
-            Logger.getLogger(Encoding.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(Encoding.class.getName() + ": " + ex);
         }
         return null;
     }

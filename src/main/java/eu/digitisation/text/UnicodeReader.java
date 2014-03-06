@@ -17,13 +17,13 @@
  */
 package eu.digitisation.text;
 
+import eu.digitisation.output.Messages;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Transformations between Unicode strings and codepoints
@@ -158,7 +158,7 @@ public class UnicodeReader {
                 writer.close();
             }
         } catch (IOException ex) {
-            Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(CharFilter.class.getName() + ": " + ex);
         }
     }
 }

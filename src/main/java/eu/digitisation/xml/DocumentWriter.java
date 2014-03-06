@@ -17,8 +17,7 @@
  */
 package eu.digitisation.xml;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import eu.digitisation.output.Messages;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;
@@ -40,12 +39,13 @@ public class DocumentWriter {
             transformer = javax.xml.transform.TransformerFactory
                     .newInstance().newTransformer();
         } catch (TransformerConfigurationException ex) {
-            Logger.getLogger(DocumentWriter.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(DocumentWriter.class.getName() + ": " + ex);
         }
     }
 
     /**
      * Create a DocumentWriter for a given document
+     *
      * @param document the XML document
      */
     public DocumentWriter(Document document) {
@@ -63,8 +63,7 @@ public class DocumentWriter {
         try {
             transformer.transform(source, result);
         } catch (TransformerException ex) {
-            Logger.getLogger(DocumentParser.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            Messages.info(DocumentParser.class.getName() + ": " + ex);
         }
         return result.getWriter().toString();
     }
@@ -79,7 +78,7 @@ public class DocumentWriter {
         try {
             transformer.transform(source, result);
         } catch (TransformerException ex) {
-            Logger.getLogger(DocumentParser.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(DocumentParser.class.getName() + ": " + ex);
         }
 
     }

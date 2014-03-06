@@ -18,6 +18,7 @@
 package eu.digitisation.text;
 
 import eu.digitisation.input.ExtensionFilter;
+import eu.digitisation.output.Messages;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,8 +28,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Transform text according to a mapping between (source, target) Unicode
@@ -57,8 +57,8 @@ public class CharFilter extends HashMap<String, String> {
      *
      * @param compatibility the Unicode compatibility mode (true means
      * activated)
-     * @param file a CSV file with one transformation per line, each line contains
-     * two Unicode hex sequences (and comments) separated with commas
+     * @param file a CSV file with one transformation per line, each line
+     * contains two Unicode hex sequences (and comments) separated with commas
      */
     public CharFilter(boolean compatibility, File file) {
         super();
@@ -129,7 +129,7 @@ public class CharFilter extends HashMap<String, String> {
             }
             reader.close();
         } catch (IOException ex) {
-            Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(CharFilter.class.getName() + ": " + ex);
         }
     }
 
@@ -175,7 +175,7 @@ public class CharFilter extends HashMap<String, String> {
             return java.nio.charset.Charset.forName("utf-8").newDecoder()
                     .decode(buffer);
         } catch (IOException ex) {
-            Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(CharFilter.class.getName() + ": " + ex);
         }
         return null;
     }
@@ -196,7 +196,7 @@ public class CharFilter extends HashMap<String, String> {
             writer.flush();
             writer.close();
         } catch (IOException ex) {
-            Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(CharFilter.class.getName() + ": " + ex);
         }
     }
 
@@ -216,7 +216,7 @@ public class CharFilter extends HashMap<String, String> {
             writer.flush();
             writer.close();
         } catch (IOException ex) {
-            Logger.getLogger(CharFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(CharFilter.class.getName() + ": " + ex);
         }
 
     }

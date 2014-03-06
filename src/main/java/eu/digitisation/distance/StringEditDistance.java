@@ -19,8 +19,7 @@ package eu.digitisation.distance;
 
 import eu.digitisation.math.BiCounter;
 import eu.digitisation.output.ErrorMeasure;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import eu.digitisation.output.Messages;
 
 /**
  * Provides basic implementations of some popular edit distance methods
@@ -297,9 +296,7 @@ public class StringEditDistance {
             } else if (A[i][j] == A[i][j - 1] + 1) {
                 --j;
             } else { // remove after debugging
-                Logger.getLogger(ErrorMeasure.class.getName())
-                        .log(Level.SEVERE, null,
-                        "Wrong code at StringEditDistance.alignments");
+                Messages.info(ErrorMeasure.class.getName() + ": Wrong code");
             }
         }
 

@@ -17,14 +17,13 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.output.Messages;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.xml.DocumentParser;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -114,11 +113,10 @@ public enum FileType {
                 org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
                 if (!doc.head().select("meta[name=ocr-system").isEmpty()) {
                     return HOCR;
-
                 }
             } catch (IOException ex) {
-                Logger.getLogger(FileType.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                Messages.info(FileType.class
+                        .getName() + ": " + ex);
             }
         }
         return UNKNOWN;

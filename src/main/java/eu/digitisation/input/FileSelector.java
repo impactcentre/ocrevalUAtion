@@ -17,6 +17,7 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.output.Messages;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,8 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -182,11 +181,11 @@ public class FileSelector extends ParameterSelector<File> {
                     dir = getFile().getParentFile();
                     shade(Color.decode("#B5CC9E"));
                 } catch (URISyntaxException ex) {
-                    Logger.getLogger(FileSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Messages.info(FileSelector.class.getName() + ": " + ex);
                 } catch (IOException ex) {
-                    Logger.getLogger(FileSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Messages.info(FileSelector.class.getName() + ": " + ex);
                 } catch (UnsupportedFlavorException ex) {
-                    Logger.getLogger(FileSelector.class.getName()).log(Level.SEVERE, null, ex);
+                    Messages.info(FileSelector.class.getName() + ": " + ex);
                 }
             }
         });

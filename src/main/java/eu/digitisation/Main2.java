@@ -3,11 +3,10 @@ package eu.digitisation;
 import eu.digitisation.input.Batch;
 import eu.digitisation.input.Parameters;
 import eu.digitisation.input.WarningException;
+import eu.digitisation.output.Messages;
 import eu.digitisation.output.Report;
 import java.io.File;
 import java.io.InvalidObjectException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Main class for ocrevalUAtion: version 0.92
@@ -79,7 +78,7 @@ public class Main2 {
             Report report = new Report(batch, pars);
             report.write(pars.outfile.getValue());
         } catch (InvalidObjectException ex) {
-            Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(Main2.class.getName() + ": " + ex);
         }
 
     }

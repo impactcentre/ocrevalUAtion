@@ -21,6 +21,7 @@ import eu.digitisation.input.FileType;
 import eu.digitisation.input.StartUp;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
+import eu.digitisation.output.Messages;
 import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.ElementList;
 import eu.digitisation.xml.XPathFilter;
@@ -31,8 +32,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -64,9 +63,9 @@ public class Text {
                     ? new XPathFilter(inclusions, exclusions)
                     : null;
         } catch (IOException ex) {
-            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(Text.class.getName() + ": " + ex);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(Text.class.getName() + ": " + ex);
         }
     }
 
@@ -110,7 +109,7 @@ public class Text {
                             + file.getName());
             }
         } catch (IOException ex) {
-            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(Text.class.getName() + ": " + ex);
         }
         builder.trimToSize();
     }
@@ -228,7 +227,7 @@ public class Text {
                 add(reader.readLine().trim());
             }
         } catch (IOException ex) {
-            Logger.getLogger(Text.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(Text.class.getName() + ": " + ex);
         }
     }
 
@@ -340,8 +339,7 @@ public class Text {
 
             }
         } catch (IOException ex) {
-            Logger.getLogger(Text.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Messages.info(Text.class.getName() + ": " + ex);
         }
     }
 

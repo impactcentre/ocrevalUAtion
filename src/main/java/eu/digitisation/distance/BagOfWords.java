@@ -17,11 +17,10 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.text.WordScanner;
 import eu.digitisation.math.Counter;
+import eu.digitisation.output.Messages;
+import eu.digitisation.text.WordScanner;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A bag of words is a text where the ordering of words is irrelevant.
@@ -48,7 +47,7 @@ public class BagOfWords {
                 words.inc(word);
             }
         } catch (IOException ex) {
-            Logger.getLogger(BagOfWords.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(BagOfWords.class.getName() + ": " + ex);
         }
     }
 

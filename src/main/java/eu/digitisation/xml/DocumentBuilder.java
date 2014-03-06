@@ -17,10 +17,9 @@
  */
 package eu.digitisation.xml;
 
+import eu.digitisation.output.Messages;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,7 +48,7 @@ public class DocumentBuilder {
             Element root = doc.createElement(doctype);
             doc.appendChild(root);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(DocumentBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(DocumentBuilder.class.getName() + ": " + ex);
         }
     }
 
@@ -77,7 +76,7 @@ public class DocumentBuilder {
             target.appendChild(node);
             return target;
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(DocumentBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(DocumentBuilder.class.getName() + ": " + ex);
         }
         return null;
     }

@@ -42,9 +42,9 @@ public class WordScanner {
     static {
         StringBuilder builder = new StringBuilder();
         builder.append("(");
-        builder.append("(\\p{L}+([-\\x26'+/@_~·.]\\p{L}+)*)");
+        builder.append("(\\p{L}+([-\\x26'+/@·.]\\p{L}+)*)");
         builder.append("|");
-        builder.append("([\\p{Nd}\\p{Nl}\\p{No}]+([-',./][\\p{Nd}\\p{Nl}\\p{No}]+)*[%]?)");
+        builder.append("([\\p{Nd}\\p{Nl}\\p{No}]+([-',./][\\p{Nd}\\p{Nl}\\p{No}]+)*[%‰]?)");
         builder.append(")");
         pattern = Pattern.compile(builder.toString());
     }

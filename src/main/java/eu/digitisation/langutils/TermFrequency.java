@@ -17,19 +17,18 @@
  */
 package eu.digitisation.langutils;
 
+import eu.digitisation.input.WarningException;
+import eu.digitisation.math.Counter;
+import eu.digitisation.output.Messages;
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.StringNormalizer;
-import eu.digitisation.deprecated.TextContent;
-import eu.digitisation.input.WarningException;
+import eu.digitisation.text.Text;
 import eu.digitisation.text.WordScanner;
-import eu.digitisation.math.Counter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Compute term frequencies in a collection
@@ -74,7 +73,7 @@ public class TermFrequency extends Counter<String> {
      * Extract words from a file
      *
      * @param dir the input file or directory
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public void add(File dir) throws WarningException {
         if (dir.isDirectory()) {
@@ -89,11 +88,11 @@ public class TermFrequency extends Counter<String> {
      * Extract words from a file
      *
      * @param file an input files
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public void addFile(File file) throws WarningException {
         try {
-            TextContent content = new TextContent(file, filter);
+            Text content = new Text(file);
             WordScanner scanner = new WordScanner(content.toString());
             String word;
             while ((word = scanner.nextWord()) != null) {
@@ -102,7 +101,7 @@ public class TermFrequency extends Counter<String> {
                 inc(StringNormalizer.composed(filtered));
             }
         } catch (IOException ex) {
-            Logger.getLogger(TermFrequency.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(TermFrequency.class.getName() + ": " + ex);
         }
 
     }

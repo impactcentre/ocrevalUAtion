@@ -17,14 +17,14 @@
  */
 package eu.digitisation.math;
 
+import eu.digitisation.output.Messages;
 import eu.digitisation.text.WordScanner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Mapping between strings and integers A MinimalPerfectHash guarantees
@@ -108,7 +108,7 @@ public class MinimalPerfectHash {
                 list.add(hashCode(word));
             }
         } catch (IOException ex) {
-            Logger.getLogger(MinimalPerfectHash.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(MinimalPerfectHash.class.getName() + ": " + ex);
         }
         return list;
     }
@@ -130,7 +130,7 @@ public class MinimalPerfectHash {
                 list.add(hashCode(word));
             }
         } catch (IOException ex) {
-            Logger.getLogger(MinimalPerfectHash.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(MinimalPerfectHash.class.getName() + ": " + ex);
         }
 
         return list;

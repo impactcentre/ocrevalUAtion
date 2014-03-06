@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Open a file or URL with an operating system application
@@ -46,7 +44,7 @@ public class Browser {
                 try {
                     Desktop.getDesktop().browse(uri);
                 } catch (IOException ex) {
-                    Logger.getLogger(Browser.class.getName()).log(Level.SEVERE, null, ex);
+                    Messages.info(Browser.class.getName() + ": " + ex);
                 }
             }
         } else {
@@ -54,16 +52,16 @@ public class Browser {
                 Runtime.getRuntime().exec(
                         "rundll32 url.dll,FileProtocolHandler " + uri);
             } catch (IOException ex) {
-                Logger.getLogger(Browser.class.getName()).log(Level.SEVERE, null, ex);
+                Messages.info(Browser.class.getName() + ": " + ex);
             }
         }
     }
-    
+
     /**
      * Deprecated: avoid using it
+     *
      * @param url a file location
      */
-
     public static void open(String url) {
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
@@ -76,11 +74,11 @@ public class Browser {
                     Desktop.getDesktop().browse(uri);
 
                 } catch (IOException ex) {
-                    Logger.getLogger(Browser.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Messages.info(Browser.class
+                            .getName() + ": " + ex);
                 } catch (URISyntaxException ex) {
-                    Logger.getLogger(Browser.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Messages.info(Browser.class
+                            .getName() + ": " + ex);
                 }
             } else {
                 try {
@@ -88,8 +86,7 @@ public class Browser {
                             "rundll32 url.dll,FileProtocolHandler " + url);
 
                 } catch (IOException ex) {
-                    Logger.getLogger(Browser.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Messages.info(Browser.class.getName() + ": " + ex);
                 }
             }
         }

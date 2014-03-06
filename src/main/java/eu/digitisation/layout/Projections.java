@@ -21,6 +21,7 @@ import eu.digitisation.image.Bimage;
 import eu.digitisation.image.Display;
 import eu.digitisation.input.FileType;
 import eu.digitisation.math.Arrays;
+import eu.digitisation.output.Messages;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
@@ -30,8 +31,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.media.jai.JAI;
 
 /**
@@ -75,7 +74,7 @@ public class Projections extends Bimage {
             }
             System.err.println("threshold=" + threshold);
         } catch (IOException ex) {
-            Logger.getLogger(Page.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.info(Page.class.getName() + ": " + ex);
         }
 
     }

@@ -17,14 +17,13 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.output.Messages;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Start-up actions: load default and user properties (user-defined values
@@ -37,8 +36,8 @@ public class StartUp {
     private static Properties props = new Properties();
 
     static {
-        InputStream in;
         try {
+            InputStream in;
             // Read defaults
             Properties defaults = new Properties();
             in = FileType.class.getResourceAsStream("/defaultProperties.xml");
@@ -49,18 +48,27 @@ public class StartUp {
             }
             // Add user properties (may overwrite defaults)
             try {
+                String dir = System.getProperty("user.dir");
+                Messages.info("Application folder=" + dir);
                 File file = new File("userProperties.xml");
                 if (file.exists()) {
                     in = new FileInputStream(file);
                     props.loadFromXML(in);
-                    System.out.println("Read properties from " + file);
+                    Messages.info("Read properties from " + file);
                     in.close();
+                } else {
+                    in = FileType.class.getResourceAsStream("/userProperties.xml");
+                    if (in != null) {
+                        defaults.loadFromXML(in);
+                        in.close();
+                        props = new Properties(defaults);
+                    }
                 }
             } catch (FileNotFoundException ex) {
-                // continue
+                Messages.info("No user defined properties");
             }
         } catch (IOException ex) {
-            Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
+            Messages.severe(FileType.class.getName() + ": " + ex);
         }
     }
 

@@ -1,13 +1,12 @@
 package eu.digitisation;
 
 import eu.digitisation.input.Batch;
-import eu.digitisation.text.CharFilter;
 import eu.digitisation.input.WarningException;
+import eu.digitisation.output.Messages;
 import eu.digitisation.output.Report;
+import eu.digitisation.text.CharFilter;
 import java.io.File;
 import java.io.InvalidObjectException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Main class for ocrevalUAtion: version 0.92
@@ -97,7 +96,7 @@ public class Main {
                 Report report = new Report(batch, gtencoding, ocrencoding, filter);
                 report.write(ofile);
             } catch (InvalidObjectException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Messages.info(Main.class.getName() + ": " + ex);
             }
 
         }
