@@ -17,6 +17,7 @@
  */
 package eu.digitisation.output;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -32,16 +33,19 @@ public class Messages {
 
     static {
         try {
-            addFile("ocrevaluation.log");
+            String path = Messages.class.getProtectionDomain()
+                    .getCodeSource().getLocation().getPath();
+            String dir = new File(path).getParent();
+            addFile(new File(dir, "ocrevaluation.log"));
         } catch (SecurityException ex) {
             Messages.info(Messages.class.getName() + ": " + ex);
         }
 
     }
 
-    public static void addFile(String name) {
+   public static void addFile(File file) {
         try {
-            FileHandler fh = new FileHandler(name);
+            FileHandler fh = new FileHandler(file.getAbsolutePath());
             fh.setFormatter(new SimpleFormatter());
             logger.addHandler(fh);
         } catch (IOException ex) {

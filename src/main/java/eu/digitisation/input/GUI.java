@@ -175,7 +175,6 @@ public class GUI extends JFrame {
                 String name = ocrfile.getName().replaceAll("\\.\\w+", "")
                         + "_report.html";
                 File dir = ocrfile.getParentFile();
-                Messages.addFile(dir + "/" + "ocrevaluation.log");
                 File preselected = new File(name);
                 OutputFileSelector selector = new OutputFileSelector();
                 File outfile = selector.choose(dir, preselected);
@@ -186,6 +185,7 @@ public class GUI extends JFrame {
                         Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
                         Report report = new Report(batch, pars);
                         report.write(outfile);
+                        Messages.info("Report dumped to " + outfile);
                         Browser.open("file://" + outfile.getCanonicalPath());
                     } catch (InvalidObjectException ex) {
                         warn(ex.getMessage());

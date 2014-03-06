@@ -40,7 +40,7 @@ public class StartUp {
             InputStream in;
             // Read defaults
             Properties defaults = new Properties();
-            in = FileType.class.getResourceAsStream("/defaultProperties.xml");
+            in = StartUp.class.getResourceAsStream("/defaultProperties.xml");
             if (in != null) {
                 defaults.loadFromXML(in);
                 in.close();
@@ -48,27 +48,33 @@ public class StartUp {
             }
             // Add user properties (may overwrite defaults)
             try {
-                String dir = System.getProperty("user.dir");
+                //String dir = System.getProperty("user.dir");
+                String path = StartUp.class.getProtectionDomain()
+                        .getCodeSource().getLocation().getPath();
+                String dir = new File(path).getParent();
                 Messages.info("Application folder=" + dir);
-                File file = new File("userProperties.xml");
+                File file = new File(dir, "userProperties.xml");
                 if (file.exists()) {
                     in = new FileInputStream(file);
                     props.loadFromXML(in);
                     Messages.info("Read properties from " + file);
                     in.close();
                 } else {
-                    in = FileType.class.getResourceAsStream("/userProperties.xml");
+                    in = StartUp.class.getResourceAsStream("/userProperties.xml");
                     if (in != null) {
                         defaults.loadFromXML(in);
+                        Messages.info("Read properties from " + file);
                         in.close();
                         props = new Properties(defaults);
+                    } else {
+                        Messages.info("No properties defined by user");
                     }
                 }
             } catch (FileNotFoundException ex) {
                 Messages.info("No user defined properties");
             }
         } catch (IOException ex) {
-            Messages.severe(FileType.class.getName() + ": " + ex);
+            Messages.severe(StartUp.class.getName() + ": " + ex);
         }
     }
 
