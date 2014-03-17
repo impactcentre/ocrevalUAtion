@@ -17,7 +17,6 @@
  */
 package eu.digitisation.layout;
 
-import eu.digitisation.layout.Viewer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -45,7 +44,7 @@ public class ViewerTest {
         File file2 = new File(resourceUrl2.toURI());
         String[] args = {file1.getCanonicalPath(), file2.getCanonicalPath()};
 
-        Viewer.main(args);
+        //Viewer.main(args);
 
         URL resourceUrl3 = getClass().getResource("/00439040_marked.tif");
         File file3 = new File(resourceUrl3.toURI());
