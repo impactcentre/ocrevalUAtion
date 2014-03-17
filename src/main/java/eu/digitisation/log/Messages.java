@@ -32,8 +32,11 @@ public class Messages {
 
     static {
         try {
+            /**
             String path = Messages.class.getProtectionDomain()
                     .getCodeSource().getLocation().getPath();
+                    */
+            String path = System.getProperty("user.dir");
             String dir = new File(path).getParent();
             addFile(new File(dir, "ocrevaluation.log"));
             // for debugging
