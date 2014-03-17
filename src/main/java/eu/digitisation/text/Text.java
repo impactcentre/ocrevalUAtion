@@ -21,7 +21,7 @@ import eu.digitisation.input.FileType;
 import eu.digitisation.input.StartUp;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.ElementList;
 import eu.digitisation.xml.XPathFilter;
@@ -158,11 +158,12 @@ public class Text {
 
     /**
      * The content as a string
+     *
      * @param filter a CharFilter
      * @return the text after the application of the filter
      */
     public String toString(CharFilter filter) {
-        return filter == null 
+        return filter == null
                 ? builder.toString()
                 : filter.translate(builder.toString());
     }
@@ -193,12 +194,12 @@ public class Text {
         String xmlEncoding = doc.getXmlEncoding();
         if (xmlEncoding != null) {
             encoding = xmlEncoding;
-            System.err.println("XML file " + file.getName() + " encoding is " + encoding);
+            Messages.info("XML file " + file.getName() + " encoding is " + encoding);
         } else {
             if (encoding == null) {
                 encoding = Encoding.detect(file);
             }
-            System.err.println("No encoding declaration in "
+            Messages.info("No encoding declaration in "
                     + file + ". Using " + encoding);
         }
         return doc;
@@ -215,7 +216,7 @@ public class Text {
         if (encoding == null) {
             encoding = Encoding.detect(file);
         }
-        System.err.println("Text file " + file.getName() + " encoding is " + encoding);
+        Messages.info("Text file " + file.getName() + " encoding is " + encoding);
 
         // read content
         try {
@@ -324,11 +325,11 @@ public class Text {
 
             if (htmlEncoding == null) {
                 encoding = Encoding.detect(file);
-                System.err.println("No charset declaration in "
+                Messages.warning("No charset declaration in "
                         + file + ". Using " + encoding);
             } else {
                 encoding = htmlEncoding;
-                System.err.println("HTML file " + file
+                Messages.info("HTML file " + file
                         + " encoding is " + encoding);
             }
 

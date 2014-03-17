@@ -17,7 +17,7 @@
  */
 package eu.digitisation.xml;
 
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;

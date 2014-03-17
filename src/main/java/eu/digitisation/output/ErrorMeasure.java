@@ -22,6 +22,7 @@ import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.distance.EditDistanceType;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.document.TokenArray;
+import eu.digitisation.log.Messages;
 import eu.digitisation.math.MinimalPerfectHash;
 
 /**
@@ -44,7 +45,7 @@ public class ErrorMeasure {
         double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
 
         if (delta > 20) {
-            System.err.println("Warning: files differ a "
+            Messages.warning("Files differ a "
                     + String.format("%.2f", delta) + " % in character length");
         }
 
@@ -65,7 +66,7 @@ public class ErrorMeasure {
         double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
 
         if (delta > 20) {
-            System.err.println("Warning: files differ a "
+            Messages.warning("Files differ a "
                     + String.format("%.2f", delta) + " % in character length");
         }
 
@@ -86,7 +87,7 @@ public class ErrorMeasure {
         double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
 
         if (delta > 20) {
-            System.err.println("Warning: files differ a "
+            Messages.warning("Files differ a "
                     + String.format("%.2f", delta) + " % in word length");
         }
 
@@ -107,7 +108,7 @@ public class ErrorMeasure {
         double delta = (100.00 * Math.abs(l1 - l2)) / (l1 + l2);
 
         if (delta > 20) {
-            System.err.println("Warning: files differ a "
+            Messages.warning("Files differ a "
                     + String.format("%.2f", delta) + " % in word length");
         }
 
@@ -127,12 +128,13 @@ public class ErrorMeasure {
         MinimalPerfectHash mph = new MinimalPerfectHash(false); // case unsensitive  
         TokenArray a1 = new TokenArray(mph, s1);
         TokenArray a2 = new TokenArray(mph, s2);
-       
+
         return wer(a1, a2);
     }
-    
+
     /**
      * Compute bag-of-word error rate
+     *
      * @param s1 reference string
      * @param s2 fuzzy string string
      * @return the word error rate between the (unsorted) strings
@@ -140,7 +142,7 @@ public class ErrorMeasure {
     public static double ber(String s1, String s2) {
         BagOfWords bow1 = new BagOfWords(s1);
         BagOfWords bow2 = new BagOfWords(s2);
-        
+
         return bow1.distance(bow2) / (double) bow1.total();
     }
 }

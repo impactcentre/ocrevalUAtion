@@ -21,7 +21,7 @@ import eu.digitisation.input.FileType;
 import eu.digitisation.input.StartUp;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.Encoding;
 import eu.digitisation.text.StringNormalizer;

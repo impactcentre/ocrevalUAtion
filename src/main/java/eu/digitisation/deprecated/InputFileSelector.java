@@ -17,7 +17,7 @@
  */
 package eu.digitisation.deprecated;
 
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;

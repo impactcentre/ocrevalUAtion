@@ -19,7 +19,7 @@ package eu.digitisation.langutils;
 
 import eu.digitisation.input.WarningException;
 import eu.digitisation.math.Counter;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.Text;

@@ -21,7 +21,7 @@ import eu.digitisation.image.Bimage;
 import eu.digitisation.image.Display;
 import eu.digitisation.input.FileType;
 import eu.digitisation.math.Arrays;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;

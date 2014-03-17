@@ -17,7 +17,7 @@
  */
 package eu.digitisation.xml;
 
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import java.io.File;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;

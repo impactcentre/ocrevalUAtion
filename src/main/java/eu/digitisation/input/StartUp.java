@@ -17,7 +17,7 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,7 +52,7 @@ public class StartUp {
                 String path = StartUp.class.getProtectionDomain()
                         .getCodeSource().getLocation().getPath();
                 String dir = new File(path).getParent();
-                Messages.info("Application folder=" + dir);
+                Messages.info("Application folder is " + dir);
                 File file = new File(dir, "userProperties.xml");
                 if (file.exists()) {
                     in = new FileInputStream(file);

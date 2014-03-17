@@ -17,6 +17,7 @@
  */
 package eu.digitisation.output;
 
+import eu.digitisation.log.Messages;
 import java.awt.Desktop;
 import java.awt.Desktop.Action;
 import java.io.IOException;

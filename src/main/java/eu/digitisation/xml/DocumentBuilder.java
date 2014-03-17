@@ -17,7 +17,7 @@
  */
 package eu.digitisation.xml;
 
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;

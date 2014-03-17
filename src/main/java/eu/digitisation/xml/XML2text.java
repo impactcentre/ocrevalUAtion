@@ -17,7 +17,7 @@
  */
 package eu.digitisation.xml;
 
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

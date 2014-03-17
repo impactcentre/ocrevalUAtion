@@ -19,6 +19,7 @@ package eu.digitisation.distance;
 
 import eu.digitisation.document.TokenArray;
 import eu.digitisation.input.WarningException;
+import eu.digitisation.log.Messages;
 import eu.digitisation.math.BiCounter;
 import eu.digitisation.text.Text;
 import java.io.File;
@@ -234,8 +235,8 @@ public class EditSequence {
             try {
                 e = B.get(i, j);
             } catch (Exception ex) {
-                System.out.println(i + "," + j);
-                System.out.println(B);
+                Messages.severe(i + "," + j);
+                Messages.severe(B.toString());
             }
             switch (e) {
                 case INSERT:
@@ -289,8 +290,8 @@ public class EditSequence {
                     : subseq;
 
             append(head);
-            if (len1 > 0) {
-                System.out.println((100 * shift1) / len1 + "% of file processed");
+            if (len1 > chunkLen) {
+                Messages.info((100 * shift1) / len1 + "% of file processed");
             }
         }
     }

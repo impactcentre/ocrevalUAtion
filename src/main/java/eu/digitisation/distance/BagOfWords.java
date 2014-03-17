@@ -18,7 +18,7 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.math.Counter;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import eu.digitisation.text.WordScanner;
 import java.io.IOException;
 
