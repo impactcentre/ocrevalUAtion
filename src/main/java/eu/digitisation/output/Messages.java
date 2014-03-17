@@ -19,7 +19,9 @@ package eu.digitisation.output;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -43,11 +45,16 @@ public class Messages {
 
     }
 
-   public static void addFile(File file) {
+    public static void addFile(File file) {
         try {
             FileHandler fh = new FileHandler(file.getAbsolutePath());
-            fh.setFormatter(new SimpleFormatter());
+            Formatter f = new SimpleFormatter();
+            fh.setFormatter(f);
             logger.addHandler(fh);
+            // Only while debugging
+            ConsoleHandler ch = new ConsoleHandler();
+            ch.setFormatter(f);
+            logger.addHandler(ch);
         } catch (IOException ex) {
             Messages.info(Messages.class.getName() + ": " + ex);
         }
@@ -55,6 +62,7 @@ public class Messages {
 
     public static void info(String s) {
         logger.info(s);
+
     }
 
     public static void warning(String s) {
@@ -64,5 +72,4 @@ public class Messages {
     public static void severe(String s) {
         logger.severe(s);
     }
-
 }
