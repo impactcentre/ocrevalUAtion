@@ -17,7 +17,7 @@
  */
 package eu.digitisation.xml;
 
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;

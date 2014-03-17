@@ -2,7 +2,7 @@ package eu.digitisation;
 
 import eu.digitisation.input.Batch;
 import eu.digitisation.input.WarningException;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import eu.digitisation.output.Report;
 import eu.digitisation.text.CharFilter;
 import java.io.File;

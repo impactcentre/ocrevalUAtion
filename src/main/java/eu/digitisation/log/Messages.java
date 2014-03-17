@@ -15,15 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation.output;
+package eu.digitisation.log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 /**
  *
@@ -39,6 +36,8 @@ public class Messages {
                     .getCodeSource().getLocation().getPath();
             String dir = new File(path).getParent();
             addFile(new File(dir, "ocrevaluation.log"));
+            // for debugging
+            addFrame();
         } catch (SecurityException ex) {
             Messages.info(Messages.class.getName() + ": " + ex);
         }
@@ -48,16 +47,18 @@ public class Messages {
     public static void addFile(File file) {
         try {
             FileHandler fh = new FileHandler(file.getAbsolutePath());
-            Formatter f = new SimpleFormatter();
-            fh.setFormatter(f);
+            fh.setFormatter(new LogFormatter());
             logger.addHandler(fh);
-            // Only while debugging
-            ConsoleHandler ch = new ConsoleHandler();
-            ch.setFormatter(f);
-            logger.addHandler(ch);
         } catch (IOException ex) {
             Messages.info(Messages.class.getName() + ": " + ex);
         }
+    }
+
+    public static void addFrame() {
+        // Only while debugging
+        LogFrameHandler lfh = new LogFrameHandler();
+        lfh.setFormatter(new LogFormatter());
+        logger.addHandler(lfh);
     }
 
     public static void info(String s) {

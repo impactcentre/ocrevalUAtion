@@ -19,7 +19,7 @@ package eu.digitisation.distance;
 
 import eu.digitisation.math.BiCounter;
 import eu.digitisation.output.ErrorMeasure;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 
 /**
  * Provides basic implementations of some popular edit distance methods

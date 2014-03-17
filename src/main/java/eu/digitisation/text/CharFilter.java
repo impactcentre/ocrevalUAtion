@@ -18,7 +18,7 @@
 package eu.digitisation.text;
 
 import eu.digitisation.input.ExtensionFilter;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;

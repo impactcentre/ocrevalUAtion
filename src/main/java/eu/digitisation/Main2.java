@@ -3,7 +3,7 @@ package eu.digitisation;
 import eu.digitisation.input.Batch;
 import eu.digitisation.input.Parameters;
 import eu.digitisation.input.WarningException;
-import eu.digitisation.output.Messages;
+import eu.digitisation.log.Messages;
 import eu.digitisation.output.Report;
 import java.io.File;
 import java.io.InvalidObjectException;

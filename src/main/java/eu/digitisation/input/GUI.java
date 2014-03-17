@@ -17,8 +17,8 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.log.Messages;
 import eu.digitisation.output.Browser;
-import eu.digitisation.output.Messages;
 import eu.digitisation.output.OutputFileSelector;
 import eu.digitisation.output.Report;
 import java.awt.BorderLayout;
@@ -36,7 +36,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -208,7 +207,7 @@ public class GUI extends JFrame {
         // Initialization settings
         setForeground(green);
         setBackground(gray);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         setLocationRelativeTo(null);
 
