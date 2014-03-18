@@ -40,6 +40,8 @@ public class Parameters {
     public final Parameter<Boolean> compatibility;
     //  Define program parameters: String options 
     public final Parameter<String> encoding;
+    // Set verbosity during debugging (unused)
+    public final Parameter<Boolean> verbose;
     
     public Parameters() {
         gtfile = new Parameter<File>("ground-truth file");
@@ -53,6 +55,7 @@ public class Parameters {
         compatibility = new Parameter<Boolean>("Unicode compatibility characters", false,
                 "http://unicode.org/reports/tr15/#Canon_Compat_Equivalence");
         encoding = new Parameter<String>("Text file encoding");
+        verbose = new Parameter<Boolean>("Verbose", false, "");
     }
 
     public void clear() {
