@@ -18,10 +18,10 @@
 package eu.digitisation.ngram;
 
 import eu.digitisation.text.CharFilter;
-import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.output.ErrorMeasure;
+import eu.digitisation.text.Text;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,12 +33,12 @@ public class Experiment {
 
     private static void compare(File f1, File f2, File f3, CharFilter filter) 
             throws WarningException, IOException {
-        TextContent c1 = new TextContent(f1, filter);
-        TextContent c2 = new TextContent(f2, filter);
-        TextContent c3 = new TextContent(f3, filter);
-        String s1 = c1.toString();
-        String s2 = c2.toString();
-        String s3 = c3.toString();
+        Text c1 = new Text(f1);
+        Text c2 = new Text(f2);
+        Text c3 = new Text(f3);
+        String s1 = c1.toString(filter);
+        String s2 = c2.toString(filter);
+        String s3 = c3.toString(filter);
         boolean sorted = SortPageXML.isSorted(f1);
         int l1 = s1.length();
         final int N = 10;

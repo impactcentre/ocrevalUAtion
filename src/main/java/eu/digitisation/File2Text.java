@@ -17,9 +17,9 @@
  */
 package eu.digitisation;
 
-import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.text.CharFilter;
+import eu.digitisation.text.Text;
 import java.io.File;
 
 /**
@@ -35,8 +35,8 @@ public class File2Text {
             if (args.length > 1) {
                 filter = new CharFilter(new File(args[1]));
             }
-            TextContent content = new TextContent(file, filter);
-            System.out.println(content.toString());
+            Text content = new Text(file);
+            System.out.println(content.toString(filter));
         }
     }
 }

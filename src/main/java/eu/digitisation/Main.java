@@ -1,10 +1,10 @@
 package eu.digitisation;
 
 import eu.digitisation.input.Batch;
+import eu.digitisation.input.Parameters;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.log.Messages;
 import eu.digitisation.output.Report;
-import eu.digitisation.text.CharFilter;
 import java.io.File;
 import java.io.InvalidObjectException;
 
@@ -14,9 +14,11 @@ import java.io.InvalidObjectException;
 public class Main {
 
     static final String helpMsg = "Usage:\t"
-            + "ocrevalUAtion -gt file1 [encoding] "
-            + "-ocr file2 [encoding] "
-            + "-d output_dir [-r equivalences_file] [-c]";
+            + "ocrevalUAtion -gt file1"
+            + "-ocr file2"
+            + "[-e encoding]"
+            + " [-o output_file_or_dir ] [-r equivalences_file]"
+            + " [-c] [-ic] [-id] [-ip]";
 
     private static void exit_gracefully() {
         System.err.println(helpMsg);
@@ -25,80 +27,59 @@ public class Main {
 
     /**
      * @param args the command line arguments
+     * @throws eu.digitisation.input.WarningException
      */
     public static void main(String[] args) throws WarningException {
+        Parameters pars = new Parameters();
+        File workingDirectory;
 
-        File repfile = null;     // char filter
-        File gtfile = null;      // ground-truth
-        File ocrfile = null;     // ocr-output
-        File ofile = null;       // this program output
-        String gtencoding = null;
-        String ocrencoding = null;
-        File workingDirectory = null; // working directory 
-        boolean compatibility = false; // Unicode comaptibility mode
-        
         // Read parameters (String switch needs Java 1.7 or later)
         for (int n = 0; n < args.length; ++n) {
             String arg = args[n];
             if (arg.equals("-h")) {
                 exit_gracefully();
             } else if (arg.equals("-gt")) {
-                gtfile = new File(args[++n]);
-                if (n + 1 < args.length && !args[n + 1].startsWith("-")) {
-                    gtencoding = args[++n];
-                }
+                pars.gtfile.setValue(new File(args[++n]));
+            } else if (arg.equals("-e")) {
+                pars.encoding.setValue(args[++n]);
             } else if (arg.equals("-ocr")) {
-                ocrfile = new File(args[++n]);
-                if (n + 1 < args.length && !args[n + 1].startsWith("-")) {
-                    ocrencoding = args[++n];
-                }
-            } else if (arg.equals("-d")) {
-                workingDirectory = new File(args[++n]);
+                pars.ocrfile.setValue(new File(args[++n]));
             } else if (arg.equals("-r")) {
-                repfile = new File(args[++n]);
+                pars.eqfile.setValue(new File(args[++n]));
             } else if (arg.equals("-o")) {
-                ofile = new File(args[++n]);
+                pars.outfile.setValue(new File(args[++n]));
             } else if (arg.equals("-c")) {
-                compatibility = true;
+                pars.compatibility.setValue(true);
+            } else if (arg.equals("-ic")) {
+                pars.ignoreCase.setValue(true);
+            } else if (arg.equals("-id")) {
+                pars.ignoreDiacritics.setValue(true);
+            } else if (arg.equals("-ip")) {
+                pars.ignorePunctuation.setValue(true);
             } else {
                 System.err.println("Unrecognized option " + arg);
                 exit_gracefully();
             }
         }
 
-        if (gtfile == null || ocrfile == null) {
+        if (pars.gtfile.getValue() == null || pars.ocrfile.getValue() == null) {
             System.err.println("Not enough arguments");
             exit_gracefully();
-        } else if (workingDirectory == null) {
-            String dir = ((ofile == null) ? ocrfile : ofile)
-                    .getAbsolutePath()
-                    .replaceAll(File.separator + "(\\.|\\w)+$", "");
-            workingDirectory = new File(dir);
         }
-        System.out.println("Working directory set to " + workingDirectory);
 
-        if (workingDirectory == null
-                || !workingDirectory.isDirectory()) {
-            System.out.println(workingDirectory + " is not a valid directory");
-        } else {
-            try {
-                if (ofile == null) {
-                    String prefix = workingDirectory + File.separator
-                            + gtfile.getName().replaceFirst("[.][^.]+$", "");
-                    ofile = new File(prefix + "_out.html");
-                }
-                //           Report report = new Report(gtfile, gtencoding, ocrfile, ocrencoding, repfile);
-                Batch batch = new Batch(gtfile, ocrfile); // accepts also directories
-                CharFilter filter = (repfile == null) 
-                        ? new CharFilter() 
-                        : new CharFilter(repfile);
-                filter.setCompatibility(compatibility);
-                Report report = new Report(batch, gtencoding, ocrencoding, filter);
-                report.write(ofile);
-            } catch (InvalidObjectException ex) {
-                Messages.info(Main.class.getName() + ": " + ex);
-            }
-
+        if (pars.outfile.getValue() == null) {
+            String name = pars.ocrfile.getValue().getName().replaceAll("\\.\\w+", "")
+                    + "_report.html";
+            pars.outfile.setValue(new File(pars.ocrfile.getValue().getParent(), name));
         }
+
+        try {
+            Batch batch = new Batch(pars.gtfile.getValue(), pars.ocrfile.getValue());
+            Report report = new Report(batch, pars);
+            report.write(pars.outfile.getValue());
+        } catch (InvalidObjectException ex) {
+            Messages.info(Main.class.getName() + ": " + ex);
+        }
+
     }
 }
