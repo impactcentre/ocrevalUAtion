@@ -54,8 +54,8 @@ public class Text {
 
     static {
         Properties props = StartUp.properties();
-        maxlen = Integer.parseInt(props.getProperty("maxlen", "10000").trim());
-        System.out.println("max length of text set to " + maxlen);
+        maxlen = Integer.parseInt(props.getProperty("maxlen", "0").trim());
+        Messages.info("max length of text set to " + maxlen);
         try {
             File inclusions = new File("inclusions.txt");
             File exclusions = new File("exclusions.txt");
@@ -182,7 +182,7 @@ public class Text {
                 builder.append(' ');
             }
             builder.append(canonical);
-            if (builder.length() > maxlen) {
+            if (maxlen > 0 && builder.length() > maxlen) {
                 throw new WarningException("Text length limited to "
                         + maxlen + " characters");
             }

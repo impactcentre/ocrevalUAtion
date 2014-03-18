@@ -17,6 +17,7 @@
  */
 package eu.digitisation.output;
 
+import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.distance.Aligner;
 import eu.digitisation.distance.ArrayEditDistance;
 import eu.digitisation.distance.BagOfWords;
@@ -35,7 +36,6 @@ import eu.digitisation.math.Pair;
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.Text;
-import eu.digitisation.deprecated.TextContent;
 import eu.digitisation.text.WordSet;
 import eu.digitisation.xml.DocumentBuilder;
 import java.io.File;

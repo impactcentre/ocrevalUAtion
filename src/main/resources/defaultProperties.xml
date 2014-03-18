@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties> 
-  <!--max number of chars in input file-->
+  <!--max number of chars in input file. If zero, no limit is applied (computation may take long)-->
   <entry key="maxlen">
-    40000
+    0
   </entry>
   <!--Schema location for the different types of XML documents 
   (used to identify the type of document).-->
