@@ -44,12 +44,13 @@ public class LogFrameHandler extends Handler {
 
     @Override
     public void flush() {
+        frame.revalidate();
+        frame.repaint();
     }
 
     @Override
     public void close() {
         frame = null;
-        //      frame.close();
     }
 
 }

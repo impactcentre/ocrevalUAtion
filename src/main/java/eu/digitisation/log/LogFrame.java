@@ -45,7 +45,8 @@ public class LogFrame extends JFrame {
 
     public void showInfo(String data) {
         text.append(data);
-        this.validate();
+        //this.validate();
+        //this.repaint();
     }
 
     public void close() {

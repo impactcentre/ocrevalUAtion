@@ -8,6 +8,6 @@
    </entry>
    <!--max number of chars in input file. If zero, no limit is applied (computation may take long)-->
    <entry key="maxlen">
-     40000
+     0
    </entry>
 </properties>
