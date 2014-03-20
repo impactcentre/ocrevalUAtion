@@ -18,9 +18,9 @@
 package eu.digitisation.output;
 
 import eu.digitisation.distance.ArrayEditDistance;
-import eu.digitisation.distance.BagOfWords;
 import eu.digitisation.distance.EditDistanceType;
 import eu.digitisation.distance.StringEditDistance;
+import eu.digitisation.document.TermFrequencyVector;
 import eu.digitisation.document.TokenArray;
 import eu.digitisation.log.Messages;
 import eu.digitisation.math.MinimalPerfectHash;
@@ -140,9 +140,9 @@ public class ErrorMeasure {
      * @return the word error rate between the (unsorted) strings
      */
     public static double ber(String s1, String s2) {
-        BagOfWords bow1 = new BagOfWords(s1);
-        BagOfWords bow2 = new BagOfWords(s2);
+        TermFrequencyVector tf1 = new TermFrequencyVector(s1);
+        TermFrequencyVector tf2 = new TermFrequencyVector(s2);
 
-        return bow1.distance(bow2) / (double) bow1.total();
+        return tf1.distance(tf2) / (double) tf1.total();
     }
 }

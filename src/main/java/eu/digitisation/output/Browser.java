@@ -22,8 +22,6 @@ import java.awt.Desktop;
 import java.awt.Desktop.Action;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Locale;
 
 /**
  * Open a file or URL with an operating system application
@@ -57,40 +55,4 @@ public class Browser {
             }
         }
     }
-
-    /**
-     * Deprecated: avoid using it
-     *
-     * @param url a file location
-    
-    public static void open(String url) {
-        if (Desktop.isDesktopSupported()) {
-            Desktop desktop = Desktop.getDesktop();
-            if (desktop.isSupported(Action.BROWSE)) {
-                try {
-                    String os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
-                    URI uri = os.contains("win")
-                            ? new URI(url.replace("\\", "/"))
-                            : new URI(url);
-                 
-                    Desktop.getDesktop().browse(uri);
-                } catch (IOException ex) {
-                    Messages.severe(Browser.class
-                            .getName() + ": " + ex);
-                } catch (URISyntaxException ex) {
-                    Messages.severe(Browser.class
-                            .getName() + ": " + ex);
-                }
-            } else {
-                try {
-                    Runtime.getRuntime().exec(
-                            "rundll32 url.dll,FileProtocolHandler " + url);
-
-                } catch (IOException ex) {
-                    Messages.info(Browser.class.getName() + ": " + ex);
-                }
-            }
-        }
-    }
-    */
 }
