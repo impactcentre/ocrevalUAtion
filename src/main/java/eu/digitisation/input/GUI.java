@@ -185,7 +185,7 @@ public class GUI extends JFrame {
                         Report report = new Report(batch, pars);
                         report.write(outfile);
                         Messages.info("Report dumped to " + outfile);
-                        Browser.open("file://" + outfile.getCanonicalPath());
+                        Browser.open(outfile.toURI());
                     } catch (InvalidObjectException ex) {
                         warn(ex.getMessage());
                     } catch (IOException ex) {

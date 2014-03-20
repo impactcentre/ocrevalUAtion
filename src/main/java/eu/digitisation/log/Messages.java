@@ -19,7 +19,11 @@ package eu.digitisation.log;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -32,19 +36,23 @@ public class Messages {
 
     static {
         try {
-            String path = Messages.class.getProtectionDomain()
-                    .getCodeSource().getLocation().getPath();
-            //String path = System.getProperty("user.dir");
-            String dir = new File(path).getParent();
-            addFile(new File(dir, "ocrevaluation.log"));
-            // for debugging
+            URI uri = Messages.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI();
+            String dir = new File(uri.getPath()).getParent();
+            File file = new File(dir, "ocrevaluation.log");
+
+            addFile(file);
+            Messages.info("Logfile is " + file);
+
+            // while debugging
             if (java.awt.Desktop.isDesktopSupported()) {
                 addFrame();
             }
         } catch (SecurityException ex) {
             Messages.info(Messages.class.getName() + ": " + ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(Messages.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public static void addFile(File file) {
@@ -66,7 +74,6 @@ public class Messages {
 
     public static void info(String s) {
         logger.info(s);
-
     }
 
     public static void warning(String s) {

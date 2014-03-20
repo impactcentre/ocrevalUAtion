@@ -62,7 +62,7 @@ public class Browser {
      * Deprecated: avoid using it
      *
      * @param url a file location
-     */
+    
     public static void open(String url) {
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
@@ -72,13 +72,13 @@ public class Browser {
                     URI uri = os.contains("win")
                             ? new URI(url.replace("\\", "/"))
                             : new URI(url);
+                 
                     Desktop.getDesktop().browse(uri);
-
                 } catch (IOException ex) {
-                    Messages.info(Browser.class
+                    Messages.severe(Browser.class
                             .getName() + ": " + ex);
                 } catch (URISyntaxException ex) {
-                    Messages.info(Browser.class
+                    Messages.severe(Browser.class
                             .getName() + ": " + ex);
                 }
             } else {
@@ -92,4 +92,5 @@ public class Browser {
             }
         }
     }
+    */
 }

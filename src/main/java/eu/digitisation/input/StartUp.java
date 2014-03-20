@@ -20,9 +20,10 @@ package eu.digitisation.input;
 import eu.digitisation.log.Messages;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 /**
@@ -46,41 +47,38 @@ public class StartUp {
                 in.close();
                 props = new Properties(defaults);
             }
-            // Add user properties (may overwrite defaults)
-            try {
-                //String dir = System.getProperty("user.dir");
-                String path = StartUp.class.getProtectionDomain()
-                        .getCodeSource().getLocation().getPath();
-                String dir = new File(path).getParent();
-                Messages.info("Application folder is " + dir);
-                File file = new File(dir, "userProperties.xml");
-                if (file.exists()) {
-                    in = new FileInputStream(file);
-                    props.loadFromXML(in);
+
+            // Add user properties (may overwrite defaults)            
+            URI uri = Messages.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI();
+            String dir = new File(uri.getPath()).getParent();
+            File file = new File(dir, "userProperties.xml");
+
+            Messages.info("Application folder is " + dir);
+            if (file.exists()) {
+                in = new FileInputStream(file);
+                props.loadFromXML(in);
+                Messages.info("Read properties from " + file);
+                in.close();
+            } else {
+                in = StartUp.class.getResourceAsStream("/userProperties.xml");
+                if (in != null) {
+                    defaults.loadFromXML(in);
                     Messages.info("Read properties from " + file);
                     in.close();
+                    props = new Properties(defaults);
                 } else {
-                    in = StartUp.class.getResourceAsStream("/userProperties.xml");
-                    if (in != null) {
-                        defaults.loadFromXML(in);
-                        Messages.info("Read properties from " + file);
-                        in.close();
-                        props = new Properties(defaults);
-                    } else {
-                        Messages.info("No properties defined by user");
-                    }
+                    Messages.info("No properties were defined by user");
                 }
-            } catch (FileNotFoundException ex) {
-                Messages.info("No user defined properties");
             }
         } catch (IOException ex) {
+            Messages.severe(StartUp.class.getName() + ": " + ex);
+        } catch (URISyntaxException ex) {
             Messages.severe(StartUp.class.getName() + ": " + ex);
         }
     }
 
     /**
-     *
-     *
      * @return the properties defined at startup (user-defined overwrite
      * defaults).
      */

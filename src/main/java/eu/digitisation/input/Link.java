@@ -18,6 +18,7 @@
 package eu.digitisation.input;
 
 
+import eu.digitisation.log.Messages;
 import eu.digitisation.output.Browser;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -25,6 +26,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -54,7 +59,11 @@ public class Link extends JPanel {
         link.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Browser.open(url);
+                try {
+                    Browser.open(new URI(url));
+                } catch (URISyntaxException ex) {
+                     Messages.severe(Link.class.getName() + ex);
+                }
             }
         });
         add(link);

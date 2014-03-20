@@ -17,6 +17,7 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.log.Messages;
 import eu.digitisation.output.Browser;
 import java.awt.Color;
 import java.awt.Container;
@@ -26,6 +27,10 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
@@ -61,7 +66,11 @@ public class Help extends JButton {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (text.startsWith("http:")) {
-                    Browser.open(text);
+                    try {
+                        Browser.open(new URI(text));
+                    } catch (URISyntaxException ex) {
+                        Messages.severe(Help.class.getName() + ex);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(getParent(), text);
                 }
@@ -69,7 +78,6 @@ public class Help extends JButton {
         });
     }
 
-    
     // Artwork
     @Override
     protected void paintComponent(Graphics g) {
