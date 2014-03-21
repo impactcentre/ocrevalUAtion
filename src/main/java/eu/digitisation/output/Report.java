@@ -104,8 +104,13 @@ public class Report extends DocumentBuilder {
             Messages.info("Processing " + input.first.getName());
             Text gt = new Text(input.first);
             Text ocr = new Text(input.second);
-            String gtref = gt.toString(filter);
-            String ocrref = ocr.toString(filter);
+            String gtref = pars.ignoreDiacritics.getValue() // remove spurious marks
+                    ? gt.toString(filter).replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                    : gt.toString(filter);
+            String ocrref = pars.ignoreDiacritics.getValue()
+                    ? ocr.toString(filter) // remove spurious marks
+                    .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                    :ocr.toString(filter);
             String gts = StringNormalizer.canonical(gtref,
                     pars.ignoreCase.getValue(),
                     pars.ignoreDiacritics.getValue(),

@@ -31,7 +31,6 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
         extends Counter<Pair<T1, T2>> {
 
     private static final long serialVersionUID = 1L;
-
     Counter<T1> subtotal1;
     Counter<T2> subtotal2;
 
@@ -142,6 +141,14 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
     }
 
     /**
+     * 
+     * @return the marginal counts for the left ley
+     */
+    public Counter<T1> leftSubtotal() {
+        return subtotal1;
+    }
+
+    /**
      *
      * @return the set of right components in pairs of the key set
      */
@@ -149,6 +156,14 @@ public class BiCounter<T1 extends Comparable<T1>, T2 extends Comparable<T2>>
         return subtotal2.keySet();
     }
 
+    /**
+     * 
+     * @return the marginal counts for the right ley
+     */
+    public Counter<T2> rightSubtotal() {
+        return subtotal2;
+    }
+    
     /**
      * Clear the BiCounter
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 IMPACT Centre of Competence
+ * Copyright (C) 2014 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,8 +37,8 @@ public class EditSequence {
 
     List<EdOp> ops;  // the list of edit operations
     int numOps; // the number of non-trivial (KEEP) operations 
-    int shift1; // the number of operations involving the first string (all but INSERT)
-    int shift2; // the number of operations involving the second string (all but DELETE)
+    int length1; // the length of the first string (number of non-INSERT operations in the list)
+    int length2; // the lenth of the second string (number of non-DELETE operations in the list)
 
     /**
      * Constructs an empty list with an initial capacity of ten.
@@ -75,20 +75,20 @@ public class EditSequence {
         ops.add(op);
         switch (op) {
             case KEEP:
-                ++shift1;
-                ++shift2;
+                ++length1;
+                ++length2;
                 break;
             case INSERT:
-                ++shift2;
+                ++length2;
                 ++numOps;
                 break;
             case SUBSTITUTE:
-                ++shift1;
-                ++shift2;
+                ++length1;
+                ++length2;
                 ++numOps;
                 break;
             case DELETE:
-                ++shift1;
+                ++length1;
                 ++numOps;
                 break;
         }
@@ -137,23 +137,23 @@ public class EditSequence {
     }
 
     /**
-     * The shift in the first string
+     * The length of the first string
      *
      * @return the number of edit operations in the sequence involving the first
      * string (all but DELETE)
      */
     public final int shift1() {
-        return shift1;
+        return length1;
     }
 
     /**
-     * The shift in the second string
+     * The length of the second string
      *
      * @return the number of edit operations in the sequence involving the
      * second string (all but INSERT)
      */
     public final int shift2() {
-        return shift2;
+        return length2;
     }
 
     /**
@@ -252,7 +252,10 @@ public class EditSequence {
             }
             add(e);
         }
-        if (i != 0 || j != 0) {
+        if (i != 0 
+                || j != 0
+                || length1 != first.length()
+                || length2 != second.length()) {
             throw new java.lang.IllegalArgumentException("Unvalid EditTable");
         } else {
             Collections.reverse(ops);
@@ -291,7 +294,7 @@ public class EditSequence {
 
             append(head);
             if (len1 > chunkLen) {
-                Messages.info((100 * shift1) / len1 + "% of file processed");
+                Messages.info((100 * length1) / len1 + "% of file processed");
             }
         }
     }
@@ -435,6 +438,8 @@ public class EditSequence {
         return stats;
     }
 
+    
+    
     /**
      * Extract alignment statistics
      *
