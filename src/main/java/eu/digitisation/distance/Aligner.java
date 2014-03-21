@@ -323,7 +323,7 @@ public class Aligner {
         for (int n = 0; n < edition.size(); n += len) {
             EdOp op = edition.get(n);
 
-            // free passes
+            // free rides first
             if (op == EdOp.DELETE && w.del(first.charAt(i)) == 0) {
                 builder.addText(cell1, first.substring(i, i + 1));
                 ++i;
