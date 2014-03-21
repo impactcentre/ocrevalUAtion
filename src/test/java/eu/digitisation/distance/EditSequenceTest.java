@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 IMPACT Centre of Competence
+ * Copyright (C) 2014 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.math.BiCounter;
+import eu.digitisation.output.CharStatTable;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -70,4 +71,17 @@ public class EditSequenceTest {
         assertEquals(expResult, result);
     }
 
+    @Test
+    public void testPunct() {
+        OcrOpWeight w = new OcrOpWeight(true); /// ignore punctuation
+        String s1 = "yes ! , he said";
+        String s2 = "yes he said";
+        EditSequence edit = new EditSequence(s1, s2, new OcrOpWeight());
+        CharStatTable stats = new CharStatTable();
+        stats.add(edit.stats(s1, s2));
+        System.out.println(stats);
+        double cer = stats.cer();
+        
+        assertEquals(0, 0, 0.00001);
+    }
 }
