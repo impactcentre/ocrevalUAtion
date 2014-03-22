@@ -39,8 +39,8 @@ public class MinimalPerfectHash {
     /**
      * The codes assigned to strings (tokens)
      */
-    public final HashMap<String, Integer> codes;  // token->code mapping
-    public final List<String> dictionary;         // code->token mapping
+    private final HashMap<String, Integer> codes;  // token->code mapping
+    private final List<String> dictionary;         // code->token mapping
     boolean caseSensitive;   // Case sensitive encoding
 
     /**
@@ -96,8 +96,8 @@ public class MinimalPerfectHash {
      * @param encoding the text encoding.
      * @return the list of hash codes representing the file content
      */
-    public List<Integer> hashCodes(File file, String encoding) throws RuntimeException {
-
+    public List<Integer> hashCodes(File file, String encoding) 
+            throws RuntimeException {
         ArrayList<Integer> list = new ArrayList<Integer>();
 
         try {
@@ -134,5 +134,13 @@ public class MinimalPerfectHash {
         }
 
         return list;
+    }
+    
+    /**
+     * 
+     * @return the list of all strings with a hash code in this map
+     */
+    public List<String> keys() {
+        return dictionary;
     }
 }

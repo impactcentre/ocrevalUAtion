@@ -26,6 +26,7 @@ import eu.digitisation.math.MinimalPerfectHash;
  * @author R.C.C.
  */
 public class TermFrequencyVector {
+
     static MinimalPerfectHash mph = new MinimalPerfectHash();
     Counter<Integer> tf;
 
@@ -36,9 +37,9 @@ public class TermFrequencyVector {
      */
     public TermFrequencyVector(String s) {
         TokenArray array = new TokenArray(mph, s);
-        
+
         tf = new Counter<Integer>();
-        for (Integer n: array) {
+        for (Integer n : array) {
             tf.inc(n);
         }
     }
@@ -58,7 +59,7 @@ public class TermFrequencyVector {
             if (delta > 0) {
                 dplus += delta;
             } else {
-                dminus += delta;
+                dminus -= delta;
             }
         }
         for (Integer word : other.tf.keySet()) {
@@ -67,10 +68,11 @@ public class TermFrequencyVector {
                 if (delta > 0) {
                     dplus += delta;
                 } else {
-                    dminus += delta;
+                    dminus -= delta;
                 }
             }
         }
+     
         return Math.max(dplus, dminus);
     }
 
@@ -81,5 +83,15 @@ public class TermFrequencyVector {
      */
     public int total() {
         return tf.total();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Integer code : tf.keyList(Counter.Order.ASCENDING)) {
+            String s = mph.decode(code);
+            builder.append(s).append('[').append(tf.get(code)).append("] ");
+        }
+        return builder.toString().trim();
     }
 }
