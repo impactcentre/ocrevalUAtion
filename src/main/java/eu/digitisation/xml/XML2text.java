@@ -17,6 +17,7 @@
  */
 package eu.digitisation.xml;
 
+import eu.digitisation.input.Parameters;
 import eu.digitisation.log.Messages;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,6 +36,15 @@ import org.xml.sax.helpers.DefaultHandler;
  * as a SAX parser.
  */
 public class XML2text extends DefaultHandler {
+	
+    static final String helpMsg = "Usage:\t"
+            + "java -cp target/ocrevaluation.jar eu.digitisation.xml.XML2text -in file1"
+            + " -o output_file_or_dir";
+
+    private static void exit_gracefully() {
+        System.err.println(helpMsg);
+        System.exit(0);
+    }
 
     private StringBuilder buffer;
     private static final FilenameFilter filter = new FilenameFilter() {
@@ -105,11 +115,49 @@ public class XML2text extends DefaultHandler {
     public static void main(String[] args) throws IOException {
         XML2text xml = new XML2text();
         String outDir = null;
-
-        if (args.length == 0) {
-            System.err.println("usage: XML2text [-d outdir]"
-                    + "file1.xml file2.xml...");
+        Parameters pars = new Parameters();
+        
+        for (int n = 0; n < args.length; ++n) {
+            String arg = args[n];
+            if (arg.equals("-o")) {
+                pars.outfile.setValue(new File(args[++n]));
+            } else if (arg.equals("-in")) {
+                pars.ocrfile.setValue(new File(args[++n]));
+            }else {
+                System.err.println("Unrecognized option " + arg);
+                System.err.println("usage: XML2text [-o outfile]"
+                        + "file1.xml file2.xml...");
+            }
         }
+        
+        if (pars.ocrfile.getValue() == null || pars.ocrfile.getValue() == null) {
+            System.err.println("Not enough arguments");
+            exit_gracefully();
+        }
+
+        if (pars.outfile.getValue() == null) {
+            String name = pars.ocrfile.getValue().getName().replaceAll("\\.\\w+", "")
+                    + ".txt";
+            pars.outfile.setValue(new File(pars.ocrfile.getValue().getParent(), name));
+            exit_gracefully();
+        }
+        
+        File infile = new File(pars.ocrfile.getValue().toString());
+        String outfileName = pars.outfile.getValue().toString();
+
+        File outfile = new File(outDir, outfileName);
+        if (outfile.exists()) {
+            System.err.println(outfileName + "already exists ");
+        } else {
+            BufferedWriter writer = 
+                    new BufferedWriter(new FileWriter(outfileName));
+            writer.write(xml.getText(infile.getAbsolutePath()));
+            writer.close();
+        }
+        //pars.outfile.getValue()
+        
+        
+        /*
         for (int n = 0; n < args.length; ++n) {
             String arg = args[n];
 
@@ -132,5 +180,6 @@ public class XML2text extends DefaultHandler {
                 }
             }
         }
+        */
     }
 }
