@@ -265,6 +265,8 @@ public class GUI extends JFrame
 
     public final void init()
     {
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
         // Main container
         Container pane = getContentPane();
         // Initialization settings
