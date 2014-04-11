@@ -231,14 +231,23 @@ public class GUI extends JFrame
                 }
                 if (lmselector.ready())
                 {
-                    NgramPerplexityEvaluator lpc = new NgramPerplexityEvaluator(pars.lmfile.value);
+                    Object[] possibilities = {"2", "3", "4", "5" };
+                    String value =
+                            (String) JOptionPane.showInputDialog(null, "Select contect length", "",
+                                    JOptionPane.QUESTION_MESSAGE, null, possibilities, "2");
+                    if (value != null)
+                    {
+                        int contextLength = Integer.parseInt(value);
 
-                    Text ocr = new Text(ocrfile);
-                    double[] perplexityArray = lpc.calculatePerplexity(ocr.toString(), 2);
+                        NgramPerplexityEvaluator lpc = new NgramPerplexityEvaluator(pars.lmfile.value);
 
-                    LanguageModelEvaluationFrame frame = new LanguageModelEvaluationFrame();
-                    frame.setInput(ocr.toString(), perplexityArray);
-                    frame.setVisible(true);
+                        Text ocr = new Text(ocrfile);
+                        double[] perplexityArray = lpc.calculatePerplexity(ocr.toString(), contextLength);
+
+                        LanguageModelEvaluationFrame frame = new LanguageModelEvaluationFrame();
+                        frame.setInput(ocr.toString(), perplexityArray);
+                        frame.setVisible(true);
+                    }
                 }
             }
             else
@@ -295,10 +304,36 @@ public class GUI extends JFrame
             public void actionPerformed(ActionEvent e)
             {
                 File inputFile = choose("Choose file to create language model", "sample.txt");
-                File outputFile = choose("Choose output file", "model.lm");
-                NgramModel ngramModel = new NgramModel();
-                ngramModel.addTextFile(inputFile, System.getProperty("file.encoding"), false);
-                ngramModel.save(outputFile);
+                if (inputFile != null)
+                {
+                    File outputFile = choose("Choose output file", "model.lm");
+                    if (outputFile != null)
+                    {
+                        Object[] possibilities = {"2", "3", "4", "5" };
+                        String value =
+                                (String) JOptionPane.showInputDialog(null, "Select value vor 'n'", "",
+                                        JOptionPane.QUESTION_MESSAGE, null, possibilities, "2");
+                        if (value != null)
+                        {
+                            int n = Integer.parseInt(value);
+
+                            NgramModel ngramModel = new NgramModel(n);
+                            if (inputFile.isDirectory())
+                            {
+                                File[] files = inputFile.listFiles();
+                                for (File file : files)
+                                {
+                                    ngramModel.addTextFile(file, System.getProperty("file.encoding"), false);
+                                }
+                            }
+                            else
+                            {
+                                ngramModel.addTextFile(inputFile, System.getProperty("file.encoding"), false);
+                            }
+                            ngramModel.save(outputFile);
+                        }
+                    }
+                }
             }
         });
         JMenuItem exitMenuItem = new JMenuItem("Exit", KeyEvent.VK_X);
@@ -329,7 +364,7 @@ public class GUI extends JFrame
     {
         JFileChooser chooser = new JFileChooser();
 
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         chooser.setDialogTitle(title);
         chooser.setSelectedFile(new File(defaultName));
         int returnVal = chooser.showOpenDialog(this);
