@@ -39,7 +39,6 @@ public class NgramModel implements Serializable {
     static final long serialVersionUID = 1L;
     static final String BOS = "\u0002";      // Begin of string text marker.
     static final String EOS = "\u0003";      // End of text marker.
-
     int order;                   // The size of the context plus one (n-gram).
     HashMap<String, Int> occur;  // Number of occurrences.
     double[] lambda;             // Backoff parameters
@@ -321,6 +320,7 @@ public class NgramModel implements Serializable {
 
     /**
      * Reads text file and adds words to model.
+     *
      * @param file a text file
      * @param encoding the text encoding
      * @param caseSensitive true if extracted n-grams are case sensitive
@@ -374,15 +374,36 @@ public class NgramModel implements Serializable {
     }
 
     /**
+     * Compute probability of a character after a given context This
+     * implementation only takes into account the preceding context TBD:
+     * function taking into account both leading & trailing context
+     *
+     * @param context a sequence of characters
+     * @return the log-probability (base e) of the contained n-grams.
+     */
+    public double logProb(String context, char c) {
+        double res = 0;
+        int len = context.length() + 1; // the length of the context + character
+        String s = len > order
+                ? context.substring(len - order) + c
+                : context + c;
+        double p = smoothProb(s);
+     
+        return (p > 0)
+                ? Math.log(p)
+                : Double.NEGATIVE_INFINITY;
+    }
+
+    /**
      * Reads input text and computes cross entropy.
+     *
      * @param caseSensitive true if the model is case sensitive
      * @return the log-likelihood of text.
      */
     public double logLikelihood(boolean caseSensitive) {
         try {
             String encoding = System.getProperty("file.encoding");
-            WordScanner scanner
-                    = new WordScanner(System.in, encoding);
+            WordScanner scanner = new WordScanner(System.in, encoding);
             String word;
             double result = 0;
             int numWords = 0;
@@ -441,6 +462,7 @@ public class NgramModel implements Serializable {
 
     /**
      * Main function.
+     *
      * @param args
      */
     public static void main(String[] args) {

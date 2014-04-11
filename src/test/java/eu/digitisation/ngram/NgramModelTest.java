@@ -63,4 +63,20 @@ public class NgramModelTest {
         double result = instance.wordLogProb("lava");
         assertEquals(expResult, result, 0.01);
     }
+
+    @Test
+    public void testLogProb() {
+        System.out.println("logProb");
+        NgramModel instance = new NgramModel(1);
+        instance.addWord("lava");
+        double expResult = -Math.log(5);
+        double result = instance.logProb("baba", 'v');
+        assertEquals(expResult, result, 0.01);
+
+        instance = new NgramModel(2);
+        instance.addWord("lava");
+        expResult = Math.log(0.2);
+        result = instance.logProb("ca", 'v');
+        assertEquals(expResult, result, 0.01);
+    }
 }
