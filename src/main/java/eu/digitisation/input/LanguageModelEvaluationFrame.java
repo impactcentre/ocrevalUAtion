@@ -2,7 +2,10 @@ package eu.digitisation.input;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -22,8 +25,9 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import eu.digitisation.text.Text;
-import java.awt.Font;
-import javax.swing.JButton;
+import javax.swing.JToggleButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class LanguageModelEvaluationFrame extends JFrame
 {
@@ -64,6 +68,7 @@ public class LanguageModelEvaluationFrame extends JFrame
     private void init()
     {
         setBounds(100, 100, 473, 347);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -80,7 +85,7 @@ public class LanguageModelEvaluationFrame extends JFrame
                         .createSequentialGroup()
                         .addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
                                 GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)));
+                        .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)));
 
         textPane = new JTextPane();
         textPane.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -105,28 +110,26 @@ public class LanguageModelEvaluationFrame extends JFrame
                 if (!thresholdSlider.getValueIsAdjusting())
                 {
                     thresholdTextField.setText((double) thresholdSlider.getValue() + "");
-                    update();
+                    update(true);
                 }
             }
         });
         GroupLayout gl_panel = new GroupLayout(panel);
-        gl_panel.setHorizontalGroup(
-            gl_panel.createParallelGroup(Alignment.LEADING)
-                .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
-                    .addComponent(thresholdSlider, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(thresholdTextField, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap())
-        );
-        gl_panel.setVerticalGroup(
-            gl_panel.createParallelGroup(Alignment.TRAILING)
-                .addGroup(gl_panel.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(thresholdTextField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                        .addComponent(thresholdSlider, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
-                    .addContainerGap())
-        );
+        gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.TRAILING).addGroup(
+                gl_panel.createSequentialGroup()
+                        .addComponent(thresholdSlider, GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(thresholdTextField, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()));
+        gl_panel.setVerticalGroup(gl_panel.createParallelGroup(Alignment.TRAILING).addGroup(
+                gl_panel.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(
+                                gl_panel.createParallelGroup(Alignment.TRAILING)
+                                        .addComponent(thresholdSlider, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 31,
+                                                Short.MAX_VALUE)
+                                        .addComponent(thresholdTextField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE,
+                                                31, Short.MAX_VALUE)).addContainerGap()));
         panel.setLayout(gl_panel);
         contentPane.setLayout(gl_contentPane);
 
@@ -135,7 +138,7 @@ public class LanguageModelEvaluationFrame extends JFrame
     /**
      * update the evaluation results.
      */
-    private void update()
+    private void update(boolean thresholdMode)
     {
         Double threshold = 0.0;
         try
@@ -144,11 +147,47 @@ public class LanguageModelEvaluationFrame extends JFrame
             StyledDocument document = textPane.getStyledDocument();
 
             document.setCharacterAttributes(0, document.getLength(), defaultStyle, true);
-            for (int i = 0; i < perplexityArray.length; i++)
+            if (thresholdMode)
             {
-                if (perplexityArray[i] < threshold)
+                for (int i = 0; i < perplexityArray.length; i++)
                 {
-                    document.setCharacterAttributes(i, 1, thresholdExceededStyle, true);
+                    if (perplexityArray[i] < threshold)
+                    {
+                        document.setCharacterAttributes(i, 1, thresholdExceededStyle, true);
+                    }
+                }
+            }
+            else
+            {
+                double max = 0;
+
+                for (int i = 0; i < perplexityArray.length; i++)
+                {
+                    double value = perplexityArray[i];
+                    if (!Double.isInfinite(value))
+                    {
+                        if (Math.abs(value) > Math.abs(max))
+                            max = value;
+                    }
+                }
+                System.out.println("MAX: " + max);
+
+                List<Color> colors = getColorBands(Color.red, 11);
+
+                for (int i = 0; i < perplexityArray.length; i++)
+                {
+                    SimpleAttributeSet style = new SimpleAttributeSet();
+                    double value = perplexityArray[i];
+                    if (Double.isInfinite(value))
+                    {
+                        StyleConstants.setForeground(style, Color.red);
+                    }
+                    else
+                    {
+                        int color = 10 - (int) ((value / max) * 10);
+                        StyleConstants.setForeground(style, colors.get(color));
+                    }
+                    document.setCharacterAttributes(i, 1, style, true);
                 }
             }
 
@@ -164,6 +203,32 @@ public class LanguageModelEvaluationFrame extends JFrame
     {
         this.perplexityArray = perplexityArray;
         textPane.setText(textToEvaluate);
+        update(false);
+    }
+
+    public List<Color> getColorBands(Color color, int bands)
+    {
+
+        List<Color> colorBands = new ArrayList<>(bands);
+        for (int index = 0; index < bands; index++)
+        {
+            colorBands.add(darken(color, (double) index / (double) bands));
+        }
+        return colorBands;
+
+    }
+
+    public static Color darken(Color color, double fraction)
+    {
+
+        int red = (int) Math.round(Math.max(0, color.getRed() - 255 * fraction));
+        int green = (int) Math.round(Math.max(0, color.getGreen() - 255 * fraction));
+        int blue = (int) Math.round(Math.max(0, color.getBlue() - 255 * fraction));
+
+        int alpha = color.getAlpha();
+
+        return new Color(red, green, blue, alpha);
+
     }
 
     /**
