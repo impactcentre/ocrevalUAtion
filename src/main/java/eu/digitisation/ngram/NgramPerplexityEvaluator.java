@@ -40,7 +40,8 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
         int textLen = textToEvaluate.length();
         double[] logprobs = new double[textLen];
         for (int pos = 0; pos < textLen; ++pos) {
-            ngram.logProb(textToEvaluate.substring(0, pos), textToEvaluate.charAt(pos));
+            int beg = Math.max(0, pos - contextLength);
+            logprobs[pos] = ngram.logProb(textToEvaluate.substring(beg, pos), textToEvaluate.charAt(pos));
         }
         return logprobs;
     }
@@ -77,6 +78,7 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
                 } else {
                     String text = NgramPerplexityEvaluator.getText(new File(arg));
                     ngram.addWord(text);
+                    System.err.println("\r" + arg);
                 }
             }
             if (fin != null) {
