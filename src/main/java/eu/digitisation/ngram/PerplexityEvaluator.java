@@ -1,7 +1,7 @@
 package eu.digitisation.ngram;
 
 /**
- * Interface for perplexity evaluator, which calculates perplexity of a given text.
+ * Interface for perplexity evaluator. It calculates perplexity of characters in a given text.
  * @author tparkola
  *
  */
