@@ -83,12 +83,12 @@ public class LanguageModelEvaluationFrame extends JFrame
                         .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)));
 
         textPane = new JTextPane();
-        textPane.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        textPane.setFont(new Font("Tahoma", Font.PLAIN, 16));
         scrollPane.setViewportView(textPane);
 
         thresholdTextField = new JTextField();
         thresholdTextField.setEditable(false);
-        thresholdTextField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        thresholdTextField.setFont(new Font("Tahoma", Font.BOLD, 16));
         thresholdTextField.setText("-1");
         thresholdTextField.setColumns(10);
 
@@ -115,7 +115,7 @@ public class LanguageModelEvaluationFrame extends JFrame
                 .addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
                     .addComponent(thresholdSlider, GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                     .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(thresholdTextField, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thresholdTextField, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
                     .addContainerGap())
         );
         gl_panel.setVerticalGroup(
@@ -123,8 +123,8 @@ public class LanguageModelEvaluationFrame extends JFrame
                 .addGroup(gl_panel.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(thresholdSlider, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                        .addComponent(thresholdTextField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
+                        .addComponent(thresholdTextField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                        .addComponent(thresholdSlider, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
                     .addContainerGap())
         );
         panel.setLayout(gl_panel);
