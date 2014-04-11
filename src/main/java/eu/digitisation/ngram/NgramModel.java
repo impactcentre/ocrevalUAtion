@@ -128,27 +128,35 @@ public class NgramModel implements Serializable {
     }
 
     /**
+     * @return Good-Turing back-off parameters.
+     */
+    public double[] getGoodTuringPars() {
+        double[] pars = new double[order];
+        int[] total = new int[order];
+        int[] singles = new int[order];
+        for (String word : occur.keySet()) {
+            if (word.length() > 0) {
+                int k = word.length() - 1;
+                int times = occur.get(word).getValue();
+                total[k] += times;
+                if (times == 1) {
+                    ++singles[k];
+                }
+            }
+        }
+        for (int k = 0; k < order; ++k) {
+            pars[k] = singles[k] / (double) total[k];
+        }
+        return pars;
+    }
+
+    /**
      * @param n n-gram order.
      * @return Good-Turing back-off parameter.
      */
     private double lambda(int n) {
         if (lambda == null) {
-            lambda = new double[order];
-            int[] total = new int[order];
-            int[] singles = new int[order];
-            for (String word : occur.keySet()) {
-                if (word.length() > 0) {
-                    int k = word.length() - 1;
-                    int times = occur.get(word).getValue();
-                    total[k] += times;
-                    if (times == 1) {
-                        ++singles[k];
-                    }
-                }
-            }
-            for (int k = 0; k < order; ++k) {
-                lambda[k] = singles[k] / (double) total[k];
-            }
+            lambda = getGoodTuringPars();
         }
         return lambda[n];
     }
@@ -184,7 +192,7 @@ public class NgramModel implements Serializable {
     private double prob(String s) {
         if (occur.containsKey(s)) {
             String h = head(s);
-            if (h.endsWith(BOS)) {  // if head is not stored
+            if (h.endsWith(BOS)) {  // since head is not stored
                 return occur.get(s).getValue() / (double) numWords();
             } else {
                 return occur.get(s).getValue()
@@ -197,7 +205,7 @@ public class NgramModel implements Serializable {
 
     /**
      * @param s a k-gram
-     * @return The conditional probability of the k-gram, normalized to the
+     * @return the conditional probability of the k-gram, normalized to the
      * frequency of its heads and interpolated with lower order models.
      */
     private double smoothProb(String s) {
@@ -213,7 +221,7 @@ public class NgramModel implements Serializable {
 
     /**
      * @param s a k-gram
-     * @return The expected number of occurrences (per word) of s.
+     * @return the expected number of occurrences (per word) of s.
      */
     private double expectedNumberOf(String s) {
         if (s.endsWith(BOS)) {
@@ -270,10 +278,11 @@ public class NgramModel implements Serializable {
      * Extracts all k-grams in a word or text upto the maximal order. For
      * instance, if word = "ma" and order = 3, then 0-grams are: "" (three empty
      * strings, to normalize 1-grams). 1-grams: "m, a, $" ($ represents
-     * end-of-word). 2-grams: "#m, ma, a$" (# is used to differentiate #m from
+     * end-of-string). 2-grams: "#m, ma, a$" (# is used to differentiate #m from
      * 1-gram m). 3-grams: "##m, #ma, ma$"
      *
-     * @remark do NOT add 1-gram "#" or 1-gram normalization will be wrong.
+     * @remark do NOT add 1-gram "#" because 1-gram normalization will be then
+     * wrong.
      * @param word the word to be added.
      */
     public void addWord(String word) {
@@ -334,10 +343,13 @@ public class NgramModel implements Serializable {
                     addWord(word);
                 } else {
                     addWord(word.toLowerCase());
+
+
                 }
             }
         } catch (IOException ex) {
-            Messages.info(NgramModel.class.getName() + ": " + ex);
+            Messages.info(NgramModel.class
+                    .getName() + ": " + ex);
         }
 
     }
@@ -374,12 +386,13 @@ public class NgramModel implements Serializable {
     }
 
     /**
-     * Compute probability of a character after a given context This
-     * implementation only takes into account the preceding context TBD:
-     * function taking into account both leading & trailing context
+     * Compute probability of a character after a given context. This
+     * implementation only takes into account the preceding context
      *
      * @param context a sequence of characters
-     * @return the log-probability (base e) of the contained n-grams.
+     * @param c a character
+     * @return the log-probability (base e) that the character c follows the
+     * given context
      */
     public double logProb(String context, char c) {
         double res = 0;
@@ -388,7 +401,7 @@ public class NgramModel implements Serializable {
                 ? context.substring(len - order) + c
                 : context + c;
         double p = smoothProb(s);
-      
+
         return (p > 0)
                 ? Math.log(p)
                 : Double.NEGATIVE_INFINITY;
@@ -417,8 +430,11 @@ public class NgramModel implements Serializable {
             }
 
             return result / numWords / Math.log(2);
+
+
         } catch (IOException ex) {
-            Messages.info(NgramModel.class.getName() + ": " + ex);
+            Messages.info(NgramModel.class
+                    .getName() + ": " + ex);
         }
         return Double.POSITIVE_INFINITY;
     }
@@ -458,6 +474,18 @@ public class NgramModel implements Serializable {
                 System.out.println(s + " 0 " + val2);
             }
         }
+    }
+
+    // Testing
+    protected void print() {
+        lambda(0);
+
+        System.out.println(java.util.Arrays.toString(lambda));
+        System.out.println("------");
+        for (java.util.Map.Entry<String, Int> e : occur.entrySet()) {
+            System.out.println(e);
+        }
+        System.out.println("------");
     }
 
     /**
