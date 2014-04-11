@@ -388,7 +388,7 @@ public class NgramModel implements Serializable {
                 ? context.substring(len - order) + c
                 : context + c;
         double p = smoothProb(s);
-     
+      
         return (p > 0)
                 ? Math.log(p)
                 : Double.NEGATIVE_INFINITY;
