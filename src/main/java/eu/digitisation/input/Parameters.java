@@ -32,6 +32,7 @@ public class Parameters {
     public final Parameter<File> ocrfile;
     public final Parameter<File> eqfile;   // equivalences
     public final Parameter<File> swfile;   // stop words
+    public final Parameter<File> lmfile;   // language model
     public final Parameter<File> outfile;
     // Define program parameters: boolean options 
     public final Parameter<Boolean> ignoreCase;
@@ -48,6 +49,7 @@ public class Parameters {
         ocrfile = new Parameter<File>("OCR file");
         eqfile = new Parameter<File>("Unicode equivalences file");
         swfile = new Parameter<File>("stop-words file");
+        lmfile = new Parameter<File>("Language model file");
         outfile = new Parameter<File>("output file");
         ignoreCase = new Parameter<Boolean>("Ignore case", false, "");
         ignoreDiacritics = new Parameter<Boolean>("Ignore diacritics", false, "");
@@ -63,6 +65,7 @@ public class Parameters {
         ocrfile.setValue(null);
         eqfile.setValue(null);
         swfile.setValue(null);
+        lmfile.setValue(null);
         outfile.setValue(null);
         ignoreCase.setValue(null);
         ignoreDiacritics.setValue(null);
