@@ -40,12 +40,15 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import eu.digitisation.log.Messages;
 import eu.digitisation.ngram.NgramModel;
+import eu.digitisation.ngram.PerplexityEvaluator;
 import eu.digitisation.output.Browser;
 import eu.digitisation.output.OutputFileSelector;
 import eu.digitisation.output.Report;
+import eu.digitisation.text.Text;
 
 /**
  * 
@@ -61,6 +64,7 @@ public class GUI extends JFrame
     // Frame components
     FileSelector gtselector;
     FileSelector ocrselector;
+    FileSelector lmselector;
     JPanel advanced;
     Link info;
     JPanel actions;
@@ -112,7 +116,6 @@ public class GUI extends JFrame
         panel.add(subpanel);
         panel.add(new FileSelector(pars.swfile, fg, bg));
         panel.add(new FileSelector(pars.eqfile, fg, bg));
-        panel.add(new FileSelector(pars.lmfile, fg, bg));
         return panel;
     }
 
@@ -194,40 +197,51 @@ public class GUI extends JFrame
     {
         try
         {
-            if (gtselector.ready() && ocrselector.ready())
+            if (ocrselector.ready() && (gtselector.ready() || lmselector.ready()))
             {
                 File ocrfile = pars.ocrfile.getValue();
-                String name = ocrfile.getName().replaceAll("\\.\\w+", "") + "_report.html";
-                File dir = ocrfile.getParentFile();
-                File preselected = new File(name);
-                OutputFileSelector selector = new OutputFileSelector();
-                File outfile = selector.choose(dir, preselected);
-                pars.outfile.setValue(outfile);
-
-                if (outfile != null)
+                if (gtselector.ready())
                 {
-                    try
+                    String name = ocrfile.getName().replaceAll("\\.\\w+", "") + "_report.html";
+                    File dir = ocrfile.getParentFile();
+                    File preselected = new File(name);
+                    OutputFileSelector selector = new OutputFileSelector();
+                    File outfile = selector.choose(dir, preselected);
+                    pars.outfile.setValue(outfile);
+
+                    if (outfile != null)
                     {
-                        Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
-                        Report report = new Report(batch, pars);
-                        report.write(outfile);
-                        Messages.info("Report dumped to " + outfile);
-                        Browser.open(outfile.toURI());
+                        try
+                        {
+                            Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
+                            Report report = new Report(batch, pars);
+                            report.write(outfile);
+                            Messages.info("Report dumped to " + outfile);
+                            Browser.open(outfile.toURI());
+                        }
+                        catch (InvalidObjectException ex)
+                        {
+                            warn(ex.getMessage());
+                        }
+                        catch (IOException ex)
+                        {
+                            warn("Input/Output Error");
+                        }
                     }
-                    catch (InvalidObjectException ex)
-                    {
-                        warn(ex.getMessage());
-                    }
-                    catch (IOException ex)
-                    {
-                        warn("Input/Output Error");
-                    }
+                }
+                if (lmselector.ready())
+                {
+                    Text ocr = new Text(ocrfile);
+                    LanguageModelEvaluationFrame frame = new LanguageModelEvaluationFrame();
+                    frame.setInput(ocr.toString(), new double[] {});
+                    frame.setVisible(true);
                 }
             }
             else
             {
                 gtselector.checkout();
                 ocrselector.checkout();
+                lmselector.checkout();
             }
         }
         catch (WarningException ex)
@@ -253,6 +267,7 @@ public class GUI extends JFrame
         // Define content
         gtselector = new FileSelector(pars.gtfile, getForeground(), white);
         ocrselector = new FileSelector(pars.ocrfile, getForeground(), white);
+        lmselector = new FileSelector(pars.lmfile, getForeground(), white);
         advanced = advancedOptionsPanel(pars);
         info = new Link("Info:", "https://sites.google.com/site/textdigitisation/ocrevaluation", getForeground());
         actions = actionsPanel(this, pars);
@@ -260,6 +275,7 @@ public class GUI extends JFrame
         // Put all content together
         pane.add(gtselector);
         pane.add(ocrselector);
+        pane.add(lmselector);
         pane.add(advanced);
         pane.add(info);
         pane.add(actions);
@@ -325,6 +341,13 @@ public class GUI extends JFrame
 
     public static void main(String[] args)
     {
-        new GUI();
+
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                new GUI();
+            }
+        });
     }
 }
