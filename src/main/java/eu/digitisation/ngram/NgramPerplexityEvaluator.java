@@ -17,11 +17,11 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
 
     NgramModel ngram;
 
-    NgramPerplexityEvaluator(NgramModel ngram) {
+    public NgramPerplexityEvaluator(NgramModel ngram) {
         this.ngram = ngram;
     }
 
-    NgramPerplexityEvaluator(File file) {
+    public NgramPerplexityEvaluator(File file) {
         ngram = new NgramModel(file);
     }
 

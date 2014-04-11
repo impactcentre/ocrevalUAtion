@@ -44,7 +44,7 @@ import javax.swing.SwingUtilities;
 
 import eu.digitisation.log.Messages;
 import eu.digitisation.ngram.NgramModel;
-import eu.digitisation.ngram.PerplexityEvaluator;
+import eu.digitisation.ngram.NgramPerplexityEvaluator;
 import eu.digitisation.output.Browser;
 import eu.digitisation.output.OutputFileSelector;
 import eu.digitisation.output.Report;
@@ -231,9 +231,13 @@ public class GUI extends JFrame
                 }
                 if (lmselector.ready())
                 {
+                    NgramPerplexityEvaluator lpc = new NgramPerplexityEvaluator(pars.lmfile.value);
+
                     Text ocr = new Text(ocrfile);
+                    double[] perplexityArray = lpc.calculatePerplexity(ocr.toString(), 2);
+
                     LanguageModelEvaluationFrame frame = new LanguageModelEvaluationFrame();
-                    frame.setInput(ocr.toString(), new double[] {});
+                    frame.setInput(ocr.toString(), perplexityArray);
                     frame.setVisible(true);
                 }
             }
