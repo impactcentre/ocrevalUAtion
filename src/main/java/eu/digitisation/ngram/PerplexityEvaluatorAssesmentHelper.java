@@ -44,31 +44,32 @@ public class PerplexityEvaluatorAssesmentHelper {
 		}
 		
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
-
-		printPerplexities(contextLengthRange, OCRText, perplexities, bw);
 		
+		bw.write(providedModel.order + "-gram model results:");
+		bw.newLine();
+		printPerplexities(contextLengthRange, OCRText, perplexities, bw);
 	}
 
 	private static void printPerplexities(
 			ContextLengthRange contextLengthRange, String OCRText,
 			double[][] perplexities, BufferedWriter bw) throws IOException {
-		System.out.print("Letter\t");
+//		System.out.print("Letter\t");
 		bw.write("Letter\t");
 		for (int i = contextLengthRange.getStart(); i <= contextLengthRange
 				.getEnd(); i++) {
-			System.out.print("PC" + i + "\t");
+//			System.out.print("PC" + i + "\t");
 			bw.write("PC" + i + "\t");
 		}
-		System.out.println();
+//		System.out.println();
 		bw.newLine();
 		for (int j = 0; j < OCRText.length(); j++) {
-			System.out.print(OCRText.charAt(j) + "\t");
+//			System.out.print(OCRText.charAt(j) + "\t");
 			bw.write(OCRText.charAt(j) + "\t");
 			for (int i = 0; i < perplexities.length; i++) {
-				System.out.print(perplexities[i][j] + "\t");
+//				System.out.print(perplexities[i][j] + "\t");
 				bw.write(perplexities[i][j] + "\t");
 			}
-			System.out.println();
+	//		System.out.println();
 			bw.newLine();
 		}
 		bw.close();
