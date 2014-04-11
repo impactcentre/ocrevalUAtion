@@ -25,9 +25,6 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import eu.digitisation.text.Text;
-import javax.swing.JToggleButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class LanguageModelEvaluationFrame extends JFrame
 {
@@ -68,7 +65,6 @@ public class LanguageModelEvaluationFrame extends JFrame
     private void init()
     {
         setBounds(100, 100, 473, 347);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -170,7 +166,6 @@ public class LanguageModelEvaluationFrame extends JFrame
                             max = value;
                     }
                 }
-                System.out.println("MAX: " + max);
 
                 List<Color> colors = getColorBands(Color.red, 11);
 
