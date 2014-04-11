@@ -34,7 +34,7 @@ public class PerplexityEvaluatorAssesmentHelper {
 		double[][] perplexities = new double[contextLengthRange.getEnd()
 				- contextLengthRange.getStart() + 1][OCRText.length()];
 
-		LogPerplexityEvaluator logPerplexityEvaluator = new LogPerplexityEvaluator(
+		PerplexityEvaluator logPerplexityEvaluator = new NgramPerplexityEvaluator(
 				providedModel);
 
 		for (int i = contextLengthRange.getStart(); i < contextLengthRange
@@ -65,8 +65,8 @@ public class PerplexityEvaluatorAssesmentHelper {
 			System.out.print(OCRText.charAt(j) + "\t");
 			bw.write(OCRText.charAt(j) + "\t");
 			for (int i = 0; i < perplexities.length; i++) {
-				System.out.print(Math.round(perplexities[i][j]) + "\t");
-				bw.write(Math.round(perplexities[i][j]) + "\t");
+				System.out.print(perplexities[i][j] + "\t");
+				bw.write(perplexities[i][j] + "\t");
 			}
 			System.out.println();
 			bw.newLine();
