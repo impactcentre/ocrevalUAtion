@@ -75,7 +75,8 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
                 } else if (arg.equals("-i")) {
                     fin = new File(args[++k]);
                 } else {
-                    ngram.addTextFile(new File(arg), null, true);
+                    String text = NgramPerplexityEvaluator.getText(new File(arg));
+                    ngram.addWord(text);
                 }
             }
             if (fin != null) {
