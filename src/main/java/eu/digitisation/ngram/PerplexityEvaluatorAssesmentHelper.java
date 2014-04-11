@@ -37,7 +37,7 @@ public class PerplexityEvaluatorAssesmentHelper {
 		PerplexityEvaluator logPerplexityEvaluator = new NgramPerplexityEvaluator(
 				providedModel);
 
-		for (int i = contextLengthRange.getStart(); i < contextLengthRange
+		for (int i = contextLengthRange.getStart(); i <= contextLengthRange
 				.getEnd(); i++) {
 			perplexities[i - contextLengthRange.getStart()] = logPerplexityEvaluator.calculatePerplexity(
 					OCRText, i);
@@ -69,7 +69,7 @@ public class PerplexityEvaluatorAssesmentHelper {
 //				System.out.print(perplexities[i][j] + "\t");
 				bw.write(perplexities[i][j] + "\t");
 			}
-	//		System.out.println();
+//		System.out.println();
 			bw.newLine();
 		}
 		bw.close();
