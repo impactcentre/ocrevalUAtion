@@ -35,8 +35,8 @@ public class ContextLengthRange {
 		Pattern clPattern = Pattern.compile("([1-9])-([1-9])");
 		Matcher clMatcher = clPattern.matcher(contextLengthRange);
 		if (clMatcher.find()) {
-			return new ContextLengthRange(Integer.parseInt(clMatcher.group(0)),
-					Integer.parseInt(clMatcher.group(1)));
+			return new ContextLengthRange(Integer.parseInt(clMatcher.group(1)),
+					Integer.parseInt(clMatcher.group(2)));
 		} else {
 			throw new IllegalArgumentException(
 					"Context length needs to be in format of [1-9]-[1-9]!");

@@ -1,10 +1,13 @@
 package eu.digitisation.ngram;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,6 +22,7 @@ public class PerplexityEvaluatorAssesmentHelper {
 		// langModel, OCRFile, contextLengthRange, resultFile
 		File langModelFile = new File(args[0]);
 		File OCRFile = new File(args[1]);
+		File outputFile = new File(args[3]);
 
 		String OCRText = extractString(OCRFile);
 
@@ -33,31 +37,41 @@ public class PerplexityEvaluatorAssesmentHelper {
 		LogPerplexityEvaluator logPerplexityEvaluator = new LogPerplexityEvaluator(
 				providedModel);
 
-		for (int i = contextLengthRange.getStart(); i <= contextLengthRange
+		for (int i = contextLengthRange.getStart(); i < contextLengthRange
 				.getEnd(); i++) {
-			perplexities[i] = logPerplexityEvaluator.calculatePerplexity(
+			perplexities[i - contextLengthRange.getStart()] = logPerplexityEvaluator.calculatePerplexity(
 					OCRText, i);
 		}
+		
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
 
-		printPerplexities(contextLengthRange, OCRText, perplexities);
+		printPerplexities(contextLengthRange, OCRText, perplexities, bw);
+		
 	}
 
 	private static void printPerplexities(
 			ContextLengthRange contextLengthRange, String OCRText,
-			double[][] perplexities) {
+			double[][] perplexities, BufferedWriter bw) throws IOException {
 		System.out.print("Letter\t");
+		bw.write("Letter\t");
 		for (int i = contextLengthRange.getStart(); i <= contextLengthRange
 				.getEnd(); i++) {
 			System.out.print("PC" + i + "\t");
+			bw.write("PC" + i + "\t");
 		}
 		System.out.println();
+		bw.newLine();
 		for (int j = 0; j < OCRText.length(); j++) {
-			System.out.print(OCRText.charAt(j));
+			System.out.print(OCRText.charAt(j) + "\t");
+			bw.write(OCRText.charAt(j) + "\t");
 			for (int i = 0; i < perplexities.length; i++) {
-				System.out.print(perplexities[i][j] + "\t");
+				System.out.print(Math.round(perplexities[i][j]) + "\t");
+				bw.write(Math.round(perplexities[i][j]) + "\t");
 			}
 			System.out.println();
+			bw.newLine();
 		}
+		bw.close();
 	}
 
 	private static String extractString(File OCRFile)
