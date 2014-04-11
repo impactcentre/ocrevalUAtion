@@ -40,7 +40,8 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
         int textLen = textToEvaluate.length();
         double[] logprobs = new double[textLen];
         for (int pos = 0; pos < textLen; ++pos) {
-            logprobs[pos] = ngram.logProb(textToEvaluate.substring(0, pos), textToEvaluate.charAt(pos));
+            int beg = Math.max(0, pos - contextLength);
+            logprobs[pos] = ngram.logProb(textToEvaluate.substring(beg, pos), textToEvaluate.charAt(pos));
         }
         return logprobs;
     }
