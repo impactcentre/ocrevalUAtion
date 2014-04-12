@@ -189,7 +189,7 @@ public class NgramModel implements Serializable {
      * @return the conditional probability of the k-gram, normalized to the
      * number of heads.
      */
-    private double prob(String s) {
+    public double prob(String s) {
         if (occur.containsKey(s)) {
             String h = head(s);
             if (h.endsWith(BOS)) {  // since head is not stored
@@ -208,7 +208,7 @@ public class NgramModel implements Serializable {
      * @return the conditional probability of the k-gram, normalized to the
      * frequency of its heads and interpolated with lower order models.
      */
-    private double smoothProb(String s) {
+    public double smoothProb(String s) {
         double result;
         if (s.length() > 1) {
             double lam = lambda(s.length() - 1);
@@ -277,13 +277,13 @@ public class NgramModel implements Serializable {
     /**
      * Extracts all k-grams in a word or text upto the maximal order. For
      * instance, if word = "ma" and order = 3, then 0-grams are: "" (three empty
-     * strings, to normalize 1-grams). 1-grams: "m, a, $" ($ represents
-     * end-of-string). 2-grams: "#m, ma, a$" (# is used to differentiate #m from
-     * 1-gram m). 3-grams: "##m, #ma, ma$"
+     * strings, used to normalize 1-grams); three uni-grams: "m, a, $" ($
+     * represents end-of-string). three bi-grams: "#m, ma, a$" (# is used to
+     * differentiate #m from 1-gram m); and three tri-grams: "##m, #ma, ma$"
      *
-     * @remark do NOT add 1-gram "#" because 1-gram normalization will be then
-     * wrong.
-     * @param word the word to be added.
+     * @remark never add uni-gram "#" to the model because the normalization of
+     * uni-grams will be wrong!
+     * @param word the word (string of characters)  to be added.
      */
     public void addWord(String word) {
         if (word.length() < 1) {
@@ -343,7 +343,6 @@ public class NgramModel implements Serializable {
                     addWord(word);
                 } else {
                     addWord(word.toLowerCase());
-
 
                 }
             }
@@ -431,7 +430,6 @@ public class NgramModel implements Serializable {
 
             return result / numWords / Math.log(2);
 
-
         } catch (IOException ex) {
             Messages.info(NgramModel.class
                     .getName() + ": " + ex);
@@ -443,7 +441,8 @@ public class NgramModel implements Serializable {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (String s : occur.keySet()) {
-            builder.append(s).append(' ').append(occur.get(s)).append('\n');
+            builder.append(s.replaceAll(BOS, "<BoS>").replaceAll(EOS, "<EoS>"));
+            builder.append(' ').append(occur.get(s)).append('\n');
         }
         return builder.toString();
     }
@@ -474,18 +473,6 @@ public class NgramModel implements Serializable {
                 System.out.println(s + " 0 " + val2);
             }
         }
-    }
-
-    // Testing
-    protected void print() {
-        lambda(0);
-
-        System.out.println(java.util.Arrays.toString(lambda));
-        System.out.println("------");
-        for (java.util.Map.Entry<String, Int> e : occur.entrySet()) {
-            System.out.println(e);
-        }
-        System.out.println("------");
     }
 
     /**

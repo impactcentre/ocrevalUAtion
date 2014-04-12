@@ -1,12 +1,12 @@
 package eu.digitisation.input;
 
+import eu.digitisation.text.Text;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFrame;
@@ -23,8 +23,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
-import eu.digitisation.text.Text;
 
 public class LanguageModelEvaluationFrame extends JFrame
 {
@@ -204,7 +202,7 @@ public class LanguageModelEvaluationFrame extends JFrame
     public List<Color> getColorBands(Color color, int bands)
     {
 
-        List<Color> colorBands = new ArrayList<>(bands);
+        List<Color> colorBands = new ArrayList<Color>(bands);
         for (int index = 0; index < bands; index++)
         {
             colorBands.add(darken(color, (double) index / (double) bands));

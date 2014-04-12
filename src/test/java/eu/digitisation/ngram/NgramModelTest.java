@@ -32,11 +32,13 @@ public class NgramModelTest {
     @Test
     public void testSize() {
         System.out.println("size");
-        NgramModel instance = new NgramModel(2);
-        instance.addWord("lava");
-        // "" l a v $ #l la av va a$ -> 10
-        int expResult = 10;
-        int result = instance.size();
+        NgramModel ngrams = new NgramModel(2);
+        ngrams.addWord("0000");
+        ngrams.addWord("0100");
+
+        int expResult = 9;  // 5 bi-grams plus 3 uni-grams plus 1 0-gram
+        int result = ngrams.size();
+
         assertEquals(expResult, result);
     }
 
@@ -62,6 +64,50 @@ public class NgramModelTest {
         double expResult = (3 * Math.log(0.2) + 2 * Math.log(0.4));
         double result = instance.wordLogProb("lava");
         assertEquals(expResult, result, 0.01);
+    }
+
+    @Test
+    public void testGetGoodTuringPars() {
+        System.out.println("size");
+        NgramModel ngrams = new NgramModel(3);
+        ngrams.addWord("0000");
+        ngrams.addWord("0100");
+        double[] expResult = {0.1, 0.2, 0.4};
+        double[] result = ngrams.getGoodTuringPars();
+        assertEquals(expResult.length, result.length);
+        for (int n = 0; n < result.length; ++n) {
+            assertEquals(expResult[n], result[n], 0.001);
+        }
+
+    }
+
+    @Test
+    public void testProb() {
+        System.out.println("prob");
+        NgramModel instance = new NgramModel(1);
+        NgramModel ngrams = new NgramModel(3);
+        ngrams.addWord("0000");
+        ngrams.addWord("0100");
+
+        assertEquals(4 / (double) 7, ngrams.prob("00"), 0.001);
+        assertEquals(0.7, ngrams.prob("0"), 0.001);
+    }
+
+    @Test
+    public void testSmoothProb() {
+        System.out.println("prob");
+        NgramModel instance = new NgramModel(1);
+        NgramModel ngrams = new NgramModel(3);
+        ngrams.addWord("0000");
+        ngrams.addWord("0100");
+
+        double expResult = 0.8 * (4 / (double) 7) + 0.2 * 0.7;
+        double result = ngrams.smoothProb("00");
+        assertEquals(expResult, result, 0.001);
+
+        expResult = 0.8 * (2 / (double) 7) + 0.2 * 0.2;
+        result = ngrams.smoothProb("0" + ngrams.EOS);
+        assertEquals(expResult, result, 0.001);
     }
 
     @Test
