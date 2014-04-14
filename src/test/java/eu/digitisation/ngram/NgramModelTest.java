@@ -33,8 +33,8 @@ public class NgramModelTest {
     public void testSize() {
         System.out.println("size");
         NgramModel ngrams = new NgramModel(2);
-        ngrams.addWord("0000");
-        ngrams.addWord("0100");
+        ngrams.add("0000");
+        ngrams.add("0100");
 
         int expResult = 9;  // 5 bi-grams plus 3 uni-grams plus 1 0-gram
         int result = ngrams.size();
@@ -49,7 +49,7 @@ public class NgramModelTest {
     public void testlogH() {
         System.out.println("logH");
         NgramModel instance = new NgramModel(2);
-        instance.addWord("lava");
+        instance.add("lava");
         // "" l a v $ #l la av va a$ -> 10 
         double expResult = 2.0;
         double result = instance.entropy();
@@ -60,9 +60,9 @@ public class NgramModelTest {
     public void testWordLogProb() {
         System.out.println("wordLogProb");
         NgramModel instance = new NgramModel(1);
-        instance.addWord("lava");
+        instance.add("lava");
         double expResult = (3 * Math.log(0.2) + 2 * Math.log(0.4));
-        double result = instance.wordLogProb("lava");
+        double result = instance.logProb("lava");
         assertEquals(expResult, result, 0.01);
     }
 
@@ -70,8 +70,8 @@ public class NgramModelTest {
     public void testGetGoodTuringPars() {
         System.out.println("size");
         NgramModel ngrams = new NgramModel(3);
-        ngrams.addWord("0000");
-        ngrams.addWord("0100");
+        ngrams.add("0000");
+        ngrams.add("0100");
         double[] expResult = {0.1, 0.2, 0.4};
         double[] result = ngrams.getGoodTuringPars();
         assertEquals(expResult.length, result.length);
@@ -86,8 +86,8 @@ public class NgramModelTest {
         System.out.println("prob");
         NgramModel instance = new NgramModel(1);
         NgramModel ngrams = new NgramModel(3);
-        ngrams.addWord("0000");
-        ngrams.addWord("0100");
+        ngrams.add("0000");
+        ngrams.add("0100");
 
         assertEquals(4 / (double) 7, ngrams.prob("00"), 0.001);
         assertEquals(0.7, ngrams.prob("0"), 0.001);
@@ -98,8 +98,8 @@ public class NgramModelTest {
         System.out.println("prob");
         NgramModel instance = new NgramModel(1);
         NgramModel ngrams = new NgramModel(3);
-        ngrams.addWord("0000");
-        ngrams.addWord("0100");
+        ngrams.add("0000");
+        ngrams.add("0100");
 
         double expResult = 0.8 * (4 / (double) 7) + 0.2 * 0.7;
         double result = ngrams.smoothProb("00");
@@ -114,13 +114,13 @@ public class NgramModelTest {
     public void testLogProb() {
         System.out.println("logProb");
         NgramModel instance = new NgramModel(1);
-        instance.addWord("lava");
+        instance.add("lava");
         double expResult = -Math.log(5);
         double result = instance.logProb("baba", 'v');
         assertEquals(expResult, result, 0.01);
 
         instance = new NgramModel(2);
-        instance.addWord("lava");
+        instance.add("lava");
         expResult = Math.log(0.2);
         result = instance.logProb("ca", 'v');
         assertEquals(expResult, result, 0.01);
