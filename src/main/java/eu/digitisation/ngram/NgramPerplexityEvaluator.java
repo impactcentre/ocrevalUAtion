@@ -1,16 +1,15 @@
 package eu.digitisation.ngram;
 
+import eu.digitisation.text.Encoding;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
- * Interface for perplexity evaluator. It calculates perplexity of characters in
- * a given text.
- *
- * @author tparkola
+ * Perplexity evaluator based on an n-gram model 
  *
  */
 public class NgramPerplexityEvaluator implements PerplexityEvaluator {
@@ -25,6 +24,12 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
         ngram = new NgramModel(file);
     }
 
+    
+     public void addWords(File file) {
+        Charset encoding = Encoding.detect(file);
+        ngram.addWords(file, null, true);
+    }
+     
     /**
      * Calculates perplexity for each character of a given text.
      *
@@ -54,7 +59,7 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
         }
         return builder.toString();
     }
-
+    
     public static void main(String[] args) throws FileNotFoundException, IOException {
         NgramModel ngram = new NgramModel(3);
         File fin = null;
@@ -77,7 +82,7 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
                     fin = new File(args[++k]);
                 } else {
                     String text = NgramPerplexityEvaluator.getText(new File(arg));
-                    ngram.addWord(text);
+                    ngram.add(text);
                     System.err.println("\r" + arg);
                 }
             }

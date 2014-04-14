@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,11 +55,16 @@ public class WordScanner {
      *
      * @param is the InputStream
      * @param encoding the character encoding (e.g., UTF-8).
+     * @param regex the regular expression for words
      * @throws IOException
      */
-    public WordScanner(InputStream is, String encoding)
+    public WordScanner(InputStream is, Charset encoding, String regex)
             throws IOException {
         InputStreamReader isr = new InputStreamReader(is, encoding);
+
+        if (regex != null) {
+            pattern = Pattern.compile(regex);
+        }
 
         reader = new BufferedReader(isr);
         if (reader.ready()) {
@@ -69,13 +75,39 @@ public class WordScanner {
     }
 
     /**
+     * Open an InputStream for scanning
+     *
+     * @param is the InputStream
+     * @param encoding the character encoding (e.g., UTF-8).
+     * @throws IOException
+     */
+    public WordScanner(InputStream is, Charset encoding)
+            throws IOException {
+        this(is, encoding, null);
+    }
+
+    
+     /**
+     * Open file with specific encoding for scanning.
+     *
+     * @param file the input file.
+     * @param encoding the encoding (e.g., UTF-8).
+     * @param regex the regular expression for words
+     * @throws java.io.IOException
+     */
+    public WordScanner(File file, Charset encoding, String regex)
+            throws IOException {
+        this(new FileInputStream(file), encoding, regex);
+    }
+    
+    /**
      * Open file with specific encoding for scanning.
      *
      * @param file the input file.
      * @param encoding the encoding (e.g., UTF-8).
      * @throws java.io.IOException
      */
-    public WordScanner(File file, String encoding)
+    public WordScanner(File file, Charset encoding)
             throws IOException {
         this(new FileInputStream(file), encoding);
     }
@@ -86,9 +118,9 @@ public class WordScanner {
      * @param file the input file.
      * @throws java.io.IOException
      */
-    public WordScanner(File file)
+    public WordScanner(File file, String regex)
             throws IOException {
-        this(file, Encoding.detect(file));
+        this(file, Encoding.detect(file), regex);
     }
 
     /**
@@ -97,21 +129,22 @@ public class WordScanner {
      * @param s the input string to be tokenized
      * @throws IOException
      */
-    public WordScanner(String s)
-            throws IOException {
-        this(new ByteArrayInputStream(s.getBytes("UTF-8")), "UTF-8");
+    public WordScanner(String s, String regex) throws IOException {
+        this(new ByteArrayInputStream(s.getBytes("UTF-8")),
+                Charset.forName("UTF-8"), regex);
     }
 
     /**
      *
      * @param file the input file to be processed
+     * @param regex the regular expression for words
      * @return a StringBuilder with the file content
      * @throws java.io.IOException
      */
-    public static StringBuilder scanToStringBuilder(File file)
+    public static StringBuilder scanToStringBuilder(File file, String regex)
             throws IOException {
         StringBuilder builder = new StringBuilder();
-        WordScanner scanner = new WordScanner(file);
+        WordScanner scanner = new WordScanner(file, regex);
         String word;
 
         while ((word = scanner.nextWord()) != null) {
@@ -143,6 +176,7 @@ public class WordScanner {
 
     /**
      * Sample main.
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -152,7 +186,7 @@ public class WordScanner {
             try {
                 String word;
                 File file = new File(arg);
-                scanner = new WordScanner(file);
+                scanner = new WordScanner(file, "^\\p{Space}+");
                 while ((word = scanner.nextWord()) != null) {
                     System.out.println(word);
                 }

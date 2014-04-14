@@ -21,6 +21,7 @@ import eu.digitisation.log.Messages;
 import eu.digitisation.text.WordScanner;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,12 +97,12 @@ public class MinimalPerfectHash {
      * @param encoding the text encoding.
      * @return the list of hash codes representing the file content
      */
-    public List<Integer> hashCodes(File file, String encoding) 
+    public List<Integer> hashCodes(File file, Charset encoding) 
             throws RuntimeException {
         ArrayList<Integer> list = new ArrayList<Integer>();
 
         try {
-            WordScanner scanner = new WordScanner(file, encoding);
+            WordScanner scanner = new WordScanner(file, encoding, null);
             String word;
 
             while ((word = scanner.nextWord()) != null) {
@@ -123,7 +124,7 @@ public class MinimalPerfectHash {
         ArrayList<Integer> list = new ArrayList<Integer>();
 
         try {
-            WordScanner scanner = new WordScanner(s);
+            WordScanner scanner = new WordScanner(s, null);
             String word;
 
             while ((word = scanner.nextWord()) != null) {

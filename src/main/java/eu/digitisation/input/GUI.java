@@ -17,6 +17,13 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.log.Messages;
+import eu.digitisation.ngram.NgramModel;
+import eu.digitisation.ngram.NgramPerplexityEvaluator;
+import eu.digitisation.output.Browser;
+import eu.digitisation.output.OutputFileSelector;
+import eu.digitisation.output.Report;
+import eu.digitisation.text.Text;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -28,7 +35,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InvalidObjectException;
-
+import java.nio.charset.Charset;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -42,20 +49,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import eu.digitisation.log.Messages;
-import eu.digitisation.ngram.NgramModel;
-import eu.digitisation.ngram.NgramPerplexityEvaluator;
-import eu.digitisation.output.Browser;
-import eu.digitisation.output.OutputFileSelector;
-import eu.digitisation.output.Report;
-import eu.digitisation.text.Text;
-
 /**
- * 
+ *
  * @author R.C.C
  */
-public class GUI extends JFrame
-{
+public class GUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private static final Color green = Color.decode("#4C501E");
@@ -71,24 +69,21 @@ public class GUI extends JFrame
 
     /**
      * Show a warning message
-     * 
-     * @param text
-     *            the text to be displayed
+     *
+     * @param text the text to be displayed
      */
-    public void warn(String text)
-    {
+    public void warn(String text) {
         JOptionPane.showMessageDialog(super.getRootPane(), text, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     // The unique constructor
-    public GUI()
-    {
+    public GUI() {
         init();
     }
 
     /**
      * Build advanced options panel
-     * 
+     *
      * @param ignoreCase
      * @param ignoreDiacritics
      * @param ignorePunctuation
@@ -96,8 +91,7 @@ public class GUI extends JFrame
      * @param eqfile
      * @return
      */
-    private JPanel advancedOptionsPanel(Parameters pars)
-    {
+    private JPanel advancedOptionsPanel(Parameters pars) {
         JPanel panel = new JPanel(new GridLayout(0, 1));
         JPanel subpanel = new JPanel(new GridLayout(0, 2));
         Color fg = getForeground();
@@ -122,30 +116,24 @@ public class GUI extends JFrame
     /**
      * Creates a subpanel with two actions: "show advanced options" & "generate
      * report"
-     * 
+     *
      * @param gui
      * @return
      */
-    private JPanel actionsPanel(final GUI gui, final Parameters pars)
-    {
+    private JPanel actionsPanel(final GUI gui, final Parameters pars) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         final JCheckBox more = new JCheckBox("Show advanced options");
         more.setForeground(getForeground());
         more.setBackground(Color.LIGHT_GRAY);
-        more.addActionListener(new ActionListener()
-        {
+        more.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 Dimension dframe = gui.getSize();
                 Dimension dadvanced = gui.advanced.getPreferredSize();
-                if (more.isSelected())
-                {
+                if (more.isSelected()) {
                     gui.setSize(new Dimension(dframe.width, dframe.height + dadvanced.height));
-                }
-                else
-                {
+                } else {
                     gui.setSize(new Dimension(dframe.width, dframe.height - dadvanced.height));
                 }
                 gui.advanced.setVisible(more.isSelected());
@@ -155,11 +143,9 @@ public class GUI extends JFrame
         JButton reset = new JButton("Reset");
         reset.setForeground(getForeground());
         reset.setBackground(getBackground());
-        reset.addActionListener(new ActionListener()
-        {
+        reset.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 pars.clear();
                 gui.remove(gtselector);
                 gui.remove(ocrselector);
@@ -176,11 +162,9 @@ public class GUI extends JFrame
         JButton trigger = new JButton("Generate report");
         trigger.setForeground(getBackground());
         trigger.setBackground(getForeground());
-        trigger.addActionListener(new ActionListener()
-        {
+        trigger.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 launch(pars);
             }
         });
@@ -193,15 +177,11 @@ public class GUI extends JFrame
         return panel;
     }
 
-    public void launch(Parameters pars)
-    {
-        try
-        {
-            if (ocrselector.ready() && (gtselector.ready() || lmselector.ready()))
-            {
+    public void launch(Parameters pars) {
+        try {
+            if (ocrselector.ready() && (gtselector.ready() || lmselector.ready())) {
                 File ocrfile = pars.ocrfile.getValue();
-                if (gtselector.ready())
-                {
+                if (gtselector.ready()) {
                     String name = ocrfile.getName().replaceAll("\\.\\w+", "") + "_report.html";
                     File dir = ocrfile.getParentFile();
                     File preselected = new File(name);
@@ -209,34 +189,26 @@ public class GUI extends JFrame
                     File outfile = selector.choose(dir, preselected);
                     pars.outfile.setValue(outfile);
 
-                    if (outfile != null)
-                    {
-                        try
-                        {
+                    if (outfile != null) {
+                        try {
                             Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
                             Report report = new Report(batch, pars);
                             report.write(outfile);
                             Messages.info("Report dumped to " + outfile);
                             Browser.open(outfile.toURI());
-                        }
-                        catch (InvalidObjectException ex)
-                        {
+                        } catch (InvalidObjectException ex) {
                             warn(ex.getMessage());
-                        }
-                        catch (IOException ex)
-                        {
+                        } catch (IOException ex) {
                             warn("Input/Output Error");
                         }
                     }
                 }
-                if (lmselector.ready())
-                {
-                    Object[] possibilities = {"2", "3", "4", "5" };
-                    String value =
-                            (String) JOptionPane.showInputDialog(null, "Select contect length", "",
+                if (lmselector.ready()) {
+                    Object[] possibilities = {"2", "3", "4", "5"};
+                    String value
+                            = (String) JOptionPane.showInputDialog(null, "Select contect length", "",
                                     JOptionPane.QUESTION_MESSAGE, null, possibilities, "2");
-                    if (value != null)
-                    {
+                    if (value != null) {
                         int contextLength = Integer.parseInt(value);
 
                         NgramPerplexityEvaluator lpc = new NgramPerplexityEvaluator(pars.lmfile.value);
@@ -249,24 +221,19 @@ public class GUI extends JFrame
                         frame.setVisible(true);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 gtselector.checkout();
                 ocrselector.checkout();
                 lmselector.checkout();
             }
-        }
-        catch (WarningException ex)
-        {
+        } catch (WarningException ex) {
             warn(ex.getMessage());
         }
     }
 
-    public final void init()
-    {
+    public final void init() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
+
         // Main container
         Container pane = getContentPane();
         // Initialization settings
@@ -299,38 +266,30 @@ public class GUI extends JFrame
         JMenuBar menuBar = new JMenuBar();
         JMenu mainMenu = new JMenu("Main");
         JMenuItem createLanguageModelMenuItem = new JMenuItem("Create Language Model...", KeyEvent.VK_C);
-        createLanguageModelMenuItem.addActionListener(new ActionListener()
-        {
+        createLanguageModelMenuItem.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 File inputFile = choose("Choose file to create language model", "sample.txt");
-                if (inputFile != null)
-                {
+                if (inputFile != null) {
                     File outputFile = choose("Choose output file", "model.lm");
-                    if (outputFile != null)
-                    {
-                        Object[] possibilities = {"2", "3", "4", "5" };
-                        String value =
-                                (String) JOptionPane.showInputDialog(null, "Select value vor 'n'", "",
+                    if (outputFile != null) {
+                        Object[] possibilities = {"2", "3", "4", "5"};
+                        String value
+                                = (String) JOptionPane.showInputDialog(null, "Select value vor 'n'", "",
                                         JOptionPane.QUESTION_MESSAGE, null, possibilities, "2");
-                        if (value != null)
-                        {
+                        if (value != null) {
                             int n = Integer.parseInt(value);
 
                             NgramModel ngramModel = new NgramModel(n);
-                            if (inputFile.isDirectory())
-                            {
+                            Charset encoding = Charset.forName(System.getProperty("file.encoding"));
+                            if (inputFile.isDirectory()) {
                                 File[] files = inputFile.listFiles();
-                                for (File file : files)
-                                {
-                                    ngramModel.addTextFile(file, System.getProperty("file.encoding"), false);
+                                for (File file : files) {
+                                    ngramModel.addWords(file, encoding, false);
                                 }
-                            }
-                            else
-                            {
-                                ngramModel.addTextFile(inputFile, System.getProperty("file.encoding"), false);
+                            } else {
+                                ngramModel.addWords(inputFile, encoding, false);
                             }
                             ngramModel.save(outputFile);
                         }
@@ -339,12 +298,10 @@ public class GUI extends JFrame
             }
         });
         JMenuItem exitMenuItem = new JMenuItem("Exit", KeyEvent.VK_X);
-        exitMenuItem.addActionListener(new ActionListener()
-        {
+        exitMenuItem.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
@@ -362,31 +319,24 @@ public class GUI extends JFrame
         setVisible(true);
     }
 
-    private File choose(String title, String defaultName)
-    {
+    private File choose(String title, String defaultName) {
         JFileChooser chooser = new JFileChooser();
 
         chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         chooser.setDialogTitle(title);
         chooser.setSelectedFile(new File(defaultName));
         int returnVal = chooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION)
-        {
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             return chooser.getSelectedFile();
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
 
-        SwingUtilities.invokeLater(new Runnable()
-        {
-            public void run()
-            {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
                 new GUI();
             }
         });

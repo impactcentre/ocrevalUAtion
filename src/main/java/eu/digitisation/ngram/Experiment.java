@@ -17,10 +17,10 @@
  */
 package eu.digitisation.ngram;
 
-import eu.digitisation.text.CharFilter;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.output.ErrorMeasure;
+import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.Text;
 import java.io.File;
 import java.io.IOException;
@@ -53,8 +53,8 @@ public class Experiment {
 
             NgramModel m1 = new NgramModel(N);
             NgramModel m2 = new NgramModel(N);
-            m1.addWord(s1);
-            m2.addWord(s2);
+            m1.add(s1);
+            m2.add(s2);
             
             cosineDist = 1 - Distance.cosine(m1, m2);
             errors = Distance.delta(m1, m2);

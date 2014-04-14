@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.xpath.XPathExpressionException;
@@ -49,7 +50,7 @@ public class Text {
 
     StringBuilder builder;
     static final int maxlen;
-    String encoding;
+    Charset encoding;
     XPathFilter filter;
 
     static {
@@ -78,7 +79,7 @@ public class Text {
      * selected elements)
      * @throws eu.digitisation.input.WarningException
      */
-    public Text(File file, String encoding, XPathFilter filter)
+    public Text(File file, Charset encoding, XPathFilter filter)
             throws WarningException {
 
         builder = new StringBuilder();
@@ -133,7 +134,7 @@ public class Text {
      */
     public Text(String s) throws WarningException {
         builder = new StringBuilder();
-        encoding = "utf8";
+        encoding = Charset.forName("utf8");
         add(s);
     }
 
@@ -190,10 +191,11 @@ public class Text {
     }
 
     private Document loadXMLFile(File file) {
-        Document doc = DocumentParser.parse(file);
+        Document doc = DocumentParser.parse(file);      
         String xmlEncoding = doc.getXmlEncoding();
+        
         if (xmlEncoding != null) {
-            encoding = xmlEncoding;
+            encoding = Charset.forName(xmlEncoding);
             Messages.info("XML file " + file.getName() + " encoding is " + encoding);
         } else {
             if (encoding == null) {
@@ -321,7 +323,7 @@ public class Text {
     private void readHOCRFile(File file) throws WarningException {
         try {
             org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
-            String htmlEncoding = doc.outputSettings().charset().toString();
+            Charset htmlEncoding = doc.outputSettings().charset();
 
             if (htmlEncoding == null) {
                 encoding = Encoding.detect(file);

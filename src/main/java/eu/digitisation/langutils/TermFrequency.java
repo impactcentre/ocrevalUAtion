@@ -18,8 +18,8 @@
 package eu.digitisation.langutils;
 
 import eu.digitisation.input.WarningException;
-import eu.digitisation.math.Counter;
 import eu.digitisation.log.Messages;
+import eu.digitisation.math.Counter;
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.Text;
@@ -93,7 +93,7 @@ public class TermFrequency extends Counter<String> {
     public void addFile(File file) throws WarningException {
         try {
             Text content = new Text(file);
-            WordScanner scanner = new WordScanner(content.toString());
+            WordScanner scanner = new WordScanner(content.toString(), null);
             String word;
             while ((word = scanner.nextWord()) != null) {
                 String filtered = (filter == null)
