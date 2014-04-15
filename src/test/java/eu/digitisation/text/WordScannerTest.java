@@ -18,7 +18,6 @@
 
 package eu.digitisation.text;
 
-import eu.digitisation.text.WordScanner;
 import java.io.IOException;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.After;
@@ -61,7 +60,7 @@ public class WordScannerTest {
         System.out.println("main");
          String input = "hola&amigo2\n3.14 mi casa, todos los días\n"
                  + "mesa-camilla java4you i.b.m. i+d Dª María 3+100%";
-        WordScanner scanner = new WordScanner(input);
+        WordScanner scanner = new WordScanner(input, null);
         String word;
         int num = 0;
         while ((word = scanner.nextWord()) != null) {
