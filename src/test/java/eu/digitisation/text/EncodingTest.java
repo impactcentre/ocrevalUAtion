@@ -21,6 +21,7 @@ import eu.digitisation.text.Encoding;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,24 +35,7 @@ import static org.junit.Assert.*;
  */
 public class EncodingTest {
 
-    public EncodingTest() {
-    }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of detect method, of class Encoding.
@@ -62,8 +46,8 @@ public class EncodingTest {
         System.out.println("detect");
         URL resourceUrl = getClass().getResource("/OfTheSciences_gt_TXT.txt");
         File file = new File(resourceUrl.toURI());
-        String expResult = "UTF-8";
-        String result = Encoding.detect(file);
+        Charset expResult =  Charset.forName("UTF-8");
+        Charset result = Encoding.detect(file);
         assertEquals(expResult, result);
     }
 
