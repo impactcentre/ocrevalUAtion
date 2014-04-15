@@ -59,7 +59,7 @@ public enum FileType {
         location = props.getProperty("schemaLocation.ALTO");
         ALTO.schemaLocation = location == null ? ""
                 : StringNormalizer.reduceWS(location);
-        
+
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
     }
@@ -95,8 +95,17 @@ public enum FileType {
             Document doc = DocumentParser.parse(file);
             Element root = doc.getDocumentElement();
             String doctype = root.getTagName();
-            String location = StringNormalizer
-                    .reduceWS(root.getAttribute("xsi:schemaLocation"));
+            String location;
+            
+            if (root.hasAttribute("xsi:schemaLocation")) {
+                location = StringNormalizer
+                        .reduceWS(root.getAttribute("xsi:schemaLocation"));
+            } else if (root.hasAttribute("xsi:noNamespaceSchemaLocation")) {
+                location = StringNormalizer
+                        .reduceWS(root.getAttribute("xsi:noNamespaceSchemaLocation"));
+            } else {
+                location = null;
+            }
 
             if (doctype.equals(PAGE.tag)
                     && sameLocation(location, PAGE.schemaLocation)) {
