@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -380,7 +381,7 @@ public class NgramModel implements Serializable {
      */
     public double logLikelihood(boolean caseSensitive) {
         try {
-            String encoding = System.getProperty("file.encoding");
+            Charset encoding = Charset.forName(System.getProperty("file.encoding"));
             WordScanner scanner
                     = new WordScanner(System.in, encoding);
             String word;

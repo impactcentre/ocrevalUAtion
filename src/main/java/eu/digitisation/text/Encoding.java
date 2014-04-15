@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.parser.txt.CharsetDetector;
 
@@ -35,14 +36,14 @@ public class Encoding {
     /**
      *
      * @param file a text file
-     * @return the name of the encoding or char set
+     * @return the encoding or Charset
      */
-    public static String detect(File file) {
+    public static Charset detect(File file) {
         try {
             InputStream is = TikaInputStream.get(new FileInputStream(file));
             CharsetDetector detector = new CharsetDetector();
             detector.setText(is);
-            return detector.detect().getName();
+            return Charset.forName(detector.detect().getName());
         } catch (IOException ex) {
             Messages.info(Encoding.class.getName() + ": " + ex);
         }
