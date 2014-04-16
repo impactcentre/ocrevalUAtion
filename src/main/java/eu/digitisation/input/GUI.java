@@ -61,9 +61,18 @@ public class GUI extends JFrame {
      *
      * @param text the text to be displayed
      */
-    public void warn(String text) {
-        JOptionPane.showMessageDialog(super.getRootPane(), text, "Error",
+    public void warn(String message) {
+        JOptionPane.showMessageDialog(super.getRootPane(), message, "Error",
                 JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Ask for confirmation
+     */
+    public boolean confirm(String message) {
+        return JOptionPane.showConfirmDialog(super.getRootPane(),
+                message, message, JOptionPane.YES_NO_OPTION)
+                == JOptionPane.YES_OPTION;
     }
 
     // The unique constructor
@@ -198,6 +207,13 @@ public class GUI extends JFrame {
             }
         } catch (WarningException ex) {
             warn(ex.getMessage());
+        } catch (SchemaLocationException ex) {
+            boolean ans = confirm("Unknown schema location " 
+                    + ex.getSchemaLocation()
+                    + "Add it to the list of valid schemas?");
+            if (ans) {
+                StartUp.addUserProperty(ex.getFileType(), ex.getSchemaLocation());
+            }
         }
     }
 

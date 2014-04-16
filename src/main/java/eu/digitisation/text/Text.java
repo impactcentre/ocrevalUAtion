@@ -191,9 +191,9 @@ public class Text {
     }
 
     private Document loadXMLFile(File file) {
-        Document doc = DocumentParser.parse(file);      
+        Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
-        
+
         if (xmlEncoding != null) {
             encoding = Charset.forName(xmlEncoding);
             Messages.info("XML file " + file.getName() + " encoding is " + encoding);

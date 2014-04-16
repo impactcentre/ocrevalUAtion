@@ -86,7 +86,7 @@ public enum FileType {
      * @param file a file
      * @return the FileType of file
      */
-    public static FileType valueOf(File file) {
+    public static FileType valueOf(File file) throws SchemaLocationException {
         String name = file.getName().toLowerCase(Locale.ENGLISH);
 
         if (name.endsWith(".txt")) {
@@ -96,7 +96,7 @@ public enum FileType {
             Element root = doc.getDocumentElement();
             String doctype = root.getTagName();
             String location;
-            
+
             if (root.hasAttribute("xsi:schemaLocation")) {
                 location = StringNormalizer
                         .reduceWS(root.getAttribute("xsi:schemaLocation"));
@@ -107,15 +107,24 @@ public enum FileType {
                 location = null;
             }
 
-            if (doctype.equals(PAGE.tag)
-                    && sameLocation(location, PAGE.schemaLocation)) {
-                return PAGE;
-            } else if (doctype.equals(FR10.tag)
-                    && sameLocation(location, FR10.schemaLocation)) {
-                return FR10;
-            } else if (doctype.equals(ALTO.tag)
-                    && sameLocation(location, ALTO.schemaLocation)) {
-                return ALTO;
+            if (doctype.equals(PAGE.tag)) {
+                if (sameLocation(location, PAGE.schemaLocation)) {
+                    return PAGE;
+                } else if (!location.isEmpty()) {
+                    throw new SchemaLocationException(PAGE, location);
+                }
+            } else if (doctype.equals(FR10.tag)) {
+                if (sameLocation(location, FR10.schemaLocation)) {
+                    return FR10;
+                } else if (!location.isEmpty()) {
+                    throw new SchemaLocationException(FR10, location);
+                }
+            } else if (doctype.equals(ALTO.tag)) {
+                if (sameLocation(location, ALTO.schemaLocation)) {
+                    return ALTO;
+                } else if (!location.isEmpty()) {
+                    throw new SchemaLocationException(ALTO, location);
+                }
             }
         } else if (name.endsWith(".html")) {
             try {

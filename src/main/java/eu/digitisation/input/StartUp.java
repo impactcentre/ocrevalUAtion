@@ -96,4 +96,11 @@ public class StartUp {
     public static String property(String key) {
         return props.getProperty(key);
     }
+
+    static void addUserProperty(FileType type, String schemaLocation) {
+      String prop = props.getProperty("schemaLocation."+type);
+      String value = props.getProperty(prop);
+      props.setProperty(prop, value + " " + schemaLocation);
+      props.storeToXML(file, value);
+    }
 }
