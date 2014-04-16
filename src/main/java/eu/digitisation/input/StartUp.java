@@ -20,10 +20,12 @@ package eu.digitisation.input;
 import eu.digitisation.log.Messages;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -37,45 +39,82 @@ public class StartUp {
     private static Properties props = new Properties();
 
     static {
+        props = defaultProps();
+        props.putAll(userDefinedProps());
+    }
+
+    /**
+     * Read default properties form file defaultProperties.xml
+     *
+     * @return the default properties
+     */
+    private static Properties defaultProps() {
+        Properties defProps = new Properties();
+        InputStream in;
+
         try {
-            InputStream in;
-            // Read defaults
-            Properties defaults = new Properties();
             in = StartUp.class.getResourceAsStream("/defaultProperties.xml");
             if (in != null) {
-                defaults.loadFromXML(in);
+                defProps.loadFromXML(in);
                 in.close();
-                props = new Properties(defaults);
-            }
-
-            // Add user properties (may overwrite defaults)            
-            URI uri = Messages.class.getProtectionDomain()
-                    .getCodeSource().getLocation().toURI();
-            String dir = new File(uri.getPath()).getParent();
-            File file = new File(dir, "userProperties.xml");
-
-            Messages.info("Application folder is " + dir);
-            if (file.exists()) {
-                in = new FileInputStream(file);
-                props.loadFromXML(in);
-                Messages.info("Read properties from " + file);
-                in.close();
-            } else {
-                in = StartUp.class.getResourceAsStream("/userProperties.xml");
-                if (in != null) {
-                    defaults.loadFromXML(in);
-                    Messages.info("Read properties from " + file);
-                    in.close();
-                    props = new Properties(defaults);
-                } else {
-                    Messages.info("No properties were defined by user");
-                }
+                props = new Properties(defProps);
             }
         } catch (IOException ex) {
             Messages.severe(StartUp.class.getName() + ": " + ex);
-        } catch (URISyntaxException ex) {
-            Messages.severe(StartUp.class.getName() + ": " + ex);
         }
+        return defProps;
+    }
+
+    /**
+     *
+     * @return the folder where the application has been launched
+     */
+    private static URL appFolder() {
+        return StartUp.class.getProtectionDomain()
+                .getCodeSource().getLocation();
+
+    }
+
+    /**
+     *
+     * @return the userProperties.xml file
+     */
+    private static File userFile() {
+        URL url = appFolder();
+        String dir = new File(url.getPath()).getParent();
+        File file = new File(dir, "userProperties.xml");
+
+        Messages.info("Application folder is " + url);
+
+        if (!file.exists()) {
+            url = StartUp.class.getResource("/userProperties.xml");
+            if (url != null) {
+                try {
+                    file = new File(url.toURI());
+                } catch (URISyntaxException ex) {
+                    Messages.severe(StartUp.class.getName() + ": " + ex);
+                }
+            }
+        }
+        return file;
+    }
+
+    private static Properties userDefinedProps() {
+        Properties userProps = new Properties();
+
+        try {
+            File file = userFile();
+            if (file != null && file.exists()) {
+                InputStream in = new FileInputStream(file);
+                userProps.loadFromXML(in);
+                Messages.info("Read properties from " + file);
+                in.close();
+            }
+        } catch (IOException ex) {
+            Messages.severe(StartUp.class
+                    .getName() + ": " + ex);
+        }
+        return userProps;
     }
 
     /**
@@ -97,10 +136,30 @@ public class StartUp {
         return props.getProperty(key);
     }
 
-    static void addUserProperty(FileType type, String schemaLocation) {
-      String prop = props.getProperty("schemaLocation."+type);
-      String value = props.getProperty(prop);
-      props.setProperty(prop, value + " " + schemaLocation);
-      props.storeToXML(file, value);
+    /**
+     * Add a property value
+     *
+     * @param key
+     * @param value
+     */
+    static void addValue(String key, String value) {
+        try {
+            File file = userFile();
+            FileOutputStream os = new FileOutputStream(file);
+            String values = props.getProperty(key);
+            if (values == null) {
+                props.setProperty(key, value);
+            } else {
+                props.setProperty(key, values + " " + value);
+            }
+            props.storeToXML(os, null);
+        } catch (FileNotFoundException ex) {
+            Messages.severe(StartUp.class
+                    .getName() + ": " + ex);
+        } catch (IOException ex) {
+            Messages.severe(StartUp.class
+                    .getName() + ": " + ex);
+        }
+
     }
 }

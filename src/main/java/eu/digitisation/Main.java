@@ -2,6 +2,7 @@ package eu.digitisation;
 
 import eu.digitisation.input.Batch;
 import eu.digitisation.input.Parameters;
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.log.Messages;
 import eu.digitisation.output.Report;
@@ -78,6 +79,8 @@ public class Main {
             Report report = new Report(batch, pars);
             report.write(pars.outfile.getValue());
         } catch (InvalidObjectException ex) {
+            Messages.info(Main.class.getName() + ": " + ex);
+        } catch (SchemaLocationException ex) {
             Messages.info(Main.class.getName() + ": " + ex);
         }
 

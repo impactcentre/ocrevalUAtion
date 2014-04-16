@@ -17,18 +17,17 @@
  */
 package eu.digitisation.input;
 
-import java.io.IOException;
-
 /**
  *
  * @author R.C.C
  */
-class SchemaLocationException extends IOException {
+public class SchemaLocationException extends Exception {
+    private static final long serialVersionUID = 1L;
 
     FileType type;
     String schemaLocation;
 
-    public SchemaLocationException(FileType type, String schemaLocation) {
+    SchemaLocationException(FileType type, String schemaLocation) {
         this.type = type;
         this.schemaLocation = schemaLocation;
     }

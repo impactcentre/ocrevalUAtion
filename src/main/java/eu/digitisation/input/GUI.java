@@ -29,7 +29,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.io.InvalidObjectException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -197,8 +196,14 @@ public class GUI extends JFrame {
                         Browser.open(outfile.toURI());
                     } catch (InvalidObjectException ex) {
                         warn(ex.getMessage());
-                    } catch (IOException ex) {
-                        warn("Input/Output Error");
+                    } catch (SchemaLocationException ex) {
+                        boolean ans = confirm("Unknown schema location: "
+                                + ex.getSchemaLocation()
+                                + "\nAdd it to the list of valid schemas?");
+                        if (ans) {
+                            StartUp.addValue("schemaLocation." + ex.getFileType().toString(),
+                                    ex.getSchemaLocation());
+                        }
                     }
                 }
             } else {
@@ -207,13 +212,6 @@ public class GUI extends JFrame {
             }
         } catch (WarningException ex) {
             warn(ex.getMessage());
-        } catch (SchemaLocationException ex) {
-            boolean ans = confirm("Unknown schema location " 
-                    + ex.getSchemaLocation()
-                    + "Add it to the list of valid schemas?");
-            if (ans) {
-                StartUp.addUserProperty(ex.getFileType(), ex.getSchemaLocation());
-            }
         }
     }
 

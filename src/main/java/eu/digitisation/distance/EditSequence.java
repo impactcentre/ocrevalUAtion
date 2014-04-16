@@ -18,6 +18,7 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.document.TokenArray;
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.log.Messages;
 import eu.digitisation.math.BiCounter;
@@ -211,7 +212,7 @@ public class EditSequence {
                 } else {
                     A[i % 2][j] = Math.min(A[(i - 1) % 2][j - 1] + w.sub(c1, c2),
                             Math.min(A[i % 2][j - 1] + w.ins(c2),
-                            A[(i - 1) % 2][j] + w.del(c1)));
+                                    A[(i - 1) % 2][j] + w.del(c1)));
 
                     if (A[i % 2][j] == A[i % 2][j - 1] + w.ins(c2)) {
                         B.set(i, j, EdOp.INSERT);
@@ -252,7 +253,7 @@ public class EditSequence {
             }
             add(e);
         }
-        if (i != 0 
+        if (i != 0
                 || j != 0
                 || length1 != first.length()
                 || length2 != second.length()) {
@@ -337,7 +338,7 @@ public class EditSequence {
                 } else {
                     A[i % 2][j] = Math.min(A[(i - 1) % 2][j] + 1,
                             Math.min(A[i % 2][j - 1] + 1,
-                            A[(i - 1) % 2][j - 1] + 1));
+                                    A[(i - 1) % 2][j - 1] + 1));
                     if (A[i % 2][j] == A[(i - 1) % 2][j] + 1) {
                         B.set(i, j, EdOp.DELETE);
                     } else if (A[i % 2][j] == A[i % 2][j - 1] + 1) {
@@ -438,8 +439,6 @@ public class EditSequence {
         return stats;
     }
 
-    
-    
     /**
      * Extract alignment statistics
      *
@@ -523,7 +522,8 @@ public class EditSequence {
         return added;
     }
 
-    public static void main(String[] args) throws WarningException {
+    public static void main(String[] args)
+            throws WarningException, SchemaLocationException {
         File gtfile = new File(args[0]);
         File ocrfile = new File(args[1]);
         String gts = new Text(gtfile).toString();
