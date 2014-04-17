@@ -18,7 +18,8 @@
 package eu.digitisation.text;
 
 import eu.digitisation.input.FileType;
-import eu.digitisation.input.StartUp;
+import eu.digitisation.input.SchemaLocationException;
+import eu.digitisation.input.Settings;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.log.Messages;
@@ -54,7 +55,7 @@ public class Text {
     XPathFilter filter;
 
     static {
-        Properties props = StartUp.properties();
+        Properties props = Settings.properties();
         maxlen = Integer.parseInt(props.getProperty("maxlen", "0").trim());
         Messages.info("max length of text set to " + maxlen);
         try {
@@ -78,9 +79,10 @@ public class Text {
      * @param filter XPAthFilter for XML files (extracts textual content from
      * selected elements)
      * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.input.SchemaLocationException
      */
     public Text(File file, Charset encoding, XPathFilter filter)
-            throws WarningException {
+            throws WarningException, SchemaLocationException {
 
         builder = new StringBuilder();
         this.encoding = encoding;
@@ -119,10 +121,11 @@ public class Text {
      * Create Text from file
      *
      * @param file the input file
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.input.SchemaLocationException
      */
     public Text(File file)
-            throws WarningException {
+            throws WarningException, SchemaLocationException {
         this(file, null, null);
     }
 
@@ -130,7 +133,7 @@ public class Text {
      * Constructor only for debugging purposes
      *
      * @param s
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public Text(String s) throws WarningException {
         builder = new StringBuilder();
@@ -191,9 +194,9 @@ public class Text {
     }
 
     private Document loadXMLFile(File file) {
-        Document doc = DocumentParser.parse(file);      
+        Document doc = DocumentParser.parse(file);
         String xmlEncoding = doc.getXmlEncoding();
-        
+
         if (xmlEncoding != null) {
             encoding = Charset.forName(xmlEncoding);
             Messages.info("XML file " + file.getName() + " encoding is " + encoding);
@@ -382,7 +385,7 @@ public class Text {
      *
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException, WarningException, XPathExpressionException {
+    public static void main(String[] args) throws IOException, WarningException, XPathExpressionException, SchemaLocationException {
         if (args.length < 1 | args[0].equals("-h")) {
             System.err.println("usage: Text xmlfile [xpathfile] [xpathfile]");
         } else {

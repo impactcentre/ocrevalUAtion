@@ -19,6 +19,7 @@ package eu.digitisation.layout;
 
 import eu.digitisation.image.Bimage;
 import eu.digitisation.input.FileType;
+import eu.digitisation.input.SchemaLocationException;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.io.File;
@@ -54,7 +55,7 @@ public class Viewer {
      * @param args
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SchemaLocationException {
         if (args.length < 2) {
             System.err.println("Usage: Viewer image_file page_file [options]");
             System.exit(0);

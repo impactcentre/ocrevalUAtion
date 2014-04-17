@@ -29,7 +29,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.io.InvalidObjectException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -61,9 +60,18 @@ public class GUI extends JFrame {
      *
      * @param text the text to be displayed
      */
-    public void warn(String text) {
-        JOptionPane.showMessageDialog(super.getRootPane(), text, "Error",
+    public void warn(String message) {
+        JOptionPane.showMessageDialog(super.getRootPane(), message, "Error",
                 JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Ask for confirmation
+     */
+    public boolean confirm(String message) {
+        return JOptionPane.showConfirmDialog(super.getRootPane(),
+                message, message, JOptionPane.YES_NO_OPTION)
+                == JOptionPane.YES_OPTION;
     }
 
     // The unique constructor
@@ -167,6 +175,28 @@ public class GUI extends JFrame {
         return panel;
     }
 
+    private void createReport(Parameters pars) throws WarningException {
+        try {
+            Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
+            Report report = new Report(batch, pars);
+            File outfile = pars.outfile.getValue();
+            report.write(outfile);
+            Messages.info("Report dumped to " + outfile);
+            Browser.open(outfile.toURI());
+        } catch (InvalidObjectException ex) {
+            warn(ex.getMessage());
+        } catch (SchemaLocationException ex) {
+            boolean ans = confirm("Unknown schema location:\n"
+                    + ex.getSchemaLocation() + '\n'
+                    + "Add it to the list of valid schemas?");
+            if (ans) {
+                FileType.addLocation(ex.getFileType(), ex.getSchemaLocation());
+                Settings.merge(FileType.asProperties());
+                createReport(pars);
+            }
+        }
+    }
+
     public void launch(Parameters pars) {
         try {
             if (gtselector.ready() && ocrselector.ready()) {
@@ -180,17 +210,7 @@ public class GUI extends JFrame {
                 pars.outfile.setValue(outfile);
 
                 if (outfile != null) {
-                    try {
-                        Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
-                        Report report = new Report(batch, pars);
-                        report.write(outfile);
-                        Messages.info("Report dumped to " + outfile);
-                        Browser.open(outfile.toURI());
-                    } catch (InvalidObjectException ex) {
-                        warn(ex.getMessage());
-                    } catch (IOException ex) {
-                        warn("Input/Output Error");
-                    }
+                    createReport(pars);
                 }
             } else {
                 gtselector.checkout();

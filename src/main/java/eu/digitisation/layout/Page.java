@@ -18,6 +18,7 @@
 package eu.digitisation.layout;
 
 import eu.digitisation.input.FileType;
+import eu.digitisation.input.SchemaLocationException;
 import java.awt.Polygon;
 import java.io.File;
 import java.io.IOException;
@@ -233,7 +234,8 @@ abstract class Page {
         return list;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+            throws SchemaLocationException, IOException {
         File file = new File(args[0]);
         FileType ftype = FileType.valueOf(file);
 

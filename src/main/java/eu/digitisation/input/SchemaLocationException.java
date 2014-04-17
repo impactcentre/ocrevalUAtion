@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Universidad de Alicante
+ * Copyright (C) 2014 Universidad de Alicante
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,29 +15,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package eu.digitisation;
-
-import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.WarningException;
-import eu.digitisation.text.CharFilter;
-import eu.digitisation.text.Text;
-import java.io.File;
+package eu.digitisation.input;
 
 /**
- *
+ * An exception raised because the schema for the XML file is unknown
  * @author R.C.C
  */
-public class File2Text {
+public class SchemaLocationException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-    public static void main(String[] args) throws WarningException, SchemaLocationException {
-        if (args.length > 0) {
-            File file = new File(args[0]);
-            CharFilter filter = null;
-            if (args.length > 1) {
-                filter = new CharFilter(new File(args[1]));
-            }
-            Text content = new Text(file);
-            System.out.println(content.toString(filter));
-        }
+    FileType type;
+    String schemaLocation;
+
+    SchemaLocationException(FileType type, String schemaLocation) {
+        this.type = type;
+        this.schemaLocation = schemaLocation;
+    }
+
+    public FileType getFileType() {
+        return type;
+    }
+
+    public String getSchemaLocation() {
+        return schemaLocation;
     }
 }

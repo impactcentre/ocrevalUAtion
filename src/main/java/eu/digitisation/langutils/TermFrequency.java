@@ -17,6 +17,7 @@
  */
 package eu.digitisation.langutils;
 
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.log.Messages;
 import eu.digitisation.math.Counter;
@@ -74,8 +75,9 @@ public class TermFrequency extends Counter<String> {
      *
      * @param dir the input file or directory
      * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.input.SchemaLocationException
      */
-    public void add(File dir) throws WarningException {
+    public void add(File dir) throws WarningException, SchemaLocationException {
         if (dir.isDirectory()) {
             addFiles(dir.listFiles());
         } else {
@@ -89,8 +91,9 @@ public class TermFrequency extends Counter<String> {
      *
      * @param file an input files
      * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.input.SchemaLocationException
      */
-    public void addFile(File file) throws WarningException {
+    public void addFile(File file) throws WarningException, SchemaLocationException {
         try {
             Text content = new Text(file);
             WordScanner scanner = new WordScanner(content.toString(), 
@@ -112,7 +115,7 @@ public class TermFrequency extends Counter<String> {
      *
      * @param files an array of input files
      */
-    private void addFiles(File[] files) throws WarningException {
+    private void addFiles(File[] files) throws WarningException, SchemaLocationException {
         for (File file : files) {
             addFile(file);
         }
@@ -211,6 +214,7 @@ public class TermFrequency extends Counter<String> {
      * Main function
      *
      * @param args see help
+     * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {
