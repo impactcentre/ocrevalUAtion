@@ -142,7 +142,7 @@ public class Settings {
 
         try {
             os = new FileOutputStream(user);
-            props.storeToXML(os, null);
+            props.storeToXML(os, comments.toString());
             Messages.info(Settings.class
                     .getName() + ": created new properties file " + user);
         } catch (FileNotFoundException ex) {
