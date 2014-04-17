@@ -42,8 +42,9 @@ public class Settings {
     private final static Properties props;
 
     static {
-        defaults = Settings.class.getResourceAsStream("/defaultProperties.xml");
 
+        defaults = Settings.class.getResourceAsStream("/defaultProperties.xml");
+        Messages.info("Default props in file " + defaults);
         File dir = appFolder();
         File primary = (dir == null) ? null : new File(dir, "userProperties.xml");
         File secondary = open("userProperties.xml");
@@ -59,20 +60,21 @@ public class Settings {
 
         props = new Properties();
         try {
-            InputStream in;
-            if (user == null || !user.exists()) {
-                in = defaults;
-            } else {
-                in = new FileInputStream(user);
+            if (defaults != null) {
+                props.loadFromXML(defaults);
+            }
+            if (user != null && user.exists()) {
+                InputStream in = new FileInputStream(user);
+                Properties uprops = new Properties();
+                uprops.loadFromXML(in);
+                merge(uprops);
+                in.close();
                 Messages.info("Read properties from " + user);
             }
-            props.loadFromXML(in);
-            in.close();
         } catch (FileNotFoundException ex) {
             Messages.severe(Settings.class.getName() + ": " + ex);
         } catch (IOException ex) {
             Messages.severe(Settings.class.getName() + ": " + ex);
-
         }
     }
 

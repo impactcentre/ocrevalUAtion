@@ -53,11 +53,11 @@ public enum FileType {
         FR10.tag = "document";
         location = props.getProperty("schemaLocation.FR10");
         FR10.schemaLocation = (location == null) ? "" : location;
-        
+
         ALTO.tag = "alto";
         location = props.getProperty("schemaLocation.ALTO");
         ALTO.schemaLocation = (location == null) ? "" : location;
-       
+
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
     }
@@ -72,7 +72,7 @@ public enum FileType {
         if (type.schemaLocation == null || type.schemaLocation.isEmpty()) {
             type.schemaLocation = "\t " + schemaLocation + '\n';
         } else {
-            type.schemaLocation += "\t"  + schemaLocation + '\n';
+            type.schemaLocation += "\t" + schemaLocation + '\n';
         }
     }
 
@@ -102,6 +102,7 @@ public enum FileType {
         String[] urls = locations2.trim().split("\\p{Space}+");
 
         for (String url : urls) {
+            System.out.println(url);
             if (!url.isEmpty() && locations1.contains(url)) {
                 return true;
             }
@@ -138,7 +139,7 @@ public enum FileType {
             } else {
                 throw new IOException("XML file must specify an schema location");
             }
-            //Messages.info("Schema location is " + location);
+//            System.out.println("Schema location is " + location);
 
             if (doctype.equals(PAGE.tag)) {
                 if (sameLocation(location, PAGE.schemaLocation)) {

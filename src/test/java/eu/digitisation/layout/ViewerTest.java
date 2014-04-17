@@ -17,6 +17,7 @@
  */
 package eu.digitisation.layout;
 
+import eu.digitisation.input.SchemaLocationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -35,9 +36,11 @@ public class ViewerTest {
      *
      * @throws java.io.IOException
      * @throws java.net.URISyntaxException
+     * @throws eu.digitisation.input.SchemaLocationException
      */
     @Test
-    public void createTiffPage() throws IOException, URISyntaxException {
+    public void createTiffPage()
+            throws IOException, URISyntaxException, SchemaLocationException {
         URL resourceUrl1 = getClass().getResource("/00439040.tif");
         File file1 = new File(resourceUrl1.toURI());
         URL resourceUrl2 = getClass().getResource("/00439040_gt_PAGE.xml");
@@ -51,7 +54,7 @@ public class ViewerTest {
         long size = file3.length();
 
         assertTrue(size > 0);
-       
+
     }
 
 }

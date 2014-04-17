@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.Text;
@@ -50,7 +51,8 @@ public class EditDistanceTest {
      * @throws eu.digitisation.input.WarningException
      */
     @Test
-    public void testCharDistance() throws URISyntaxException, WarningException {
+    public void testCharDistance() 
+            throws URISyntaxException, WarningException, SchemaLocationException {
         System.out.println("charDistance");
         EdOpWeight w = new OcrOpWeight();
         String s1 = "patata";
