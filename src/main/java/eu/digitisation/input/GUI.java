@@ -175,6 +175,28 @@ public class GUI extends JFrame {
         return panel;
     }
 
+    private void createReport(Parameters pars) throws WarningException {
+        try {
+            Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
+            Report report = new Report(batch, pars);
+            File outfile = pars.outfile.getValue();
+            report.write(outfile);
+            Messages.info("Report dumped to " + outfile);
+            Browser.open(outfile.toURI());
+        } catch (InvalidObjectException ex) {
+            warn(ex.getMessage());
+        } catch (SchemaLocationException ex) {
+            boolean ans = confirm("Unknown schema location:\n"
+                    + ex.getSchemaLocation() + '\n'
+                    + "Add it to the list of valid schemas?");
+            if (ans) {
+                FileType.addLocation(ex.getFileType(), ex.getSchemaLocation());
+                Settings.merge(FileType.asProperties());
+                createReport(pars);
+            }
+        }
+    }
+
     public void launch(Parameters pars) {
         try {
             if (gtselector.ready() && ocrselector.ready()) {
@@ -188,23 +210,7 @@ public class GUI extends JFrame {
                 pars.outfile.setValue(outfile);
 
                 if (outfile != null) {
-                    try {
-                        Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
-                        Report report = new Report(batch, pars);
-                        report.write(outfile);
-                        Messages.info("Report dumped to " + outfile);
-                        Browser.open(outfile.toURI());
-                    } catch (InvalidObjectException ex) {
-                        warn(ex.getMessage());
-                    } catch (SchemaLocationException ex) {
-                        boolean ans = confirm("Unknown schema location: "
-                                + ex.getSchemaLocation()
-                                + "\nAdd it to the list of valid schemas?");
-                        if (ans) {
-                            StartUp.addValue("schemaLocation." + ex.getFileType().toString(),
-                                    ex.getSchemaLocation());
-                        }
-                    }
+                    createReport(pars);
                 }
             } else {
                 gtselector.checkout();

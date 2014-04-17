@@ -52,17 +52,18 @@ public class OutputFileSelector extends JFileChooser {
         }
         setCurrentDirectory(OutputFileSelector.dir);
         setSelectedFile(file);
-      
+
         int returnVal = showOpenDialog(OutputFileSelector.this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selection = getSelectedFile();
             OutputFileSelector.dir = selection.getParentFile();
-           
+
             if (selection != null && selection.exists()) {
                 int response = JOptionPane.showConfirmDialog(new JFrame().getContentPane(),
                         "The file " + selection.getName()
-                        + " already exists. Do you want to replace the existing file?",
+                        + " already exists.\n"
+                        + "Do you want to replace the existing file?",
                         "Overwrite file", JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE);
 

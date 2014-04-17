@@ -83,7 +83,8 @@ public class Report extends DocumentBuilder {
      * @param pars input parameters
      * @throws eu.digitisation.input.WarningException
      */
-    public Report(Batch batch, Parameters pars) throws WarningException, SchemaLocationException {
+    public Report(Batch batch, Parameters pars) 
+            throws WarningException, SchemaLocationException {
         super("html");
         init();
 

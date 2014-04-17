@@ -234,7 +234,8 @@ abstract class Page {
         return list;
     }
 
-    public static void main(String[] args) throws SchemaLocationException {
+    public static void main(String[] args) 
+            throws SchemaLocationException, IOException {
         File file = new File(args[0]);
         FileType ftype = FileType.valueOf(file);
 

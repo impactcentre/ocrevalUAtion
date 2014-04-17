@@ -18,7 +18,7 @@
 package eu.digitisation.input;
 
 /**
- *
+ * An exception raised because the schema for the XML file is unknown
  * @author R.C.C
  */
 public class SchemaLocationException extends Exception {

@@ -40,7 +40,7 @@ public enum FileType {
     String schemaLocation;  // schema URL
 
     static {
-        Properties props = StartUp.properties();
+        Properties props = Settings.properties();
         String location;
 
         TEXT.tag = null;  // no tag for this type 
@@ -48,20 +48,48 @@ public enum FileType {
 
         PAGE.tag = "PcGts";
         location = props.getProperty("schemaLocation.PAGE");
-        PAGE.schemaLocation = location == null ? ""
-                : StringNormalizer.reduceWS(location);
+        PAGE.schemaLocation = (location == null) ? "" : location;
 
         FR10.tag = "document";
         location = props.getProperty("schemaLocation.FR10");
-        FR10.schemaLocation = location == null ? ""
-                : StringNormalizer.reduceWS(location);
+        FR10.schemaLocation = (location == null) ? "" : location;
+        
         ALTO.tag = "alto";
         location = props.getProperty("schemaLocation.ALTO");
-        ALTO.schemaLocation = location == null ? ""
-                : StringNormalizer.reduceWS(location);
-
+        ALTO.schemaLocation = (location == null) ? "" : location;
+       
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
+    }
+
+    /**
+     * Add anew schema location to this type of file
+     *
+     * @param type a FileType
+     * @param schemaLocation a new schemaLocation for this type of files
+     */
+    public static void addLocation(FileType type, String schemaLocation) {
+        if (type.schemaLocation == null || type.schemaLocation.isEmpty()) {
+            type.schemaLocation = "\t " + schemaLocation + '\n';
+        } else {
+            type.schemaLocation += "\t"  + schemaLocation + '\n';
+        }
+    }
+
+    /**
+     *
+     * @return the schemaLocations as a properties object: a (key, value) map
+     */
+    public static Properties asProperties() {
+        Properties props = new Properties();
+        for (FileType type : values()) {
+            String key = "schemaLocation." + type.name();
+            String value = type.schemaLocation;
+            if (value != null) {
+                props.setProperty(key, value);
+            }
+        }
+        return props;
     }
 
     /**
@@ -71,10 +99,10 @@ public enum FileType {
      * @return True if at least one URL is in both locations
      */
     private static boolean sameLocation(String locations1, String locations2) {
-        String[] urls = locations2.split("\\p{Space}+");
+        String[] urls = locations2.trim().split("\\p{Space}+");
 
         for (String url : urls) {
-            if (locations1.contains(url)) {
+            if (!url.isEmpty() && locations1.contains(url)) {
                 return true;
             }
         }
@@ -85,9 +113,13 @@ public enum FileType {
      *
      * @param file a file
      * @return the FileType of file
+     * @throws eu.digitisation.input.SchemaLocationException
+     * @throws java.io.IOException
      */
-    public static FileType valueOf(File file) throws SchemaLocationException {
+    public static FileType valueOf(File file)
+            throws SchemaLocationException, IOException {
         String name = file.getName().toLowerCase(Locale.ENGLISH);
+        FileType type = UNKNOWN;
 
         if (name.endsWith(".txt")) {
             return TEXT;
@@ -104,39 +136,42 @@ public enum FileType {
                 location = StringNormalizer
                         .reduceWS(root.getAttribute("xsi:noNamespaceSchemaLocation"));
             } else {
-                location = null;
+                throw new IOException("XML file must specify an schema location");
             }
+            //Messages.info("Schema location is " + location);
 
             if (doctype.equals(PAGE.tag)) {
                 if (sameLocation(location, PAGE.schemaLocation)) {
-                    return PAGE;
+                    type = PAGE;
                 } else if (!location.isEmpty()) {
                     throw new SchemaLocationException(PAGE, location);
                 }
             } else if (doctype.equals(FR10.tag)) {
                 if (sameLocation(location, FR10.schemaLocation)) {
-                    return FR10;
+                    type = FR10;
                 } else if (!location.isEmpty()) {
                     throw new SchemaLocationException(FR10, location);
                 }
             } else if (doctype.equals(ALTO.tag)) {
                 if (sameLocation(location, ALTO.schemaLocation)) {
-                    return ALTO;
+                    type = ALTO;
                 } else if (!location.isEmpty()) {
                     throw new SchemaLocationException(ALTO, location);
                 }
             }
+
         } else if (name.endsWith(".html")) {
             try {
                 org.jsoup.nodes.Document doc = org.jsoup.Jsoup.parse(file, null);
                 if (!doc.head().select("meta[name=ocr-system").isEmpty()) {
-                    return HOCR;
+                    type = HOCR;
                 }
             } catch (IOException ex) {
                 Messages.info(FileType.class
                         .getName() + ": " + ex);
             }
         }
-        return UNKNOWN;
+        Messages.info(file.getName() + " is " + type);
+        return type;
     }
 }

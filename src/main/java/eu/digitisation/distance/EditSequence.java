@@ -294,8 +294,9 @@ public class EditSequence {
                     : subseq;
 
             append(head);
-            if (len1 > chunkLen) {
-                Messages.info((100 * length1) / len1 + "% of file processed");
+            if (len1 > 10 * chunkLen) {
+                int frac =  (100 * length1) / len1;
+                Messages.info(frac + "% of file processed");
             }
         }
     }
