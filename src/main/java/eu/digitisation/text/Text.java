@@ -49,7 +49,7 @@ import org.w3c.dom.NodeList;
 public class Text {
 
     StringBuilder builder;
-    static final int maxlen;
+    static int maxlen;
     Charset encoding;
     XPathFilter filter;
 
@@ -70,6 +70,7 @@ public class Text {
         }
     }
 
+   
     /**
      * Create TextContent from file
      *
@@ -119,7 +120,7 @@ public class Text {
      * Create Text from file
      *
      * @param file the input file
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public Text(File file)
             throws WarningException {
@@ -130,7 +131,7 @@ public class Text {
      * Constructor only for debugging purposes
      *
      * @param s
-     * @throws eu.digitisation.io.WarningException
+     * @throws eu.digitisation.input.WarningException
      */
     public Text(String s) throws WarningException {
         builder = new StringBuilder();

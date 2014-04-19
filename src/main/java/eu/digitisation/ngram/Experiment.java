@@ -53,8 +53,8 @@ public class Experiment {
 
             NgramModel m1 = new NgramModel(N);
             NgramModel m2 = new NgramModel(N);
-            m1.add(s1);
-            m2.add(s2);
+            m1.addWord(s1);
+            m2.addWord(s2);
             
             cosineDist = 1 - Distance.cosine(m1, m2);
             errors = Distance.delta(m1, m2);

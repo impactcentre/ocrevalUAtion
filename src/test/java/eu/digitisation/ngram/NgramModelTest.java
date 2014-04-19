@@ -17,6 +17,8 @@
  */
 package eu.digitisation.ngram;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -33,8 +35,8 @@ public class NgramModelTest {
     public void testSize() {
         System.out.println("size");
         NgramModel ngrams = new NgramModel(2);
-        ngrams.add("0000");
-        ngrams.add("0100");
+        ngrams.addWord("0000");
+        ngrams.addWord("0100");
 
         int expResult = 9;  // 5 bi-grams plus 3 uni-grams plus 1 0-gram
         int result = ngrams.size();
@@ -49,7 +51,7 @@ public class NgramModelTest {
     public void testlogH() {
         System.out.println("logH");
         NgramModel instance = new NgramModel(2);
-        instance.add("lava");
+        instance.addWord("lava");
         // "" l a v $ #l la av va a$ -> 10 
         double expResult = 2.0;
         double result = instance.entropy();
@@ -60,7 +62,7 @@ public class NgramModelTest {
     public void testWordLogProb() {
         System.out.println("wordLogProb");
         NgramModel instance = new NgramModel(1);
-        instance.add("lava");
+        instance.addWord("lava");
         double expResult = (3 * Math.log(0.2) + 2 * Math.log(0.4));
         double result = instance.logProb("lava");
         assertEquals(expResult, result, 0.01);
@@ -70,8 +72,8 @@ public class NgramModelTest {
     public void testGetGoodTuringPars() {
         System.out.println("size");
         NgramModel ngrams = new NgramModel(3);
-        ngrams.add("0000");
-        ngrams.add("0100");
+        ngrams.addWord("0000");
+        ngrams.addWord("0100");
         double[] expResult = {0.1, 0.2, 0.4};
         double[] result = ngrams.getGoodTuringPars();
         assertEquals(expResult.length, result.length);
@@ -86,8 +88,8 @@ public class NgramModelTest {
         System.out.println("prob");
         NgramModel instance = new NgramModel(1);
         NgramModel ngrams = new NgramModel(3);
-        ngrams.add("0000");
-        ngrams.add("0100");
+        ngrams.addWord("0000");
+        ngrams.addWord("0100");
 
         assertEquals(4 / (double) 7, ngrams.prob("00"), 0.001);
         assertEquals(0.7, ngrams.prob("0"), 0.001);
@@ -98,8 +100,8 @@ public class NgramModelTest {
         System.out.println("prob");
         NgramModel instance = new NgramModel(1);
         NgramModel ngrams = new NgramModel(3);
-        ngrams.add("0000");
-        ngrams.add("0100");
+        ngrams.addWord("0000");
+        ngrams.addWord("0100");
 
         double expResult = 0.8 * (4 / (double) 7) + 0.2 * 0.7;
         double result = ngrams.smoothProb("00");
@@ -114,15 +116,53 @@ public class NgramModelTest {
     public void testLogProb() {
         System.out.println("logProb");
         NgramModel instance = new NgramModel(1);
-        instance.add("lava");
+        instance.addWord("lava");
         double expResult = -Math.log(5);
         double result = instance.logProb("baba", 'v');
         assertEquals(expResult, result, 0.01);
 
         instance = new NgramModel(2);
-        instance.add("lava");
+        instance.addWord("lava");
         expResult = Math.log(0.2);
         result = instance.logProb("ca", 'v');
         assertEquals(expResult, result, 0.01);
+    }
+
+    @Test
+    public void testAddText() {
+        System.out.println("addText");
+        String BOS = String.valueOf(NgramModel.BOS);
+        String EOS = String.valueOf(NgramModel.EOS);
+        NgramModel ngrams = new NgramModel(3);
+        NgramModel ref = new NgramModel(3);
+        String input = "ab";
+        InputStream is = new ByteArrayInputStream(input.getBytes());
+
+        // result
+        ngrams.addText(is);
+
+        // expected result
+        // 3-grams
+        ref.addEntry(BOS + BOS + 'a');
+        ref.addEntry(BOS + "ab");
+        ref.addEntry("ab ");
+        ref.addEntry("b " + EOS);
+        //2-grams
+        ref.addEntry(BOS + 'a');
+        ref.addEntry("ab");
+        ref.addEntry("b ");
+        ref.addEntry(" " + EOS);
+        // 1-grams
+        ref.addEntry("a");
+        ref.addEntry("b");
+        ref.addEntry(" ");
+        ref.addEntry(EOS);
+        // 0-grams
+        ref.addEntries("", 4);
+
+        ref.showDiff(ngrams);
+        assert (ref.equals(ngrams));
+        assertEquals(ref, ngrams);
+
     }
 }

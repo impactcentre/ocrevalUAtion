@@ -18,11 +18,16 @@
 package eu.digitisation.ngram;
 
 import eu.digitisation.log.Messages;
+import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.WordScanner;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -38,38 +43,11 @@ import java.util.zip.GZIPOutputStream;
 public class NgramModel implements Serializable {
 
     static final long serialVersionUID = 1L;
-    static final String BOS = "\u0002";   // Begin of string text marker.
-    static final String EOS = "\u0003";   // End of text marker.
+    static final char BOS = '\u0002';   // Begin of string text marker.
+    static final char EOS = '\u0003';   // End of text marker.
     int order;                   // The size of the context plus one (n-gram).
     HashMap<String, Int> occur;  // Number of occurrences.
     double[] lambda;             // Backoff parameters
-
-    /**
-     * Set maximal order of model.
-     *
-     * @param order the size of the context plus one (the n in n-gram).
-     */
-    public final void setOrder(int order) {
-        if (occur == null || occur.isEmpty()) {
-            if (order > 0) {
-                this.order = order;
-            } else {
-                throw new IllegalArgumentException("Order must be grater than 0");
-            }
-        } else {
-            throw new IllegalStateException("Cannot change order of model with previous content");
-        }
-    }
-
-    /**
-     * Class constructor (default order is 2).
-     */
-    public NgramModel() {
-        setOrder(2);
-        occur = new HashMap<String, Int>();
-        lambda = null;
-
-    }
 
     /**
      * Class constructor.
@@ -77,7 +55,11 @@ public class NgramModel implements Serializable {
      * @param order the size of the context plus one.
      */
     public NgramModel(int order) {
-        setOrder(order);
+        if (order > 0) {
+            this.order = order;
+        } else {
+            throw new IllegalArgumentException("N-gram Order must be grater than 0");
+        }
         occur = new HashMap<String, Int>();
         lambda = null;
     }
@@ -99,10 +81,11 @@ public class NgramModel implements Serializable {
             FileOutputStream fos = new FileOutputStream(file);
             GZIPOutputStream gos = new GZIPOutputStream(fos);
             ObjectOutputStream out = new ObjectOutputStream(gos);
+
             out.writeObject(this);
             out.close();
         } catch (IOException ex) {
-            Messages.info(NgramModel.class.getName() + ": " + ex);
+            Messages.severe(NgramModel.class.getName() + ": " + ex);
         }
     }
 
@@ -117,14 +100,17 @@ public class NgramModel implements Serializable {
             GZIPInputStream gis = new GZIPInputStream(fis);
             ObjectInputStream in = new ObjectInputStream(gis);
             NgramModel ngram = (NgramModel) in.readObject();
-            in.close();
+
             this.order = ngram.order;
             this.occur = ngram.occur;
             this.lambda = ngram.lambda;
+            in.close();
+
+            Messages.info("Read " + order + "-gram model");
         } catch (IOException ex) {
-            Messages.info(NgramModel.class.getName() + ": " + ex);
+            Messages.severe(NgramModel.class.getName() + ": " + ex);
         } catch (ClassNotFoundException ex) {
-            Messages.info(NgramModel.class.getName() + ": " + ex);
+            Messages.severe(NgramModel.class.getName() + ": " + ex);
         }
     }
 
@@ -163,57 +149,78 @@ public class NgramModel implements Serializable {
     }
 
     /**
-     * @param s a k-gram
-     * @return the (k-1)-gram obtained by removing its first character.
+     * @param s a string
+     * @return the substring obtained by removing its first character.
      */
     private String tail(String s) {
         return s.substring(1);
     }
 
     /**
-     * @param s a k-gram
-     * @return the (k-1)-gram obtained by removing its last character.
+     * @param s a string
+     * @return the substring obtained by removing its last character.
      */
     private String head(String s) {
         return s.substring(0, s.length() - 1);
     }
 
     /**
-     * @return the number of text entries (usually words) building the model.
+     *
+     * @param s a string
+     * @return the last character in the string
      */
-    private int numWords() {
-        return occur.get(EOS).getValue(); // end-of-word.
+    private char lastChar(String s) {
+        return s.charAt(s.length() - 1);
     }
 
     /**
-     * @param s a k-gram (k > 0)
-     * @return the conditional probability of the k-gram, normalized to the
-     * number of heads.
+     * @return the number of strings in the sample used to build the model.
      */
-    public double prob(String s) {
-        if (occur.containsKey(s)) {
-            String h = head(s);
-            if (h.endsWith(BOS)) {  // since head is not stored
-                return occur.get(s).getValue() / (double) numWords();
-            } else {
-                return occur.get(s).getValue()
-                        / (double) occur.get(h).getValue();
-            }
+    private int sampleSize() {
+        return occur.get(String.valueOf(EOS)).getValue();
+    }
+
+    private int occurrences(String key) {
+        if (occur.containsKey(key)) {
+            return occur.get(key).getValue();
         } else {
             return 0;
         }
     }
 
     /**
-     * @param s a k-gram
-     * @return the conditional probability of the k-gram, normalized to the
-     * frequency of its heads and interpolated with lower order models.
+     * @param s a non-empty string
+     * @return the conditional probability of the string relative to the
+     * probability of its head.
      */
-    public double smoothProb(String s) {
+    protected double prob(String s) {
         double result;
+        if (s.charAt(0) == BOS) {
+            result = occurrences(String.valueOf(BOS) + lastChar(s))
+                    / (double) sampleSize();
+        } else if (!occur.containsKey(s)) {
+            result = 0;
+        } else {
+            result = occurrences(s) / (double) occurrences(head(s));
+        }
+        return result;
+    }
+
+    /**
+     * @param s a a non-empty string
+     * @return the conditional probability of the string relative to its head,
+     * and interpolated with lower-order models.
+     */
+    protected double smoothProb(String s) {
+        double result;
+
         if (s.length() > 1) {
-            double lam = lambda(s.length() - 1);
-            result = (1 - lam) * prob(s) + lam * smoothProb(tail(s));
+            if (s.charAt(0) == BOS && s.length() > 2) {
+                result = smoothProb(s.substring(s.length() - 2, s.length()));
+            } else {
+                double lam = lambda(s.length() - 1);
+                result = (1 - lam) * prob(s) + lam * smoothProb(tail(s));
+            }
         } else {
             result = prob(s);
         }
@@ -221,23 +228,11 @@ public class NgramModel implements Serializable {
     }
 
     /**
-     * @param s a k-gram
-     * @return the expected number of occurrences (per word) of s.
-     */
-    private double expectedNumberOf(String s) {
-        if (s.endsWith(BOS)) {
-            return 1;
-        } else {
-            return occur.get(s).getValue() / (double) numWords();
-        }
-    }
-
-    /**
-     * Increments number of occurrences of s.
+     * Increments number of occurrences of the given string.
      *
-     * @param s a k-gram.
+     * @param s a string
      */
-    private void addEntry(String s) {
+    protected void addEntry(String s) {
         if (occur.containsKey(s)) {
             occur.get(s).increment();
         } else {
@@ -251,7 +246,7 @@ public class NgramModel implements Serializable {
      * @param s a k-gram.
      * @param n number of occurrences
      */
-    private void addEntries(String s, int n) {
+    protected void addEntries(String s, int n) {
         if (occur.containsKey(s)) {
             occur.get(s).add(n);
         } else {
@@ -260,76 +255,35 @@ public class NgramModel implements Serializable {
     }
 
     /**
-     * Compute n-gram model log entropy per word (in bits).
-     *
-     * @return log entropy per word (in bits).
-     */
-    public double entropy() {
-        double p, sum = 0;
-        for (String s : occur.keySet()) {
-            if (s.length() == order) {
-                p = prob(s);
-                sum -= expectedNumberOf(head(s)) * p * Math.log(p);
-            }
-        }
-        return sum / Math.log(2);
-    }
-
-    /**
      * Extracts all k-grams in a word or text upto the maximal order. For
      * instance, if word = "ma" and order = 3, then 0-grams are: "" (three empty
      * strings, used to normalize 1-grams); three uni-grams: "m, a, $" ($
      * represents end-of-string); three bi-grams: "#m, ma, a$" (# is used to
-     * differentiate #m from 1-gram m); and three tri-grams: "##m, #ma, ma$"
+     * differentiate #m from 1-gram m); and two tri-grams: "#ma, ma$"
      *
-     * @remark never add uni-gram "#" to the model because the normalization of
-     * uni-grams will be wrong!
+     * @remark It does not add uni-grams "#" to the model since they can never
+     * appear in the middle of a word. Normalization of bi-grams starting with #
+     * will use n($) instead, since n(#)=n($)
+     *
      * @param word the word or text (string of characters) to be added.
      */
-    public void add(String word) {
+    public void addWord(String word) {
         if (word.length() < 1) {
-            throw new IllegalStateException("Cannot extract n-grams from empty word");
+            throw new IllegalArgumentException("Cannot extract n-grams from empty word");
         } else {
-            word += EOS;
-        }
-        String s = "";
-        while (s.length() < order) {
-            s += BOS;
-        }
-        for (int last = 0; last < word.length(); ++last) {
-            s = tail(s) + word.charAt(last);
-            for (int first = 0; first <= s.length(); ++first) {
-                addEntry(s.substring(first));
+            String input = BOS + word + EOS;
+            for (int high = 2; high <= input.length(); ++high) {
+                for (int low = Math.max(0, high - order); low < high; ++low) {
+                    String s = input.substring(low, high);
+                    addEntry(s);
+                }
             }
+            addEntries("", word.length() + 1);
         }
     }
 
     /**
-     * Add all k-grams in a word or text
-     *
-     * @param word the word or text to be processed
-     * @param times the number of occurrences of the word or text
-     */
-    public void add(String word, int times) {
-        if (word.length() < 1) {
-            throw new IllegalStateException("Cannot extract n-grams from empty word");
-        } else {
-            word += EOS;
-        }
-        String s = "";
-        while (s.length() < order) {
-            s += BOS;
-        }
-        for (int last = 0; last < word.length(); ++last) {
-            s = tail(s) + word.charAt(last);
-            for (int first = 0; first <= s.length(); ++first) {
-                addEntries(s.substring(first), times);
-            }
-        }
-    }
-
-    /**
-     * Reads text file and adds words to model.
+     * Reads text file and adds the words in text to model.
      *
      * @param file a text file
      * @param encoding the text encoding
@@ -341,10 +295,9 @@ public class NgramModel implements Serializable {
             String word;
             while ((word = scanner.nextWord()) != null) {
                 if (caseSensitive) {
-                    add(word);
+                    addWord(word);
                 } else {
-                    add(word.toLowerCase());
-
+                    addWord(word.toLowerCase());
                 }
             }
         } catch (IOException ex) {
@@ -356,32 +309,182 @@ public class NgramModel implements Serializable {
     /**
      * Compute probability of a word or text
      *
-     * @param text a word or a sequence of characters
-     * @return the log-probability (base e) of the sequence
+     * @param word a non-empty a sequence of characters
+     * @return the log-probability (base e) of this string
      */
-    public double logProb(String text) {
+    public double logWordProb(String word) {
         double res = 0;
-        if (text.length() < 1) {
+
+        if (word.length() < 1) {
             throw new IllegalArgumentException("Cannot compute probability of empty word");
         } else {
-            text += EOS;
-        }
-        String s = "";
-        while (s.length() < order) {
-            s += BOS;
-        }
-        for (int last = 0; last < text.length(); ++last) {
-            s = tail(s) + text.charAt(last);
-
-            double p = smoothProb(s);
-            if (p == 0) {
-                System.err.println(s + " has 0 probability");
-                return Double.NEGATIVE_INFINITY;
-            } else {
-                res += Math.log(p);
+            String input = BOS + word + EOS;
+            for (int high = 2; high <= input.length(); ++high) {
+                int low = Math.max(0, high - order);
+                String s = input.substring(low, high);
+                double p = smoothProb(s);
+                if (p == 0) {
+                    Messages.warning(s + " has 0 probability");
+                    return Double.NEGATIVE_INFINITY;
+                } else {
+                    res += Math.log(p);
+                }
             }
         }
         return res;
+    }
+
+    /**
+     * Reads input text from standard input and computes per-word cross entropy.
+     *
+     * @param caseSensitive true if the model is case sensitive
+     * @return the log-likelihood of input text (per word).
+     */
+    public double logPerWordLikelihood(boolean caseSensitive) {
+        try {
+            Charset encoding = Charset.forName(System.getProperty("file.encoding"));
+            WordScanner scanner = new WordScanner(System.in, encoding);
+            String word;
+            double result = 0;
+            int numWords = 0;
+            while ((word = scanner.nextWord()) != null) {
+                ++numWords;
+                if (caseSensitive) {
+                    result -= logWordProb(word);
+                } else {
+                    result -= logWordProb(word.toLowerCase());
+                }
+            }
+
+            return result / numWords / Math.log(2);
+
+        } catch (IOException ex) {
+            Messages.severe(NgramModel.class
+                    .getName() + ": " + ex);
+        }
+        return Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     * Add all the content in a text file
+     *
+     * @param is the input stream with text content
+     */
+    public void addText(InputStream is) {
+        try {
+            BufferedReader reader
+                    = new BufferedReader(new InputStreamReader(is));
+            String context = String.valueOf(BOS);
+
+            while (reader.ready()) {
+                String line = StringNormalizer.reduceWS(reader.readLine());
+                if (!line.isEmpty()) {
+                    String input
+                            = (context.charAt(0) == BOS)
+                            ? line
+                            : " " + line;
+                    addSubstrings(context, input);
+                    if (input.length() >= order) {
+                        context = input.substring(input.length() - order + 1);
+                    } else {
+                        String s = context + input;
+                        context = s.substring(s.length() - order + 1);
+                    }
+                }
+            }
+            addSubstrings(context, String.valueOf(EOS));
+        } catch (FileNotFoundException ex) {
+            Messages.severe(NgramModel.class.getName() + ": " + ex);
+        } catch (IOException ex) {
+            Messages.severe(NgramModel.class.getName() + ": " + ex);
+        }
+    }
+
+    /**
+     * Add all substrings in this string to the NgramModel
+     *
+     * @param context the preceding context, possibly empty
+     * @param text the non-empty input string
+     */
+    protected void addSubstrings(String context, String text) {
+        if (text.length() < 1) {
+            throw new IllegalArgumentException("Cannot extract n-grams from empty text");
+        }
+        String s = context + text;
+        // extract all substrings
+        for (int high = context.length() + 1; high <= s.length(); ++high) {
+            for (int low = Math.max(0, high - order); low < high; ++low) {
+                addEntry(s.substring(low, high));
+            }
+        }
+        // the normalization of 1-grams
+        addEntries("", text.length());
+    }
+
+    /**
+     * Compute the log-likelihood (per character) of the text contained in a
+     * file
+     *
+     * @param is the InputStream containing the text
+     * @param contextLength the length of the context for the evaluation of the
+     * character probability
+     * @return
+     */
+    public double logLikelihood(InputStream is, int contextLength) {
+        int nchar = 0;
+        double loglike = 0;
+        try {
+            BufferedReader reader
+                    = new BufferedReader(new InputStreamReader(is));
+            String context = String.valueOf(BOS);
+
+            while (reader.ready()) {
+                String line = StringNormalizer.reduceWS(reader.readLine());
+                if (!line.isEmpty()) {
+                    String input
+                            = (context.charAt(0) == BOS)
+                            ? line
+                            : " " + line;
+
+                    nchar += input.length();
+                    loglike += logLikelihood(context, input);
+                    if (input.length() > contextLength) {
+                        context = input.substring(input.length() - contextLength);
+                    } else {
+                        String s = context + input;
+                        context = s.substring(s.length() - contextLength);
+                    }
+                }
+                loglike += logLikelihood(context, String.valueOf(EOS));
+                ++nchar;
+            }
+        } catch (IOException ex) {
+            Messages.warning(NgramModel.class.getName() + ": " + ex.getMessage());
+        }
+
+        return loglike / nchar;
+    }
+
+    /**
+     * 
+     * @param context the preceding context 
+     * @param input a non-empty string
+     * @return the log probability of the string after the given context
+     */
+    public double logLikelihood(String context, String input) {
+        int contextLength = context.length();
+        double loglike = 0;
+        for (int pos = 0; pos < input.length(); ++pos) {
+            String s;
+            if (pos >= contextLength) {
+                s = input.substring(pos - contextLength, pos + 1);
+            } else {
+                s = context.substring(pos)
+                        + input.substring(0, pos + 1);
+            }
+            loglike += Math.log(smoothProb(s));
+        }
+        return loglike;
     }
 
     /**
@@ -396,7 +499,7 @@ public class NgramModel implements Serializable {
     public double logProb(String context, char c) {
         double res = 0;
         int len = context.length() + 1; // the length of the context + character
-        String s = len > order
+        String s = (len > order)
                 ? context.substring(len - order) + c
                 : context + c;
         double p = smoothProb(s);
@@ -407,48 +510,23 @@ public class NgramModel implements Serializable {
     }
 
     /**
-     * Reads input text and computes per-word cross entropy.
      *
-     * @param caseSensitive true if the model is case sensitive
-     * @return the log-likelihood of text 8per word).
+     * @return string representation of the NgramModel: keys and values
      */
-    public double logPerWordLikelihood(boolean caseSensitive) {
-        try {
-            Charset encoding = Charset.forName(System.getProperty("file.encoding"));
-            WordScanner scanner = new WordScanner(System.in, encoding);
-            String word;
-            double result = 0;
-            int numWords = 0;
-            while ((word = scanner.nextWord()) != null) {
-                ++numWords;
-                if (caseSensitive) {
-                    result -= logProb(word);
-                } else {
-                    result -= logProb(word.toLowerCase());
-                }
-            }
-
-            return result / numWords / Math.log(2);
-
-        } catch (IOException ex) {
-            Messages.info(NgramModel.class
-                    .getName() + ": " + ex);
-        }
-        return Double.POSITIVE_INFINITY;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (String s : occur.keySet()) {
-            builder.append(s.replaceAll(BOS, "<BoS>").replaceAll(EOS, "<EoS>"));
-            builder.append(' ').append(occur.get(s)).append('\n');
+        for (String key : occur.keySet()) {
+            String s = key.replaceAll(String.valueOf(BOS), "<BoS>")
+                    .replaceAll(String.valueOf(EOS), "<EoS>");
+            builder.append("'").append(s).append("' ")
+                    .append(occur.get(key)).append('\n');
         }
         return builder.toString();
     }
 
     /**
-     * Show differences between model (debug function)
+     * Show differences between two NgramModels (debug function)
      *
      * @param other another NgramModel (order must coincide)
      */
@@ -463,50 +541,108 @@ public class NgramModel implements Serializable {
                 int val2 = other.occur.containsKey(s)
                         ? other.occur.get(s).getValue() : 0;
                 if (val1 != val2) {
-                    System.out.println(s + " " + val1 + " " + val2);
+                    System.out.println(s.replaceAll(String.valueOf(BOS), "<BoS>")
+                            .replaceAll(String.valueOf(EOS), "<EoS>")
+                            + " " + val1 + " " + val2);
                 }
             }
         }
         for (String s : other.occur.keySet()) {
             if (s.length() > 0 && !this.occur.containsKey(s)) {
                 int val2 = other.occur.get(s).getValue();
-                System.out.println(s + " 0 " + val2);
+                System.out.println(s.replaceAll(String.valueOf(BOS), "<BoS>")
+                        .replaceAll(String.valueOf(EOS), "<EoS>")
+                        + " 0 " + val2);
             }
         }
+    }
+
+    /**
+     * Compare two NgramModels
+     *
+     * @param other
+     * @return true if they store the same content
+     */
+    public boolean equals(NgramModel other) {
+        if (this.order != other.order) {
+            return false;
+        } else {
+            for (String s : this.occur.keySet()) {
+                int val1 = this.occur.get(s).getValue();
+                int val2 = other.occur.containsKey(s)
+                        ? other.occur.get(s).getValue() : 0;
+                if (val1 != val2) {
+                    return false;
+                }
+
+            }
+            for (String s : other.occur.keySet()) {
+                if (!this.occur.containsKey(s)) {
+                    int val2 = other.occur.get(s).getValue();
+                    if (val2 != 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof NgramModel) {
+            NgramModel other = (NgramModel) o;
+            return equals(other);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return occur.hashCode();
     }
 
     /**
      * Main function.
      *
      * @param args
+     * @throws java.io.FileNotFoundException
      */
-    public static void main(String[] args) {
-        NgramModel ngram = new NgramModel();
-        Charset encoding = Charset.forName(System.getProperty("file.encoding"));
+    public static void main(String[] args) throws FileNotFoundException {
+        NgramModel ngram = null;
         File fout = null;
+        int order = 0;
 
         if (args.length == 0) {
-            System.err.println("Usage: Ngram [-n n] [-e encoding] [-o outfile]"
+            System.err.println("Usage: Ngram [-n NgramModelOrder]"
+                    + " [-i InputNgramModelFile | -o OutputNgramFile]"
                     + " file1 file2 ....");
         } else {
             for (int k = 0; k < args.length; ++k) {
                 String arg = args[k];
 
                 if (arg.equals("-n")) {
-                    ngram.setOrder(new Integer(args[++k]));
-                } else if (arg.equals("-e")) {
-                    encoding = Charset.forName(args[++k]);
+                    order = Integer.parseInt(args[++k]);
+                    ngram = new NgramModel(order);
+                } else if (arg.equals("-i")) {
+                    File fin = new File(args[++k]);
+                    ngram = new NgramModel(fin);
                 } else if (arg.equals("-o")) {
                     fout = new File(args[++k]);
-                } else {
-                    ngram.addWords(new File(arg), encoding, false);
+                } else if (ngram != null) {
+                    File file = new File(arg);
+                    InputStream is = new FileInputStream(file);
+                    if (fout != null) {
+                        ngram.addText(is);
+                    } else if (order > 1) {
+                        double res = ngram.logLikelihood(is, order - 1);
+                        System.out.println(res);
+                    }
                 }
             }
             if (fout != null) {
                 ngram.save(fout);
-            } else {
-                System.out.println(ngram.entropy());
-                System.out.println(ngram.logPerWordLikelihood(false));
             }
         }
     }

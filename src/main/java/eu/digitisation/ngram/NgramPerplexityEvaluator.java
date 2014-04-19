@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * Perplexity evaluator based on an n-gram model 
+ * Perplexity evaluator based on an n-gram model
  *
  */
 public class NgramPerplexityEvaluator implements PerplexityEvaluator {
@@ -24,12 +24,11 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
         ngram = new NgramModel(file);
     }
 
-    
-     public void addWords(File file) {
+    public void addWords(File file) {
         Charset encoding = Encoding.detect(file);
         ngram.addWords(file, null, true);
     }
-     
+
     /**
      * Calculates perplexity for each character of a given text.
      *
@@ -46,7 +45,8 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
         double[] logprobs = new double[textLen];
         for (int pos = 0; pos < textLen; ++pos) {
             int beg = Math.max(0, pos - contextLength);
-            logprobs[pos] = ngram.logProb(textToEvaluate.substring(beg, pos), textToEvaluate.charAt(pos));
+            String context = textToEvaluate.substring(beg, pos);
+            logprobs[pos] = ngram.logProb(context, textToEvaluate.charAt(pos));
         }
         return logprobs;
     }
@@ -59,7 +59,7 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
         }
         return builder.toString();
     }
-    
+
     public static void main(String[] args) throws FileNotFoundException, IOException {
         NgramModel ngram = new NgramModel(3);
         File fin = null;
@@ -73,7 +73,7 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
                 String arg = args[k];
 
                 if (arg.equals("-n")) {
-                    ngram.setOrder(new Integer(args[++k]));
+                    ngram = new NgramModel(new Integer(args[++k]));
                 } else if (arg.equals("-l")) {
                     len = Integer.parseInt(args[++k]);
                 } else if (arg.equals("-o")) {
@@ -82,13 +82,13 @@ public class NgramPerplexityEvaluator implements PerplexityEvaluator {
                     fin = new File(args[++k]);
                 } else {
                     String text = NgramPerplexityEvaluator.getText(new File(arg));
-                    ngram.add(text);
+                    ngram.addWord(text);
                     System.err.println("\r" + arg);
                 }
             }
             if (fin != null) {
-                NgramPerplexityEvaluator evaluator =
-                        new NgramPerplexityEvaluator(ngram);
+                NgramPerplexityEvaluator evaluator
+                        = new NgramPerplexityEvaluator(ngram);
                 String text = NgramPerplexityEvaluator.getText(fin);
                 double[] logprobs = evaluator.calculatePerplexity(text, len);
                 for (int n = 0; n < text.length(); ++n) {
