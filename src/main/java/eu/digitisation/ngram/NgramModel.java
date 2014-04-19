@@ -388,7 +388,7 @@ public class NgramModel implements Serializable {
                         context = input.substring(input.length() - order + 1);
                     } else {
                         String s = context + input;
-                        context = s.substring(s.length() - order + 1);
+                        context = s.substring(Math.max(0, s.length() - order + 1));
                     }
                 }
             }
@@ -452,7 +452,7 @@ public class NgramModel implements Serializable {
                         context = input.substring(input.length() - contextLength);
                     } else {
                         String s = context + input;
-                        context = s.substring(s.length() - contextLength);
+                        context = s.substring(Math.max(0, s.length() - contextLength));
                     }
                 }
                 loglike += logLikelihood(context, String.valueOf(EOS));
@@ -466,8 +466,8 @@ public class NgramModel implements Serializable {
     }
 
     /**
-     * 
-     * @param context the preceding context 
+     *
+     * @param context the preceding context
      * @param input a non-empty string
      * @return the log probability of the string after the given context
      */

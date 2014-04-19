@@ -37,6 +37,7 @@ public class TextPerplexity {
     List<Double> perplexities;
 
     public TextPerplexity(NgramModel ngram, InputStream is, int contextLength) {
+        text = new StringBuilder();
         perplexities = new ArrayList<Double>();
         try {
             BufferedReader reader
@@ -59,13 +60,14 @@ public class TextPerplexity {
                             s = context.substring(pos)
                                     + input.substring(0, pos + 1);
                         }
+                        text.append(input.charAt(pos));
                         perplexities.add(Math.log(ngram.smoothProb(s)));
 
                         if (input.length() > contextLength) {
                             context = input.substring(input.length() - contextLength);
                         } else {
                             s = context + input;
-                            context = s.substring(s.length() - contextLength);
+                            context = s.substring(Math.max(0, s.length() - contextLength));
                         }
                     }
 
