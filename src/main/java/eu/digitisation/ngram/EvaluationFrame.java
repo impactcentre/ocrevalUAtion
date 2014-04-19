@@ -1,10 +1,11 @@
-package eu.digitisation.input;
+package eu.digitisation.ngram;
 
-import eu.digitisation.text.Text;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.GroupLayout;
@@ -24,10 +25,11 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-public class LanguageModelEvaluationFrame extends JFrame {
+public class EvaluationFrame extends JFrame {
 
     /**
-     *     */
+     *
+     */
     private static final long serialVersionUID = 4895806099667768081L;
 
     private JPanel contentPane;
@@ -57,7 +59,7 @@ public class LanguageModelEvaluationFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public LanguageModelEvaluationFrame() {
+    public EvaluationFrame() {
         init();
     }
 
@@ -173,7 +175,8 @@ public class LanguageModelEvaluationFrame extends JFrame {
             }
 
         } catch (NumberFormatException nfe) {
-            JOptionPane.showMessageDialog(this, "Unable to parse value '" + thresholdTextField.getText() + "'",
+            JOptionPane.showMessageDialog(this, "Unable to parse value '"
+                    + thresholdTextField.getText() + "'",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -188,7 +191,7 @@ public class LanguageModelEvaluationFrame extends JFrame {
 
         List<Color> colorBands = new ArrayList<Color>(bands);
         for (int index = 0; index < bands; index++) {
-            colorBands.add(darken(color, (double) index / (double) bands));
+            colorBands.add(darken(color, index / (double) bands));
         }
         return colorBands;
 
@@ -208,28 +211,30 @@ public class LanguageModelEvaluationFrame extends JFrame {
 
     /**
      * Launch the application.
+     *
+     * @param args
      */
     public static void main(final String[] args) {
 
         EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
-                    Text ocr = new Text(new File(args[0]));
-                    final double[] perplexityArray
-                            = new double[]{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.0, 0.1, 0.2, 0.3, 0.4,
-                                0.5, 0.6, 0.7, 0.8, 0.9, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.0,
-                                0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
-                                0.7, 0.8, 0.9, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.0, 0.1, 0.2,
-                                0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8,
-                                0.9, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.0, 0.1, 0.2, 0.3, 0.4,
-                                0.5, 0.6, 0.7, 0.8, 0.9, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.0,
-                                0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
+                    File model = new File(args[0]);
+                    File input = new File(args[1]);
+                    int contextLenght = Integer.parseInt(args[2]);
 
-                    LanguageModelEvaluationFrame frame = new LanguageModelEvaluationFrame();
-                    frame.setInput(ocr.toString(), perplexityArray);
+                    TextPerplexity result
+                            = new TextPerplexity(new NgramModel(model),
+                                    new FileInputStream(input), contextLenght);
+
+                    EvaluationFrame frame = new EvaluationFrame();
+                    frame.setInput(result.getText(), result.getPerplexities());
                     frame.setVisible(true);
 
-                } catch (Exception e) {
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
             }
