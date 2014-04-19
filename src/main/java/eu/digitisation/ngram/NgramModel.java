@@ -180,7 +180,7 @@ public class NgramModel implements Serializable {
         return occur.get(String.valueOf(EOS)).getValue();
     }
 
-    private int occurrences(String key) {
+    public int occurrences(String key) {
         if (occur.containsKey(key)) {
             return occur.get(key).getValue();
         } else {
