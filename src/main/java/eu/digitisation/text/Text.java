@@ -18,6 +18,7 @@
 package eu.digitisation.text;
 
 import eu.digitisation.input.FileType;
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.StartUp;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
@@ -80,7 +81,7 @@ public class Text {
      * @throws eu.digitisation.input.WarningException
      */
     public Text(File file, Charset encoding, XPathFilter filter)
-            throws WarningException {
+            throws WarningException, SchemaLocationException {
 
         builder = new StringBuilder();
         this.encoding = encoding;
@@ -109,6 +110,8 @@ public class Text {
                             + type + " format) for file "
                             + file.getName());
             }
+        } catch (eu.digitisation.input.SchemaLocationException ex) {
+            throw ex;
         } catch (IOException ex) {
             Messages.info(Text.class.getName() + ": " + ex);
         }
@@ -122,7 +125,7 @@ public class Text {
      * @throws eu.digitisation.io.WarningException
      */
     public Text(File file)
-            throws WarningException {
+            throws WarningException, SchemaLocationException {
         this(file, null, null);
     }
 

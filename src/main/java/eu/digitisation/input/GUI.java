@@ -197,6 +197,17 @@ public class GUI extends JFrame {
                         Browser.open(outfile.toURI());
                     } catch (InvalidObjectException ex) {
                         warn(ex.getMessage());
+                    } catch (SchemaLocationException ex) {
+                        boolean ans = confirm("Unknown schema location "
+                                + ex.getSchemaLocation()
+                                + "Add it to the list of valid schemas?");
+                        if (ans) {
+                            String prop = "schemaLocation." + ex.getFileType();
+                            String value = ex.getSchemaLocation();
+                            StartUp.addUserProperty(prop, value);
+                            Messages.info(prop + " set to "
+                                    + StartUp.property(prop));
+                        }
                     } catch (IOException ex) {
                         warn("Input/Output Error");
                     }
@@ -207,13 +218,6 @@ public class GUI extends JFrame {
             }
         } catch (WarningException ex) {
             warn(ex.getMessage());
-        } catch (SchemaLocationException ex) {
-            boolean ans = confirm("Unknown schema location " 
-                    + ex.getSchemaLocation()
-                    + "Add it to the list of valid schemas?");
-            if (ans) {
-                StartUp.addUserProperty(ex.getFileType(), ex.getSchemaLocation());
-            }
         }
     }
 

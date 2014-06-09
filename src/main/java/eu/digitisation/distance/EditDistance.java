@@ -18,6 +18,7 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.document.TokenArray;
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.math.MinimalPerfectHash;
 import eu.digitisation.text.Text;
@@ -119,14 +120,15 @@ public class EditDistance {
             case OCR_WORD:
                 return wordDistance(first, second, chunkLen)[2];
             default:
-                throw new java.lang.NoSuchMethodException(type 
+                throw new java.lang.NoSuchMethodException(type
                         + " distance still to be implemented");
 
         }
     }
 
     public static void main(String[] args)
-            throws WarningException, NoSuchMethodException {
+            throws WarningException, NoSuchMethodException,
+            WarningException, SchemaLocationException {
         File f1 = new File(args[0]);
         File f2 = new File(args[1]);
         int len = Integer.parseInt(args[2]);

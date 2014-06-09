@@ -25,6 +25,7 @@ import eu.digitisation.distance.OcrOpWeight;
 import eu.digitisation.document.TermFrequencyVector;
 import eu.digitisation.input.Batch;
 import eu.digitisation.input.Parameters;
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.log.Messages;
 import eu.digitisation.math.Pair;
@@ -82,7 +83,8 @@ public class Report extends DocumentBuilder {
      * @param pars input parameters
      * @throws eu.digitisation.input.WarningException
      */
-    public Report(Batch batch, Parameters pars) throws WarningException {
+    public Report(Batch batch, Parameters pars) throws WarningException, 
+            SchemaLocationException {
         super("html");
         init();
 

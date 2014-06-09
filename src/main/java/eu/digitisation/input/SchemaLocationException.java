@@ -23,7 +23,7 @@ import java.io.IOException;
  *
  * @author R.C.C
  */
-class SchemaLocationException extends IOException {
+public class SchemaLocationException extends IOException {
 
     FileType type;
     String schemaLocation;
@@ -39,5 +39,11 @@ class SchemaLocationException extends IOException {
 
     public String getSchemaLocation() {
         return schemaLocation;
+    }
+
+    @Override
+    public String toString() {
+        return "Unknown schema location " + schemaLocation 
+                    + " for file type " + type;
     }
 }

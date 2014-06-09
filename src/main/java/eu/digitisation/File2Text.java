@@ -17,6 +17,7 @@
  */
 package eu.digitisation;
 
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.Text;
@@ -28,7 +29,8 @@ import java.io.File;
  */
 public class File2Text {
 
-    public static void main(String[] args) throws WarningException {
+    public static void main(String[] args) throws WarningException,
+            SchemaLocationException {
         if (args.length > 0) {
             File file = new File(args[0]);
             CharFilter filter = null;
