@@ -209,9 +209,9 @@ public class GUI extends JFrame {
                     } catch (InvalidObjectException ex) {
                         warn(ex.getMessage());
                     } catch (SchemaLocationException ex) {
-                        boolean ans = confirm("Unknown schema location "
+                        boolean ans = confirm("Unknown schema location:\n"
                                 + ex.getSchemaLocation()
-                                + "Add it to the list of valid schemas?");
+                                + "\n\nAdd it to the list of valid schemas?");
                         if (ans) {
                             String prop = "schemaLocation." + ex.getFileType();
                             String value = ex.getSchemaLocation();
