@@ -17,6 +17,7 @@
  */
 package eu.digitisation.distance;
 
+import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.text.CharMap;
 import eu.digitisation.text.Text;
@@ -319,7 +320,7 @@ public class Aligner {
         i = 0;
         j = 0;
         len = 0;
-       
+
         for (int n = 0; n < edition.size(); n += len) {
             EdOp op = edition.get(n);
 
@@ -420,7 +421,8 @@ public class Aligner {
         return builder.document().getDocumentElement();
     }
 
-    public static void main(String[] args) throws WarningException {
+    public static void main(String[] args) throws WarningException,
+            SchemaLocationException {
 
         File f1 = new File(args[0]);
         File f2 = new File(args[1]);

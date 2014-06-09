@@ -62,7 +62,6 @@ public class GUI extends JFrame {
     // Frame components
     FileSelector gtselector;
     FileSelector ocrselector;
-    FileSelector lmselector;
     JPanel advanced;
     Link info;
     JPanel actions;
@@ -72,8 +71,19 @@ public class GUI extends JFrame {
      *
      * @param text the text to be displayed
      */
-    public void warn(String text) {
-        JOptionPane.showMessageDialog(super.getRootPane(), text, "Error", JOptionPane.ERROR_MESSAGE);
+
+    public void warn(String message) {
+        JOptionPane.showMessageDialog(super.getRootPane(), message, "Error",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Ask for confirmation
+     */
+    public boolean confirm(String message) {
+        return JOptionPane.showConfirmDialog(super.getRootPane(),
+                message, message, JOptionPane.YES_NO_OPTION)
+                == JOptionPane.YES_OPTION;
     }
 
     // The unique constructor
@@ -179,52 +189,43 @@ public class GUI extends JFrame {
 
     public void launch(Parameters pars) {
         try {
-            if (ocrselector.ready() && (gtselector.ready() || lmselector.ready())) {
+            if (ocrselector.ready() && (gtselector.ready())) {
                 File ocrfile = pars.ocrfile.getValue();
-                if (gtselector.ready()) {
-                    String name = ocrfile.getName().replaceAll("\\.\\w+", "") + "_report.html";
-                    File dir = ocrfile.getParentFile();
-                    File preselected = new File(name);
-                    OutputFileSelector selector = new OutputFileSelector();
-                    File outfile = selector.choose(dir, preselected);
-                    pars.outfile.setValue(outfile);
+                String name = ocrfile.getName().replaceAll("\\.\\w+", "")
+                        + "_report.html";
+                File dir = ocrfile.getParentFile();
+                File preselected = new File(name);
+                OutputFileSelector selector = new OutputFileSelector();
+                File outfile = selector.choose(dir, preselected);
+                pars.outfile.setValue(outfile);
 
-                    if (outfile != null) {
-                        try {
-                            Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
-                            Report report = new Report(batch, pars);
-                            report.write(outfile);
-                            Messages.info("Report dumped to " + outfile);
-                            Browser.open(outfile.toURI());
-                        } catch (InvalidObjectException ex) {
-                            warn(ex.getMessage());
-                        } catch (IOException ex) {
-                            warn("Input/Output Error");
+                if (outfile != null) {
+                    try {
+                        Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
+                        Report report = new Report(batch, pars);
+                        report.write(outfile);
+                        Messages.info("Report dumped to " + outfile);
+                        Browser.open(outfile.toURI());
+                    } catch (InvalidObjectException ex) {
+                        warn(ex.getMessage());
+                    } catch (SchemaLocationException ex) {
+                        boolean ans = confirm("Unknown schema location "
+                                + ex.getSchemaLocation()
+                                + "Add it to the list of valid schemas?");
+                        if (ans) {
+                            String prop = "schemaLocation." + ex.getFileType();
+                            String value = ex.getSchemaLocation();
+                            StartUp.addUserProperty(prop, value);
+                            Messages.info(prop + " set to "
+                                    + StartUp.property(prop));
                         }
-                    }
-                }
-                if (lmselector.ready()) {
-                    Object[] possibilities = {"2", "3", "4", "5"};
-                    String value
-                            = (String) JOptionPane.showInputDialog(null, "Select contect length", "",
-                                    JOptionPane.QUESTION_MESSAGE, null, possibilities, "2");
-                    if (value != null) {
-                        int contextLength = Integer.parseInt(value);
-
-                        NgramPerplexityEvaluator lpc = new NgramPerplexityEvaluator(pars.lmfile.value);
-
-                        Text ocr = new Text(ocrfile);
-                        double[] perplexityArray = lpc.calculatePerplexity(ocr.toString(), contextLength);
-
-                        LanguageModelEvaluationFrame frame = new LanguageModelEvaluationFrame();
-                        frame.setInput(ocr.toString(), perplexityArray);
-                        frame.setVisible(true);
+                    } catch (IOException ex) {
+                        warn("Input/Output Error");
                     }
                 }
             } else {
                 gtselector.checkout();
                 ocrselector.checkout();
-                lmselector.checkout();
             }
         } catch (WarningException ex) {
             warn(ex.getMessage());
@@ -249,7 +250,6 @@ public class GUI extends JFrame {
         // Define content
         gtselector = new FileSelector(pars.gtfile, getForeground(), white);
         ocrselector = new FileSelector(pars.ocrfile, getForeground(), white);
-        lmselector = new FileSelector(pars.lmfile, getForeground(), white);
         advanced = advancedOptionsPanel(pars);
         info = new Link("Info:", "https://sites.google.com/site/textdigitisation/ocrevaluation", getForeground());
         actions = actionsPanel(this, pars);
@@ -257,7 +257,6 @@ public class GUI extends JFrame {
         // Put all content together
         pane.add(gtselector);
         pane.add(ocrselector);
-        pane.add(lmselector);
         pane.add(advanced);
         pane.add(info);
         pane.add(actions);

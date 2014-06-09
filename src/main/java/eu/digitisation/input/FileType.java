@@ -40,28 +40,38 @@ public enum FileType {
     String schemaLocation;  // schema URL
 
     static {
+        reload();
+    }
+
+    public static void reload() {
         Properties props = StartUp.properties();
-        String location;
 
         TEXT.tag = null;  // no tag for this type 
         TEXT.schemaLocation = null; // no schema associated to this type
 
         PAGE.tag = "PcGts";
-        location = props.getProperty("schemaLocation.PAGE");
-        PAGE.schemaLocation = location == null ? ""
-                : StringNormalizer.reduceWS(location);
+        PAGE.schemaLocation = getSchemaLocation(props, "PAGE");
 
         FR10.tag = "document";
-        location = props.getProperty("schemaLocation.FR10");
-        FR10.schemaLocation = location == null ? ""
-                : StringNormalizer.reduceWS(location);
+        FR10.schemaLocation = getSchemaLocation(props, "FR10");
+
         ALTO.tag = "alto";
-        location = props.getProperty("schemaLocation.ALTO");
-        ALTO.schemaLocation = location == null ? ""
-                : StringNormalizer.reduceWS(location);
-        
+        ALTO.schemaLocation = getSchemaLocation(props, "ALTO");
+
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
+    }
+
+    /**
+     * Load the schemaLocation from properties
+     *
+     * @param props properties
+     * @param suffix the schemaLocation suffix (e.g., ALTO, FR10)
+     * @return the property value
+     */
+    public static String getSchemaLocation(Properties props, String suffix) {
+        String location = props.getProperty("schemaLocation." + suffix);
+        return (location == null) ? " " : StringNormalizer.reduceWS(location);
     }
 
     /**
@@ -86,7 +96,7 @@ public enum FileType {
      * @param file a file
      * @return the FileType of file
      */
-    public static FileType valueOf(File file) {
+    public static FileType valueOf(File file) throws SchemaLocationException {
         String name = file.getName().toLowerCase(Locale.ENGLISH);
 
         if (name.endsWith(".txt")) {
@@ -95,18 +105,37 @@ public enum FileType {
             Document doc = DocumentParser.parse(file);
             Element root = doc.getDocumentElement();
             String doctype = root.getTagName();
-            String location = StringNormalizer
-                    .reduceWS(root.getAttribute("xsi:schemaLocation"));
+            String location;
 
-            if (doctype.equals(PAGE.tag)
-                    && sameLocation(location, PAGE.schemaLocation)) {
-                return PAGE;
-            } else if (doctype.equals(FR10.tag)
-                    && sameLocation(location, FR10.schemaLocation)) {
-                return FR10;
-            } else if (doctype.equals(ALTO.tag)
-                    && sameLocation(location, ALTO.schemaLocation)) {
-                return ALTO;
+            if (root.hasAttribute("xsi:schemaLocation")) {
+                location = StringNormalizer
+                        .reduceWS(root.getAttribute("xsi:schemaLocation"));
+            } else if (root.hasAttribute("xsi:noNamespaceSchemaLocation")) {
+                location = StringNormalizer
+                        .reduceWS(root.getAttribute("xsi:noNamespaceSchemaLocation"));
+            } else {
+                location = null;
+            }
+
+            if (doctype.equals(PAGE.tag)) {
+                if (sameLocation(location, PAGE.schemaLocation)) {
+                    return PAGE;
+                } else if (!location.isEmpty()) {
+                    throw new SchemaLocationException(PAGE, location);
+                }
+            } else if (doctype.equals(FR10.tag)) {
+                if (sameLocation(location, FR10.schemaLocation)) {
+                    return FR10;
+                } else if (!location.isEmpty()) {
+                    throw new SchemaLocationException(FR10, location);
+                }
+            } else if (doctype.equals(ALTO.tag)) {
+                Messages.info(ALTO.schemaLocation);
+                if (sameLocation(location, ALTO.schemaLocation)) {
+                    return ALTO;
+                } else if (!location.isEmpty()) {
+                    throw new SchemaLocationException(ALTO, location);
+                }
             }
         } else if (name.endsWith(".html")) {
             try {
@@ -120,5 +149,16 @@ public enum FileType {
             }
         }
         return UNKNOWN;
+    }
+
+    public static void main(String[] args) {
+        for (String arg : args) {
+            try {
+                File file = new File(arg);
+                System.out.println(FileType.valueOf(file));
+            } catch (SchemaLocationException ex) {
+                System.out.println(ex);
+            }
+        }
     }
 }

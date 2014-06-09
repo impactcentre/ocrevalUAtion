@@ -344,6 +344,7 @@ public class NgramModel implements Serializable {
         try {
             Charset encoding = Charset.forName(System.getProperty("file.encoding"));
             WordScanner scanner = new WordScanner(System.in, encoding);
+
             String word;
             double result = 0;
             int numWords = 0;

@@ -86,8 +86,7 @@ public class WordScanner {
         this(is, encoding, null);
     }
 
-    
-     /**
+    /**
      * Open file with specific encoding for scanning.
      *
      * @param file the input file.
@@ -99,7 +98,7 @@ public class WordScanner {
             throws IOException {
         this(new FileInputStream(file), encoding, regex);
     }
-    
+
     /**
      * Open file with specific encoding for scanning.
      *
@@ -127,11 +126,23 @@ public class WordScanner {
      * Open a string for scanning
      *
      * @param s the input string to be tokenized
+     * @param regex the regular expression for words
      * @throws IOException
      */
     public WordScanner(String s, String regex) throws IOException {
         this(new ByteArrayInputStream(s.getBytes("UTF-8")),
                 Charset.forName("UTF-8"), regex);
+    }
+
+    /**
+     * Open a string for scanning
+     *
+     * @param s the input string to be tokenized
+     * @throws IOException
+     */
+    public WordScanner(String s) throws IOException {
+        this(new ByteArrayInputStream(s.getBytes("UTF-8")),
+                Charset.forName("UTF-8"));
     }
 
     /**

@@ -34,24 +34,7 @@ import org.junit.Test;
  */
 public class EncodingTest {
 
-    public EncodingTest() {
-    }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of detect method, of class Encoding.

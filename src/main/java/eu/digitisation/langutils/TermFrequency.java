@@ -93,7 +93,8 @@ public class TermFrequency extends Counter<String> {
     public void addFile(File file) throws WarningException {
         try {
             Text content = new Text(file);
-            WordScanner scanner = new WordScanner(content.toString(), null);
+            WordScanner scanner = new WordScanner(content.toString(), 
+                    "[^\\p{Space}]+");
             String word;
             while ((word = scanner.nextWord()) != null) {
                 String filtered = (filter == null)

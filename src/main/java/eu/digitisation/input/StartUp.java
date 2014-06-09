@@ -20,8 +20,10 @@ package eu.digitisation.input;
 import eu.digitisation.log.Messages;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
@@ -36,6 +38,23 @@ public class StartUp {
 
     private static Properties props = new Properties();
 
+    /**
+     * Get application directory
+     */
+    private static File appDir() {
+        try {
+            URI uri = Messages.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI();
+            File dir = new File(uri.getPath()).getParentFile();
+
+            Messages.info("Application folder is " + dir);
+            return dir;
+        } catch (URISyntaxException ex) {
+            Messages.severe(StartUp.class.getName() + ": " + ex);
+        }
+        return null;
+    }
+
     static {
         try {
             InputStream in;
@@ -49,12 +68,7 @@ public class StartUp {
             }
 
             // Add user properties (may overwrite defaults)            
-            URI uri = Messages.class.getProtectionDomain()
-                    .getCodeSource().getLocation().toURI();
-            String dir = new File(uri.getPath()).getParent();
-            File file = new File(dir, "userProperties.xml");
-
-            Messages.info("Application folder is " + dir);
+            File file = new File(appDir(), "userProperties.xml");
             if (file.exists()) {
                 in = new FileInputStream(file);
                 props.loadFromXML(in);
@@ -72,8 +86,6 @@ public class StartUp {
                 }
             }
         } catch (IOException ex) {
-            Messages.severe(StartUp.class.getName() + ": " + ex);
-        } catch (URISyntaxException ex) {
             Messages.severe(StartUp.class.getName() + ": " + ex);
         }
     }
@@ -95,5 +107,50 @@ public class StartUp {
      */
     public static String property(String key) {
         return props.getProperty(key);
+    }
+
+    /**
+     * Add a new value to property
+     *
+     * @param type
+     * @param schemaLocation
+     */
+    public static void addUserProperty2(FileType type, String schemaLocation) {
+        String prop = props.getProperty("schemaLocation." + type);
+        String value = props.getProperty(prop);
+        props.setProperty(prop, value + " " + schemaLocation);
+        saveToFile();
+    }
+
+    /**
+     * Add a new value to property
+     *
+     * @param type
+     * @param schemaLocation
+     */
+    public static void addUserProperty(String prop, String value) {
+        String currentValue = props.getProperty(prop);
+        if (currentValue == null) {
+            props.setProperty(prop, value);
+        } else {
+            props.setProperty(prop, currentValue + " " + value);
+        }
+        saveToFile();
+    }
+
+    /**
+     * Save properties to XML file (userProperties.xml)
+     */
+    private static void saveToFile() {
+        try {
+            File file = new File(appDir(), "userProperties.xml");
+            OutputStream os = new FileOutputStream(file);
+            props.storeToXML(os, null);
+            os.close();
+            Messages.info("Created new file: " + file.getAbsolutePath());
+            FileType.reload();
+        } catch (IOException ex) {
+            Messages.severe(StartUp.class.getName() + ": " + ex);
+        }
     }
 }
