@@ -67,7 +67,7 @@ public class GUI extends JFrame {
     /**
      * Show a warning message
      *
-     * @param text the text to be displayed
+     * @param message the text to be displayed
      */
     public void warn(String message) {
         JOptionPane.showMessageDialog(super.getRootPane(), message, "Error",
@@ -76,6 +76,8 @@ public class GUI extends JFrame {
 
     /**
      * Ask for confirmation
+     * @param message the text to be displayed
+     * @return true if the option has been confirmed
      */
     public boolean confirm(String message) {
         return JOptionPane.showConfirmDialog(super.getRootPane(),
