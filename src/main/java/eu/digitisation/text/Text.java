@@ -50,7 +50,7 @@ import org.w3c.dom.NodeList;
 public class Text {
 
     StringBuilder builder;
-    static final int maxlen;
+    static int maxlen;
     Charset encoding;
     XPathFilter filter;
 
@@ -71,6 +71,7 @@ public class Text {
         }
     }
 
+   
     /**
      * Create TextContent from file
      *
@@ -111,6 +112,8 @@ public class Text {
                             + type + " format) for file "
                             + file.getName());
             }
+        } catch (eu.digitisation.input.SchemaLocationException ex) {
+            throw ex;
         } catch (IOException ex) {
             Messages.info(Text.class.getName() + ": " + ex);
         }
@@ -122,7 +125,10 @@ public class Text {
      *
      * @param file the input file
      * @throws eu.digitisation.input.WarningException
+<<<<<<< HEAD
      * @throws eu.digitisation.input.SchemaLocationException
+=======
+>>>>>>> wip
      */
     public Text(File file)
             throws WarningException, SchemaLocationException {
@@ -194,7 +200,7 @@ public class Text {
     }
 
     private Document loadXMLFile(File file) {
-        Document doc = DocumentParser.parse(file);
+        Document doc = DocumentParser.parse(file);      
         String xmlEncoding = doc.getXmlEncoding();
 
         if (xmlEncoding != null) {

@@ -17,8 +17,6 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.WarningException;
 import eu.digitisation.text.CharMap;
 import eu.digitisation.text.Text;
 import eu.digitisation.xml.DocumentBuilder;
@@ -422,8 +420,7 @@ public class Aligner {
     }
 
     public static void main(String[] args)
-            throws WarningException, SchemaLocationException {
-
+            throws Exception {
         File f1 = new File(args[0]);
         File f2 = new File(args[1]);
         File ofile = new File("/tmp/out.html");

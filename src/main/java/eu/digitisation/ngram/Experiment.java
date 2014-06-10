@@ -17,7 +17,6 @@
  */
 package eu.digitisation.ngram;
 
-import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.output.ErrorMeasure;
@@ -33,7 +32,7 @@ import java.io.IOException;
 public class Experiment {
 
     private static void compare(File f1, File f2, File f3, CharFilter filter) 
-            throws WarningException, IOException, SchemaLocationException {
+            throws WarningException, IOException {
         Text c1 = new Text(f1);
         Text c2 = new Text(f2);
         Text c3 = new Text(f3);
@@ -72,7 +71,8 @@ public class Experiment {
         }
     }
 
-    public static void main(String[] args) throws IOException, WarningException, SchemaLocationException {
+    public static void main(String[] args) 
+            throws IOException, WarningException {
         File dir1 = new File(args[0]);
         File dir2 = new File(args[1]);
         File dir3 = new File("/tmp");

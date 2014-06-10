@@ -17,13 +17,14 @@
  */
 package eu.digitisation.input;
 
+import java.io.IOException;
+
 /**
  * An exception raised because the schema for the XML file is unknown
  * @author R.C.C
  */
-public class SchemaLocationException extends Exception {
-    private static final long serialVersionUID = 1L;
 
+public class SchemaLocationException extends IOException {
     FileType type;
     String schemaLocation;
 
@@ -38,5 +39,11 @@ public class SchemaLocationException extends Exception {
 
     public String getSchemaLocation() {
         return schemaLocation;
+    }
+
+    @Override
+    public String toString() {
+        return "Unknown schema location " + schemaLocation 
+                    + " for file type " + type;
     }
 }

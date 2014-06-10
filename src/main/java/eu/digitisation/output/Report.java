@@ -82,6 +82,7 @@ public class Report extends DocumentBuilder {
      * @param batch a batch of file pairs
      * @param pars input parameters
      * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.input.SchemaLocationException
      */
     public Report(Batch batch, Parameters pars) 
             throws WarningException, SchemaLocationException {

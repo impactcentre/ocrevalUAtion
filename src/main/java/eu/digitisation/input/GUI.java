@@ -18,6 +18,7 @@
 package eu.digitisation.input;
 
 import eu.digitisation.log.Messages;
+import eu.digitisation.ngram.NgramModel;
 import eu.digitisation.output.Browser;
 import eu.digitisation.output.OutputFileSelector;
 import eu.digitisation.output.Report;
@@ -28,15 +29,23 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.io.InvalidObjectException;
+import java.nio.charset.Charset;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -156,7 +165,7 @@ public class GUI extends JFrame {
             }
         });
 
-        // Go for it! button with inverted colors 
+        // Go for it! button with inverted colors
         JButton trigger = new JButton("Generate report");
         trigger.setForeground(getBackground());
         trigger.setBackground(getForeground());
@@ -187,19 +196,23 @@ public class GUI extends JFrame {
             warn(ex.getMessage());
         } catch (SchemaLocationException ex) {
             boolean ans = confirm("Unknown schema location:\n"
-                    + ex.getSchemaLocation() + '\n'
-                    + "Add it to the list of valid schemas?");
+                    + ex.getSchemaLocation()
+                    + "\n\nAdd it to the list of valid schemas?");
             if (ans) {
-                FileType.addLocation(ex.getFileType(), ex.getSchemaLocation());
-                Settings.merge(FileType.asProperties());
-                createReport(pars);
+                String prop = "schemaLocation." + ex.getFileType();
+                String value = ex.getSchemaLocation();
+                Settings.addUserProperty(prop, value);
+                Messages.info(prop + " set to "
+                        + Settings.property(prop));
             }
+        } catch (IOException ex) {
+            warn("Input/Output Error");
         }
     }
 
     public void launch(Parameters pars) {
         try {
-            if (gtselector.ready() && ocrselector.ready()) {
+            if (ocrselector.ready() && (gtselector.ready())) {
                 File ocrfile = pars.ocrfile.getValue();
                 String name = ocrfile.getName().replaceAll("\\.\\w+", "")
                         + "_report.html";
@@ -222,6 +235,8 @@ public class GUI extends JFrame {
     }
 
     public final void init() {
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
         // Main container
         Container pane = getContentPane();
         // Initialization settings
@@ -231,16 +246,14 @@ public class GUI extends JFrame {
         setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         setLocationRelativeTo(null);
 
-        // Define program parameters: input files 
+        // Define program parameters: input files
         Parameters pars = new Parameters();
 
-        // Define content 
+        // Define content
         gtselector = new FileSelector(pars.gtfile, getForeground(), white);
         ocrselector = new FileSelector(pars.ocrfile, getForeground(), white);
         advanced = advancedOptionsPanel(pars);
-        info = new Link("Info:",
-                "https://sites.google.com/site/textdigitisation/ocrevaluation",
-                getForeground());
+        info = new Link("Info:", "https://sites.google.com/site/textdigitisation/ocrevaluation", getForeground());
         actions = actionsPanel(this, pars);
 
         // Put all content together
@@ -250,12 +263,83 @@ public class GUI extends JFrame {
         pane.add(info);
         pane.add(actions);
 
+        // menu bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu mainMenu = new JMenu("Main");
+        JMenuItem createLanguageModelMenuItem = new JMenuItem("Create Language Model...", KeyEvent.VK_C);
+        createLanguageModelMenuItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File inputFile = choose("Choose file to create language model", "sample.txt");
+                if (inputFile != null) {
+                    File outputFile = choose("Choose output file", "model.lm");
+                    if (outputFile != null) {
+                        Object[] possibilities = {"2", "3", "4", "5"};
+                        String value
+                                = (String) JOptionPane.showInputDialog(null, "Select value vor 'n'", "",
+                                        JOptionPane.QUESTION_MESSAGE, null, possibilities, "2");
+                        if (value != null) {
+                            int n = Integer.parseInt(value);
+
+                            NgramModel ngramModel = new NgramModel(n);
+                            Charset encoding = Charset.forName(System.getProperty("file.encoding"));
+                            if (inputFile.isDirectory()) {
+                                File[] files = inputFile.listFiles();
+                                for (File file : files) {
+                                    ngramModel.addWords(file, encoding, false);
+                                }
+                            } else {
+                                ngramModel.addWords(inputFile, encoding, false);
+                            }
+                            ngramModel.save(outputFile);
+                        }
+                    }
+                }
+            }
+        });
+        JMenuItem exitMenuItem = new JMenuItem("Exit", KeyEvent.VK_X);
+        exitMenuItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        mainMenu.add(createLanguageModelMenuItem);
+        mainMenu.addSeparator();
+        mainMenu.add(exitMenuItem);
+
+        menuBar.add(mainMenu);
+
+        this.setJMenuBar(menuBar);
+
         // Show
         pack();
         setVisible(true);
     }
 
+    private File choose(String title, String defaultName) {
+        JFileChooser chooser = new JFileChooser();
+
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.setDialogTitle(title);
+        chooser.setSelectedFile(new File(defaultName));
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        } else {
+            return null;
+        }
+    }
+
     public static void main(String[] args) {
-        new GUI();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new GUI();
+            }
+        });
     }
 }

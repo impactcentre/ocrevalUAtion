@@ -8,6 +8,8 @@ import eu.digitisation.log.Messages;
 import eu.digitisation.output.Report;
 import java.io.File;
 import java.io.InvalidObjectException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Main class for ocrevalUAtion: version 0.92

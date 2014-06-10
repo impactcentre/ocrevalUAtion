@@ -20,97 +20,74 @@ package eu.digitisation.input;
 import eu.digitisation.log.Messages;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Properties;
 
 /**
- * Global settings: load default and user properties (user-defined values
+ * Start-up actions: load default and user properties (user-defined values
  * overwrite defaults).
  *
  * @author R.C.C.
  */
 public class Settings {
 
-    private final static InputStream defaults; // the InputSteam storing the default global settings
-    private final static File user;  // the file storing the user defined global settings
-    private final static Properties props;
+    private static Properties props = new Properties();
+
+    /**
+     * Get application directory
+     */
+    private static File appDir() {
+        try {
+            URI uri = Messages.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI();
+            File dir = new File(uri.getPath()).getParentFile();
+
+            Messages.info("Application folder is " + dir);
+            return dir;
+        } catch (URISyntaxException ex) {
+            Messages.severe(Settings.class.getName() + ": " + ex);
+        }
+        return null;
+    }
 
     static {
-
-        defaults = Settings.class.getResourceAsStream("/defaultProperties.xml");
-        Messages.info("Default props in file " + defaults);
-        File dir = appFolder();
-        File primary = (dir == null) ? null : new File(dir, "userProperties.xml");
-        File secondary = open("userProperties.xml");
-        if (primary != null && primary.exists()) {
-            user = primary;  // first choice for user properties
-        } else {
-            if (secondary != null) {
-                user = secondary;  // second choice for user properties
-            } else {
-                user = primary; // if nothing found set the default location for output
-            }
-        }
-
-        props = new Properties();
         try {
-            if (defaults != null) {
-                props.loadFromXML(defaults);
-            }
-            if (user != null && user.exists()) {
-                InputStream in = new FileInputStream(user);
-                Properties uprops = new Properties();
-                uprops.loadFromXML(in);
-                merge(uprops);
+            InputStream in;
+            // Read defaults
+            Properties defaults = new Properties();
+            in = Settings.class.getResourceAsStream("/defaultProperties.xml");
+            if (in != null) {
+                defaults.loadFromXML(in);
                 in.close();
-                Messages.info("Read properties from " + user);
+                props = new Properties(defaults);
             }
-        } catch (FileNotFoundException ex) {
-            Messages.severe(Settings.class.getName() + ": " + ex);
+
+            // Add user properties (may overwrite defaults)            
+            File file = new File(appDir(), "userProperties.xml");
+            if (file.exists()) {
+                in = new FileInputStream(file);
+                props.loadFromXML(in);
+                Messages.info("Read properties from " + file);
+                in.close();
+            } else {
+                in = Settings.class.getResourceAsStream("/userProperties.xml");
+                if (in != null) {
+                    defaults.loadFromXML(in);
+                    Messages.info("Read properties from " + file);
+                    in.close();
+                    props = new Properties(defaults);
+                } else {
+                    Messages.info("No properties were defined by user");
+                }
+            }
         } catch (IOException ex) {
             Messages.severe(Settings.class.getName() + ": " + ex);
         }
-    }
-
-    /**
-     * Identify where the application has been launched
-     *
-     * @return the folder where the application has been launched
-     */
-    private static File appFolder() {
-        URL url = Settings.class.getProtectionDomain()
-                .getCodeSource().getLocation();
-        String location = new File(url.getPath()).getParent();
-
-        Messages.info("Application folder is " + url);
-        return (location == null) ? null : new File(location);
-    }
-
-    /**
-     * Look recursively for a file
-     *
-     * @param fileName a file name
-     * @return a file with this name under the application path
-     */
-    private static File open(String fileName) {
-        File file = null;
-        URL url = Settings.class.getResource(fileName);
-        if (url != null) {
-            try {
-                URI uri = url.toURI();
-                file = new File(uri);
-            } catch (URISyntaxException ex) {
-                Messages.severe(Settings.class.getName() + ": " + ex);
-
-            }
-        }
-        return file;
     }
 
     /**
@@ -132,47 +109,48 @@ public class Settings {
         return props.getProperty(key);
     }
 
-    public static void save() {
-        FileOutputStream os;
-        StringBuilder comments = new StringBuilder();
+    /**
+     * Add a new value to property
+     *
+     * @param type
+     * @param schemaLocation
+     */
+    public static void addUserProperty2(FileType type, String schemaLocation) {
+        String prop = props.getProperty("schemaLocation." + type);
+        String value = props.getProperty(prop);
+        props.setProperty(prop, value + " " + schemaLocation);
+        saveToFile();
+    }
 
-        comments.append("schemaLocation.ZZZ:")
-                .append("valid schema locations for the ZZZ filetype (e.g., ALTO)")
-                .append('\n')
-                .append("maxlen: max number of chars in input file.")
-                .append("If zero, no limit is applied (computation may take long");
-
-        try {
-            os = new FileOutputStream(user);
-            props.storeToXML(os, comments.toString());
-            Messages.info(Settings.class
-                    .getName() + ": created new properties file " + user);
-        } catch (FileNotFoundException ex) {
-            Messages.severe(Settings.class
-                    .getName() + ": " + ex);
-        } catch (IOException ex) {
-            Messages.severe(Settings.class
-                    .getName() + ": " + ex);
+    /**
+     * Add a new value to property
+     *
+     * @param type
+     * @param schemaLocation
+     */
+    public static void addUserProperty(String prop, String value) {
+        String currentValue = props.getProperty(prop);
+        if (currentValue == null) {
+            props.setProperty(prop, value);
+        } else {
+            props.setProperty(prop, currentValue + " " + value);
         }
+        saveToFile();
     }
 
     /**
-     * Set and store the value of a configuration parameter
-     *
-     * @param key th parameter name
-     * @param value the new value of the parameter
+     * Save properties to XML file (userProperties.xml)
      */
-    public static void setValue(String key, String value) {
-        props.setProperty(key, value);
-    }
-
-    /**
-     * Add values (overwrites old values)
-     *
-     * @param other another properties object
-     */
-    public static void merge(Properties other) {
-        props.putAll(other);
-        save();
+    private static void saveToFile() {
+        try {
+            File file = new File(appDir(), "userProperties.xml");
+            OutputStream os = new FileOutputStream(file);
+            props.storeToXML(os, null);
+            os.close();
+            Messages.info("Created new file: " + file.getAbsolutePath());
+            FileType.reload();
+        } catch (IOException ex) {
+            Messages.severe(Settings.class.getName() + ": " + ex);
+        }
     }
 }

@@ -18,8 +18,6 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.document.TokenArray;
-import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.WarningException;
 import eu.digitisation.math.MinimalPerfectHash;
 import eu.digitisation.text.Text;
 import eu.digitisation.text.WordSet;
@@ -126,8 +124,7 @@ public class EditDistance {
         }
     }
 
-    public static void main(String[] args)
-            throws WarningException, NoSuchMethodException, SchemaLocationException {
+    public static void main(String[] args) throws Exception {
         File f1 = new File(args[0]);
         File f2 = new File(args[1]);
         int len = Integer.parseInt(args[2]);

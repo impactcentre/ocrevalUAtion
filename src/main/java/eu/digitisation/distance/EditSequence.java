@@ -18,8 +18,6 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.document.TokenArray;
-import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.WarningException;
 import eu.digitisation.log.Messages;
 import eu.digitisation.math.BiCounter;
 import eu.digitisation.text.Text;
@@ -524,7 +522,7 @@ public class EditSequence {
     }
 
     public static void main(String[] args)
-            throws WarningException, SchemaLocationException {
+            throws Exception {
         File gtfile = new File(args[0]);
         File ocrfile = new File(args[1]);
         String gts = new Text(gtfile).toString();

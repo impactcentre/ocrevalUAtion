@@ -17,12 +17,9 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.WarningException;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.text.Text;
 import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -51,8 +48,8 @@ public class EditDistanceTest {
      * @throws eu.digitisation.input.WarningException
      */
     @Test
-    public void testCharDistance() 
-            throws URISyntaxException, WarningException, SchemaLocationException {
+    public void testCharDistance()
+            throws Exception {
         System.out.println("charDistance");
         EdOpWeight w = new OcrOpWeight();
         String s1 = "patata";

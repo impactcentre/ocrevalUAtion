@@ -34,6 +34,7 @@ public class FileTypeTest {
 
     /**
      * Test of valueOf method, of class FileType.
+     * @throws eu.digitisation.input.SchemaLocationException
      */
     @Test
     public void testValueOf() 
