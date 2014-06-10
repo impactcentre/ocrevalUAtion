@@ -82,7 +82,7 @@ public enum FileType {
      */
     private static boolean sameLocation(String locations1, String locations2) {
         String[] urls = locations2.split("\\p{Space}+");
-
+        
         for (String url : urls) {
             if (locations1.contains(url)) {
                 return true;

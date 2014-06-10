@@ -34,10 +34,11 @@ public class FileTypeTest {
 
     /**
      * Test of valueOf method, of class FileType.
+     *
      * @throws eu.digitisation.input.SchemaLocationException
      */
     @Test
-    public void testValueOf() 
+    public void testValueOf()
             throws SchemaLocationException, IOException {
         System.out.println("valueOf");
         URL url = getClass().getResource("/OfTheSciences_ocr_PAGE.xml");

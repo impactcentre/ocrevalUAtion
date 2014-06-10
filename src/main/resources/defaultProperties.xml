@@ -16,15 +16,8 @@
   <entry key="schemaLocation.FR10">
  	http://www.abbyy.com/FineReader_xml/FineReader10-schema-v1.xml 
   </entry>
-<<<<<<< HEAD
-   <entry key="schemaLocation.ALTO">
- 	http://www.loc.gov/standards/alto/alto-v2.0.xsd 
- 	http://schema.ccs-gmbh.com/ALTO
-   </entry>
-=======
   <entry key="schemaLocation.ALTO">
     http://www.loc.gov/standards/alto/alto-v2.0.xsd 
     http://schema.ccs-gmbh.com/ALTO
   </entry>
->>>>>>> wip
 </properties>
