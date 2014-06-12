@@ -44,7 +44,7 @@ public enum FileType {
     }
 
     public static void reload() {
-        Properties props = StartUp.properties();
+        Properties props = Settings.properties();
 
         TEXT.tag = null;  // no tag for this type 
         TEXT.schemaLocation = null; // no schema associated to this type

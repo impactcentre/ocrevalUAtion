@@ -19,11 +19,9 @@ package eu.digitisation.input;
 
 import eu.digitisation.log.Messages;
 import eu.digitisation.ngram.NgramModel;
-import eu.digitisation.ngram.NgramPerplexityEvaluator;
 import eu.digitisation.output.Browser;
 import eu.digitisation.output.OutputFileSelector;
 import eu.digitisation.output.Report;
-import eu.digitisation.text.Text;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -215,9 +213,9 @@ public class GUI extends JFrame {
                         if (ans) {
                             String prop = "schemaLocation." + ex.getFileType();
                             String value = ex.getSchemaLocation();
-                            StartUp.addUserProperty(prop, value);
+                            Settings.addUserProperty(prop, value);
                             Messages.info(prop + " set to "
-                                    + StartUp.property(prop));
+                                    + Settings.property(prop));
                         }
                     } catch (IOException ex) {
                         warn("Input/Output Error");
