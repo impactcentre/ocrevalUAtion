@@ -41,9 +41,9 @@ import org.w3c.dom.NodeList;
 public class SortPageXML {
 
     /**
-     * SortPageXML children consistently with the order defined for their id attribute
- Remark: NodeList mutates when operations on nodes take place: an backup
- childList is used to avoid such conflicts.
+     * SortPageXML children consistently with the order defined for their id
+     * attribute Remark: NodeList mutates when operations on nodes take place:
+     * an backup childList is used to avoid such conflicts.
      *
      * @param node the parent node
      * @param order the array of id's in ascending order
@@ -153,8 +153,8 @@ public class SortPageXML {
     /**
      *
      * @param file a PAGE XML input file
-     * @return true if the document in file is transformed according to the reading
- order
+     * @return true if the document in file is transformed according to the
+     * reading order
      * @throws IOException
      */
     public static boolean isSorted(File file) throws IOException {
@@ -195,11 +195,12 @@ public class SortPageXML {
         writer.write(ofile);
     }
 
-/**
- * Demo main
- * @param args
- * @throws IOException 
- */
+    /**
+     * Demo main
+     *
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         File ifile = new File(args[0]);
 

@@ -52,8 +52,10 @@ public class XPathFilter {
     }
 
     private void includeAll(String[] array) throws XPathExpressionException {
-        for (String s : array) {
-            include(s);
+        if (array != null) {
+            for (String s : array) {
+                include(s);
+            }
         }
     }
 
@@ -63,8 +65,10 @@ public class XPathFilter {
     }
 
     private void excludeAll(String[] array) throws XPathExpressionException {
-        for (String s : array) {
-            exclude(s);
+        if (array != null) {
+            for (String s : array) {
+                exclude(s);
+            }
         }
     }
 
@@ -105,7 +109,7 @@ public class XPathFilter {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         while (reader.ready()) {
             String line = reader.readLine().trim();
-            if (line.length() > 0  && !line.startsWith("#")) {
+            if (line.length() > 0 && !line.startsWith("#")) {
                 list.add(line);
             }
         }
