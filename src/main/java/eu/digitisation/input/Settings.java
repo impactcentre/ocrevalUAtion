@@ -34,7 +34,7 @@ import java.util.Properties;
  *
  * @author R.C.C.
  */
-public class StartUp {
+public class Settings {
 
     private static Properties props = new Properties();
 
@@ -50,7 +50,7 @@ public class StartUp {
             Messages.info("Application folder is " + dir);
             return dir;
         } catch (URISyntaxException ex) {
-            Messages.severe(StartUp.class.getName() + ": " + ex);
+            Messages.severe(Settings.class.getName() + ": " + ex);
         }
         return null;
     }
@@ -60,7 +60,7 @@ public class StartUp {
             InputStream in;
             // Read defaults
             Properties defaults = new Properties();
-            in = StartUp.class.getResourceAsStream("/defaultProperties.xml");
+            in = Settings.class.getResourceAsStream("/defaultProperties.xml");
             if (in != null) {
                 defaults.loadFromXML(in);
                 in.close();
@@ -75,7 +75,7 @@ public class StartUp {
                 Messages.info("Read properties from " + file);
                 in.close();
             } else {
-                in = StartUp.class.getResourceAsStream("/userProperties.xml");
+                in = Settings.class.getResourceAsStream("/userProperties.xml");
                 if (in != null) {
                     defaults.loadFromXML(in);
                     Messages.info("Read properties from " + file);
@@ -86,7 +86,7 @@ public class StartUp {
                 }
             }
         } catch (IOException ex) {
-            Messages.severe(StartUp.class.getName() + ": " + ex);
+            Messages.severe(Settings.class.getName() + ": " + ex);
         }
     }
 
@@ -150,7 +150,7 @@ public class StartUp {
             Messages.info("Created new file: " + file.getAbsolutePath());
             FileType.reload();
         } catch (IOException ex) {
-            Messages.severe(StartUp.class.getName() + ": " + ex);
+            Messages.severe(Settings.class.getName() + ": " + ex);
         }
     }
 }
