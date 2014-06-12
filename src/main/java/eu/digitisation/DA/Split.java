@@ -41,16 +41,18 @@ public class Split {
         String[] inclusions = {"TextRegion[@type='paragraph']"};
         XPathFilter filter = new XPathFilter(inclusions, null);
         Collator collator = Collator.getInstance(Locale.FRENCH);
-        // TODO: crearte Spanish collator
+        // TODO: create Spanish collator
 
+        System.out.println(ifile);
         String last = "";
         for (Element e : filter.selectElements(doc)) {
-            String text = e.getTextContent().replaceAll("\\p{Space}+", " ").trim();
 
+            String text = e.getTextContent().replaceAll("\\p{Space}+", " ").trim();
+            //System.out.println(text);
             if (text.matches("[A-Z]+(\\p{Space}|\\p{Punct}).*")) {
                 String head = text.split("\\p{Space}|\\p{Punct}")[0];
-                System.out.println(head);
-                int n = collator.compare(text, head);
+                //System.out.println(head);
+                int n = collator.compare(last, head);
                 if (n < 0) {
                     System.out.println(head);
                 } else if (n == 0) {
@@ -59,6 +61,8 @@ public class Split {
                     System.out.println("***" + head);
                 }
                 last = head;
+            } else {
+                System.out.println(">>>" + text);
             }
         }
     }
