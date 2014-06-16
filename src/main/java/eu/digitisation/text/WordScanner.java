@@ -131,7 +131,7 @@ public class WordScanner {
      */
     public WordScanner(String s, String regex) throws IOException {
         this(new ByteArrayInputStream(s.getBytes("UTF-8")),
-                Charset.forName("UTF-8"), regex);
+                Charset.forName("UTF-8"), "(" + regex + ")");
     }
 
     /**
