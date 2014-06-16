@@ -34,8 +34,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -70,8 +68,6 @@ public class Split {
 
     static XPathFilter selector; // Selects XML elements with relevant content
     final static Collator collator;  // Defines the lexicographic order
-    final static String lemmaRE; // Regex for one lemma
-    final static String headRE; // Regex for multiword lemmas
     static CharFilter cfilter; // Map PUA characters
 
     static {
@@ -84,8 +80,6 @@ public class Split {
         }
 
         collator = Collator.getInstance(Locale.FRENCH);  // Create old Spanish rules
-        lemmaRE = "(\\p{Lu}|[ñ])+";
-        headRE = lemmaRE + "([,]?\\p{Space}" + lemmaRE + ")*";
 
         try {
             URL resourceUrl = Split.class.getResource("/UnicodeCharEquivalences.txt");
@@ -198,15 +192,15 @@ public class Split {
                 if (WordType.typeOf(start) == WordType.UPPERCASE) {
                     int n = collator.compare(last, start);
                     if (n < 0) {
-                        System.out.println(start);
+                        System.out.println(head);
                     } else if (n == 0) {
-                        System.out.println("\t" + head.toLowerCase());
-                    } else if (isParticiple(head, last)) {
-                        System.out.println("*Participle*" + head);
+                        System.out.println(" " + head.toLowerCase());
+                    } else if (isParticiple(start, last)) {
+                        System.out.println("<PastPart>" + head + "</PastPart>");
                     } else {
                         System.out.println("***" + head);
                     }
-                    last = head;
+                    last = start;
                 } else if (WordType.typeOf(start.replaceAll("l", "I"))
                         == WordType.UPPERCASE) {
                     // wrong transcription
@@ -214,7 +208,7 @@ public class Split {
                 } else if (WordType.nearlyUpper(start)) {
                     // a single mismatch
                     System.out.println(">>>" + head);
-                } else if (head.matches(headRE)) {
+                } else if (WordType.typeOf(start) == WordType.MIXED) {
                     System.out.println("<<<<" + head);
                 } else {
                     ;//System.out.println(">>>" + text);
@@ -227,13 +221,13 @@ public class Split {
 
         for (String arg : args) {
             File file = new File(arg);
-            Split.view(file);
+            //Split.view(file);
             Split.split(file);
         }
     }
 
     protected static boolean isParticiple(String head, String last) {
-        System.out.println(last.replaceFirst("[AEI]R$", ""));
+        //System.out.println("="+last.replaceFirst("[AEI]R$", ""));
         return last.replaceFirst("[AEI]R$", "")
                 .equals(head.replaceFirst("[AI]DO$", ""));
     }
