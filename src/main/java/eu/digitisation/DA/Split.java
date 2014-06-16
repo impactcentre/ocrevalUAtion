@@ -17,17 +17,25 @@
  */
 package eu.digitisation.DA;
 
+import static eu.digitisation.DA.WordType.LOWERCASE;
+import static eu.digitisation.DA.WordType.MIXED;
+import static eu.digitisation.DA.WordType.UPPERCASE;
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.log.Messages;
-import eu.digitisation.text.WordScanner;
+import eu.digitisation.text.CharFilter;
+import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.XPathFilter;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -60,48 +68,108 @@ import org.w3c.dom.Element;
  */
 public class Split {
 
-    static XPathFilter filter; // Selects XML elements with relevant content
+    static XPathFilter selector; // Selects XML elements with relevant content
     final static Collator collator;  // Defines the lexicographic order
     final static String lemmaRE; // Regex for one lemma
     final static String headRE; // Regex for multiword lemmas
+    static CharFilter cfilter; // Map PUA characters
 
     static {
+
         String[] inclusions = {"TextRegion[@type='paragraph']"};
         try {
-            filter = new XPathFilter(inclusions, null);
+            selector = new XPathFilter(inclusions, null);
         } catch (XPathExpressionException ex) {
             Messages.severe(ex.getMessage());
         }
+
         collator = Collator.getInstance(Locale.FRENCH);  // Create old Spanish rules
         lemmaRE = "(\\p{Lu}|[ñ])+";
         headRE = lemmaRE + "([,]?\\p{Space}" + lemmaRE + ")*";
-        
+
+        try {
+            URL resourceUrl = Split.class.getResource("/UnicodeCharEquivalences.txt");
+            File file = new File(resourceUrl.toURI());
+            cfilter = new CharFilter(true, file);
+        } catch (URISyntaxException ex) {
+            Messages.severe(ex.getMessage());
+        }
     }
 
     /**
-     * 
-     * @param e
-     * @return uppercase prefix or null if none found
-     * @throws IOException 
+     *
+     * @param text a string
+     * @return the longest prefix of the text containing only uppercase letters
      */
-    private static String header(Element e) throws IOException {
-        String text = e.getTextContent().trim();
-       
-        WordScanner scanner = new WordScanner(text, "^" + headRE);
-        String prefix = scanner.nextWord();
-         System.out.println(text + "\n -> " + prefix);
-        return prefix;
+    protected static String header(String text) {
+        StringBuilder builder = new StringBuilder();
+        String[] tokens = text.split("\\p{Space}+");
+
+        for (String token : tokens) {
+            String normal = cfilter.translate(token);
+            String word = StringNormalizer.trim(normal);
+
+            switch (WordType.typeOf(word)) {
+
+                case UPPERCASE: // header word
+                    if (builder.length() > 0) {
+                        builder.append(' ');
+                    }
+                    builder.append(token);
+                    break;
+                case LOWERCASE: // end of header
+                    return builder.toString();
+                case MIXED: // striking content
+                    if (WordType.initial(word)) {
+                        return builder.toString();
+                    } else {
+                        if (builder.length() > 0) {
+                            builder.append(' ');
+                        }
+                        builder.append(token);
+                    }
+            }
+        }
+        return builder.toString();
     }
 
+    /**
+     *
+     * @param e a document element
+     * @return the longest prefix of the textual content containing only
+     * uppercase letters
+     * @throws IOException
+     */
+    protected static String header(Element e) throws IOException {
+
+        String text = e.getTextContent().trim();
+        return header(text);
+    }
+
+    /**
+     *
+     * @param doc an XML document
+     * @return the initial sentences in every selected textual element
+     * @throws IOException
+     */
     public static List<String> headers(Document doc) throws IOException {
         List<String> list = new ArrayList<String>();
-        for (Element e : filter.selectElements(doc)) {
+        for (Element e : selector.selectElements(doc)) {
             String head = header(e);
-            if (head != null && !head.isEmpty()) {
+            if (!head.isEmpty()) {
                 list.add(head);
             }
         }
         return list;
+    }
+
+    /**
+     *
+     * @param text a string of text
+     * @return the initial word (sequence of consecutive letters) in the text
+     */
+    private static String initial(String text) {
+        return text.split("[^\\p{L}]+")[0];
     }
 
     /**
@@ -123,15 +191,14 @@ public class Split {
 
         System.out.println(ifile);
         String last = "";
-        for (Element e : filter.selectElements(doc)) {
-            String text = e.getTextContent().replaceAll("\\p{Space}+", " ").trim();
-            if (!text.isEmpty()) {
-                String head = text.split("\\p{Space}|\\p{Punct}")[0];
+        for (String head : headers(doc)) {
+            if (!head.isEmpty()) {
+                String start = initial(head).replaceAll("ñ", "Ñ");
                 //System.out.println(text);
-                if (head.matches(lemmaRE)) {
-                    int n = collator.compare(last, head);
+                if (WordType.typeOf(start) == WordType.UPPERCASE) {
+                    int n = collator.compare(last, start);
                     if (n < 0) {
-                        System.out.println(head);
+                        System.out.println(start);
                     } else if (n == 0) {
                         System.out.println("\t" + head.toLowerCase());
                     } else if (isParticiple(head, last)) {
@@ -140,10 +207,11 @@ public class Split {
                         System.out.println("***" + head);
                     }
                     last = head;
-                } else if (head.replaceAll("l", "I").matches(lemmaRE)) {
+                } else if (WordType.typeOf(start.replaceAll("l", "I"))
+                        == WordType.UPPERCASE) {
                     // wrong transcription
                     System.out.println(">" + head);
-                } else if (head.matches(lemmaRE + "\\p{L}" + lemmaRE)) {
+                } else if (WordType.nearlyUpper(start)) {
                     // a single mismatch
                     System.out.println(">>>" + head);
                 } else if (head.matches(headRE)) {
@@ -156,13 +224,17 @@ public class Split {
     }
 
     public static void main(String[] args) throws IOException {
+
         for (String arg : args) {
-            Split.view(new File(arg));
+            File file = new File(arg);
+            Split.view(file);
+            Split.split(file);
         }
     }
 
-    private static boolean isParticiple(String head, String last) {
-        return last.replaceFirst("AR$", "")
-                .equals(head.replaceFirst("ADO$", ""));
+    protected static boolean isParticiple(String head, String last) {
+        System.out.println(last.replaceFirst("[AEI]R$", ""));
+        return last.replaceFirst("[AEI]R$", "")
+                .equals(head.replaceFirst("[AI]DO$", ""));
     }
 }
