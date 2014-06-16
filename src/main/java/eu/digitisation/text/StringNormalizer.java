@@ -75,6 +75,16 @@ public class StringNormalizer {
     }
 
     /**
+     * @param s a string
+     * @return the string with leading and trailing whitespace and punctuation
+     * symbols removed.
+     */
+    public static String trim(String s) {
+        return s.replaceAll("^(\\p{P}|\\p{Space})+", "")
+                .replaceAll("(\\p{P}|\\p{Space})+$", "");
+    }
+
+    /**
      *
      * @param s the input string
      * @param ignoreCase true if case is irrelevant
