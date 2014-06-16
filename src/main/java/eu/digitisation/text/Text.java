@@ -19,7 +19,7 @@ package eu.digitisation.text;
 
 import eu.digitisation.input.FileType;
 import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.StartUp;
+import eu.digitisation.input.Settings;
 import eu.digitisation.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.log.Messages;
@@ -55,7 +55,7 @@ public class Text {
     XPathFilter filter;
 
     static {
-        Properties props = StartUp.properties();
+        Properties props = Settings.properties();
         maxlen = Integer.parseInt(props.getProperty("maxlen", "0").trim());
         Messages.info("max length of text set to " + maxlen);
         try {
