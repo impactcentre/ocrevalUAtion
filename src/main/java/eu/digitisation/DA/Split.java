@@ -28,12 +28,16 @@ import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.XPathFilter;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Collator;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,23 +75,17 @@ public class Split {
     static CharFilter cfilter; // Map PUA characters
 
     static {
-
         String[] inclusions = {"TextRegion[@type='paragraph']"};
+        URL url = Split.class.getResource("UnicodeCharEquivalences.txt");
+        File file = new File(url.getFile());
+        System.out.println(file);
         try {
             selector = new XPathFilter(inclusions, null);
         } catch (XPathExpressionException ex) {
             Messages.severe(ex.getMessage());
         }
-
-        collator = Collator.getInstance(Locale.FRENCH);  // Create old Spanish rules
-
-        try {
-            URL resourceUrl = Split.class.getResource("/UnicodeCharEquivalences.txt");
-            File file = new File(resourceUrl.toURI());
-            cfilter = new CharFilter(true, file);
-        } catch (URISyntaxException ex) {
-            Messages.severe(ex.getMessage());
-        }
+        collator = OldSpanishCollator.getInstance();
+        cfilter = new CharFilter(true, file);
     }
 
     /**
@@ -135,7 +133,6 @@ public class Split {
      * @throws IOException
      */
     protected static String header(Element e) throws IOException {
-
         String text = e.getTextContent().trim();
         return header(text);
     }
@@ -163,7 +160,11 @@ public class Split {
      * @return the initial word (sequence of consecutive letters) in the text
      */
     private static String initial(String text) {
-        return text.split("[^\\p{L}]+")[0];
+        if (text.length() > 0 && Character.isLetter(text.charAt(0))) {
+            return text.split("[^\\p{L}]+")[0];
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -179,12 +180,11 @@ public class Split {
         }
     }
 
-    public static void split(File ifile) throws IOException {
+    public static String split(File ifile, String last) throws IOException {
         Document doc = SortPageXML.isSorted(ifile) ? DocumentParser.parse(ifile)
                 : SortPageXML.sorted(DocumentParser.parse(ifile));
 
         System.out.println(ifile);
-        String last = "";
         for (String head : headers(doc)) {
             if (!head.isEmpty()) {
                 String start = initial(head).replaceAll("ñ", "Ñ");
@@ -192,43 +192,53 @@ public class Split {
                 if (WordType.typeOf(start) == WordType.UPPERCASE) {
                     int n = collator.compare(last, start);
                     if (n < 0) {
-                        System.out.println(head);
+                        System.out.println("<entry>" + head + "</entry>");
                     } else if (n == 0) {
-                        System.out.println(" " + head.toLowerCase());
+                        System.out.println(" <subentry>" + head + "</subentry>");
                     } else if (isParticiple(start, last)) {
                         System.out.println("<PastPart>" + head + "</PastPart>");
                     } else {
-                        System.out.println("***" + head);
+                        System.out.println("***");
+                        System.out.println("<entry>" + head + "</entry>");
                     }
                     last = start;
                 } else if (WordType.typeOf(start.replaceAll("l", "I"))
                         == WordType.UPPERCASE) {
                     // wrong transcription
-                    System.out.println(">" + head);
+                    System.out.println("<Itypo>" + head + "</Itypo>");
                 } else if (WordType.nearlyUpper(start)) {
                     // a single mismatch
-                    System.out.println(">>>" + head);
-                } else if (WordType.typeOf(start) == WordType.MIXED) {
+                    System.out.println("<check>" + head + "</check>");
+                } else if (WordType.typeOf(start) == WordType.MIXED
+                        && !WordType.initial(start)) {
                     System.out.println("<<<<" + head);
                 } else {
                     ;//System.out.println(">>>" + text);
                 }
             }
         }
+        return last;
+    }
+
+    /**
+     * Check if an entry can be a past participle of the preceding word
+     *
+     * @param head the entry
+     * @param last the preceding word
+     * @return true if head is a past participle entry after the last word
+     */
+    protected static boolean isParticiple(String head, String last) {
+        //System.out.println("="+last.replaceFirst("[AEI]R$", ""));
+        return last.replaceFirst("[AEI]R(SE)?$", "")
+                .equals(head.replaceFirst("[AI]DO$", ""));
     }
 
     public static void main(String[] args) throws IOException {
-
+        String lastEntry = "";
         for (String arg : args) {
             File file = new File(arg);
             //Split.view(file);
-            Split.split(file);
+            lastEntry = Split.split(file, lastEntry);
         }
-    }
-
-    protected static boolean isParticiple(String head, String last) {
-        //System.out.println("="+last.replaceFirst("[AEI]R$", ""));
-        return last.replaceFirst("[AEI]R$", "")
-                .equals(head.replaceFirst("[AI]DO$", ""));
     }
 }
