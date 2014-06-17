@@ -28,16 +28,10 @@ import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.XPathFilter;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Collator;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,7 +70,7 @@ public class Split {
 
     static {
         String[] inclusions = {"TextRegion[@type='paragraph']"};
-        URL url = Split.class.getResource("UnicodeCharEquivalences.txt");
+        URL url = Split.class.getResource("/UnicodeCharEquivalences.csv");
         File file = new File(url.getFile());
         System.out.println(file);
         try {
@@ -203,7 +197,7 @@ public class Split {
                     }
                     last = start;
                 } else if (WordType.typeOf(start.replaceAll("l", "I"))
-                        == WordType.UPPERCASE) {
+                        == WordType.UPPERCASE && !WordType.initial(start)) {
                     // wrong transcription
                     System.out.println("<Itypo>" + head + "</Itypo>");
                 } else if (WordType.nearlyUpper(start)) {
