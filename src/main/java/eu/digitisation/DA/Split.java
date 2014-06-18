@@ -26,9 +26,11 @@ import eu.digitisation.text.CharFilter;
 import eu.digitisation.text.StringNormalizer;
 import eu.digitisation.xml.DocumentParser;
 import eu.digitisation.xml.XPathFilter;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,16 +72,16 @@ public class Split {
 
     static {
         String[] inclusions = {"TextRegion[@type='paragraph']"};
-        URL url = Split.class.getResource("/UnicodeCharEquivalences.csv");
-        File file = new File(url.getFile());
-        System.out.println(file);
+        InputStream is = Split.class.getResourceAsStream("/UnicodeCharEquivalences.csv");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         try {
             selector = new XPathFilter(inclusions, null);
         } catch (XPathExpressionException ex) {
             Messages.severe(ex.getMessage());
         }
         collator = OldSpanishCollator.getInstance();
-        cfilter = new CharFilter(true, file);
+        cfilter = new CharFilter(true);
+        cfilter.addCSV(reader);
     }
 
     /**
@@ -89,14 +91,12 @@ public class Split {
      */
     protected static String header(String text) {
         StringBuilder builder = new StringBuilder();
-        String[] tokens = text.split("\\p{Space}+");
+        String[] tokens = cfilter.translate(text).split("\\p{Space}+");
 
         for (String token : tokens) {
-            String normal = cfilter.translate(token);
-            String word = StringNormalizer.trim(normal);
+            String word = StringNormalizer.trim(token);
 
             switch (WordType.typeOf(word)) {
-
                 case UPPERCASE: // header word
                     if (builder.length() > 0) {
                         builder.append(' ');
@@ -106,7 +106,7 @@ public class Split {
                 case LOWERCASE: // end of header
                     return builder.toString();
                 case MIXED: // striking content
-                    if (WordType.initial(word)) {
+                    if (WordType.isFirstWord(word)) {
                         return builder.toString();
                     } else {
                         if (builder.length() > 0) {
@@ -134,7 +134,7 @@ public class Split {
     /**
      *
      * @param doc an XML document
-     * @return the initial sentences in every selected textual element
+     * @return the firstWord sentences in every selected textual element
      * @throws IOException
      */
     public static List<String> headers(Document doc) throws IOException {
@@ -151,13 +151,33 @@ public class Split {
     /**
      *
      * @param text a string of text
-     * @return the initial word (sequence of consecutive letters) in the text
+     * @return the firstWord word (sequence of consecutive letters) in the text
      */
-    private static String initial(String text) {
+    private static String firstWord(String text) {
         if (text.length() > 0 && Character.isLetter(text.charAt(0))) {
             return text.split("[^\\p{L}]+")[0];
         } else {
             return "";
+        }
+    }
+
+    /**
+     * Test if a string can be the initial segment of a new sentence or
+     * paragraph: punctuation (optional) followed by a mixed case word with only
+     * the initial letter is uppercase
+     *
+     *
+     * @param word a string
+     * @return true if the string is a sequence of Unicode letters whose first
+     * letter is uppercase and all trailing letters are lowercase (optionally,
+     * preceded by punctuation)
+     */
+    public static boolean isParhead(String text) {
+        if (text.length() > 0) {
+            boolean b = text.matches("(\\p{Punct}|\\p{Space})*\\p{Lu}[\\p{L}&&[^\\p{Lu}]]*((\\p{Punct}|\\p{Space}).*)?");
+            return b;
+        } else {
+            return false;
         }
     }
 
@@ -174,40 +194,63 @@ public class Split {
         }
     }
 
+    /**
+     *
+     * @param s a string
+     * @return the first character in the string or \u0000 if the string is
+     * empty
+     */
+    private static char firstChar(String s) {
+        return s.length() > 0 ? s.charAt(0) : '\u0000';
+    }
+
     public static String split(File ifile, String last) throws IOException {
         Document doc = SortPageXML.isSorted(ifile) ? DocumentParser.parse(ifile)
                 : SortPageXML.sorted(DocumentParser.parse(ifile));
 
-        System.out.println(ifile);
+        System.out.println("\n" + ifile + "\n");
         for (String head : headers(doc)) {
+
             if (!head.isEmpty()) {
-                String start = initial(head).replaceAll("ñ", "Ñ");
+                String start = firstWord(head).replaceAll("ñ", "Ñ");
                 //System.out.println(text);
                 if (WordType.typeOf(start) == WordType.UPPERCASE) {
-                    int n = collator.compare(last, start);
-                    if (n < 0) {
-                        System.out.println("<entry>" + head + "</entry>");
-                    } else if (n == 0) {
-                        System.out.println(" <subentry>" + head + "</subentry>");
-                    } else if (isParticiple(start, last)) {
-                        System.out.println("<PastPart>" + head + "</PastPart>");
+                    // Discard conenctors
+                    if (start.length() == 1 && start.matches("[AEOY]")
+                            && start.charAt(0) != last.charAt(0)
+                            || firstChar(start) != firstChar(last)) {
+                        System.out.println("<skip>" + head + "</skip>");
+
                     } else {
-                        System.out.println("***");
-                        System.out.println("<entry>" + head + "</entry>");
+                        int n = collator.compare(last, start);
+                        if (n < 0) {
+                            System.out.println("<entry>" + head + "</entry>");
+                            last = start;
+                        } else if (n == 0) {
+                            System.out.println("  <subentry>" + head + "</subentry>");
+                        } else if (isParticiple(start, last)) {
+                            System.out.println("<PastPart>" + head + "</PastPart>");
+                        } else {
+                            System.out.println("***");
+                            System.out.println("<entry>" + head + "</entry>");
+                            last = start;
+                        }
                     }
-                    last = start;
-                } else if (WordType.typeOf(start.replaceAll("l", "I"))
-                        == WordType.UPPERCASE && !WordType.initial(start)) {
-                    // wrong transcription
-                    System.out.println("<Itypo>" + head + "</Itypo>");
-                } else if (WordType.nearlyUpper(start)) {
-                    // a single mismatch
-                    System.out.println("<check>" + head + "</check>");
-                } else if (WordType.typeOf(start) == WordType.MIXED
-                        && !WordType.initial(start)) {
-                    System.out.println("<<<<" + head);
+                } else if (isParhead(head)) {
+                    System.out.println("<skip>" + head + "</skip>");
                 } else {
-                    ;//System.out.println(">>>" + text);
+                    String s = start.replaceAll("l", "I");
+                    if (WordType.typeOf(s)
+                            == WordType.UPPERCASE) {
+                        // wrong transcription
+                        System.out.println("<Itypo>" + head + "</Itypo>");
+                        last = s;
+                    } else if (WordType.nearlyUpper(start)) {
+                        // a single mismatch
+                        System.out.println("<check>" + head + "</check>");
+                    } else {
+                        System.out.println("<CHECK_THIS>" + head + "</CHECK_THIS>");
+                    }
                 }
             }
         }

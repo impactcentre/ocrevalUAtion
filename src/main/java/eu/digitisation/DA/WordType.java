@@ -38,17 +38,17 @@ public enum WordType {
             return MIXED;
         }
     }
-
+    
     /**
-     * Test if word can be the initial word in sentence (lowercase with first
-     * character uppercase)
+     * Test if a word with mixed type can be the initial word in a sentence or
+     * paragraph (lowercase with first character uppercase)
      *
      * @param word a string
      * @return true if the word is a sequence of Unicode letters whose first
-     * letter is uppercase and all trailing letters are lowercase
+     * letter is uppercase and all trailing letters are lowercase 
      */
-    public static boolean initial(String word) {
-        return word.matches("\\p{Lu}[\\p{L}&&[^\\p{Lu}]]*");
+    public static boolean isFirstWord(String word) {
+        return word.matches("\\p{Punct}*\\p{Lu}[\\p{L}&&[^\\p{Lu}]]*");
     }
 
     /**
