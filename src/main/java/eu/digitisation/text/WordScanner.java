@@ -175,7 +175,7 @@ public class WordScanner {
         String res = null;
         while (res == null) {
             if (matcher.find()) {
-                res = matcher.group(1);
+                res = matcher.group(0);
             } else if (reader.ready()) {
                 matcher = pattern.matcher(reader.readLine());
             } else {
@@ -197,7 +197,7 @@ public class WordScanner {
             try {
                 String word;
                 File file = new File(arg);
-                scanner = new WordScanner(file, "^\\p{Space}+");
+                scanner = new WordScanner(file, "[^\\p{Space}]+");
                 while ((word = scanner.nextWord()) != null) {
                     System.out.println(word);
                 }

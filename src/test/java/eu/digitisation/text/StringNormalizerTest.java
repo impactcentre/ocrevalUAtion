@@ -17,7 +17,6 @@
  */
 package eu.digitisation.text;
 
-import eu.digitisation.text.StringNormalizer;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -91,6 +90,15 @@ public class StringNormalizerTest {
     }
 
     @Test
+    public void testTrim() {
+        System.out.println("trim");
+        String s = "! \"#lin?ks+!\"#}-"; // + is not in punctuation block
+        String expResult = "lin?ks+";
+        String result = StringNormalizer.trim(s);
+        assertEquals(expResult, result);
+    }
+
+    @Test
     public void testStrip() {
         System.out.println("strip");
         String s = "Stra\u00dfe+ links+!\"#}-"; // ª is a letter!
@@ -111,5 +119,4 @@ public class StringNormalizerTest {
         assertEquals(expResult, result);
 
     }
-
 }

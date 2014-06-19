@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -129,10 +131,34 @@ public class CharFilter extends HashMap<String, String> {
             }
             reader.close();
         } catch (IOException ex) {
-            Messages.info(CharFilter.class.getName() + ": " + ex);
+            
         }
     }
 
+    /**
+     * Add the equivalences in CSV format
+     *
+     * @param reader a BufferedReader with CSV lines
+     */
+    public void addCSV(BufferedReader reader) {
+        try {
+            while (reader.ready()) {
+                    String line = reader.readLine();
+                    String[] tokens = line.split("([,;\t])");
+                    if (tokens.length > 1) {  // allow comments in line
+                        String key = UnicodeReader.codepointsToString(tokens[0]);
+                        String value = UnicodeReader.codepointsToString(tokens[1]);
+                        put(key, value);
+                    } else {
+                        throw new IOException("Wrong CSV line" + line);
+                    }
+                }
+                reader.close();
+        } catch (IOException ex) {
+            Messages.info(CharFilter.class.getName() + ": " + ex);
+        }
+    }
+    
     /**
      * Set the compatibility mode
      *
