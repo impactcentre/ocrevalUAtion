@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
 package eu.digitisation.text;
 
 import java.io.IOException;
@@ -31,35 +30,36 @@ import org.junit.Test;
  * @author R.C.C
  */
 public class WordScannerTest {
-    
+
     public WordScannerTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
     /**
      * Test of main method, of class WordScanner.
+     *
      * @throws java.io.IOException
      */
     @Test
     public void testnextWord() throws IOException {
         System.out.println("main");
-         String input = "hola&amigo2\n3.14 mi casa, todos los días\n"
-                 + "mesa-camilla java4you i.b.m. i+d Dª María 3+100%";
+        String input = "hola&amigo2\n3.14 mi casa, todos los días\n"
+                + "mesa-camilla java4you i.b.m. i+d Dª María 3+100%";
         WordScanner scanner = new WordScanner(input, null);
         String word;
         int num = 0;
@@ -68,7 +68,6 @@ public class WordScannerTest {
             //System.out.println(word);
         }
         assertEquals(18, num);
- 
+
     }
-    
 }
