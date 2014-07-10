@@ -109,7 +109,7 @@ public class Viewer {
         }
 
         if (opts == null || opts.contains("b")) {
-            page.add(gt.getFrontiers(ComponentType.BLOCK), Color.RED, 2f, shortDash);
+            page.add(gt.getFrontiers(ComponentType.BLOCK), Color.RED, 8f);
         }
         if (opts == null || opts.contains("l")) {
             page.add(gt.getFrontiers(ComponentType.LINE), Color.GREEN, 2f, longDash);

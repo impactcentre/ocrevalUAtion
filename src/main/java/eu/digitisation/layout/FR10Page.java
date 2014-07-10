@@ -36,9 +36,9 @@ import org.w3c.dom.NodeList;
  *
  * @author R.C.C.
  */
-class FR10Page extends Page {
+public class FR10Page extends Page {
 
-    FR10Page(File file) {
+    public FR10Page(File file) {
         try {
             parse(file);
         } catch (IOException ex) {

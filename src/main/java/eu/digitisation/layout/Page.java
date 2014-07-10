@@ -32,7 +32,7 @@ import java.util.Map;
  *
  * @author R.C.C.
  */
-abstract class Page {
+public abstract class Page {
 
     TextComponent root;                                    // the main component
     List<TextComponent> components;                        // all components
@@ -163,7 +163,7 @@ abstract class Page {
     }
 
     /**
-     * Transofrm a list of components into a list of polygonal frontiers
+     * Transform a list of components into a list of polygonal frontiers
      *
      * @param components
      * @return
