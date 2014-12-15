@@ -20,8 +20,12 @@
     </scm>
     <licenses>
         <license>
-            <name>GNU General Public License 2.0</name>
+            <name>GNU General Public License; either version 2
+                of the License, or (at your option) any later version</name>
             <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+        </license>
+        <license>
+            
         </license>
     </licenses>
     <properties>
