@@ -36,8 +36,8 @@ public class Main {
 
     static final String helpMsg = "Usage:\t"
             + "ocrevalUAtion -gt file1"
-            + "-ocr file2"
-            + "[-e encoding]"
+            + " -ocr file2"
+            + " [-e encoding]"
             + " [-o output_file_or_dir ] [-r equivalences_file]"
             + " [-c] [-ic] [-id] [-ip]";
 
