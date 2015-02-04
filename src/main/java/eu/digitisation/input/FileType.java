@@ -114,7 +114,7 @@ public enum FileType {
                 location = StringNormalizer
                         .reduceWS(root.getAttribute("xsi:noNamespaceSchemaLocation"));
             } else {
-                location = null;
+                location = "";
             }
 
             if (doctype.equals(PAGE.tag)) {
