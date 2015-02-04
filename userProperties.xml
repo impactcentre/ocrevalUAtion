@@ -6,4 +6,7 @@
    <entry key="maxlen">
     100000
    </entry>
+  <entry key="ignoreSchemaLocation">
+  	false
+  </entry>
 </properties>

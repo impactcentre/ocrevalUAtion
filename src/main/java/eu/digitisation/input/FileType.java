@@ -38,7 +38,8 @@ public enum FileType {
     TEXT, PAGE, FR10, HOCR, ALTO, UNKNOWN;
     String tag;
     String schemaLocation;  // schema URL
-
+    static boolean ignoreSchemaLocation; // ignore, for example, missing schema location (dangerous)
+    
     static {
         reload();
     }
@@ -60,6 +61,8 @@ public enum FileType {
 
         HOCR.tag = "html";
         HOCR.schemaLocation = null;  // no schema for this type 
+        
+        ignoreSchemaLocation = props.getProperty("ignoreSchemaLocation").toLowerCase().contains("true");
     }
 
     /**
@@ -78,17 +81,21 @@ public enum FileType {
      *
      * @param locations1 string of URL schema locations separated by spaces
      * @param locations2 string of URL schema locations separated by spaces
-     * @return True if at least one URL is in both locations
+     * @return True if at least one URL is in both locations or when ignoreSchemaLocation is True
      */
     private static boolean sameLocation(String locations1, String locations2) {
-        String[] urls = locations2.split("\\p{Space}+");
-        
-        for (String url : urls) {
-            if (locations1.contains(url)) {
-                return true;
-            }
-        }
-        return false;
+    	if (ignoreSchemaLocation) {
+    		return true;
+    	} else {
+	        String[] urls = locations2.split("\\p{Space}+");
+	        
+	        for (String url : urls) {
+	            if (locations1.contains(url)) {
+	                return true;
+	            }
+	        }
+	        return false;
+    	}
     }
 
     /**
