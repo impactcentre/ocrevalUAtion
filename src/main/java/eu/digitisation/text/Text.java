@@ -61,7 +61,7 @@ public class Text {
         try {
             File inclusions = new File("inclusions.txt");
             File exclusions = new File("exclusions.txt");
-            XPathFilter filter = inclusions.exists()
+            XPathFilter filter = inclusions.exists() || exclusions.exists()
                     ? new XPathFilter(inclusions, exclusions)
                     : null;
         } catch (IOException ex) {

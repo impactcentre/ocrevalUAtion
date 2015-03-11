@@ -33,6 +33,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.digitisation.log.Messages;
+
 /**
  * Test elements against XPath expressions and include or exclude the elements
  *
@@ -130,10 +132,12 @@ public class XPathFilter {
     public XPathFilter(File infile, File exfile)
             throws IOException, XPathExpressionException {
         this();
-        if (infile != null) {
+        if ( (infile != null) && (infile.exists()) ) {
+        	Messages.info("Read inclusions file (XPath inclusion expressions) from: " + infile.getAbsolutePath());
             includeAll(lines(infile));
         }
-        if (exfile != null) {
+        if ( (exfile != null) && (exfile.exists()) ) {
+        	Messages.info("Read exclusions file (XPath exclusion expressions) from: " + exfile.getAbsolutePath());
             excludeAll(lines(exfile));
         }
     }
