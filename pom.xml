@@ -252,8 +252,7 @@
         </repository>
         <repository>
             <id>impact</id>
-            <name>impact repository</name>
-            <url>http://impact.dlsi.ua.es/mvn-repo</url>
+            <url>https://github.com/impactcentre/m2-repo/raw/master/releases</url>
         </repository>
     </repositories>
 </project>
