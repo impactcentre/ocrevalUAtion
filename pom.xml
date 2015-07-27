@@ -203,11 +203,6 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency> 
-        <!--dependency>
-            <groupId>org.geotoolkit</groupId>
-            <artifactId>geotk-coverageio</artifactId>
-            <version>3.17</version>
-        </dependency-->
         <dependency>
             <groupId>javax.media.jai</groupId>
             <artifactId>com.springsource.javax.media.jai.core</artifactId>
@@ -224,26 +219,41 @@
             <version>1.7.2</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-parsers</artifactId>
-            <version>1.4</version>
-            <type>jar</type>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>55.1</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.digitisation.utils</groupId>
+            <artifactId>input</artifactId>
+            <version>0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.digitisation.utils</groupId>
+            <artifactId>log</artifactId>
+            <version>0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.digitisation.utils</groupId>
+            <artifactId>text</artifactId>
+            <version>0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.digitisation.utils</groupId>
+            <artifactId>xml</artifactId>
+            <version>0.2</version>
         </dependency>
     </dependencies>
     <repositories>
-        <!--repository>
-            <releases />
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>geotoolkit</id>
-            <name>maven.geotoolkit.org Repository</name>
-            <url>http://maven.geotoolkit.org/</url>
-        </repository-->
         <repository>
             <id>com.springsource.repository.bundles.external</id>
             <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+        <repository>
+            <id>impact</id>
+            <name>impact repository</name>
+            <url>http://impact.dlsi.ua.es/mvn-repo</url>
         </repository>
     </repositories>
 </project>

@@ -17,10 +17,10 @@
  */
 package eu.digitisation.ngram;
 
-import eu.digitisation.input.WarningException;
+import eu.digitisation.utils.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
 import eu.digitisation.output.ErrorMeasure;
-import eu.digitisation.text.CharFilter;
+import eu.digitisation.utils.text.CharFilter;
 import eu.digitisation.text.Text;
 import java.io.File;
 import java.io.IOException;

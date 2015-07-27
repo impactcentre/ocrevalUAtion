@@ -1,6 +1,6 @@
 package eu.digitisation.text;
 
-import eu.digitisation.text.UnicodeReader;
+import eu.digitisation.utils.text.UnicodeReader;
 import junit.framework.TestCase;
 /**
  *

@@ -17,9 +17,9 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.log.Messages;
-import eu.digitisation.text.StringNormalizer;
-import eu.digitisation.xml.DocumentParser;
+import eu.digitisation.utils.log.Messages;
+import eu.digitisation.utils.text.StringNormalizer;
+import eu.digitisation.utils.xml.DocumentParser;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;

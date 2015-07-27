@@ -17,9 +17,9 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.text.CharMap;
+import eu.digitisation.utils.text.CharMap;
 import eu.digitisation.text.Text;
-import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.utils.xml.DocumentBuilder;
 import java.io.File;
 import org.w3c.dom.Element;
 

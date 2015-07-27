@@ -17,6 +17,8 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.utils.input.Parameter;
+
 import java.awt.Color;
 import javax.swing.JPanel;
 

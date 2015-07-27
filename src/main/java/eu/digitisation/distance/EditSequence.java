@@ -18,7 +18,7 @@
 package eu.digitisation.distance;
 
 import eu.digitisation.document.TokenArray;
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.log.Messages;
 import eu.digitisation.math.BiCounter;
 import eu.digitisation.text.Text;
 import java.io.File;

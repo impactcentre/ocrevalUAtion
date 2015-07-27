@@ -17,7 +17,7 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.utils.text.StringNormalizer;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

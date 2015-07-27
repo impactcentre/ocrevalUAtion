@@ -17,6 +17,8 @@
  */
 package eu.digitisation.input;
 
+import eu.digitisation.utils.input.Parameter;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -41,17 +43,17 @@ public class BooleanSelector extends ParameterSelector<Boolean> {
         setPreferredSize(new Dimension(100, 30));
         setBackground(bgcolor);
 
-        box = new JCheckBox(op.name);
+        box = new JCheckBox(op.getName());
         box.setFont(new Font("Verdana", Font.BOLD, 12));
         box.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                param.value = box.isSelected();
+                param.setValue(box.isSelected());
             }
         });
         add(box);
-        if (op.help != null && op.help.length() > 0) {
-            add(new Help(op.help, forecolor, bgcolor));
+        if (op.getHelp() != null && op.getHelp().length() > 0) {
+            add(new Help(op.getHelp(), forecolor, bgcolor));
         }
     }
 

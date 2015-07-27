@@ -17,9 +17,9 @@
  */
 package eu.digitisation.ngram;
 
-import eu.digitisation.log.Messages;
-import eu.digitisation.text.StringNormalizer;
-import eu.digitisation.text.WordScanner;
+import eu.digitisation.utils.log.Messages;
+import eu.digitisation.utils.text.StringNormalizer;
+import eu.digitisation.utils.text.WordScanner;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;

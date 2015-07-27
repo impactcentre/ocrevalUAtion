@@ -18,6 +18,8 @@
 package eu.digitisation.text;
 
 import static org.junit.Assert.assertEquals;
+
+import eu.digitisation.utils.text.StringNormalizer;
 import org.junit.Test;
 
 /**

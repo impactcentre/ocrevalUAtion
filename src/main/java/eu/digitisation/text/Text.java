@@ -20,12 +20,15 @@ package eu.digitisation.text;
 import eu.digitisation.input.FileType;
 import eu.digitisation.input.SchemaLocationException;
 import eu.digitisation.input.Settings;
-import eu.digitisation.input.WarningException;
+import eu.digitisation.utils.input.WarningException;
 import eu.digitisation.layout.SortPageXML;
-import eu.digitisation.log.Messages;
-import eu.digitisation.xml.DocumentParser;
-import eu.digitisation.xml.ElementList;
-import eu.digitisation.xml.XPathFilter;
+import eu.digitisation.utils.log.Messages;
+import eu.digitisation.utils.text.CharFilter;
+import eu.digitisation.utils.text.Encoding;
+import eu.digitisation.utils.text.StringNormalizer;
+import eu.digitisation.utils.xml.DocumentParser;
+import eu.digitisation.utils.xml.ElementList;
+import eu.digitisation.utils.xml.XPathFilter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -79,7 +82,7 @@ public class Text {
      * @param encoding the text encoding for text files (optional; can be null)
      * @param filter XPAthFilter for XML files (extracts textual content from
      * selected elements)
-     * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.utils.input.WarningException
      * @throws eu.digitisation.input.SchemaLocationException
      */
     public Text(File file, Charset encoding, XPathFilter filter)
@@ -124,11 +127,8 @@ public class Text {
      * Create Text from file
      *
      * @param file the input file
-     * @throws eu.digitisation.input.WarningException
-<<<<<<< HEAD
+     * @throws eu.digitisation.utils.input.WarningException
      * @throws eu.digitisation.input.SchemaLocationException
-=======
->>>>>>> wip
      */
     public Text(File file)
             throws WarningException, SchemaLocationException {
@@ -139,7 +139,7 @@ public class Text {
      * Constructor only for debugging purposes
      *
      * @param s
-     * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.utils.input.WarningException
      */
     public Text(String s) throws WarningException {
         builder = new StringBuilder();
@@ -281,7 +281,7 @@ public class Text {
     /**
      * Reads textual content from FR10 XML paragraph
      *
-     * @param oar the paragraph (par) element
+     * @param par the paragraph (par) element
      */
     private void readFR10Par(Element par) throws WarningException {
         NodeList lines = par.getElementsByTagName("line");
@@ -358,7 +358,7 @@ public class Text {
     /**
      * Reads textual content in ALTO XML element of type TextLine
      *
-     * @param file the input ALTO file
+     * @param line of the input ALTO file
      */
     private void readALTOTextLine(Element line) throws WarningException {
         NodeList strings = line.getElementsByTagName("String");

@@ -17,9 +17,9 @@
  */
 package eu.digitisation.ngram;
 
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.log.Messages;
 import static eu.digitisation.ngram.NgramModel.BOS;
-import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.utils.text.StringNormalizer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

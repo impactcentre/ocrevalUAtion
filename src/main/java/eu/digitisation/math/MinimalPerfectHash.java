@@ -17,8 +17,8 @@
  */
 package eu.digitisation.math;
 
-import eu.digitisation.log.Messages;
-import eu.digitisation.text.WordScanner;
+import eu.digitisation.utils.log.Messages;
+import eu.digitisation.utils.text.WordScanner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;

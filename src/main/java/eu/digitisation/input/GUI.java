@@ -17,7 +17,9 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.input.Parameters;
+import eu.digitisation.utils.input.WarningException;
+import eu.digitisation.utils.log.Messages;
 import eu.digitisation.ngram.NgramModel;
 import eu.digitisation.output.Browser;
 import eu.digitisation.output.OutputFileSelector;
@@ -93,11 +95,7 @@ public class GUI extends JFrame {
     /**
      * Build advanced options panel
      *
-     * @param ignoreCase
-     * @param ignoreDiacritics
-     * @param ignorePunctuation
-     * @param compatibilty
-     * @param eqfile
+     * @param pars
      * @return
      */
     private JPanel advancedOptionsPanel(Parameters pars) {
@@ -188,7 +186,7 @@ public class GUI extends JFrame {
 
     private void createReport(Parameters pars) throws WarningException {
         try {
-            Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
+            Batch batch = new Batch(pars.gtfile.getValue(), pars.ocrfile.getValue());
             Report report = new Report(batch, pars);
             File outfile = pars.outfile.getValue();
             report.write(outfile);

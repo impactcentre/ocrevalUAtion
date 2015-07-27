@@ -17,9 +17,9 @@
  */
 package eu.digitisation.layout;
 
-import eu.digitisation.xml.DocumentBuilder;
-import eu.digitisation.xml.DocumentParser;
-import eu.digitisation.xml.DocumentWriter;
+import eu.digitisation.utils.xml.DocumentBuilder;
+import eu.digitisation.utils.xml.DocumentParser;
+import eu.digitisation.utils.xml.DocumentWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

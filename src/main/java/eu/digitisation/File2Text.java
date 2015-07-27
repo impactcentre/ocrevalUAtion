@@ -18,8 +18,8 @@
 package eu.digitisation;
 
 import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.WarningException;
-import eu.digitisation.text.CharFilter;
+import eu.digitisation.utils.input.WarningException;
+import eu.digitisation.utils.text.CharFilter;
 import eu.digitisation.text.Text;
 import java.io.File;
 

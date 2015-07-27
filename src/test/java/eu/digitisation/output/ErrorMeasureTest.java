@@ -20,7 +20,7 @@ package eu.digitisation.output;
 import eu.digitisation.distance.EdOp;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.math.BiCounter;
-import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.utils.text.StringNormalizer;
 import eu.digitisation.text.Text;
 import java.io.File;
 import java.net.URL;

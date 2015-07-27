@@ -17,7 +17,9 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.input.Parameters;
+import eu.digitisation.utils.input.WarningException;
+import eu.digitisation.utils.log.Messages;
 import eu.digitisation.ngram.NgramModel;
 import eu.digitisation.ngram.NgramPerplexityEvaluator;
 import eu.digitisation.output.Browser;
@@ -36,8 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.nio.charset.Charset;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -72,7 +72,7 @@ public class GUIHack extends JFrame {
     /**
      * Show a warning message
      *
-     * @param text the text to be displayed
+     * @param message the text to be displayed
      */
 
     public void warn(String message) {
@@ -97,11 +97,7 @@ public class GUIHack extends JFrame {
     /**
      * Build advanced options panel
      *
-     * @param ignoreCase
-     * @param ignoreDiacritics
-     * @param ignorePunctuation
-     * @param compatibilty
-     * @param eqfile
+     * @param pars
      * @return
      */
     private JPanel advancedOptionsPanel(Parameters pars) {
@@ -179,9 +175,13 @@ public class GUIHack extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    launch(pars);
+                    try {
+                        launch(pars);
+                    } catch (WarningException e1) {
+                        e1.printStackTrace();
+                    }
                 } catch (SchemaLocationException ex) {
-                    Messages.severe(this.getClass() + ": "+ ex.getMessage());
+                    Messages.severe(this.getClass() + ": " + ex.getMessage());
                 }
             }
         });
@@ -194,7 +194,7 @@ public class GUIHack extends JFrame {
         return panel;
     }
 
-    public void launch(Parameters pars) throws SchemaLocationException {
+    public void launch(Parameters pars) throws SchemaLocationException, WarningException {
         try {
             if (ocrselector.ready() && (gtselector.ready() || lmselector.ready())) {
                 File ocrfile = pars.ocrfile.getValue();
@@ -208,7 +208,7 @@ public class GUIHack extends JFrame {
 
                     if (outfile != null) {
                         try {
-                            Batch batch = new Batch(pars.gtfile.value, pars.ocrfile.value);
+                            Batch batch = new Batch(pars.gtfile.getValue(), pars.ocrfile.getValue());
                             Report report = new Report(batch, pars);
                             report.write(outfile);
                             Messages.info("Report dumped to " + outfile);
@@ -228,7 +228,7 @@ public class GUIHack extends JFrame {
                     if (value != null) {
                         int contextLength = Integer.parseInt(value);
 
-                        NgramPerplexityEvaluator lpc = new NgramPerplexityEvaluator(pars.lmfile.value);
+                        NgramPerplexityEvaluator lpc = new NgramPerplexityEvaluator(pars.lmfile.getValue());
 
                         Text ocr = new Text(ocrfile);
                         double[] perplexityArray = lpc.calculatePerplexity(ocr.toString(), contextLength);

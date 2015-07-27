@@ -17,7 +17,7 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.input.Parameters;
+import eu.digitisation.utils.input.Parameters;
 
 /**
  * Integer weights for basic edit operations.
@@ -32,8 +32,6 @@ public class OcrOpWeight implements EdOpWeight {
 
     /**
      *
-     * @param ignoreCase true if case must be ignored
-     * @param ignoreDiacritics true if diacritics must be ignored
      * @param ignorePunctuation true if punctuation must be ignored
      */
     public OcrOpWeight(boolean ignorePunctuation) {

@@ -17,7 +17,7 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.utils.text.StringNormalizer;
 import eu.digitisation.math.BiCounter;
 import static junit.framework.TestCase.assertEquals;
 import org.junit.Test;

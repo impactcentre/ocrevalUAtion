@@ -24,16 +24,16 @@ import eu.digitisation.distance.EditSequence;
 import eu.digitisation.distance.OcrOpWeight;
 import eu.digitisation.document.TermFrequencyVector;
 import eu.digitisation.input.Batch;
-import eu.digitisation.input.Parameters;
+import eu.digitisation.utils.input.Parameters;
 import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.WarningException;
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.input.WarningException;
+import eu.digitisation.utils.log.Messages;
 import eu.digitisation.math.Pair;
-import eu.digitisation.text.CharFilter;
-import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.utils.text.CharFilter;
+import eu.digitisation.utils.text.StringNormalizer;
 import eu.digitisation.text.Text;
-import eu.digitisation.text.WordSet;
-import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.utils.text.WordSet;
+import eu.digitisation.utils.xml.DocumentBuilder;
 import java.io.File;
 import org.w3c.dom.Element;
 
@@ -81,7 +81,7 @@ public class Report extends DocumentBuilder {
      *
      * @param batch a batch of file pairs
      * @param pars input parameters
-     * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.utils.input.WarningException
      * @throws eu.digitisation.input.SchemaLocationException
      */
     public Report(Batch batch, Parameters pars) 

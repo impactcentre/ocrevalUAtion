@@ -17,7 +17,7 @@
  */
 package eu.digitisation.distance;
 
-import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.utils.text.StringNormalizer;
 import eu.digitisation.text.Text;
 import java.io.File;
 import java.net.URL;

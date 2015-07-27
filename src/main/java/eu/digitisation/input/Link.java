@@ -18,7 +18,7 @@
 package eu.digitisation.input;
 
 
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.log.Messages;
 import eu.digitisation.output.Browser;
 import java.awt.Color;
 import java.awt.Cursor;

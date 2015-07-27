@@ -18,13 +18,13 @@
 package eu.digitisation.langutils;
 
 import eu.digitisation.input.SchemaLocationException;
-import eu.digitisation.input.WarningException;
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.input.WarningException;
+import eu.digitisation.utils.log.Messages;
 import eu.digitisation.math.Counter;
-import eu.digitisation.text.CharFilter;
-import eu.digitisation.text.StringNormalizer;
+import eu.digitisation.utils.text.CharFilter;
+import eu.digitisation.utils.text.StringNormalizer;
 import eu.digitisation.text.Text;
-import eu.digitisation.text.WordScanner;
+import eu.digitisation.utils.text.WordScanner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

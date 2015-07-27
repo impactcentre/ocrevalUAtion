@@ -17,7 +17,9 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.log.Messages;
+import eu.digitisation.utils.input.Parameter;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -63,7 +65,7 @@ public class FileSelector extends ParameterSelector<File> {
         // Drop area
         area = new JTextPane();
         area.setFont(new Font("Verdana", Font.PLAIN, 12));
-        area.setText("Drop here your " + param.name);
+        area.setText("Drop here your " + param.getName());
         area.setForeground(forecolor);
         area.setBackground(bgcolor);
         enableDragAndDrop(area);

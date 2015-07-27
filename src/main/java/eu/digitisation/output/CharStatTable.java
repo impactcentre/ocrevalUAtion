@@ -20,7 +20,7 @@ package eu.digitisation.output;
 import eu.digitisation.distance.EdOp;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.math.BiCounter;
-import eu.digitisation.xml.DocumentBuilder;
+import eu.digitisation.utils.xml.DocumentBuilder;
 import org.w3c.dom.Element;
 
 /**

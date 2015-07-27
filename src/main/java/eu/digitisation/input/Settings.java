@@ -17,7 +17,7 @@
  */
 package eu.digitisation.input;
 
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.log.Messages;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

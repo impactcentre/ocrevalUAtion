@@ -17,8 +17,8 @@
  */
 package eu.digitisation.text;
 
-import eu.digitisation.text.CharMap;
-import eu.digitisation.text.CharMap.Option;
+import eu.digitisation.utils.text.CharMap;
+import eu.digitisation.utils.text.CharMap.Option;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;

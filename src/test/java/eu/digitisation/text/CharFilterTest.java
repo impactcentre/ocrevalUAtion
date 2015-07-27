@@ -17,7 +17,7 @@
  */
 package eu.digitisation.text;
 
-import eu.digitisation.text.CharFilter;
+import eu.digitisation.utils.text.CharFilter;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;

@@ -19,6 +19,8 @@ package eu.digitisation.text;
 
 import java.io.IOException;
 import static junit.framework.TestCase.assertEquals;
+
+import eu.digitisation.utils.text.WordScanner;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

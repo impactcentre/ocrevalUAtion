@@ -22,7 +22,7 @@ import eu.digitisation.distance.EditDistanceType;
 import eu.digitisation.distance.StringEditDistance;
 import eu.digitisation.document.TermFrequencyVector;
 import eu.digitisation.document.TokenArray;
-import eu.digitisation.log.Messages;
+import eu.digitisation.utils.log.Messages;
 import eu.digitisation.math.MinimalPerfectHash;
 
 /**
