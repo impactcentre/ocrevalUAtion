@@ -97,7 +97,7 @@ public class SortPageXML {
     /**
      * Extract reading order as defined by an OrderedGroup element
      *
-     * @param e the OrderedGroup element
+     * @param node node element
      * @return list of identifiers in reading order
      * @throws IOException
      */

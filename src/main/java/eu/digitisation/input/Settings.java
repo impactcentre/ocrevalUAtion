@@ -125,8 +125,8 @@ public class Settings {
     /**
      * Add a new value to property
      *
-     * @param type
-     * @param schemaLocation
+     * @param prop property name
+     * @param value property value
      */
     public static void addUserProperty(String prop, String value) {
         String currentValue = props.getProperty(prop);

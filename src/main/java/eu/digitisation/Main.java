@@ -48,7 +48,7 @@ public class Main {
 
     /**
      * @param args the command line arguments
-     * @throws eu.digitisation.input.WarningException
+     * @throws eu.digitisation.utils.input.WarningException
      */
     public static void main(String[] args) throws WarningException {
         Parameters pars = new Parameters();
