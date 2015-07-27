@@ -96,7 +96,12 @@ public class Text {
             FileType type = FileType.valueOf(file);
             switch (type) {
                 case PAGE:
-                    readPageFile(file);
+                    Messages.info("ignoreReadingOrder in PageXML files set to " + FileType.PAGE.ignoreReadingOrder);
+
+                    if (FileType.PAGE.ignoreReadingOrder)
+                        readPageFile(file, true);
+                    else
+                        readPageFile(file);
                     break;
                 case TEXT:
                     readTextFile(file);
@@ -266,8 +271,20 @@ public class Text {
      * @param file the input XML file
      */
     private void readPageFile(File file) throws IOException, WarningException {
+        readPageFile(file, false);
+    }
+
+    /**
+     * Reads textual content in PAGE XML document. By default selects all
+     * TextREgion elements
+     *
+     * @param file the input XML file
+     * @param isSorted if true, it avoid to sort pagexml file,
+     *                 if false, it sort pagexml file if needed
+     */
+    private void readPageFile(File file, boolean isSorted) throws IOException, WarningException {
         Document doc = loadXMLFile(file);
-        Document sorted = SortPageXML.isSorted(doc) ? doc : SortPageXML.sorted(doc);
+        Document sorted = ((SortPageXML.isSorted(doc)) || (isSorted)) ? doc : SortPageXML.sorted(doc);
         List<Element> regions = (filter == null)
                 ? new ElementList(sorted.getElementsByTagName("TextRegion"))
                 : filter.selectElements(sorted);

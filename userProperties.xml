@@ -9,4 +9,7 @@
   <entry key="ignoreSchemaLocation">
   	false
   </entry>
+  <entry key="ignoreReadingOrder">
+    false
+  </entry>
 </properties>

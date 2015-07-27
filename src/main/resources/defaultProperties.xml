@@ -8,6 +8,9 @@
   <entry key="ignoreSchemaLocation">
   	false
   </entry>
+  <entry key="ignoreReadingOrder">
+    false
+  </entry>
   <!--Schema location for the different types of XML documents 
       (used to identify the type of document).-->
   <entry key="schemaLocation.PAGE">

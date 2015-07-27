@@ -39,7 +39,8 @@ public enum FileType {
     String tag;
     String schemaLocation;  // schema URL
     static boolean ignoreSchemaLocation; // ignore, for example, missing schema location (dangerous)
-    
+    public static boolean ignoreReadingOrder; // ignore reading order in pagexml files
+
     static {
         reload();
     }
@@ -52,6 +53,7 @@ public enum FileType {
 
         PAGE.tag = "PcGts";
         PAGE.schemaLocation = getSchemaLocation(props, "PAGE");
+        PAGE.ignoreReadingOrder = props.getProperty("ignoreReadingOrder").toLowerCase().contains("true");
 
         FR10.tag = "document";
         FR10.schemaLocation = getSchemaLocation(props, "FR10");
