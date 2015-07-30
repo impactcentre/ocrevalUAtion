@@ -250,9 +250,5 @@
             <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/external</url>
         </repository>
-        <repository>
-            <id>impact</id>
-            <url>https://github.com/impactcentre/m2-repo/raw/master/releases</url>
-        </repository>
     </repositories>
 </project>
