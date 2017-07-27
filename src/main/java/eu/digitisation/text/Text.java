@@ -141,6 +141,19 @@ public class Text {
     }
 
     /**
+     * Create Text from file with encoding set in the parameters of the CLI
+     *
+     * @param file the input file
+     * @param encoding the encoding set in the parameters of the CLI
+     * @throws eu.digitisation.utils.input.WarningException
+     * @throws eu.digitisation.input.SchemaLocationException
+     */
+    public Text(File file, Charset encoding)
+            throws WarningException, SchemaLocationException {
+        this(file, encoding, null);
+    }
+
+    /**
      * Constructor only for debugging purposes
      *
      * @param s
