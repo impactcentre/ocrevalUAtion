@@ -104,5 +104,8 @@ public class Main {
             Messages.info(Main.class.getName() + ": " + ex);
         }
 
+        // Explicitly exit Main, so the CLI terminates
+        System.exit(0);
+
     }
 }

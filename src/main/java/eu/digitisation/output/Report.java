@@ -17,6 +17,7 @@
  */
 package eu.digitisation.output;
 
+import java.nio.charset.Charset;
 import eu.digitisation.distance.Aligner;
 import eu.digitisation.distance.EdOpWeight;
 import eu.digitisation.distance.EditDistance;
@@ -97,6 +98,13 @@ public class Report extends DocumentBuilder {
         int numwords = 0;   // number of words in GT
         int wdist = 0;      // word distances
         int bdist = 0;      // bag-of-words distanbces
+        Charset encoding;
+
+        try {
+        	encoding = Charset.forName(pars.encoding.getValue());
+        } catch(IllegalArgumentException e) {
+        	encoding = null;
+        }
 
         addTextElement(body, "h2", "General results");
         summaryTab = addElement(body, "div");
@@ -105,8 +113,8 @@ public class Report extends DocumentBuilder {
         for (int n = 0; n < batch.size(); ++n) {
             Pair<File, File> input = batch.pair(n);
             Messages.info("Processing " + input.first.getName());
-            Text gt = new Text(input.first);
-            Text ocr = new Text(input.second);
+            Text gt = new Text(input.first, encoding);
+            Text ocr = new Text(input.second, encoding);
             String gtref = pars.ignoreDiacritics.getValue() // remove spurious marks
                     ? gt.toString(filter).replaceAll(" \\p{InCombiningDiacriticalMarks}+", " ")
                     : gt.toString(filter);
