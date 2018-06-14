@@ -24,6 +24,8 @@
   </entry>
   <entry key="schemaLocation.ALTO">
     http://www.loc.gov/standards/alto/alto-v2.0.xsd 
-    http://schema.ccs-gmbh.com/ALTO
+    http://schema.ccs-gmbh.com/ALTO 
+    http://www.loc.gov/standards/alto/v2/alto-2-0.xsd 
+    http://www.loc.gov/standards/alto/ns-v2#
   </entry>
 </properties>
