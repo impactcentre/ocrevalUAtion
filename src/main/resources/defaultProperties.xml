@@ -27,5 +27,7 @@
     http://schema.ccs-gmbh.com/ALTO 
     http://www.loc.gov/standards/alto/v2/alto-2-0.xsd 
     http://www.loc.gov/standards/alto/ns-v2#
+    http://www.loc.gov/standards/alto/v3/alto-3-0.xsd
+    http://www.loc.gov/standards/alto/ns-v3#
   </entry>
 </properties>
