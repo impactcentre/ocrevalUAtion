@@ -18,6 +18,12 @@
 	http://schema.primaresearch.org/PAGE/gts/pagecontent/2010-03-19/pagecontent.xsd
 	http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 
 	http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd
+	http://schema.primaresearch.org/PAGE/gts/pagecontent/2016-07-15
+	http://schema.primaresearch.org/PAGE/gts/pagecontent/2016-07-15/pagecontent.xsd
+	http://schema.primaresearch.org/PAGE/gts/pagecontent/2017-07-15
+	http://schema.primaresearch.org/PAGE/gts/pagecontent/2017-07-15/pagecontent.xsd
+	http://schema.primaresearch.org/PAGE/gts/pagecontent/2018-07-15
+	http://schema.primaresearch.org/PAGE/gts/pagecontent/2018-07-15/pagecontent.xsd
   </entry>
   <entry key="schemaLocation.FR10">
  	http://www.abbyy.com/FineReader_xml/FineReader10-schema-v1.xml 
