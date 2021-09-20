@@ -16,7 +16,7 @@ and a table with the parallell input texts where the differences are highlighted
 
 A gentle introduction to OCR evaluation and to this tool can be found at https://sites.google.com/site/textdigitisation/
 
-You can download the latest release from [here](https://bintray.com/impactocr/maven/ocrevalUAtion).
+You can download the latest binaries from [here](https://github.com/impactcentre/ocrevalUAtion/releases).
 
 Instructions on how to use ocrevalUAtion can be found in the [wiki](https://github.com/impactcentre/ocrevalUAtion/wiki).
 
