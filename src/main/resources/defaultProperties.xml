@@ -37,5 +37,9 @@
     http://www.loc.gov/standards/alto/ns-v2#
     http://www.loc.gov/standards/alto/v3/alto-3-0.xsd
     http://www.loc.gov/standards/alto/ns-v3#
+    http://www.loc.gov/standards/alto/v4/alto-4-0.xsd
+    http://www.loc.gov/standards/alto/v4/alto-4-1.xsd
+    http://www.loc.gov/standards/alto/v4/alto-4-2.xsd
+    http://www.loc.gov/standards/alto/ns-v4#
   </entry>
 </properties>
